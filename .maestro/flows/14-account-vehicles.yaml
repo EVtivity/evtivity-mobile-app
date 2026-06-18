@@ -1,0 +1,22 @@
+# Vehicles screen: assert the list screen and that the Add control is tappable.
+# The add form lives in a Sheet (RN Modal) whose content Maestro cannot see, so
+# the in-sheet fields are a documented gap; tapping Add is exercised last.
+appId: com.evtivity.driver
+name: 14 - Account vehicles
+tags:
+  - account
+---
+- runFlow: ../subflows/session.yaml
+- tapOn:
+    id: "tab-account"
+- scrollUntilVisible:
+    element:
+      id: "account-row-vehicles"
+    direction: DOWN
+- tapOn:
+    id: "account-row-vehicles"
+- assertVisible: "Add Vehicle"
+- assertVisible:
+    id: "vehicle-add"
+- tapOn:
+    id: "vehicle-add"

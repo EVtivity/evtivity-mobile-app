@@ -1,0 +1,10 @@
+# Start from a clean login and sign in as the demo driver, landing on home.
+appId: com.evtivity.driver
+---
+- runFlow: ensure-logged-out.yaml
+- runFlow:
+    file: login.yaml
+    env:
+      EMAIL: driver@evtivity.local
+      PASSWORD: driver123
+- assertVisible: "Ready to charge"

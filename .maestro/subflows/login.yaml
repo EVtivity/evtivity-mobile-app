@@ -1,0 +1,13 @@
+# Reusable login. Caller passes EMAIL and PASSWORD via env. Assumes the login
+# screen is already showing (run ensure-logged-out first).
+appId: com.evtivity.driver
+---
+- tapOn:
+    id: "login-email"
+- inputText: ${EMAIL}
+- tapOn:
+    id: "login-password"
+- inputText: ${PASSWORD}
+- hideKeyboard
+- tapOn:
+    id: "login-submit"

@@ -1,0 +1,33 @@
+# Relaunch the app and guarantee we land on the login screen, regardless of the
+# state the previous flow left behind (logged in, or parked on register/forgot).
+appId: com.evtivity.driver
+---
+- launchApp
+# Logged in: the tab bar is present -> sign out from the Account tab.
+- runFlow:
+    when:
+      visible:
+        id: "tab-account"
+    commands:
+      - tapOn:
+          id: "tab-account"
+      - tapOn:
+          id: "account-signout"
+# Parked on Forgot Password: walk back to login.
+- runFlow:
+    when:
+      visible: "Back to Login"
+    commands:
+      - tapOn: "Back to Login"
+# Parked on Register: scroll the back-link into view, then walk back to login.
+- runFlow:
+    when:
+      visible: "Already have an account?"
+    commands:
+      - scrollUntilVisible:
+          element:
+            text: "Already have an account?"
+          direction: DOWN
+      - tapOn: "Sign In"
+- assertVisible:
+    id: "login-email"

@@ -1,0 +1,21 @@
+# Payment Methods screen loads (card list or the not-configured state). Adding a
+# card opens the native Stripe sheet, which is out of scope (documented gap).
+appId: com.evtivity.driver
+name: 17 - Account payment methods
+tags:
+  - account
+---
+- runFlow: ../subflows/session.yaml
+- tapOn:
+    id: "tab-account"
+- scrollUntilVisible:
+    element:
+      id: "account-row-payment"
+    direction: DOWN
+- tapOn:
+    id: "account-row-payment"
+- assertVisible: "Payment"
+- tapOn:
+    id: "back-button"
+- assertVisible:
+    id: "account-row-personal"

@@ -1,0 +1,23 @@
+# About screen shows app/CSMS version rows and the legal links.
+appId: com.evtivity.driver
+name: 15 - Account about
+tags:
+  - account
+---
+- runFlow: ../subflows/session.yaml
+- tapOn:
+    id: "tab-account"
+- scrollUntilVisible:
+    element:
+      id: "account-row-about"
+    direction: DOWN
+- tapOn:
+    id: "account-row-about"
+- assertVisible: "App version"
+- assertVisible: "CSMS version"
+- assertVisible: "Privacy Policy"
+- assertVisible: "Terms of Service"
+- tapOn:
+    id: "back-button"
+- assertVisible:
+    id: "tab-account"

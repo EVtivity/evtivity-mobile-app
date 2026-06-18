@@ -1,0 +1,30 @@
+# Home tab: greeting, quick actions, recent sessions, and the View All link to
+# Activity.
+appId: com.evtivity.driver
+name: 30 - Home
+tags:
+  - home
+  - navigation
+---
+- runFlow: ../subflows/session.yaml
+- assertVisible: "Ready to charge"
+- assertVisible: "Payment Methods"
+- assertVisible: "Recent sessions"
+# open the first recent session's detail and return
+- scrollUntilVisible:
+    element:
+      id: "session-row-.*"
+    direction: DOWN
+- tapOn:
+    id: "session-row-.*"
+- assertVisible:
+    id: "back-button"
+- tapOn:
+    id: "back-button"
+- assertVisible: "Ready to charge"
+# View All goes to Activity
+- tapOn: "View All"
+- assertVisible: "Activity"
+- tapOn:
+    id: "tab-index"
+- assertVisible: "Ready to charge"

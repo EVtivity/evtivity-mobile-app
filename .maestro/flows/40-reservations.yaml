@@ -1,0 +1,46 @@
+# Reservations tab: Upcoming/Past segments, and the New Reservation form
+# (station search field entry, Now/Schedule toggle, submit disabled until a
+# station is chosen). Creating/cancelling a reservation is a mutation and is left
+# as a documented gap.
+appId: com.evtivity.driver
+name: 40 - Reservations
+tags:
+  - reservations
+  - forms
+---
+- runFlow: ../subflows/session.yaml
+- tapOn:
+    id: "tab-reservations"
+- assertVisible: "Reservations"
+- tapOn: "Past"
+- tapOn: "Upcoming"
+# open a reservation's detail when one exists, then return
+- runFlow:
+    when:
+      visible:
+        id: "reservation-card-.*"
+    commands:
+      - tapOn:
+          id: "reservation-card-.*"
+      - assertVisible:
+          id: "back-button"
+      - tapOn:
+          id: "back-button"
+      - assertVisible: "Reservations"
+# new reservation form
+- tapOn: "New Reservation"
+- assertVisible:
+    id: "reservation-station"
+- assertVisible:
+    id: "reservation-submit"
+    enabled: false
+- tapOn:
+    id: "reservation-station"
+- inputText: "CS-0001"
+- hideKeyboard
+- assertVisible: "CS-0001"
+- tapOn: "Schedule"
+- tapOn: "Now"
+- tapOn:
+    id: "back-button"
+- assertVisible: "Reservations"

@@ -1,0 +1,20 @@
+# Logging out from the Account tab returns to the login screen.
+appId: com.evtivity.driver
+name: 08 - Logout
+tags:
+  - auth
+---
+- runFlow: ../subflows/ensure-logged-out.yaml
+- runFlow:
+    file: ../subflows/login.yaml
+    env:
+      EMAIL: driver@evtivity.local
+      PASSWORD: driver123
+- assertVisible: "Ready to charge"
+- tapOn:
+    id: "tab-account"
+- tapOn:
+    id: "account-signout"
+- assertVisible:
+    id: "login-email"
+- assertVisible: "Sign In"

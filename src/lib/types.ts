@@ -1,0 +1,163 @@
+// Copyright (c) 2024-2026 EVtivity. All rights reserved.
+// SPDX-License-Identifier: BUSL-1.1
+
+// Shapes returned by the /v1/portal/* API. Kept permissive (optional fields)
+// because the API uses .passthrough() and individual endpoints return supersets.
+
+export interface Driver {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string | null;
+  phone: string | null;
+  language: string;
+  timezone: string;
+  themePreference: string;
+  distanceUnit: string;
+  emailVerified: boolean;
+  mfaEnabled?: boolean;
+  createdAt?: string;
+}
+
+export interface AuthSuccess {
+  driver: Driver;
+  token: string;
+  refreshToken: string;
+  expiresIn: number;
+}
+
+export interface MfaRequired {
+  mfaRequired: true;
+  mfaMethod: 'email' | 'sms' | 'totp';
+  mfaToken: string;
+  challengeId?: string;
+}
+
+export type LoginResult = AuthSuccess | MfaRequired;
+
+export function isMfaRequired(r: LoginResult): r is MfaRequired {
+  return (r as MfaRequired).mfaRequired === true;
+}
+
+export type ConnectorStatus =
+  | 'available'
+  | 'occupied'
+  | 'reserved'
+  | 'unavailable'
+  | 'faulted'
+  | 'charging'
+  | 'preparing'
+  | 'suspended_ev'
+  | 'suspended_evse'
+  | 'finishing'
+  | 'idle'
+  | 'discharging'
+  | 'ev_connected';
+
+export interface Connector {
+  id: string;
+  connectorId: number;
+  connectorType: string;
+  maxPowerKw: number | null;
+  status: ConnectorStatus;
+}
+
+export interface Evse {
+  id: string;
+  evseId: number;
+  connectors: Connector[];
+}
+
+export interface Station {
+  id: string;
+  ocppId?: string;
+  siteId?: string;
+  siteName?: string;
+  model?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  latitude?: number | null;
+  longitude?: number | null;
+  availability?: string;
+  evses?: Evse[];
+  isFavorite?: boolean;
+  distanceKm?: number;
+  maintenance?: { active: boolean; plannedEndAt?: string; message?: string } | null;
+}
+
+export interface ChargingSession {
+  id: string;
+  stationId: string;
+  stationName?: string;
+  status: 'active' | 'completed' | 'failed' | 'pending';
+  startedAt: string;
+  endedAt?: string | null;
+  energyDeliveredWh?: number;
+  currentCostCents?: number;
+  finalCostCents?: number;
+  currency?: string;
+  idleStartedAt?: string | null;
+  co2AvoidedKg?: number | null;
+}
+
+export interface PaymentMethod {
+  id: number;
+  cardBrand: string | null;
+  cardLast4: string | null;
+  isDefault: boolean;
+}
+
+export interface Reservation {
+  id: string;
+  stationId: string;
+  stationName?: string;
+  status: 'scheduled' | 'active' | 'completed' | 'cancelled' | 'expired';
+  startsAt: string;
+  expiresAt: string;
+}
+
+export interface SupportCase {
+  id: string;
+  caseNumber: string;
+  subject: string;
+  status: string;
+  category: string;
+  priority: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SupportMessage {
+  id: number;
+  senderType: 'driver' | 'operator' | 'system';
+  body: string;
+  createdAt: string;
+}
+
+export interface NotificationItem {
+  id: number;
+  channel: string;
+  subject: string | null;
+  eventType: string | null;
+  createdAt: string;
+}
+
+export interface Vehicle {
+  id: string;
+  make: string | null;
+  model: string | null;
+  year: string | null;
+}
+
+export interface RfidToken {
+  id: string;
+  idToken: string;
+  tokenType: string;
+  isActive: boolean;
+}
+
+export interface Paginated<T> {
+  data: T[];
+  total: number;
+}
