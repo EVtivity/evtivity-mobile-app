@@ -1,0 +1,15 @@
+# Happy-path login with valid driver credentials lands on the home tab.
+appId: com.evtivity.driver
+name: 01 - Login success
+tags:
+  - auth
+  - smoke
+---
+- runFlow: ../subflows/ensure-logged-out.yaml
+- runFlow:
+    file: ../subflows/login.yaml
+    env:
+      EMAIL: driver@evtivity.local
+      PASSWORD: driver123
+- assertVisible: "Ready to charge"
+- assertVisible: "Activity"

@@ -1,0 +1,48 @@
+# Exercise the non-modal controls on Personal Info, reverting each change so Save
+# persists a net-zero update (re-runnable). The language picker is a Sheet (RN
+# Modal) whose content Maestro cannot see, so it is left to the documented gap.
+appId: com.evtivity.driver
+name: 12 - Account personal info
+tags:
+  - account
+  - forms
+---
+- runFlow: ../subflows/session.yaml
+- tapOn:
+    id: "tab-account"
+- tapOn:
+    id: "account-row-personal"
+- assertVisible: "Preferences"
+# phone field entry, then revert
+- tapOn:
+    id: "personal-phone"
+- inputText: "5551234567"
+- hideKeyboard
+- assertVisible: "5551234567"
+- tapOn:
+    id: "personal-phone"
+- eraseText
+- hideKeyboard
+# distance segment, toggled back to default
+- scrollUntilVisible:
+    element:
+      text: "Kilometers"
+    direction: DOWN
+- tapOn: "Kilometers"
+- tapOn: "Miles"
+# save the net-zero change
+- scrollUntilVisible:
+    element:
+      id: "personal-save"
+    direction: DOWN
+- tapOn:
+    id: "personal-save"
+# back-button is at the top of the screen, scrolled off after reaching Save
+- scrollUntilVisible:
+    element:
+      id: "back-button"
+    direction: UP
+- tapOn:
+    id: "back-button"
+- assertVisible:
+    id: "account-row-personal"

@@ -1,0 +1,105 @@
+# Build the EVtivity driver app for Android and iOS.
+#
+# Android builds run on free Ubuntu runners and produce an installable APK.
+# iOS runs an unsigned archive on a macOS runner for verification only. Signed,
+# store-ready iOS builds use `eas build --local --platform ios` with credentials
+# (see release.yml and SETUP.md); CI here only proves the native project compiles.
+#
+# The active brand is selected by the ACTIVE_BRAND env var, sourced from a
+# workflow_dispatch input. app.config.ts reads it at prebuild time.
+#
+# Triggers:
+#   - workflow_dispatch: run on demand, choose the brand.
+#   - push to a tag matching v* : build the tagged release.
+
+name: build
+
+on:
+  workflow_dispatch:
+    inputs:
+      brand:
+        description: Brand slug (must exist in brands/index.ts)
+        required: false
+        default: default
+  push:
+    tags:
+      - 'v*'
+
+# Tag pushes have no input, so fall back to the default brand.
+env:
+  ACTIVE_BRAND: ${{ github.event.inputs.brand || 'default' }}
+
+jobs:
+  android:
+    name: Android (APK)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Generate the native android/ project from app.config.ts. --no-install
+      # skips re-running the package manager; deps are already installed above.
+      - name: Prebuild Android
+        run: npx expo prebuild --platform android --no-install
+
+      - name: Build release APK
+        working-directory: android
+        run: ./gradlew assembleRelease
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-apk-${{ env.ACTIVE_BRAND }}
+          path: android/app/build/outputs/apk/release/*.apk
+          if-no-files-found: error
+
+  ios:
+    name: iOS (unsigned verify)
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Generate the native ios/ project (Xcode workspace + Pods).
+      - name: Prebuild iOS
+        run: npx expo prebuild --platform ios --no-install
+
+      # Unsigned archive: verifies the project compiles. A signed, uploadable
+      # .ipa is produced separately via `eas build --local` with credentials.
+      - name: Build unsigned archive
+        working-directory: ios
+        run: |
+          SCHEME="$(xcodebuild -list -json | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>console.log(JSON.parse(s).workspace.schemes[0]))')"
+          xcodebuild \
+            -workspace "$SCHEME.xcworkspace" \
+            -scheme "$SCHEME" \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            build

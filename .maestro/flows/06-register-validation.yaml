@@ -1,0 +1,20 @@
+# Register flow: navigate from login, submit empty, see inline required errors
+# on every field. The password error sits below the fold, so scroll to it.
+appId: com.evtivity.driver
+name: 06 - Register validation
+tags:
+  - auth
+---
+- runFlow: ../subflows/ensure-logged-out.yaml
+- tapOn: "Create One"
+- assertVisible:
+    id: "register-firstName"
+- tapOn:
+    id: "register-submit"
+- assertVisible: "First name is required."
+- assertVisible: "Last name is required."
+- assertVisible: "Email is required."
+- scrollUntilVisible:
+    element:
+      text: "Password is required."
+    direction: DOWN

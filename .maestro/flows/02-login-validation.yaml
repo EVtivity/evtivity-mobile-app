@@ -1,0 +1,14 @@
+# Submitting the login form empty shows inline required-field errors and does
+# not navigate away.
+appId: com.evtivity.driver
+name: 02 - Login validation
+tags:
+  - auth
+---
+- runFlow: ../subflows/ensure-logged-out.yaml
+- tapOn:
+    id: "login-submit"
+- assertVisible: "Email is required."
+- assertVisible: "Password is required."
+- assertVisible:
+    id: "login-email"

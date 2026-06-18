@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Default-brand theme tokens (the "Electric" palette). These are the fallback
+ * values; the active brand overrides them at runtime via the ThemeProvider
+ * (src/lib/theme.tsx) using NativeWind vars(), so a white-label brand needs no
+ * CSS edit. Primary is the EVtivity brand green carrying dark on-color text;
+ * accent is the brighter brand green for active states, icons, and data viz.
+ */
+:root {
+  --background: 160 24% 98%;
+  --foreground: 158 30% 11%;
+  --card: 0 0% 100%;
+  --card-foreground: 158 30% 11%;
+  --elevated: 0 0% 100%;
+  --primary: 142 71% 45%;
+  --primary-foreground: 0 0% 100%;
+  --cta: 142 72% 33%;
+  --cta-foreground: 0 0% 100%;
+  --accent: 142 72% 40%;
+  --accent-foreground: 150 80% 8%;
+  --muted: 160 20% 95.5%;
+  --muted-foreground: 156 10% 42%;
+  --border: 156 18% 90%;
+  --ring: 142 71% 45%;
+  --success: 142 71% 41%;
+  --warning: 32 95% 50%;
+  --destructive: 0 75% 55%;
+  --info: 199 89% 48%;
+}
+
+.dark:root {
+  --background: 160 28% 7%;
+  --foreground: 160 18% 96%;
+  --card: 160 22% 11%;
+  --card-foreground: 160 18% 96%;
+  --elevated: 160 20% 14%;
+  --primary: 142 68% 49%;
+  --primary-foreground: 0 0% 100%;
+  --cta: 142 64% 38%;
+  --cta-foreground: 0 0% 100%;
+  --accent: 142 66% 54%;
+  --accent-foreground: 150 85% 7%;
+  --muted: 160 16% 17%;
+  --muted-foreground: 156 12% 64%;
+  --border: 160 14% 20%;
+  --ring: 142 68% 50%;
+  --success: 142 64% 48%;
+  --warning: 35 92% 56%;
+  --destructive: 0 72% 58%;
+  --info: 198 90% 56%;
+}

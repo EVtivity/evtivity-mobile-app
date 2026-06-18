@@ -1,0 +1,19 @@
+# EVSE detail (deep-link to a specific connector): content, the Start button is
+# present, and View Location opens the location screen. Start is not pressed
+# (real OCPP side effect — documented gap).
+appId: com.evtivity.driver
+name: 22 - Charge EVSE detail
+tags:
+  - charge
+---
+- runFlow: ../subflows/session.yaml
+- openLink: com.evtivity.driver://charge/CS-0001/1
+- assertVisible: "CS-0001"
+- assertVisible: "Start Charging"
+# view location details opens the location screen
+- tapOn: "View location details"
+- assertVisible:
+    id: "back-button"
+- tapOn:
+    id: "back-button"
+- assertVisible: "Start Charging"

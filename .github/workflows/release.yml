@@ -1,0 +1,142 @@
+# Build and optionally submit a store-ready release of the EVtivity driver app.
+#
+# This workflow uses `eas build --local`, which runs the build on the GitHub
+# runner itself. Local builds are free and do NOT require an EAS cloud
+# subscription. EXPO_TOKEN is only needed if you switch to EAS cloud builds
+# (drop the --local flag); local builds do not use it.
+#
+# Store submission credentials are supplied as repository secrets and are NOT
+# committed to the repo:
+#   APPLE_API_KEY_BASE64   App Store Connect API key (.p8), base64-encoded
+#   APPLE_API_KEY_ID       App Store Connect API key id
+#   APPLE_API_ISSUER_ID    App Store Connect API issuer id
+#   GOOGLE_SERVICE_ACCOUNT_JSON  Play Console service account JSON
+# Signing material (iOS distribution cert + provisioning profile, Android
+# keystore) is also provided via secrets. See SETUP.md and WHITELABEL.md.
+#
+# The placeholders below mark where each operator wires their own credentials.
+# Fill them in for your developer accounts; do not hardcode secret values.
+
+name: release
+
+on:
+  workflow_dispatch:
+    inputs:
+      brand:
+        description: Brand slug (must exist in brands/index.ts)
+        required: false
+        default: default
+      platform:
+        description: Platform to build
+        required: true
+        default: all
+        type: choice
+        options:
+          - ios
+          - android
+          - all
+
+env:
+  ACTIVE_BRAND: ${{ github.event.inputs.brand }}
+  PLATFORM: ${{ github.event.inputs.platform }}
+
+jobs:
+  android:
+    name: Android release
+    # Skip unless platform is android or all.
+    if: ${{ github.event.inputs.platform == 'android' || github.event.inputs.platform == 'all' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install EAS CLI
+        run: npm install -g eas-cli
+
+      # PLACEHOLDER: restore your Android upload keystore from a secret and
+      # point credentials.json / gradle at it. Example:
+      #   echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > release.keystore
+      # EXPO_TOKEN is only required for EAS cloud; --local does not use it.
+      - name: Build Android (local, free)
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: eas build --local --platform android --profile production --non-interactive --output app-release.aab
+
+      - name: Upload AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-aab-${{ env.ACTIVE_BRAND }}
+          path: app-release.aab
+          if-no-files-found: error
+
+      # PLACEHOLDER: submit to Google Play. Requires GOOGLE_SERVICE_ACCOUNT_JSON.
+      # Uncomment and configure submit profile in eas.json before enabling.
+      # - name: Submit to Play Store
+      #   env:
+      #     GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+      #   run: |
+      #     echo "$GOOGLE_SERVICE_ACCOUNT_JSON" > play-service-account.json
+      #     eas submit --platform android --path app-release.aab --non-interactive
+
+  ios:
+    name: iOS release
+    # Skip unless platform is ios or all.
+    if: ${{ github.event.inputs.platform == 'ios' || github.event.inputs.platform == 'all' }}
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install EAS CLI
+        run: npm install -g eas-cli
+
+      # PLACEHOLDER: restore your iOS distribution certificate and provisioning
+      # profile from secrets into a temporary keychain before building. A signed
+      # .ipa requires these; without them, use the unsigned verify job in
+      # build.yml instead. EXPO_TOKEN only matters for EAS cloud builds.
+      - name: Build iOS (local, free)
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: eas build --local --platform ios --profile production --non-interactive --output app-release.ipa
+
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-ipa-${{ env.ACTIVE_BRAND }}
+          path: app-release.ipa
+          if-no-files-found: error
+
+      # PLACEHOLDER: submit to App Store Connect. Requires the APPLE_API_* secrets.
+      # Uncomment and configure submit profile in eas.json before enabling.
+      # - name: Submit to App Store
+      #   env:
+      #     APPLE_API_KEY_BASE64: ${{ secrets.APPLE_API_KEY_BASE64 }}
+      #     APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+      #     APPLE_API_ISSUER_ID: ${{ secrets.APPLE_API_ISSUER_ID }}
+      #   run: |
+      #     echo "$APPLE_API_KEY_BASE64" | base64 -d > apple-api-key.p8
+      #     eas submit --platform ios --path app-release.ipa --non-interactive

@@ -1,0 +1,22 @@
+# RFID screen: assert the list screen and that the Add control is tappable. The
+# add form lives in a Sheet (RN Modal) whose content Maestro cannot see, so the
+# in-sheet fields are a documented gap; tapping Add is exercised last.
+appId: com.evtivity.driver
+name: 13 - Account RFID
+tags:
+  - account
+---
+- runFlow: ../subflows/session.yaml
+- tapOn:
+    id: "tab-account"
+- scrollUntilVisible:
+    element:
+      id: "account-row-rfid"
+    direction: DOWN
+- tapOn:
+    id: "account-row-rfid"
+- assertVisible: "Add RFID Card"
+- assertVisible:
+    id: "rfid-add"
+- tapOn:
+    id: "rfid-add"

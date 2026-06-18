@@ -1,0 +1,9 @@
+{
+  "platforms": ["apple", "android"],
+  "apple": {
+    "modules": ["EvtivityAttestModule"]
+  },
+  "android": {
+    "modules": ["com.evtivity.attest.EvtivityAttestModule"]
+  }
+}

@@ -1,0 +1,31 @@
+# Toggle each notification switch and toggle it back (net-zero, re-runnable).
+appId: com.evtivity.driver
+name: 11 - Account notifications
+tags:
+  - account
+---
+- runFlow: ../subflows/session.yaml
+- tapOn:
+    id: "tab-account"
+- tapOn:
+    id: "account-row-notifications"
+- extendedWaitUntil:
+    visible: "Email notifications"
+    timeout: 8000
+- tapOn:
+    id: "notif-email"
+- tapOn:
+    id: "notif-sms"
+- tapOn:
+    id: "notif-push"
+# restore original states
+- tapOn:
+    id: "notif-email"
+- tapOn:
+    id: "notif-sms"
+- tapOn:
+    id: "notif-push"
+- tapOn:
+    id: "back-button"
+- assertVisible:
+    id: "tab-account"

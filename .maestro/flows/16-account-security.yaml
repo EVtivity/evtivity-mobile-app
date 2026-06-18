@@ -1,0 +1,35 @@
+# Security: change-password form field entry + submit enable/disable validation,
+# and the MFA section is present. The password change and MFA setup are not
+# submitted (they would change the login credential / open a modal sheet).
+appId: com.evtivity.driver
+name: 16 - Account security
+tags:
+  - account
+  - forms
+---
+- runFlow: ../subflows/session.yaml
+- tapOn:
+    id: "tab-account"
+- tapOn:
+    id: "account-row-security"
+- assertVisible: "Change Password"
+- assertVisible:
+    id: "security-change-password"
+    enabled: false
+- tapOn:
+    id: "security-current-password"
+- inputText: "currentPass1"
+- hideKeyboard
+- tapOn:
+    id: "security-new-password"
+- inputText: "newStrongPass123"
+- hideKeyboard
+- assertVisible:
+    id: "security-change-password"
+    enabled: true
+# MFA section is reachable
+- scrollUntilVisible:
+    element:
+      text: "Two-factor authentication"
+    direction: DOWN
+- assertVisible: "Two-factor authentication"

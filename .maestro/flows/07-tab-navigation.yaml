@@ -1,0 +1,26 @@
+# After login, every bottom tab navigates to its screen.
+appId: com.evtivity.driver
+name: 07 - Tab navigation
+tags:
+  - navigation
+---
+- runFlow: ../subflows/ensure-logged-out.yaml
+- runFlow:
+    file: ../subflows/login.yaml
+    env:
+      EMAIL: driver@evtivity.local
+      PASSWORD: driver123
+- assertVisible: "Ready to charge"
+- tapOn:
+    id: "tab-charge"
+- assertVisible: "Charge"
+- tapOn:
+    id: "tab-activity"
+- assertVisible: "Activity"
+- tapOn:
+    id: "tab-account"
+- assertVisible:
+    id: "account-signout"
+- tapOn:
+    id: "tab-index"
+- assertVisible: "Ready to charge"

@@ -1,0 +1,24 @@
+# Station detail: deep-link to a seeded station, view-location navigation, and
+# favorite toggle (reversible). Starting a charge is a real OCPP side effect on a
+# live (chaos-mode) simulator, so Start is left as a documented gap.
+appId: com.evtivity.driver
+name: 21 - Charge station detail
+tags:
+  - charge
+---
+- runFlow: ../subflows/session.yaml
+- openLink: com.evtivity.driver://charge/CS-0001
+- assertVisible: "Select a connector"
+- assertVisible: "CS-0001"
+# view location details and return
+- tapOn: "View location details"
+- assertVisible:
+    id: "back-button"
+- tapOn:
+    id: "back-button"
+- assertVisible: "Select a connector"
+# favorite toggle, then revert
+- tapOn: "Add to Favorites"
+- assertVisible: "Favorited"
+- tapOn: "Favorited"
+- assertVisible: "Add to Favorites"
