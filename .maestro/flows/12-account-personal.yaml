@@ -13,9 +13,11 @@ tags:
 - tapOn:
     id: "account-row-personal"
 - assertVisible: "Preferences"
-# phone field entry, then revert
+# phone field entry, then revert. Clear first so the assertion is exact
+# regardless of any seeded phone value already in the field.
 - tapOn:
     id: "personal-phone"
+- eraseText
 - inputText: "5551234567"
 - hideKeyboard
 - assertVisible: "5551234567"

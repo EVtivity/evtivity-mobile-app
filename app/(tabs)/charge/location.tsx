@@ -2,7 +2,8 @@
 // SPDX-License-Identifier: BUSL-1.1
 
 import React from 'react';
-import { View, ScrollView, Image, Modal, Pressable, Linking } from 'react-native';
+import { View, ScrollView, Modal, Pressable, Linking } from 'react-native';
+import { Image } from 'expo-image';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -10,6 +11,7 @@ import { MapPin, Clock, Plug, Navigation, Mail, MessageSquare, User, X } from '@
 import { Screen, Text, Button, Card, Spinner, EmptyState, Segmented, BackButton } from '@/components/ui';
 import { LocationImageThumb } from '@/components/LocationImageThumb';
 import { PopularTimesChart } from '@/components/PopularTimesChart';
+import { openEmail, openPhone } from '@/lib/safe-link';
 import { hsl } from '@/lib/theme';
 import {
   useLocationDetail,
@@ -117,8 +119,9 @@ export default function LocationDetailScreen(): React.JSX.Element {
         <Card className="gap-3">
           <Image
             source={{ uri: staticMapUrl(data.latitude, data.longitude, apiKey) }}
-            resizeMode="cover"
-            className="h-[180px] w-full rounded-xl bg-muted"
+            contentFit="cover"
+            cachePolicy="memory-disk"
+            style={{ width: '100%', height: 180, borderRadius: 12 }}
           />
           <Button
             title={t('location.getDirections')}
@@ -179,7 +182,7 @@ export default function LocationDetailScreen(): React.JSX.Element {
           {data.contactEmail != null && data.contactEmail.length > 0 ? (
             <Pressable
               accessibilityRole="link"
-              onPress={() => void Linking.openURL(`mailto:${data.contactEmail ?? ''}`)}
+              onPress={() => openEmail(data.contactEmail)}
               className="flex-row items-center gap-2 active:opacity-70"
             >
               <Mail size={16} color={hsl('primary')} />
@@ -189,7 +192,7 @@ export default function LocationDetailScreen(): React.JSX.Element {
           {data.contactPhone != null && data.contactPhone.length > 0 ? (
             <Pressable
               accessibilityRole="link"
-              onPress={() => void Linking.openURL(`tel:${data.contactPhone ?? ''}`)}
+              onPress={() => openPhone(data.contactPhone)}
               className="flex-row items-center gap-2 active:opacity-70"
             >
               <MessageSquare size={16} color={hsl('primary')} />
@@ -220,7 +223,12 @@ export default function LocationDetailScreen(): React.JSX.Element {
             </View>
             <Pressable className="flex-1" onPress={() => setViewerUrl(null)}>
               {viewerUrl != null ? (
-                <Image source={{ uri: viewerUrl }} resizeMode="contain" className="h-full w-full" />
+                <Image
+                  source={{ uri: viewerUrl }}
+                  contentFit="contain"
+                  cachePolicy="memory-disk"
+                  style={{ width: '100%', height: '100%' }}
+                />
               ) : null}
             </Pressable>
           </SafeAreaView>

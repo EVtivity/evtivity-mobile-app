@@ -2,7 +2,8 @@
 // SPDX-License-Identifier: BUSL-1.1
 
 import React from 'react';
-import { View, ScrollView, RefreshControl, ImageBackground } from 'react-native';
+import { View, ScrollView, RefreshControl } from 'react-native';
+import { ImageBackground } from 'expo-image';
 import { SafeAreaView, type Edge } from 'react-native-safe-area-context';
 import { cn } from '@/lib/cn';
 import { BACKDROP_TEXT_VARS } from '@/lib/theme';
@@ -19,17 +20,15 @@ export function ScreenBackground({
   edges?: readonly Edge[];
 }): React.JSX.Element {
   return (
-    // backgroundColor + fadeDuration={0}: on Android the window default (white)
-    // shows for a frame while the backdrop JPG decodes on each screen mount, and
-    // ImageBackground fades in by default. Both read as a white flash at the top
-    // during navigation. Painting the brand-dark color behind the image and
-    // killing the fade removes it.
+    // expo-image keeps the decoded bitmap in its memory-disk cache, so the
+    // backdrop is decoded once instead of per screen mount. The brand-dark
+    // background paints behind it so there is no white flash during the first
+    // decode.
     <ImageBackground
       source={appBg}
-      resizeMode="cover"
-      fadeDuration={0}
-      style={{ backgroundColor: '#0f172a' }}
-      className="flex-1"
+      contentFit="cover"
+      cachePolicy="memory-disk"
+      style={{ flex: 1, backgroundColor: '#0f172a' }}
     >
       <View style={BACKDROP_TEXT_VARS} className="flex-1">
         <SafeAreaView edges={edges} className="flex-1">

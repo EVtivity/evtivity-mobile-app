@@ -15,16 +15,17 @@ import {
   StatusDot,
   BackButton,
   useToast,
+  useApiErrorToast,
   useConfirm,
 } from '@/components/ui';
 import { hsl } from '@/lib/theme';
-import { apiErrorMessage } from '@/lib/api';
 import { useFavorites, useToggleFavorite } from '@/features/favorites';
 
 export default function FavoritesScreen(): React.JSX.Element {
   const { t } = useTranslation();
   const router = useRouter();
   const toast = useToast();
+  const showApiError = useApiErrorToast();
 
   const favorites = useFavorites();
   const toggle = useToggleFavorite();
@@ -41,12 +42,8 @@ export default function FavoritesScreen(): React.JSX.Element {
     toggle.mutate(
       { stationId, favoriteId, isFavorited: true },
       {
-        onSuccess: () => toast.show(t('common.remove'), 'success'),
-        onError: (err) =>
-          toast.show(
-            apiErrorMessage(err, t),
-            'error',
-          ),
+        onSuccess: () => toast.show(t('favorites.removed'), 'success'),
+        onError: (err) => showApiError(err),
       },
     );
   };
@@ -94,7 +91,10 @@ export default function FavoritesScreen(): React.JSX.Element {
                   </View>
                 ) : null}
                 <Text className="mt-1 text-sm text-muted-foreground">
-                  {`${String(fav.availableCount)} / ${String(fav.evseCount)} available`}
+                  {t('charge.availableOfTotal', {
+                    available: fav.availableCount,
+                    total: fav.evseCount,
+                  })}
                 </Text>
               </View>
               <Pressable

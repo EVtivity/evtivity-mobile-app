@@ -23,13 +23,18 @@ export function Metric({
   icon,
   label,
   value,
+  valueNode,
   unit,
   tone = 'muted',
   className,
 }: {
   icon?: React.ReactNode;
   label: string;
-  value: string;
+  // Provide either a plain string `value` or a `valueNode` element (e.g. a
+  // self-ticking live counter) so a frequently-updating value can re-render in
+  // isolation without re-rendering the whole screen.
+  value?: string;
+  valueNode?: React.ReactNode;
   unit?: string;
   tone?: Tone;
   className?: string;
@@ -43,9 +48,11 @@ export function Metric({
       ) : null}
       <Text variant="overline">{label}</Text>
       <View className="flex-row items-baseline justify-center gap-1">
-        <Text variant="h3" tabular numberOfLines={1} adjustsFontSizeToFit>
-          {value}
-        </Text>
+        {valueNode ?? (
+          <Text variant="h3" tabular numberOfLines={1} adjustsFontSizeToFit>
+            {value}
+          </Text>
+        )}
         {unit != null ? (
           <Text variant="label" className="text-muted-foreground">
             {unit}

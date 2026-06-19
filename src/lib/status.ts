@@ -3,6 +3,8 @@
 
 import type { ConnectorStatus } from './types';
 
+// English fallback label for a connector status. Used as the i18n default value
+// so a missing translation key degrades to readable text, never the raw key.
 export function connectorStatusLabel(status: ConnectorStatus): string {
   return status
     .split('_')
@@ -37,15 +39,6 @@ const CABLE_DETECTED = new Set<ConnectorStatus>([
 
 export function isCableDetected(status: ConnectorStatus | null): boolean {
   return status != null && CABLE_DETECTED.has(status);
-}
-
-const ACTIVE_ENERGY = new Set<ConnectorStatus>(['charging', 'discharging']);
-const PAUSED = new Set<ConnectorStatus>(['suspended_ev', 'suspended_evse', 'idle']);
-
-export function connectorPulse(status: ConnectorStatus): 'green' | 'amber' | 'none' {
-  if (ACTIVE_ENERGY.has(status)) return 'green';
-  if (PAUSED.has(status)) return 'amber';
-  return 'none';
 }
 
 export type SessionStatus = 'active' | 'completed' | 'failed' | 'pending';

@@ -18,15 +18,16 @@ import {
   ChipGroup,
   ListItemCard,
   useToast,
+  useApiErrorToast,
   useConfirm,
 } from '@/components/ui';
 import { hsl } from '@/lib/theme';
-import { apiErrorMessage } from '@/lib/api';
 import { useVehicles, useAddVehicle, useDeleteVehicle, useVehicleLookup } from '@/features/account';
 
 export default function VehiclesScreen(): React.JSX.Element {
   const { t } = useTranslation();
   const toast = useToast();
+  const showApiError = useApiErrorToast();
   const confirm = useConfirm();
 
   const vehicles = useVehicles();
@@ -55,12 +56,9 @@ export default function VehiclesScreen(): React.JSX.Element {
       setModel('');
       setYear('');
       setOpen(false);
-      toast.show(t('account.addVehicle'), 'success');
+      toast.show(t('account.vehicleAdded'), 'success');
     } catch (err) {
-      toast.show(
-        apiErrorMessage(err, t),
-        'error',
-      );
+      showApiError(err);
     }
   };
 
@@ -73,9 +71,8 @@ export default function VehiclesScreen(): React.JSX.Element {
     });
     if (!ok) return;
     deleteVehicle.mutate(id, {
-      onSuccess: () => toast.show(t('common.remove'), 'success'),
-      onError: (err) =>
-        toast.show(apiErrorMessage(err, t), 'error'),
+      onSuccess: () => toast.show(t('account.vehicleRemoved'), 'success'),
+      onError: (err) => showApiError(err),
     });
   };
 

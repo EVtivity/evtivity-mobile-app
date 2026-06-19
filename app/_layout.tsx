@@ -4,6 +4,7 @@
 import '../global.css';
 
 import React from 'react';
+import { AppState } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { QueryClientProvider } from '@tanstack/react-query';
@@ -47,12 +48,24 @@ function RootNavigator(): React.JSX.Element {
   const hydrate = useAuth((s) => s.hydrate);
   const status = useAuth((s) => s.status);
   const locked = useAuth((s) => s.locked);
+  const biometricEnabled = useAuth((s) => s.biometricEnabled);
+  const lock = useAuth((s) => s.lock);
   const driverLanguage = useAuth((s) => s.driver?.language);
   const router = useRouter();
 
   React.useEffect(() => {
     void hydrate();
   }, [hydrate]);
+
+  // Re-arm the biometric gate whenever the app leaves the foreground, so a
+  // resume always re-prompts instead of exposing the session from the switcher.
+  React.useEffect(() => {
+    if (!biometricEnabled) return;
+    const sub = AppState.addEventListener('change', (next) => {
+      if (next === 'background' || next === 'inactive') lock();
+    });
+    return () => sub.remove();
+  }, [biometricEnabled, lock]);
 
   // Apply a previously stored language choice on launch.
   React.useEffect(() => {
@@ -101,10 +114,13 @@ function RootNavigator(): React.JSX.Element {
 
 export default function RootLayout(): React.JSX.Element {
   const [animDone, setAnimDone] = React.useState(false);
-  // Keep the splash up until Inter and the Ionicons glyph font are both ready.
-  // Referencing fontsReady here re-renders the tree the moment fonts finish, so
-  // icons that mounted before the font loaded repaint instead of staying blank.
+  // Keep the splash up until Inter is ready. Referencing fontsReady here
+  // re-renders the tree the moment fonts finish, so text that mounted before the
+  // font loaded repaints instead of staying blank.
   const fontsReady = useAppFonts();
+  // Stable identity so AnimatedSplash's effect doesn't restart its animations on
+  // every root re-render.
+  const onSplashFinish = React.useCallback(() => setAnimDone(true), []);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -121,7 +137,7 @@ export default function RootLayout(): React.JSX.Element {
           </ThemeProvider>
         </QueryClientProvider>
       </SafeAreaProvider>
-      {animDone && fontsReady ? null : <AnimatedSplash onFinish={() => setAnimDone(true)} />}
+      {animDone && fontsReady ? null : <AnimatedSplash onFinish={onSplashFinish} />}
     </GestureHandlerRootView>
   );
 }

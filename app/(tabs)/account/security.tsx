@@ -4,6 +4,7 @@
 import React from 'react';
 import { View, Switch, Image } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { usePreventScreenCapture } from 'expo-screen-capture';
 import {
   Screen,
   Text,
@@ -15,10 +16,11 @@ import {
   Sheet,
   BackButton,
   useToast,
+  useApiErrorToast,
 } from '@/components/ui';
 import { hsl } from '@/lib/theme';
 import { useAuth } from '@/lib/auth';
-import { ApiError, getApiErrorFieldDetails, apiErrorMessage } from '@/lib/api';
+import { ApiError, getApiErrorFieldDetails } from '@/lib/api';
 import {
   useChangePassword,
   useMfaStatus,
@@ -37,6 +39,10 @@ function isMfaMethod(value: string): value is MfaMethod {
 export default function SecurityScreen(): React.JSX.Element {
   const { t } = useTranslation();
   const toast = useToast();
+  const showApiError = useApiErrorToast();
+
+  // Password and MFA setup (including TOTP secrets) stay off screenshots.
+  usePreventScreenCapture();
 
   const biometricEnabled = useAuth((s) => s.biometricEnabled);
   const setBiometricEnabled = useAuth((s) => s.setBiometricEnabled);
@@ -57,7 +63,7 @@ export default function SecurityScreen(): React.JSX.Element {
       await changePassword.mutateAsync({ currentPassword, newPassword });
       setCurrentPassword('');
       setNewPassword('');
-      toast.show(t('account.changePassword'), 'success');
+      toast.show(t('account.passwordChanged'), 'success');
     } catch (err) {
       if (err instanceof ApiError) {
         setFieldErrors(getApiErrorFieldDetails(err));
@@ -106,10 +112,7 @@ export default function SecurityScreen(): React.JSX.Element {
       setChallengeId(result.challengeId);
       setSetupVisible(true);
     } catch (err) {
-      toast.show(
-        apiErrorMessage(err, t),
-        'error',
-      );
+      showApiError(err);
     }
   };
 
@@ -121,10 +124,7 @@ export default function SecurityScreen(): React.JSX.Element {
       await mfa.refetch();
       toast.show(t('account.mfaSetupSuccess'), 'success');
     } catch (err) {
-      toast.show(
-        apiErrorMessage(err, t),
-        'error',
-      );
+      showApiError(err);
     }
   };
 
@@ -136,10 +136,7 @@ export default function SecurityScreen(): React.JSX.Element {
       await mfa.refetch();
       toast.show(t('account.mfaDisabledSuccess'), 'success');
     } catch (err) {
-      toast.show(
-        apiErrorMessage(err, t),
-        'error',
-      );
+      showApiError(err);
     }
   };
 

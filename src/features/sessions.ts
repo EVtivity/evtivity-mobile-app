@@ -3,7 +3,7 @@
 
 import { useQuery, useQueries, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
-import type { ChargingSession, Paginated } from '@/lib/types';
+import type { ChargingSession } from '@/lib/types';
 
 interface ActiveSession {
   id: string;
@@ -32,10 +32,7 @@ interface StopSessionResult {
 export function useActiveSessions() {
   return useQuery({
     queryKey: ['sessions', 'active'],
-    queryFn: () =>
-      api
-        .get<{ data: ActiveSession[] }>('/v1/portal/chargers/sessions/active')
-        .then((r) => r.data),
+    queryFn: () => api.getData<ActiveSession>('/v1/portal/chargers/sessions/active'),
     refetchInterval: 10_000,
   });
 }
@@ -44,9 +41,7 @@ export function useRecentSessions(limit = 3) {
   return useQuery({
     queryKey: ['sessions', 'recent', limit],
     queryFn: () =>
-      api
-        .get<Paginated<ChargingSession>>(`/v1/portal/sessions?limit=${String(limit)}`)
-        .then((r) => r.data),
+      api.getData<ChargingSession>(`/v1/portal/sessions?limit=${String(limit)}`),
     refetchInterval: 30_000,
   });
 }
@@ -55,39 +50,34 @@ export function useSessionsByMonth(month: string) {
   return useQuery({
     queryKey: ['sessions', 'month', month],
     queryFn: () =>
-      api
-        .get<Paginated<ChargingSession>>(
-          `/v1/portal/sessions?month=${encodeURIComponent(month)}&limit=100`,
-        )
-        .then((r) => r.data),
+      api.getData<ChargingSession>(
+        `/v1/portal/sessions?month=${encodeURIComponent(month)}&limit=100`,
+      ),
     enabled: month.length > 0,
   });
 }
 
-export function useMonthlySummary(month: string) {
-  return useQuery({
+// Shared query config for a single month's summary, so the single and the
+// parallel hooks use the same key and fetch (and therefore the same cache).
+function monthlySummaryQuery(month: string) {
+  return {
     queryKey: ['sessions', 'monthly-summary', month],
     queryFn: () =>
       api.get<MonthlySummary>(
         `/v1/portal/sessions/monthly-summary?month=${encodeURIComponent(month)}`,
       ),
     enabled: month.length > 0,
-  });
+  };
+}
+
+export function useMonthlySummary(month: string) {
+  return useQuery(monthlySummaryQuery(month));
 }
 
 // Fetch several months' summaries in parallel. Shares the per-month cache with
 // useMonthlySummary (same query key), so the selected month is not refetched.
 export function useMonthlySummaries(months: string[]) {
-  return useQueries({
-    queries: months.map((month) => ({
-      queryKey: ['sessions', 'monthly-summary', month],
-      queryFn: () =>
-        api.get<MonthlySummary>(
-          `/v1/portal/sessions/monthly-summary?month=${encodeURIComponent(month)}`,
-        ),
-      enabled: month.length > 0,
-    })),
-  });
+  return useQueries({ queries: months.map(monthlySummaryQuery) });
 }
 
 export interface PowerPoint {
@@ -210,10 +200,7 @@ export function useMonthlyStatement(month: string) {
 export function useSessionPowerHistory(id: string, active: boolean) {
   return useQuery({
     queryKey: ['session', id, 'power-history'],
-    queryFn: () =>
-      api
-        .get<{ data: PowerPoint[] }>(`/v1/portal/sessions/${id}/power-history`)
-        .then((r) => r.data),
+    queryFn: () => api.getData<PowerPoint>(`/v1/portal/sessions/${id}/power-history`),
     enabled: id.length > 0,
     refetchInterval: active ? 10_000 : false,
   });
@@ -222,10 +209,7 @@ export function useSessionPowerHistory(id: string, active: boolean) {
 export function useSessionEnergyHistory(id: string, active: boolean) {
   return useQuery({
     queryKey: ['session', id, 'energy-history'],
-    queryFn: () =>
-      api
-        .get<{ data: EnergyPoint[] }>(`/v1/portal/sessions/${id}/energy-history`)
-        .then((r) => r.data),
+    queryFn: () => api.getData<EnergyPoint>(`/v1/portal/sessions/${id}/energy-history`),
     enabled: id.length > 0,
     refetchInterval: active ? 10_000 : false,
   });

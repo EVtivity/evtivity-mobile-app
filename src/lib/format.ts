@@ -4,7 +4,7 @@
 // Formatting helpers mirroring the portal css-spec data-formatting rules.
 // Currency is stored in cents. Empty values render as "n/a", never null/NaN.
 
-const NA = 'n/a';
+export const NA = 'n/a';
 
 export function formatCurrency(
   cents: number | null | undefined,
@@ -77,4 +77,20 @@ export function formatDuration(start: string, end?: string | null): string {
 export function formatMiles(energyWh: number | null | undefined, efficiency = 3.5): string {
   if (energyWh == null || Number.isNaN(energyWh)) return NA;
   return `${((energyWh / 1000) * efficiency).toFixed(0)} mi`;
+}
+
+// Format a "YYYY-MM" key as a UTC month label, e.g. "January 2026" or "Jan".
+export function formatMonth(
+  month: string,
+  opts: { month?: 'long' | 'short'; year?: boolean } = {},
+): string {
+  const { month: style = 'long', year = true } = opts;
+  const [y, m] = month.split('-');
+  const d = new Date(Date.UTC(Number(y), Number(m) - 1, 1));
+  if (Number.isNaN(d.getTime())) return NA;
+  return d.toLocaleDateString('en-US', {
+    month: style,
+    ...(year ? { year: 'numeric' as const } : {}),
+    timeZone: 'UTC',
+  });
 }

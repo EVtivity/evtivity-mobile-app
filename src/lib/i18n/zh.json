@@ -3,6 +3,7 @@
     "na": "不适用",
     "cancel": "取消",
     "save": "保存",
+    "saved": "已保存",
     "saving": "保存中...",
     "retry": "重试",
     "loading": "加载中...",
@@ -101,6 +102,14 @@
     "title": "充电",
     "searchPlaceholder": "按站点或地址搜索",
     "scanQr": "扫描二维码",
+    "scan": {
+      "permissionTitle": "需要相机权限",
+      "permissionBody": "允许相机访问以扫描充电桩二维码。",
+      "grant": "授予权限",
+      "invalid": "该二维码不是 EVtivity 充电桩。",
+      "prompt": "将相机对准充电桩二维码",
+      "again": "重新扫描"
+    },
     "nearby": "附近",
     "noResults": "未找到充电桩",
     "connectors": "接口",
@@ -122,6 +131,9 @@
     "favorited": "已收藏",
     "online": "在线",
     "offline": "离线",
+    "available": "可用",
+    "inUse": "使用中",
+    "availableOfTotal": "{{total}} 个中 {{available}} 个可用",
     "siteContact": "站点联系人",
     "connectorPort": "端口 {{id}}",
     "reportIssue": "报告问题",
@@ -198,6 +210,9 @@
     "distance": "里程",
     "statement": "月度账单",
     "sessions": "会话",
+    "sessionsCount": "{{count}} 个会话",
+    "previousMonth": "上个月",
+    "nextMonth": "下个月",
     "noSessions": "本月暂无会话",
     "co2Avoided": "减少的 CO₂",
     "co2AvoidedLine": "本月您减少了 {{kg}} kg CO₂",
@@ -265,9 +280,11 @@
     "mfaEnabled": "已启用",
     "mfaDisabled": "已停用",
     "changePassword": "修改密码",
+    "passwordChanged": "密码已修改",
     "addCard": "添加银行卡",
     "addVehicle": "添加车辆",
     "addRfid": "添加 RFID 卡",
+    "rfidAdded": "已添加 RFID 卡",
     "noPaymentMethods": "暂无支付方式",
     "noVehicles": "暂无车辆",
     "noRfid": "暂无 RFID 卡",
@@ -300,14 +317,19 @@
     "mfaCodeSent": "我们已发送6位验证码，请在下方输入。",
     "mfaDisable": "停用",
     "mfaDisablePrompt": "请输入密码以关闭两步验证。",
-    "mfaDisabledSuccess": "两步验证已停用"
+    "mfaDisabledSuccess": "两步验证已停用",
+    "vehicleAdded": "已添加车辆",
+    "vehicleRemoved": "已移除车辆"
   },
   "payments": {
     "title": "支付",
     "addCard": "添加银行卡",
     "pay": "支付",
     "setupComplete": "银行卡已保存",
-    "notConfigured": "该运营商尚未设置支付功能。"
+    "notConfigured": "该运营商尚未设置支付功能。",
+    "default": "默认",
+    "setDefault": "设为默认",
+    "cardRemoved": "卡片已移除"
   },
   "support": {
     "title": "支持",
@@ -347,7 +369,8 @@
     "title": "收藏",
     "none": "暂无收藏",
     "removeTitle": "移除收藏？",
-    "removeMessage": "该站点将从您的收藏中移除。"
+    "removeMessage": "该站点将从您的收藏中移除。",
+    "removed": "已从收藏中移除"
   },
   "status": {
     "pending_payment": "待支付",
@@ -359,6 +382,33 @@
     "completed": "已完成",
     "failed": "失败",
     "expired": "已过期"
+  },
+  "connectorStatus": {
+    "available": "可用",
+    "occupied": "占用",
+    "reserved": "已预约",
+    "unavailable": "不可用",
+    "faulted": "故障",
+    "charging": "充电中",
+    "preparing": "准备中",
+    "suspended_ev": "已暂停（车辆）",
+    "suspended_evse": "已暂停（充电桩）",
+    "finishing": "结束中",
+    "idle": "空闲",
+    "discharging": "放电中",
+    "ev_connected": "车辆已连接"
+  },
+  "paymentStatus": {
+    "pre_authorized": "已预授权",
+    "captured": "已扣款",
+    "paid": "已支付",
+    "succeeded": "成功",
+    "pending": "待处理",
+    "processing": "处理中",
+    "failed": "失败",
+    "declined": "已拒绝",
+    "refunded": "已退款",
+    "voided": "已作废"
   },
   "location": {
     "chargerCount": "{{chargers}} 个充电桩，{{available}} 个可用",

@@ -3,6 +3,7 @@
     "na": "k.A.",
     "cancel": "Abbrechen",
     "save": "Speichern",
+    "saved": "Gespeichert",
     "saving": "Wird gespeichert...",
     "retry": "Erneut versuchen",
     "loading": "Wird geladen...",
@@ -101,6 +102,14 @@
     "title": "Laden",
     "searchPlaceholder": "Nach Station oder Adresse suchen",
     "scanQr": "QR scannen",
+    "scan": {
+      "permissionTitle": "Kamerazugriff erforderlich",
+      "permissionBody": "Erlaube den Kamerazugriff, um einen Ladepunkt-QR-Code zu scannen.",
+      "grant": "Zugriff erlauben",
+      "invalid": "Dieser QR-Code gehört zu keinem EVtivity-Ladepunkt.",
+      "prompt": "Richte deine Kamera auf den QR-Code des Ladepunkts",
+      "again": "Erneut scannen"
+    },
     "nearby": "In der Nähe",
     "noResults": "Keine Ladepunkte gefunden",
     "connectors": "Anschlüsse",
@@ -122,6 +131,9 @@
     "favorited": "Favorit",
     "online": "Online",
     "offline": "Offline",
+    "available": "Verfügbar",
+    "inUse": "Belegt",
+    "availableOfTotal": "{{available}} von {{total}} verfügbar",
     "siteContact": "Standortkontakt",
     "connectorPort": "Anschluss {{id}}",
     "reportIssue": "Problem melden",
@@ -198,6 +210,9 @@
     "distance": "Strecke",
     "statement": "Monatsabrechnung",
     "sessions": "Sitzungen",
+    "sessionsCount": "{{count}} Sitzungen",
+    "previousMonth": "Vorheriger Monat",
+    "nextMonth": "Nächster Monat",
     "noSessions": "Keine Sitzungen diesen Monat",
     "co2Avoided": "CO₂ vermieden",
     "co2AvoidedLine": "Du hast diesen Monat {{kg}} kg CO₂ vermieden",
@@ -265,9 +280,11 @@
     "mfaEnabled": "Aktiviert",
     "mfaDisabled": "Deaktiviert",
     "changePassword": "Passwort ändern",
+    "passwordChanged": "Passwort geändert",
     "addCard": "Karte hinzufügen",
     "addVehicle": "Fahrzeug hinzufügen",
     "addRfid": "RFID-Karte hinzufügen",
+    "rfidAdded": "RFID-Karte hinzugefügt",
     "noPaymentMethods": "Keine Zahlungsmethoden",
     "noVehicles": "Keine Fahrzeuge",
     "noRfid": "Keine RFID-Karten",
@@ -300,14 +317,19 @@
     "mfaCodeSent": "Wir haben einen 6-stelligen Code gesendet. Gib ihn unten ein.",
     "mfaDisable": "Deaktivieren",
     "mfaDisablePrompt": "Gib dein Passwort ein, um die Zwei-Faktor-Authentifizierung auszuschalten.",
-    "mfaDisabledSuccess": "Zwei-Faktor-Authentifizierung deaktiviert"
+    "mfaDisabledSuccess": "Zwei-Faktor-Authentifizierung deaktiviert",
+    "vehicleAdded": "Fahrzeug hinzugefügt",
+    "vehicleRemoved": "Fahrzeug entfernt"
   },
   "payments": {
     "title": "Zahlung",
     "addCard": "Karte hinzufügen",
     "pay": "Bezahlen",
     "setupComplete": "Karte gespeichert",
-    "notConfigured": "Für diesen Betreiber sind keine Zahlungen eingerichtet."
+    "notConfigured": "Für diesen Betreiber sind keine Zahlungen eingerichtet.",
+    "default": "Standard",
+    "setDefault": "Als Standard",
+    "cardRemoved": "Karte entfernt"
   },
   "support": {
     "title": "Support",
@@ -347,7 +369,8 @@
     "title": "Favoriten",
     "none": "Noch keine Favoriten",
     "removeTitle": "Favorit entfernen?",
-    "removeMessage": "Diese Station wird aus deinen Favoriten entfernt."
+    "removeMessage": "Diese Station wird aus deinen Favoriten entfernt.",
+    "removed": "Aus Favoriten entfernt"
   },
   "status": {
     "pending_payment": "Zahlung ausstehend",
@@ -359,6 +382,33 @@
     "completed": "Abgeschlossen",
     "failed": "Fehlgeschlagen",
     "expired": "Abgelaufen"
+  },
+  "connectorStatus": {
+    "available": "Verfügbar",
+    "occupied": "Belegt",
+    "reserved": "Reserviert",
+    "unavailable": "Nicht verfügbar",
+    "faulted": "Störung",
+    "charging": "Lädt",
+    "preparing": "Vorbereitung",
+    "suspended_ev": "Pausiert (Fahrzeug)",
+    "suspended_evse": "Pausiert (Station)",
+    "finishing": "Wird beendet",
+    "idle": "Inaktiv",
+    "discharging": "Entlädt",
+    "ev_connected": "Fahrzeug verbunden"
+  },
+  "paymentStatus": {
+    "pre_authorized": "Vorautorisiert",
+    "captured": "Eingezogen",
+    "paid": "Bezahlt",
+    "succeeded": "Erfolgreich",
+    "pending": "Ausstehend",
+    "processing": "In Bearbeitung",
+    "failed": "Fehlgeschlagen",
+    "declined": "Abgelehnt",
+    "refunded": "Erstattet",
+    "voided": "Storniert"
   },
   "location": {
     "chargerCount": "{{chargers}} Ladepunkte, {{available}} verfügbar",

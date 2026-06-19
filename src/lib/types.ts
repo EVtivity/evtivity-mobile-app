@@ -54,38 +54,6 @@ export type ConnectorStatus =
   | 'discharging'
   | 'ev_connected';
 
-export interface Connector {
-  id: string;
-  connectorId: number;
-  connectorType: string;
-  maxPowerKw: number | null;
-  status: ConnectorStatus;
-}
-
-export interface Evse {
-  id: string;
-  evseId: number;
-  connectors: Connector[];
-}
-
-export interface Station {
-  id: string;
-  ocppId?: string;
-  siteId?: string;
-  siteName?: string;
-  model?: string;
-  address?: string;
-  city?: string;
-  state?: string;
-  latitude?: number | null;
-  longitude?: number | null;
-  availability?: string;
-  evses?: Evse[];
-  isFavorite?: boolean;
-  distanceKm?: number;
-  maintenance?: { active: boolean; plannedEndAt?: string; message?: string } | null;
-}
-
 export interface ChargingSession {
   id: string;
   stationId: string;
@@ -99,22 +67,6 @@ export interface ChargingSession {
   currency?: string;
   idleStartedAt?: string | null;
   co2AvoidedKg?: number | null;
-}
-
-export interface PaymentMethod {
-  id: number;
-  cardBrand: string | null;
-  cardLast4: string | null;
-  isDefault: boolean;
-}
-
-export interface Reservation {
-  id: string;
-  stationId: string;
-  stationName?: string;
-  status: 'scheduled' | 'active' | 'completed' | 'cancelled' | 'expired';
-  startsAt: string;
-  expiresAt: string;
 }
 
 export interface SupportCase {
@@ -132,14 +84,6 @@ export interface SupportMessage {
   id: number;
   senderType: 'driver' | 'operator' | 'system';
   body: string;
-  createdAt: string;
-}
-
-export interface NotificationItem {
-  id: number;
-  channel: string;
-  subject: string | null;
-  eventType: string | null;
   createdAt: string;
 }
 

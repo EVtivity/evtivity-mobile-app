@@ -4,7 +4,7 @@
 import React from 'react';
 import { Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Text } from '@/components/ui';
+import { Text, StatusBadge } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import { formatCurrency, formatEnergyWh, formatDuration, formatDate } from '@/lib/format';
 import { sessionStatusTone, sessionStatusLabelKey, SESSION_TONE_COLOR } from '@/lib/status';
@@ -15,7 +15,12 @@ interface SessionRowProps {
   onPress?: () => void;
 }
 
-export function SessionRow({ session, onPress }: SessionRowProps): React.JSX.Element {
+// Memoized: in lists this row only re-renders when its session or handler
+// actually changes, not whenever the parent screen re-renders (e.g. polling).
+export const SessionRow = React.memo(function SessionRow({
+  session,
+  onPress,
+}: SessionRowProps): React.JSX.Element {
   const { t } = useTranslation();
   const cost =
     session.status === 'completed'
@@ -32,14 +37,10 @@ export function SessionRow({ session, onPress }: SessionRowProps): React.JSX.Ele
         <Text variant="title" numberOfLines={1} className="flex-1">
           {session.stationName ?? session.stationId}
         </Text>
-        <View
-          style={{ backgroundColor: SESSION_TONE_COLOR[sessionStatusTone(session.status)] }}
-          className="self-start rounded-full px-2.5 py-1"
-        >
-          <Text weight="semibold" className="text-sm text-white">
-            {t(sessionStatusLabelKey(session.status), { defaultValue: session.status })}
-          </Text>
-        </View>
+        <StatusBadge
+          label={t(sessionStatusLabelKey(session.status), { defaultValue: session.status })}
+          colorStyle={{ backgroundColor: SESSION_TONE_COLOR[sessionStatusTone(session.status)] }}
+        />
       </View>
       <View className="flex-row items-center gap-2">
         <Text variant="muted" numberOfLines={1} className="flex-1">
@@ -52,4 +53,4 @@ export function SessionRow({ session, onPress }: SessionRowProps): React.JSX.Ele
       </View>
     </Pressable>
   );
-}
+});

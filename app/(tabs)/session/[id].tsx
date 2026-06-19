@@ -38,6 +38,7 @@ import {
   Sheet,
   BackButton,
   useToast,
+  useApiErrorToast,
   useConfirm,
 } from '@/components/ui';
 import { SessionCharts } from '@/components/charts/SessionCharts';
@@ -61,7 +62,6 @@ import {
 import { useVehicles } from '@/features/account';
 import { notifyError } from '@/lib/haptics';
 import type { ChargingSession, ConnectorStatus, Vehicle } from '@/lib/types';
-import { apiErrorMessage } from '@/lib/api';
 
 interface LiveSession extends ChargingSession {
   currentPowerW?: number | null;
@@ -152,10 +152,35 @@ function Row({ label, value }: { label: string; value: string }): React.JSX.Elem
   );
 }
 
+// Self-ticking duration: while charging it re-renders once a second in
+// isolation, so the live counter never re-renders the whole screen or the charts.
+function LiveDuration({
+  startedAt,
+  endedAt,
+  active,
+}: {
+  startedAt: string;
+  endedAt?: string | null;
+  active: boolean;
+}): React.JSX.Element {
+  const [, setTick] = React.useState(0);
+  React.useEffect(() => {
+    if (!active) return;
+    const h = setInterval(() => setTick((n) => n + 1), 1000);
+    return () => clearInterval(h);
+  }, [active]);
+  return (
+    <Text variant="h3" tabular numberOfLines={1} adjustsFontSizeToFit>
+      {formatDuration(startedAt, endedAt)}
+    </Text>
+  );
+}
+
 export default function SessionScreen(): React.JSX.Element {
   const { t } = useTranslation();
   const router = useRouter();
   const toast = useToast();
+  const showApiError = useApiErrorToast();
   const confirm = useConfirm();
   const { id } = useLocalSearchParams<{ id: string }>();
   const sid = id ?? '';
@@ -172,14 +197,6 @@ export default function SessionScreen(): React.JSX.Element {
   const power = useSessionPowerHistory(sid, isActive === true);
   const energy = useSessionEnergyHistory(sid, isActive === true);
 
-  // Tick once a second so the live duration counts up while charging.
-  const [, setTick] = React.useState(0);
-  React.useEffect(() => {
-    if (isActive !== true) return;
-    const h = setInterval(() => setTick((n) => n + 1), 1000);
-    return () => clearInterval(h);
-  }, [isActive]);
-
   const onStop = React.useCallback(async () => {
     const ok = await confirm({
       title: t('charge.stopTitle'),
@@ -193,10 +210,10 @@ export default function SessionScreen(): React.JSX.Element {
       onError: (err) => {
         setStopping(false);
         notifyError();
-        toast.show(apiErrorMessage(err, t), 'error');
+        showApiError(err);
       },
     });
-  }, [confirm, sid, stop, t, toast]);
+  }, [confirm, sid, stop, t, showApiError]);
 
   const onPickVehicle = React.useCallback(
     (vehicleId: string | null) => {
@@ -314,7 +331,9 @@ export default function SessionScreen(): React.JSX.Element {
           tone="info"
           icon={<Clock size={18} color={hsl('info')} />}
           label={t('charge.live.duration')}
-          value={formatDuration(data.startedAt, data.endedAt)}
+          valueNode={
+            <LiveDuration startedAt={data.startedAt} endedAt={data.endedAt} active={isActive} />
+          }
         />
         <Metric
           tone="warning"
@@ -424,7 +443,10 @@ export default function SessionScreen(): React.JSX.Element {
             <Text weight="semibold" className="text-sm text-muted-foreground">
               {t('charge.detail.payment')}
             </Text>
-            <Badge label={data.payment.status} variant={paymentVariant(data.payment.status)} />
+            <Badge
+              label={t(`paymentStatus.${data.payment.status}`, { defaultValue: data.payment.status })}
+              variant={paymentVariant(data.payment.status)}
+            />
           </View>
           <Row
             label={t('charge.detail.preAuth')}

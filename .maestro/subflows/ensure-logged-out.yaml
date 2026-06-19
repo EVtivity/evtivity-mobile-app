@@ -3,6 +3,8 @@
 appId: com.evtivity.driver
 ---
 - launchApp
+# Let the splash/first screen settle so the relaunch does not race the taps.
+- waitForAnimationToEnd
 # Logged in: the tab bar is present -> sign out from the Account tab.
 - runFlow:
     when:
@@ -11,6 +13,9 @@ appId: com.evtivity.driver
     commands:
       - tapOn:
           id: "tab-account"
+      # Wait for the Account screen to render before tapping sign out.
+      - assertVisible:
+          id: "account-signout"
       - tapOn:
           id: "account-signout"
 # Parked on Forgot Password: walk back to login.
@@ -29,5 +34,9 @@ appId: com.evtivity.driver
             text: "Already have an account?"
           direction: DOWN
       - tapOn: "Sign In"
-- assertVisible:
-    id: "login-email"
+# Sign-out makes a server round-trip before the redirect to login, so wait for
+# the login screen rather than asserting it immediately.
+- extendedWaitUntil:
+    visible:
+      id: "login-email"
+    timeout: 15000

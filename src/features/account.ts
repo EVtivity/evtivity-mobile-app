@@ -89,6 +89,18 @@ export function useUpdateNotificationPrefs() {
   return useMutation({
     mutationFn: (input: NotificationPrefs) =>
       api.put<NotificationPrefs>('/v1/portal/driver/notification-preferences', input),
+    // Apply the toggle optimistically so the Switch moves on tap instead of
+    // waiting for the round-trip, then reconcile with the server's response (or
+    // roll back on failure).
+    onMutate: async (input) => {
+      await qc.cancelQueries({ queryKey: ['notification-prefs'] });
+      const previous = qc.getQueryData<NotificationPrefs>(['notification-prefs']);
+      qc.setQueryData(['notification-prefs'], input);
+      return { previous };
+    },
+    onError: (_err, _input, context) => {
+      if (context?.previous != null) qc.setQueryData(['notification-prefs'], context.previous);
+    },
     onSuccess: (data) => {
       qc.setQueryData(['notification-prefs'], data);
     },

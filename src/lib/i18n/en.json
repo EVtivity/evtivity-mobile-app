@@ -3,6 +3,7 @@
     "na": "n/a",
     "cancel": "Cancel",
     "save": "Save",
+    "saved": "Saved",
     "saving": "Saving...",
     "retry": "Retry",
     "loading": "Loading...",
@@ -101,6 +102,14 @@
     "title": "Charge",
     "searchPlaceholder": "Search by station or address",
     "scanQr": "Scan QR",
+    "scan": {
+      "permissionTitle": "Camera access needed",
+      "permissionBody": "Allow camera access to scan a charger QR code.",
+      "grant": "Grant access",
+      "invalid": "That QR code is not an EVtivity charger.",
+      "prompt": "Point your camera at the charger QR code",
+      "again": "Scan again"
+    },
     "nearby": "Nearby",
     "noResults": "No chargers found",
     "connectors": "Connectors",
@@ -122,6 +131,9 @@
     "favorited": "Favorited",
     "online": "Online",
     "offline": "Offline",
+    "available": "Available",
+    "inUse": "In use",
+    "availableOfTotal": "{{available}} of {{total}} available",
     "siteContact": "Site Contact",
     "connectorPort": "Port {{id}}",
     "reportIssue": "Report Issue",
@@ -198,6 +210,9 @@
     "distance": "Distance",
     "statement": "Monthly statement",
     "sessions": "Sessions",
+    "sessionsCount": "{{count}} sessions",
+    "previousMonth": "Previous month",
+    "nextMonth": "Next month",
     "noSessions": "No sessions this month",
     "co2Avoided": "CO₂ avoided",
     "co2AvoidedLine": "You avoided {{kg}} kg CO₂ this month",
@@ -265,9 +280,11 @@
     "mfaEnabled": "Enabled",
     "mfaDisabled": "Disabled",
     "changePassword": "Change Password",
+    "passwordChanged": "Password changed",
     "addCard": "Add card",
     "addVehicle": "Add Vehicle",
     "addRfid": "Add RFID Card",
+    "rfidAdded": "RFID card added",
     "noPaymentMethods": "No payment methods",
     "noVehicles": "No vehicles",
     "noRfid": "No RFID cards",
@@ -300,14 +317,19 @@
     "mfaCodeSent": "We sent a 6-digit code. Enter it below.",
     "mfaDisable": "Disable",
     "mfaDisablePrompt": "Enter your password to turn off two-factor authentication.",
-    "mfaDisabledSuccess": "Two-factor authentication disabled"
+    "mfaDisabledSuccess": "Two-factor authentication disabled",
+    "vehicleAdded": "Vehicle added",
+    "vehicleRemoved": "Vehicle removed"
   },
   "payments": {
     "title": "Payment",
     "addCard": "Add a Card",
     "pay": "Pay",
     "setupComplete": "Card saved",
-    "notConfigured": "Payments are not set up for this operator."
+    "notConfigured": "Payments are not set up for this operator.",
+    "default": "Default",
+    "setDefault": "Set default",
+    "cardRemoved": "Card removed"
   },
   "support": {
     "title": "Support",
@@ -347,7 +369,8 @@
     "title": "Favorites",
     "none": "No favorites yet",
     "removeTitle": "Remove favorite?",
-    "removeMessage": "This station will be removed from your favorites."
+    "removeMessage": "This station will be removed from your favorites.",
+    "removed": "Removed from favorites"
   },
   "status": {
     "pending_payment": "Pending payment",
@@ -359,6 +382,33 @@
     "completed": "Completed",
     "failed": "Failed",
     "expired": "Expired"
+  },
+  "connectorStatus": {
+    "available": "Available",
+    "occupied": "Occupied",
+    "reserved": "Reserved",
+    "unavailable": "Unavailable",
+    "faulted": "Faulted",
+    "charging": "Charging",
+    "preparing": "Preparing",
+    "suspended_ev": "Suspended (EV)",
+    "suspended_evse": "Suspended (Station)",
+    "finishing": "Finishing",
+    "idle": "Idle",
+    "discharging": "Discharging",
+    "ev_connected": "EV Connected"
+  },
+  "paymentStatus": {
+    "pre_authorized": "Pre-authorized",
+    "captured": "Captured",
+    "paid": "Paid",
+    "succeeded": "Succeeded",
+    "pending": "Pending",
+    "processing": "Processing",
+    "failed": "Failed",
+    "declined": "Declined",
+    "refunded": "Refunded",
+    "voided": "Voided"
   },
   "location": {
     "chargerCount": "{{chargers}} chargers, {{available}} available",

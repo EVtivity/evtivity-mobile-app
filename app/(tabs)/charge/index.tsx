@@ -13,6 +13,7 @@ import { StationCard } from '@/components/StationCard';
 import { hsl } from '@/lib/theme';
 import { useNearbyChargers, useSearchChargers, useSearchRoaming, type RoamingStation } from '@/features/charge';
 import { useFeatures } from '@/features/app-info';
+import { useDebouncedValue } from '@/lib/use-debounced-value';
 
 type Mode = 'local' | 'roaming';
 
@@ -31,7 +32,11 @@ export default function ChargeScreen(): React.JSX.Element {
     void (async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') return;
-      const pos = await Location.getCurrentPositionAsync({});
+      // Balanced accuracy: a 50 km "nearby" search does not need a GPS fix, and
+      // Balanced returns faster with less battery.
+      const pos = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.Balanced,
+      });
       if (active) setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
     })();
     return () => {
@@ -44,11 +49,20 @@ export default function ChargeScreen(): React.JSX.Element {
   // roaming.enabled flag confirms it on (default off, no flash for the majority).
   const roamingEnabled = features.data?.roamingEnabled ?? false;
 
-  const search = useSearchChargers(query);
+  // Debounce the text before it drives a request, so typing doesn't fire a GET
+  // per keystroke. The section toggle still uses the live value for instant UI.
+  const debouncedQuery = useDebouncedValue(query);
+  const debouncedRoamingQuery = useDebouncedValue(roamingQuery);
+  const search = useSearchChargers(debouncedQuery);
   const nearby = useNearbyChargers(coords);
-  const roaming = useSearchRoaming(roamingQuery);
+  const roaming = useSearchRoaming(debouncedRoamingQuery);
   const isSearching = query.trim().length > 0;
   const isRoamingSearching = roamingQuery.trim().length > 0;
+  // While the debounce timer is still settling, the query is keyed on the old
+  // (or empty) term, so treat that window as loading rather than flashing the
+  // "no results" empty state for the new term.
+  const searchPending = query.trim() !== debouncedQuery.trim();
+  const roamingPending = roamingQuery.trim() !== debouncedRoamingQuery.trim();
 
   return (
     <Screen scroll>
@@ -89,7 +103,7 @@ export default function ChargeScreen(): React.JSX.Element {
           {isSearching ? (
             <View className="gap-3">
               <Text variant="h3">{t('common.search')}</Text>
-              {search.isLoading ? (
+              {search.isLoading || searchPending ? (
                 <Spinner />
               ) : (search.data?.length ?? 0) === 0 ? (
                 <EmptyState title={t('charge.noResults')} />
@@ -161,7 +175,7 @@ export default function ChargeScreen(): React.JSX.Element {
                 icon={<Globe size={40} color={hsl('mutedForeground')} />}
                 title={t('charge.roamingPrompt')}
               />
-            ) : roaming.isLoading ? (
+            ) : roaming.isLoading || roamingPending ? (
               <Spinner />
             ) : (roaming.data?.length ?? 0) === 0 ? (
               <EmptyState title={t('charge.noResults')} />

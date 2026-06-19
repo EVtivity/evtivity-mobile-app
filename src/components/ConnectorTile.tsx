@@ -9,7 +9,7 @@ import { Text, StatusBadge } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import { hsl, SURFACE_TEXT_VARS } from '@/lib/theme';
 import { isStartable } from '@/lib/status';
-import { formatPowerKw } from '@/lib/format';
+import { formatPowerKw, NA } from '@/lib/format';
 import type { ConnectorStatus } from '@/lib/types';
 
 interface ConnectorTileProps {
@@ -63,7 +63,7 @@ export function ConnectorTile({
       <View className="gap-0.5">
         <View className="flex-row items-center gap-1">
           <Plug size={14} color={hsl('mutedForeground')} />
-          <Text variant="label">{connectorType ?? 'n/a'}</Text>
+          <Text variant="label">{connectorType ?? NA}</Text>
         </View>
         {spec !== '' ? <Text className="text-xs text-muted-foreground">{spec}</Text> : null}
         <Text className="text-xs text-muted-foreground">

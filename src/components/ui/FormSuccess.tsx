@@ -7,9 +7,8 @@ import { Card } from './Card';
 import { Text } from './Text';
 import { hsl } from '@/lib/theme';
 
-// Inline form success, the success-toned counterpart to FormError. Renders on
-// the standard translucent card surface with a check icon and success text so
-// confirmation messages stay legible and consistent on the green backdrop.
+// Inline success message on the standard translucent card surface with a check
+// icon, so confirmations stay legible and consistent on the green backdrop.
 export function FormSuccess({ message }: { message: string }): React.JSX.Element {
   return (
     <Card className="flex-row items-center gap-2.5 p-3.5">

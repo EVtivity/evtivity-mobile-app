@@ -4,6 +4,7 @@
 import { create } from 'zustand';
 import * as SecureStore from 'expo-secure-store';
 import { api } from './api';
+import { SECURE_STORE_OPTS } from './device';
 import {
   loadSession,
   setSession,
@@ -20,12 +21,20 @@ const BIOMETRIC_PREF_KEY = 'ev_biometric_lock';
 
 type AuthStatus = 'loading' | 'authenticated' | 'unauthenticated';
 
+// Carries the short-lived MFA token between the login screen and the verify
+// screen in memory, so it never lands in navigation params or a deep link.
+interface MfaPending {
+  mfaToken: string;
+  method: string;
+}
+
 interface AuthState {
   status: AuthStatus;
   driver: Driver | null;
   // True when a session exists but the app is waiting for a biometric unlock.
   locked: boolean;
   biometricEnabled: boolean;
+  mfaPending: MfaPending | null;
 
   hydrate: () => Promise<void>;
   login: (email: string, password: string) => Promise<LoginResult>;
@@ -38,8 +47,10 @@ interface AuthState {
   verifyMfa: (mfaToken: string, code: string) => Promise<void>;
   logout: () => Promise<void>;
   setDriver: (driver: Driver) => void;
+  lock: () => void;
   unlock: () => void;
   setBiometricEnabled: (on: boolean) => Promise<void>;
+  setMfaPending: (pending: MfaPending | null) => void;
 }
 
 async function applySession(success: AuthSuccess): Promise<void> {
@@ -50,11 +61,12 @@ async function applySession(success: AuthSuccess): Promise<void> {
   });
 }
 
-export const useAuth = create<AuthState>((set, get) => ({
+export const useAuth = create<AuthState>((set) => ({
   status: 'loading',
   driver: null,
   locked: false,
   biometricEnabled: false,
+  mfaPending: null,
 
   hydrate: async () => {
     setOnLogout(() => {
@@ -110,7 +122,7 @@ export const useAuth = create<AuthState>((set, get) => ({
       { auth: false },
     );
     await applySession(result);
-    set({ status: 'authenticated', driver: result.driver, locked: false });
+    set({ status: 'authenticated', driver: result.driver, locked: false, mfaPending: null });
   },
 
   logout: async () => {
@@ -128,19 +140,19 @@ export const useAuth = create<AuthState>((set, get) => ({
       }
     }
     await clearSession();
-    set({ status: 'unauthenticated', driver: null, locked: false });
+    set({ status: 'unauthenticated', driver: null, locked: false, mfaPending: null });
   },
 
   setDriver: (driver) => set({ driver }),
 
+  lock: () => set({ locked: true }),
+
   unlock: () => set({ locked: false }),
 
   setBiometricEnabled: async (on) => {
-    await SecureStore.setItemAsync(BIOMETRIC_PREF_KEY, on ? '1' : '0');
+    await SecureStore.setItemAsync(BIOMETRIC_PREF_KEY, on ? '1' : '0', SECURE_STORE_OPTS);
     set({ biometricEnabled: on });
   },
-}));
 
-export function useIsAuthenticated(): boolean {
-  return useAuth((s) => s.status === 'authenticated');
-}
+  setMfaPending: (pending) => set({ mfaPending: pending }),
+}));

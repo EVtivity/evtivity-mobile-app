@@ -47,7 +47,7 @@ export default function PersonalInfoScreen(): React.JSX.Element {
 
     try {
       await updateProfile.mutateAsync(input);
-      toast.show(t('common.save'), 'success');
+      toast.show(t('common.saved'), 'success');
     } catch (err) {
       if (err instanceof ApiError) {
         setFieldErrors(getApiErrorFieldDetails(err));

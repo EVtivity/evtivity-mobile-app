@@ -9,7 +9,7 @@ import { Check, AlertTriangle, Mail } from '@/components/icons';
 import { Screen, Button, Text, Spinner } from '@/components/ui';
 import { AuthHeader } from '@/components/AuthHeader';
 import { AuthFooter } from '@/components/AuthFooter';
-import { api, ApiError } from '@/lib/api';
+import { api, apiErrorMessage } from '@/lib/api';
 import { hsl } from '@/lib/theme';
 
 type Status = 'loading' | 'success' | 'error' | 'missing';
@@ -22,7 +22,7 @@ export default function VerifyEmailScreen(): React.JSX.Element {
   const [status, setStatus] = React.useState<Status>(
     token == null || token.length === 0 ? 'missing' : 'loading',
   );
-  const [message, setMessage] = React.useState<string | null>(null);
+  const [error, setError] = React.useState<unknown>(null);
 
   React.useEffect(() => {
     if (token == null || token.length === 0) return;
@@ -33,7 +33,7 @@ export default function VerifyEmailScreen(): React.JSX.Element {
         if (active) setStatus('success');
       } catch (err) {
         if (!active) return;
-        if (err instanceof ApiError) setMessage(err.serverMessage ?? null);
+        setError(err);
         setStatus('error');
       }
     })();
@@ -71,9 +71,9 @@ export default function VerifyEmailScreen(): React.JSX.Element {
           <>
             <AlertTriangle size={48} color={hsl('destructive')} />
             <Text variant="h3" className="text-center">{t('auth.verifyEmailFailed')}</Text>
-            {message != null ? (
-              <Text className="text-center text-base leading-relaxed text-foreground/70">{message}</Text>
-            ) : null}
+            <Text className="text-center text-base leading-relaxed text-foreground/70">
+              {apiErrorMessage(error, t)}
+            </Text>
             <Button title={t('auth.backToLogin')} onPress={() => router.replace('/(auth)/login')} />
           </>
         )}

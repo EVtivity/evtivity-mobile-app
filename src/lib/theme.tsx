@@ -68,9 +68,18 @@ export function ThemeProvider({ children }: { children: React.ReactNode }): Reac
 // tokens are stored space-separated ("142 72% 33%"); React Native's core color
 // parser only accepts the comma form, so emit "hsl(142, 72%, 33%)". SVG and
 // reanimated accept both, so this is safe everywhere hsl() is used.
+// The palette is static, so each token resolves to a constant string. Cache it
+// so callers in render hot paths (headers, charts, spinners) get a stable
+// reference instead of re-parsing the token every render.
+const hslCache = new Map<string, string>();
+
 export function hsl(token: keyof BrandColors, scheme: 'light' | 'dark' = 'light'): string {
+  const key = `${scheme}:${token}`;
+  const cached = hslCache.get(key);
+  if (cached != null) return cached;
   const palette = scheme === 'dark' ? BRAND.colors.dark : BRAND.colors.light;
   const raw = palette[token];
-  if (raw == null || raw === '') return 'transparent';
-  return `hsl(${raw.trim().replace(/\s+/g, ', ')})`;
+  const value = raw == null || raw === '' ? 'transparent' : `hsl(${raw.trim().replace(/\s+/g, ', ')})`;
+  hslCache.set(key, value);
+  return value;
 }

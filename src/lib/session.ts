@@ -3,7 +3,7 @@
 
 import * as SecureStore from 'expo-secure-store';
 import { API_BASE_URL } from './config';
-import { getDeviceId } from './device';
+import { deviceHeaders, SECURE_STORE_OPTS } from './device';
 
 // Token lifecycle for the Bearer mobile session. Tokens live in the OS keychain
 // (expo-secure-store), never AsyncStorage. This module owns the single-flight
@@ -49,9 +49,9 @@ export async function setSession(s: SessionTokens): Promise<void> {
   refreshToken = s.refreshToken;
   expiresAt = Date.now() + s.expiresIn * 1000;
   await Promise.all([
-    SecureStore.setItemAsync(ACCESS_KEY, s.token),
-    SecureStore.setItemAsync(REFRESH_KEY, s.refreshToken),
-    SecureStore.setItemAsync(EXPIRES_KEY, String(expiresAt)),
+    SecureStore.setItemAsync(ACCESS_KEY, s.token, SECURE_STORE_OPTS),
+    SecureStore.setItemAsync(REFRESH_KEY, s.refreshToken, SECURE_STORE_OPTS),
+    SecureStore.setItemAsync(EXPIRES_KEY, String(expiresAt), SECURE_STORE_OPTS),
   ]);
 }
 
@@ -98,14 +98,9 @@ async function doRefresh(): Promise<boolean> {
   const current = refreshToken;
   if (current == null) return false;
   try {
-    const deviceId = await getDeviceId();
     const res = await fetch(`${API_BASE_URL}/v1/portal/auth/refresh`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Client': 'mobile',
-        'X-Device-Id': deviceId,
-      },
+      headers: { ...(await deviceHeaders()), 'Content-Type': 'application/json' },
       body: JSON.stringify({ refreshToken: current }),
     });
     if (!res.ok) {

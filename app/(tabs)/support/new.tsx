@@ -6,10 +6,19 @@ import { View, Pressable } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Check, ChevronDown } from '@/components/icons';
-import { Screen, Text, Field, Input, Button, Sheet, BackButton, useToast } from '@/components/ui';
+import {
+  Screen,
+  Text,
+  Field,
+  Input,
+  Button,
+  Sheet,
+  BackButton,
+  useToast,
+  useApiErrorToast,
+} from '@/components/ui';
 import { hsl, SURFACE_TEXT_VARS } from '@/lib/theme';
 import { cn } from '@/lib/cn';
-import { apiErrorMessage } from '@/lib/api';
 import {
   useCreateCase,
   SUPPORT_CATEGORIES,
@@ -21,6 +30,7 @@ export default function NewSupportCaseScreen(): React.JSX.Element {
   const { t } = useTranslation();
   const router = useRouter();
   const toast = useToast();
+  const showApiError = useApiErrorToast();
   const params = useLocalSearchParams<{ sessionId?: string; stationId?: string }>();
   const create = useCreateCase();
 
@@ -47,10 +57,7 @@ export default function NewSupportCaseScreen(): React.JSX.Element {
       toast.show(t('support.submit'), 'success');
       router.replace({ pathname: '/support/[id]', params: { id: created.id } });
     } catch (err) {
-      toast.show(
-        apiErrorMessage(err, t),
-        'error',
-      );
+      showApiError(err);
     }
   };
 

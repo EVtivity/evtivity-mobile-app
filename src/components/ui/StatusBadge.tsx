@@ -2,19 +2,37 @@
 // SPDX-License-Identifier: BUSL-1.1
 
 import React from 'react';
-import { View } from 'react-native';
+import { View, type ViewStyle } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/cn';
 import { Text } from './Text';
 import { connectorStatusLabel, connectorStatusColor } from '@/lib/status';
 import type { ConnectorStatus } from '@/lib/types';
 
-// Connector status pill colored to match the driver portal (solid status color,
-// near-white text), e.g. available green, charging blue, idle yellow, faulted red.
-export function StatusBadge({ status }: { status: ConnectorStatus }): React.JSX.Element {
+// Solid-color status pill with near-white text, matching the driver portal.
+// Pass `status` to derive the connector color/label from the Tailwind palette,
+// or pass an explicit `label` + `colorStyle` (e.g. a portal-palette session
+// tone that has no Tailwind class).
+export function StatusBadge({
+  status,
+  label,
+  colorStyle,
+}: {
+  status?: ConnectorStatus;
+  label?: string;
+  colorStyle?: ViewStyle;
+}): React.JSX.Element {
+  const { t } = useTranslation();
+  const colorClass = status != null ? connectorStatusColor(status) : undefined;
+  const text =
+    label ??
+    (status != null
+      ? t(`connectorStatus.${status}`, { defaultValue: connectorStatusLabel(status) })
+      : '');
   return (
-    <View className={cn('self-start rounded-full px-2.5 py-1', connectorStatusColor(status))}>
+    <View style={colorStyle} className={cn('self-start rounded-full px-2.5 py-1', colorClass)}>
       <Text weight="semibold" className="text-sm text-white">
-        {connectorStatusLabel(status)}
+        {text}
       </Text>
     </View>
   );

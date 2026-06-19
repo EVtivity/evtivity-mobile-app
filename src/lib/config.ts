@@ -67,9 +67,10 @@ const DEV_HOST_ALIASES = new Set(['localhost', '127.0.0.1', '10.0.2.2']);
 function resolveDevHost(url: string): string {
   const m = url.match(/^(https?:\/\/)([^/:]+)(.*)$/i);
   if (m == null) return url;
-  const scheme = m[1] ?? '';
-  const host = m[2] ?? '';
-  const rest = m[3] ?? '';
+  // The regex guarantees groups 1-3 when m is non-null; the defaults exist only
+  // to satisfy noUncheckedIndexedAccess and are unreachable at runtime.
+  /* istanbul ignore next */
+  const [, scheme = '', host = '', rest = ''] = m;
   if (!DEV_HOST_ALIASES.has(host.toLowerCase())) return url;
   // iOS uses explicit IPv4 loopback: NSURLSession resolves `localhost` to IPv6
   // ::1 first, where the host's IPv4-only Docker listener is unreachable.
@@ -81,9 +82,12 @@ function resolveDevHost(url: string): string {
 // was baked at build time. It takes precedence; the brand apiUrl is the fallback
 // for production builds where the env is fixed at build.
 const envApiUrl = process.env.EXPO_PUBLIC_API_URL;
-export const API_BASE_URL = resolveDevHost(
-  envApiUrl != null && envApiUrl !== '' ? envApiUrl : BRAND.apiUrl,
-).replace(/\/$/, '');
+// babel-preset-expo inlines EXPO_PUBLIC_API_URL at transform time, so under jest
+// envApiUrl is a fixed literal and only one side of this choice can run; the
+// brand-apiUrl fallback is covered directly via config tests.
+/* istanbul ignore next */
+const resolvedApiUrl = envApiUrl != null && envApiUrl !== '' ? envApiUrl : BRAND.apiUrl;
+export const API_BASE_URL = resolveDevHost(resolvedApiUrl).replace(/\/$/, '');
 export const APP_NAME = BRAND.name;
 
 // Every language the app ships a catalogue for. Order is the display order in
@@ -107,6 +111,9 @@ function resolveEnabledLanguages(): LanguageCode[] {
 }
 
 export const ENABLED_LANGUAGES: LanguageCode[] = resolveEnabledLanguages();
+// resolveEnabledLanguages never returns an empty array, so the fallback exists
+// only to satisfy noUncheckedIndexedAccess and is unreachable at runtime.
+/* istanbul ignore next */
 export const DEFAULT_LANGUAGE: LanguageCode = ENABLED_LANGUAGES[0] ?? 'en';
 
 // The mobile app's own version, set from app.config.ts `version` at build time.

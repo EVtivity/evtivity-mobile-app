@@ -30,7 +30,7 @@ interface SetupIntentResponse {
 
 // The Stripe SDK pins this API version; it is echoed to the ephemeral-key
 // endpoint so the key is minted against a matching version.
-export const STRIPE_API_VERSION = '2024-06-20';
+const STRIPE_API_VERSION = '2024-06-20';
 
 const PAYMENT_METHODS_KEY = ['payment-methods'] as const;
 

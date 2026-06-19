@@ -3,6 +3,7 @@
     "na": "無",
     "cancel": "取消",
     "save": "儲存",
+    "saved": "已儲存",
     "saving": "儲存中...",
     "retry": "重試",
     "loading": "載入中...",
@@ -101,6 +102,14 @@
     "title": "充電",
     "searchPlaceholder": "依站點或地址搜尋",
     "scanQr": "掃描 QR 碼",
+    "scan": {
+      "permissionTitle": "需要相機權限",
+      "permissionBody": "允許相機存取以掃描充電樁 QR 碼。",
+      "grant": "授予權限",
+      "invalid": "該 QR 碼不是 EVtivity 充電樁。",
+      "prompt": "將相機對準充電樁 QR 碼",
+      "again": "重新掃描"
+    },
     "nearby": "附近",
     "noResults": "找不到充電樁",
     "connectors": "接頭",
@@ -122,6 +131,9 @@
     "favorited": "已收藏",
     "online": "上線",
     "offline": "離線",
+    "available": "可用",
+    "inUse": "使用中",
+    "availableOfTotal": "{{total}} 個中 {{available}} 個可用",
     "siteContact": "站點聯絡人",
     "connectorPort": "接口 {{id}}",
     "reportIssue": "回報問題",
@@ -198,6 +210,9 @@
     "distance": "距離",
     "statement": "每月帳單",
     "sessions": "充電次數",
+    "sessionsCount": "{{count}} 次充電",
+    "previousMonth": "上個月",
+    "nextMonth": "下個月",
     "noSessions": "本月沒有充電紀錄",
     "co2Avoided": "減少的 CO₂",
     "co2AvoidedLine": "您本月減少了 {{kg}} kg CO₂",
@@ -265,9 +280,11 @@
     "mfaEnabled": "已啟用",
     "mfaDisabled": "已停用",
     "changePassword": "變更密碼",
+    "passwordChanged": "密碼已變更",
     "addCard": "新增卡片",
     "addVehicle": "新增車輛",
     "addRfid": "新增 RFID 卡",
+    "rfidAdded": "已新增 RFID 卡",
     "noPaymentMethods": "沒有付款方式",
     "noVehicles": "沒有車輛",
     "noRfid": "沒有 RFID 卡",
@@ -300,14 +317,19 @@
     "mfaCodeSent": "我們已傳送 6 位數驗證碼，請在下方輸入。",
     "mfaDisable": "停用",
     "mfaDisablePrompt": "請輸入您的密碼以關閉雙重驗證。",
-    "mfaDisabledSuccess": "雙重驗證已停用"
+    "mfaDisabledSuccess": "雙重驗證已停用",
+    "vehicleAdded": "已新增車輛",
+    "vehicleRemoved": "已移除車輛"
   },
   "payments": {
     "title": "付款",
     "addCard": "新增卡片",
     "pay": "付款",
     "setupComplete": "卡片已儲存",
-    "notConfigured": "此營運商尚未設定付款功能。"
+    "notConfigured": "此營運商尚未設定付款功能。",
+    "default": "預設",
+    "setDefault": "設為預設",
+    "cardRemoved": "卡片已移除"
   },
   "support": {
     "title": "客服支援",
@@ -347,7 +369,8 @@
     "title": "收藏",
     "none": "尚無收藏",
     "removeTitle": "移除收藏？",
-    "removeMessage": "此站點將從您的收藏中移除。"
+    "removeMessage": "此站點將從您的收藏中移除。",
+    "removed": "已從收藏中移除"
   },
   "status": {
     "pending_payment": "待付款",
@@ -359,6 +382,33 @@
     "completed": "已完成",
     "failed": "失敗",
     "expired": "已過期"
+  },
+  "connectorStatus": {
+    "available": "可用",
+    "occupied": "佔用",
+    "reserved": "已預約",
+    "unavailable": "不可用",
+    "faulted": "故障",
+    "charging": "充電中",
+    "preparing": "準備中",
+    "suspended_ev": "已暫停（車輛）",
+    "suspended_evse": "已暫停（充電樁）",
+    "finishing": "結束中",
+    "idle": "閒置",
+    "discharging": "放電中",
+    "ev_connected": "車輛已連接"
+  },
+  "paymentStatus": {
+    "pre_authorized": "已預先授權",
+    "captured": "已扣款",
+    "paid": "已付款",
+    "succeeded": "成功",
+    "pending": "待處理",
+    "processing": "處理中",
+    "failed": "失敗",
+    "declined": "已拒絕",
+    "refunded": "已退款",
+    "voided": "已作廢"
   },
   "location": {
     "chargerCount": "{{chargers}} 個充電樁，{{available}} 個可用",

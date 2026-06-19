@@ -141,9 +141,10 @@ export function useStation(stationId: string) {
     enabled: stationId.length > 0,
     // Connector status (plugged/unplugged, charging, faulted) changes on the
     // station side with no push channel to the app. Poll while the detail
-    // screen is open so plug/unplug reflects within ~2s; polling stops on
-    // unmount. Override the global 15s staleTime so focus always refetches.
-    refetchInterval: 2000,
+    // screen is open so plug/unplug reflects within ~4s; polling stops on
+    // unmount and pauses when the app is backgrounded (focusManager). Override
+    // the global staleTime so focus always refetches.
+    refetchInterval: 4000,
     staleTime: 0,
   });
 }
