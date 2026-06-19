@@ -61,7 +61,6 @@ const defaultBrand = {
   iosBundleId: 'com.evtivity.driver',
   androidPackage: 'com.evtivity.driver',
   apiUrl: process.env.EXPO_PUBLIC_API_URL || 'https://api.evtivity.com',
-  appleMerchantId: 'merchant.com.evtivity.driver',
   // EAS project id. Required for getExpoPushTokenAsync to mint a push token.
   easProjectId: 'a38c536f-3b16-4d02-b070-31fe6117b892',
   // Languages offered in the app. First entry is the default. A white-label

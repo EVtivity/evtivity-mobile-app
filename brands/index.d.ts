@@ -38,7 +38,6 @@ export interface Brand {
   iosBundleId: string;
   androidPackage: string;
   apiUrl: string;
-  appleMerchantId?: string;
   // Languages this brand offers in the app. The first entry is the default for
   // a fresh install before the user picks one or the server preference loads.
   // Omit to offer all supported languages.

@@ -14,7 +14,6 @@ interface RuntimeBrand {
   slug: string;
   apiUrl: string;
   colors: Brand['colors'];
-  appleMerchantId?: string;
   termsUrl?: string;
   privacyUrl?: string;
   languages?: string[];
@@ -36,11 +35,6 @@ export const BRAND: RuntimeBrand = {
     light: { ...defaultBrand.colors.light, ...(baked?.colors?.light ?? {}) },
     dark: { ...defaultBrand.colors.dark, ...(baked?.colors?.dark ?? {}) },
   },
-  ...(baked?.appleMerchantId != null
-    ? { appleMerchantId: baked.appleMerchantId }
-    : defaultBrand.appleMerchantId != null
-      ? { appleMerchantId: defaultBrand.appleMerchantId }
-      : {}),
   termsUrl: baked?.termsUrl ?? defaultBrand.termsUrl,
   privacyUrl: baked?.privacyUrl ?? defaultBrand.privacyUrl,
 };
