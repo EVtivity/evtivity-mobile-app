@@ -82,10 +82,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           recordAudioAndroid: false,
         },
       ],
-      [
-        '@stripe/stripe-react-native',
-        { merchantIdentifier: brand.appleMerchantId, enableGooglePay: true },
-      ],
+      '@stripe/stripe-react-native',
       [
         './plugins/withAppAttest',
         { environment: process.env.EXPO_PUBLIC_APPATTEST_ENV ?? 'development' },

@@ -57,9 +57,9 @@ export function sessionStatusTone(status: string, isIdling = false): SessionTone
   return 'primary';
 }
 
-// Exact session-status colors from the driver portal (packages/portal/src/index.css),
-// applied as an inline background so mobile matches the portal regardless of the
-// mobile theme. The portal's brand primary is blue (completed reads blue), unlike
+// Exact session-status colors matching the web driver portal, applied as an
+// inline background so mobile matches the portal regardless of the mobile theme.
+// The portal's brand primary is blue (completed reads blue), unlike
 // the mobile brand primary (green); idle is orange, charging green, faulted red.
 export const SESSION_TONE_COLOR: Record<SessionTone, string> = {
   success: 'hsl(160, 84%, 39%)', // charging - green

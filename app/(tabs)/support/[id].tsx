@@ -9,9 +9,9 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { ChevronLeft, Send } from '@/components/icons';
+import { Send } from '@/components/icons';
 import {
   Text,
   Badge,
@@ -20,6 +20,7 @@ import {
   Spinner,
   EmptyState,
   ScreenBackground,
+  BackButton,
   useApiErrorToast,
 } from '@/components/ui';
 import { hsl, SURFACE_TEXT_VARS } from '@/lib/theme';
@@ -62,7 +63,6 @@ function MessageBubble({ message }: { message: SupportMessage }): React.JSX.Elem
 
 export default function SupportCaseDetailScreen(): React.JSX.Element {
   const { t } = useTranslation();
-  const router = useRouter();
   const showApiError = useApiErrorToast();
   const { id } = useLocalSearchParams<{ id: string }>();
   const caseId = id ?? '';
@@ -99,24 +99,24 @@ export default function SupportCaseDetailScreen(): React.JSX.Element {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         className="flex-1"
       >
-        <View className="flex-row items-center gap-2 px-4 pb-2 pt-4">
-          <Pressable testID="back-button" onPress={() => router.back()} hitSlop={12} className="-ml-1">
-            <ChevronLeft size={28} color="#ffffff" />
-          </Pressable>
-          <View className="flex-1">
-            <Text variant="h3" numberOfLines={1}>
-              {detail.data?.subject ?? t('support.title')}
-            </Text>
+        <View className="px-4 pb-2 pt-4">
+          <BackButton />
+          <View className="mt-1 flex-row items-center gap-2">
+            <View className="flex-1">
+              <Text variant="h3" numberOfLines={1}>
+                {detail.data?.subject ?? t('support.title')}
+              </Text>
+              {detail.data != null ? (
+                <Text className="text-xs text-muted-foreground">{detail.data.caseNumber}</Text>
+              ) : null}
+            </View>
             {detail.data != null ? (
-              <Text className="text-xs text-muted-foreground">{detail.data.caseNumber}</Text>
+              <Badge
+                label={t(`support.status.${detail.data.status}`, { defaultValue: detail.data.status })}
+                variant={supportCaseStatusVariant(detail.data.status)}
+              />
             ) : null}
           </View>
-          {detail.data != null ? (
-            <Badge
-              label={t(`support.status.${detail.data.status}`, { defaultValue: detail.data.status })}
-              variant={supportCaseStatusVariant(detail.data.status)}
-            />
-          ) : null}
         </View>
 
         {detail.data != null ? (

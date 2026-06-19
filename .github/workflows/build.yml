@@ -18,7 +18,7 @@ on:
   workflow_dispatch:
     inputs:
       brand:
-        description: Brand slug (must exist in brands/index.ts)
+        description: Brand slug (must exist in brands/index.js)
         required: false
         default: default
   push:

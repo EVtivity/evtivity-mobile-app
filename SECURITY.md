@@ -22,14 +22,12 @@ AsyncStorage, plain files, or the JS bundle.
 - Logout sends the refresh token to the server for revocation and wipes all
   secure storage on the device.
 
-## App lock and session
+## App lock
 
-- Biometric app-lock via `expo-local-authentication` (Face ID, Touch ID,
-  fingerprint) on launch and on resume from background. Configurable per brand.
-- A step-up biometric prompt guards sensitive actions such as adding a payment
-  method or starting a paid session.
-- Auto-logout after inactivity and after the app stays backgrounded beyond a
-  threshold.
+- Optional biometric app-lock via `expo-local-authentication` (Face ID, Touch ID,
+  fingerprint). When the user enables it, the app gates behind a biometric prompt
+  on launch and re-locks when it leaves the foreground. Configurable per brand and
+  per user.
 
 ## Payments
 
@@ -39,7 +37,11 @@ Stripe publishable key is fetched from the API at runtime, not bundled.
 
 ## Transport
 
-- HTTPS only. No cleartext traffic.
+- HTTPS by default. When the brand `apiUrl` is HTTPS, no cleartext exception is
+  added, so the app makes no plaintext HTTP requests. If an operator points the
+  app at a plain-HTTP CSMS, a scoped cleartext exception is added for that one
+  host only (iOS ATS and the Android manifest); every other host stays
+  HTTPS-only.
 - No server secrets in the app. The brand `apiUrl` is configuration, not a
   secret.
 
@@ -56,15 +58,15 @@ portal's access-log sanitization.
 
 ## Bot and abuse defense
 
-The web portal uses reCAPTCHA v3, which is web-only. The backend enforces an
-equivalent protection server-side. On mobile, device attestation (Apple App
-Attest and Google Play Integrity), verified server-side, is the planned bot
-defense in place of reCAPTCHA.
+The web portal uses reCAPTCHA v3, which is web-only. On mobile, device
+attestation replaces it: a native module produces an Apple App Attest assertion
+on iOS and a Google Play Integrity token on Android, which the app attaches as
+`X-Attest-*` headers on sensitive pre-auth requests (login, register, password
+reset) for the backend to verify server-side.
 
 ## Roadmap
 
 Planned hardening, not yet shipped:
 
 - Certificate or public-key pinning so a compromised CA cannot MITM the API.
-- App Attest and Play Integrity attestation verified server-side.
 - Jailbreak and root detection, with warn or restrict as a per-operator policy.
