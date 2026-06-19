@@ -44,11 +44,14 @@ interface ReservationCreated {
 
 const RESERVATIONS_KEY = ['reservations'] as const;
 
+// Statuses treated as upcoming: shown under the "upcoming" tab and still
+// cancellable. Everything else is past/terminal.
+export const UPCOMING_RESERVATION_STATUSES = new Set(['scheduled', 'active']);
+
 export function useReservations() {
   return useQuery({
     queryKey: RESERVATIONS_KEY,
-    queryFn: () =>
-      api.get<{ data: ReservationItem[] }>('/v1/portal/reservations').then((r) => r.data),
+    queryFn: () => api.getData<ReservationItem>('/v1/portal/reservations'),
   });
 }
 
@@ -94,7 +97,7 @@ export function useCreateReservation() {
 export function useCancelReservation() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => api.del(`/v1/portal/reservations/${id}`),
+    mutationFn: (id: string) => api.del(`/v1/portal/reservations/${encodeURIComponent(id)}`),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: RESERVATIONS_KEY });
     },

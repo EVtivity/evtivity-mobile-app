@@ -18,9 +18,9 @@ import {
   Spinner,
   BackButton,
   useToast,
+  useApiErrorToast,
 } from '@/components/ui';
 import { hsl } from '@/lib/theme';
-import { apiErrorMessage } from '@/lib/api';
 import { useCreateReservation } from '@/features/reservations';
 import { useSearchChargers, type SearchStation } from '@/features/charge';
 
@@ -40,6 +40,7 @@ export default function NewReservationScreen(): React.JSX.Element {
   const { t } = useTranslation();
   const router = useRouter();
   const toast = useToast();
+  const showApiError = useApiErrorToast();
   const params = useLocalSearchParams<{ stationId?: string }>();
   const create = useCreateReservation();
 
@@ -105,7 +106,7 @@ export default function NewReservationScreen(): React.JSX.Element {
       toast.show(t('reservations.new'), 'success');
       router.back();
     } catch (err) {
-      toast.show(apiErrorMessage(err, t), 'error');
+      showApiError(err);
     }
   };
 

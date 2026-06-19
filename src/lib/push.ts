@@ -50,11 +50,17 @@ export async function registerPushToken(): Promise<void> {
   try {
     const tokenResponse = await Notifications.getExpoPushTokenAsync({ projectId: id });
     const token = tokenResponse.data;
-    await SecureStore.setItemAsync(LAST_TOKEN_KEY, token);
+    // This runs again on every unlock/foreground. Skip the round-trip when the
+    // token already matches the last successfully-registered one.
+    const lastToken = await SecureStore.getItemAsync(LAST_TOKEN_KEY);
+    if (token === lastToken) return;
     await api.post('/v1/portal/notifications/push-token', {
       token,
       platform: Platform.OS === 'ios' ? 'ios' : 'android',
     });
+    // Persist only after the POST succeeds, so a failed registration is retried
+    // next time instead of being skipped by the dedup check above.
+    await SecureStore.setItemAsync(LAST_TOKEN_KEY, token);
   } catch {
     // No APNs/FCM device token on simulators/emulators (and none when offline).
     // Skip registration instead of crashing the app on launch.

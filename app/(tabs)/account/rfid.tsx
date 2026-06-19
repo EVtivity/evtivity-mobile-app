@@ -4,6 +4,7 @@
 import React from 'react';
 import { View, Switch } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { usePreventScreenCapture } from 'expo-screen-capture';
 import { Nfc } from '@/components/icons';
 import {
   Screen,
@@ -17,10 +18,10 @@ import {
   BackButton,
   ListItemCard,
   useToast,
+  useApiErrorToast,
   useConfirm,
 } from '@/components/ui';
 import { hsl } from '@/lib/theme';
-import { apiErrorMessage } from '@/lib/api';
 import { useRfidTokens, useAddRfidToken, useToggleRfidToken } from '@/features/account';
 
 function maskToken(value: string): string {
@@ -31,6 +32,10 @@ function maskToken(value: string): string {
 export default function RfidScreen(): React.JSX.Element {
   const { t } = useTranslation();
   const toast = useToast();
+  const showApiError = useApiErrorToast();
+
+  // RFID token values authorize charging: keep them off screenshots.
+  usePreventScreenCapture();
 
   const confirm = useConfirm();
 
@@ -57,12 +62,9 @@ export default function RfidScreen(): React.JSX.Element {
       await addToken.mutateAsync({ idToken: idToken.trim() });
       setIdToken('');
       setOpen(false);
-      toast.show(t('account.addRfid'), 'success');
+      toast.show(t('account.rfidAdded'), 'success');
     } catch (err) {
-      toast.show(
-        apiErrorMessage(err, t),
-        'error',
-      );
+      showApiError(err);
     }
   };
 
@@ -85,13 +87,13 @@ export default function RfidScreen(): React.JSX.Element {
         {
           onError: (err) => {
             clearPending(id);
-            toast.show(apiErrorMessage(err, t), 'error');
+            showApiError(err);
           },
           onSuccess: () => clearPending(id),
         },
       );
     },
-    [confirm, toggleToken, toast, t, clearPending],
+    [confirm, toggleToken, showApiError, t, clearPending],
   );
 
   const onToggle = React.useCallback(

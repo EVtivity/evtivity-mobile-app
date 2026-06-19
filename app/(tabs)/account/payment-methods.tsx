@@ -4,6 +4,7 @@
 import React from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { usePreventScreenCapture } from 'expo-screen-capture';
 import { StripeProvider } from '@stripe/stripe-react-native';
 import { CreditCard, Trash2, Star } from '@/components/icons';
 import {
@@ -17,10 +18,11 @@ import {
   BackButton,
   ListItemCard,
   useToast,
+  useApiErrorToast,
   useConfirm,
 } from '@/components/ui';
 import { hsl } from '@/lib/theme';
-import { ApiError, apiErrorMessage } from '@/lib/api';
+import { ApiError } from '@/lib/api';
 import {
   fetchEphemeralKey,
   usePaymentMethods,
@@ -31,14 +33,15 @@ import {
   type PaymentCard,
 } from '@/features/payments';
 
-function formatBrand(brand: string | null): string {
-  if (brand == null || brand.length === 0) return 'Card';
+function formatBrand(brand: string | null): string | null {
+  if (brand == null || brand.length === 0) return null;
   return brand.charAt(0).toUpperCase() + brand.slice(1);
 }
 
 function CardList({ ephemeralKey }: { ephemeralKey: EphemeralKeyResponse }): React.JSX.Element {
   const { t } = useTranslation();
   const toast = useToast();
+  const showApiError = useApiErrorToast();
 
   const confirm = useConfirm();
 
@@ -72,11 +75,7 @@ function CardList({ ephemeralKey }: { ephemeralKey: EphemeralKeyResponse }): Rea
 
   const onSetDefault = (pmId: number): void => {
     setDefault.mutate(pmId, {
-      onError: (err) =>
-        toast.show(
-          apiErrorMessage(err, t),
-          'error',
-        ),
+      onError: (err) => showApiError(err),
     });
   };
 
@@ -90,12 +89,9 @@ function CardList({ ephemeralKey }: { ephemeralKey: EphemeralKeyResponse }): Rea
     if (!ok) return;
     try {
       await deleteCard.mutateAsync(pm.id);
-      toast.show(t('common.remove'), 'success');
+      toast.show(t('payments.cardRemoved'), 'success');
     } catch (err) {
-      toast.show(
-        apiErrorMessage(err, t),
-        'error',
-      );
+      showApiError(err);
     }
   };
 
@@ -123,13 +119,15 @@ function CardList({ ephemeralKey }: { ephemeralKey: EphemeralKeyResponse }): Rea
             <ListItemCard
               key={pm.id}
               left={<CreditCard size={20} color={hsl('foreground')} />}
-              title={`${formatBrand(pm.cardBrand)} •••• ${pm.cardLast4 ?? '----'}`}
-              right={pm.isDefault ? <Badge label="Default" variant="success" /> : undefined}
+              title={`${formatBrand(pm.cardBrand) ?? t('charge.card')} •••• ${pm.cardLast4 ?? '----'}`}
+              right={
+                pm.isDefault ? <Badge label={t('payments.default')} variant="success" /> : undefined
+              }
               footer={
                 <View className="flex-row gap-2">
                   {!pm.isDefault ? (
                     <Button
-                      title="Set default"
+                      title={t('payments.setDefault')}
                       variant="outline"
                       size="sm"
                       className="flex-1"
@@ -157,6 +155,9 @@ function CardList({ ephemeralKey }: { ephemeralKey: EphemeralKeyResponse }): Rea
 
 export default function PaymentMethodsScreen(): React.JSX.Element {
   const { t } = useTranslation();
+
+  // Keep card details out of screenshots and the app switcher snapshot.
+  usePreventScreenCapture();
 
   const [ephemeralKey, setEphemeralKey] = React.useState<EphemeralKeyResponse | null>(null);
   const [notConfigured, setNotConfigured] = React.useState(false);

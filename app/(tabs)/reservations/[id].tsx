@@ -16,20 +16,18 @@ import {
   EmptyState,
   BackButton,
   useToast,
-  useConfirm,
+  useApiErrorToast,
 } from '@/components/ui';
 import { hsl } from '@/lib/theme';
-import { formatDateTime, formatCurrency } from '@/lib/format';
-import { apiErrorMessage } from '@/lib/api';
+import { formatDateTime } from '@/lib/format';
 import { reservationStatusVariant } from '@/lib/status-variants';
-import { useFeatures } from '@/features/app-info';
 import {
   useReservation,
   useCancelReservation,
+  UPCOMING_RESERVATION_STATUSES,
   type ReservationDetail,
 } from '@/features/reservations';
-
-const UPCOMING_STATUSES = new Set(['scheduled', 'active']);
+import { useConfirmCancelReservation } from '@/features/useReservationCancel';
 
 // Joins the non-empty site address parts into a single readable line.
 function addressLine(d: ReservationDetail): string | null {
@@ -56,40 +54,25 @@ export default function ReservationDetailScreen(): React.JSX.Element {
   const { t } = useTranslation();
   const router = useRouter();
   const toast = useToast();
-  const confirm = useConfirm();
+  const showApiError = useApiErrorToast();
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const reservation = useReservation(id ?? '');
   const cancel = useCancelReservation();
-  const features = useFeatures();
+  const confirmCancel = useConfirmCancelReservation();
 
   const data = reservation.data;
 
   const onCancel = async (): Promise<void> => {
     if (data == null) return;
-    const feeCents = features.data?.reservationCancellationFeeCents ?? 0;
-    const windowMin = features.data?.reservationCancellationWindowMinutes ?? 0;
-    const currency = features.data?.currency ?? 'USD';
-    const startMs = data.startsAt != null ? new Date(data.startsAt).getTime() : Date.now();
-    const minutesUntilStart = (startMs - Date.now()) / 60_000;
-    const feeApplies = feeCents > 0 && minutesUntilStart < windowMin;
-    const message = feeApplies
-      ? t('reservations.cancelFeeWarning', { fee: formatCurrency(feeCents, currency) })
-      : t('reservations.cancelMessage');
-
-    const ok = await confirm({
-      title: t('reservations.cancel'),
-      message,
-      confirmText: t('reservations.cancel'),
-      destructive: true,
-    });
+    const ok = await confirmCancel(data.startsAt);
     if (!ok) return;
     try {
       await cancel.mutateAsync(data.id);
       toast.show(t('reservations.cancelled'), 'success');
       router.back();
     } catch (err) {
-      toast.show(apiErrorMessage(err, t), 'error');
+      showApiError(err);
     }
   };
 
@@ -157,7 +140,7 @@ export default function ReservationDetailScreen(): React.JSX.Element {
             </Card>
           ) : null}
 
-          {UPCOMING_STATUSES.has(data.status) ? (
+          {UPCOMING_RESERVATION_STATUSES.has(data.status) ? (
             <Button
               title={t('reservations.cancel')}
               variant="outline"

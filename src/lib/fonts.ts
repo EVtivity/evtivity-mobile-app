@@ -26,8 +26,8 @@ export const FONT_MAP = {
   Inter_900Black,
 };
 
-// Returns true once Inter and the Ionicons glyph font are ready, or after a
-// short safety timeout so a slow/failed font load can never hang the splash.
+// Returns true once Inter is ready, or after a short safety timeout so a
+// slow/failed font load can never hang the splash.
 export function useAppFonts(): boolean {
   const [loaded] = useFonts(FONT_MAP);
   const [timedOut, setTimedOut] = React.useState(false);

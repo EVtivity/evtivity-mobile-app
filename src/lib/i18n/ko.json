@@ -3,6 +3,7 @@
     "na": "해당 없음",
     "cancel": "취소",
     "save": "저장",
+    "saved": "저장됨",
     "saving": "저장 중...",
     "retry": "다시 시도",
     "loading": "불러오는 중...",
@@ -101,6 +102,14 @@
     "title": "충전",
     "searchPlaceholder": "충전소 또는 주소로 검색",
     "scanQr": "QR 스캔",
+    "scan": {
+      "permissionTitle": "카메라 액세스 필요",
+      "permissionBody": "충전기 QR 코드를 스캔하려면 카메라 액세스를 허용하세요.",
+      "grant": "액세스 허용",
+      "invalid": "해당 QR 코드는 EVtivity 충전기가 아닙니다.",
+      "prompt": "충전기 QR 코드에 카메라를 비추세요",
+      "again": "다시 스캔"
+    },
     "nearby": "근처",
     "noResults": "충전기를 찾을 수 없습니다",
     "connectors": "커넥터",
@@ -122,6 +131,9 @@
     "favorited": "즐겨찾기됨",
     "online": "온라인",
     "offline": "오프라인",
+    "available": "사용 가능",
+    "inUse": "사용 중",
+    "availableOfTotal": "{{total}}개 중 {{available}}개 사용 가능",
     "siteContact": "사이트 연락처",
     "connectorPort": "포트 {{id}}",
     "reportIssue": "문제 신고",
@@ -198,6 +210,9 @@
     "distance": "거리",
     "statement": "월별 명세서",
     "sessions": "세션",
+    "sessionsCount": "세션 {{count}}개",
+    "previousMonth": "이전 달",
+    "nextMonth": "다음 달",
     "noSessions": "이번 달 세션 없음",
     "co2Avoided": "절감한 CO₂",
     "co2AvoidedLine": "이번 달 {{kg}} kg CO₂를 절감했습니다",
@@ -265,9 +280,11 @@
     "mfaEnabled": "사용 중",
     "mfaDisabled": "사용 안 함",
     "changePassword": "비밀번호 변경",
+    "passwordChanged": "비밀번호가 변경되었습니다",
     "addCard": "카드 추가",
     "addVehicle": "차량 추가",
     "addRfid": "RFID 카드 추가",
+    "rfidAdded": "RFID 카드가 추가되었습니다",
     "noPaymentMethods": "결제 수단 없음",
     "noVehicles": "차량 없음",
     "noRfid": "RFID 카드 없음",
@@ -300,14 +317,19 @@
     "mfaCodeSent": "6자리 코드를 보냈습니다. 아래에 입력하세요.",
     "mfaDisable": "사용 안 함",
     "mfaDisablePrompt": "2단계 인증을 끄려면 비밀번호를 입력하세요.",
-    "mfaDisabledSuccess": "2단계 인증이 사용 중지되었습니다"
+    "mfaDisabledSuccess": "2단계 인증이 사용 중지되었습니다",
+    "vehicleAdded": "차량이 추가되었습니다",
+    "vehicleRemoved": "차량이 삭제되었습니다"
   },
   "payments": {
     "title": "결제",
     "addCard": "카드 추가",
     "pay": "결제",
     "setupComplete": "카드가 저장되었습니다",
-    "notConfigured": "이 운영자에 대한 결제가 설정되지 않았습니다."
+    "notConfigured": "이 운영자에 대한 결제가 설정되지 않았습니다.",
+    "default": "기본",
+    "setDefault": "기본으로 설정",
+    "cardRemoved": "카드가 삭제되었습니다"
   },
   "support": {
     "title": "지원",
@@ -347,7 +369,8 @@
     "title": "즐겨찾기",
     "none": "아직 즐겨찾기가 없습니다",
     "removeTitle": "즐겨찾기를 삭제할까요?",
-    "removeMessage": "이 충전소가 즐겨찾기에서 삭제됩니다."
+    "removeMessage": "이 충전소가 즐겨찾기에서 삭제됩니다.",
+    "removed": "즐겨찾기에서 제거됨"
   },
   "status": {
     "pending_payment": "결제 대기 중",
@@ -359,6 +382,33 @@
     "completed": "완료됨",
     "failed": "실패",
     "expired": "만료됨"
+  },
+  "connectorStatus": {
+    "available": "사용 가능",
+    "occupied": "사용 중",
+    "reserved": "예약됨",
+    "unavailable": "사용 불가",
+    "faulted": "오류",
+    "charging": "충전 중",
+    "preparing": "준비 중",
+    "suspended_ev": "일시중지 (차량)",
+    "suspended_evse": "일시중지 (충전기)",
+    "finishing": "종료 중",
+    "idle": "대기",
+    "discharging": "방전 중",
+    "ev_connected": "차량 연결됨"
+  },
+  "paymentStatus": {
+    "pre_authorized": "사전 승인됨",
+    "captured": "청구됨",
+    "paid": "결제됨",
+    "succeeded": "성공",
+    "pending": "대기 중",
+    "processing": "처리 중",
+    "failed": "실패",
+    "declined": "거절됨",
+    "refunded": "환불됨",
+    "voided": "취소됨"
   },
   "location": {
     "chargerCount": "충전기 {{chargers}}대, {{available}}대 사용 가능",

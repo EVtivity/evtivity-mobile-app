@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 
 import { API_BASE_URL } from './config';
-import { getDeviceId } from './device';
+import { deviceHeaders } from './device';
 import { getAttestationHeaders } from './attestation';
 import {
   getAccessToken,
@@ -80,15 +80,10 @@ interface RequestOptions {
 }
 
 async function baseHeaders(includeAuth: boolean): Promise<Record<string, string>> {
-  const deviceId = await getDeviceId();
   // No Content-Type here: it is set per-request only when a body is sent. A
   // DELETE/GET with `Content-Type: application/json` but no body makes Fastify
   // reject the request with "body cannot be empty".
-  const headers: Record<string, string> = {
-    Accept: 'application/json',
-    'X-Client': 'mobile',
-    'X-Device-Id': deviceId,
-  };
+  const headers = await deviceHeaders();
   if (includeAuth) {
     const token = getAccessToken();
     if (token != null) headers.Authorization = `Bearer ${token}`;
@@ -162,7 +157,10 @@ function safeJson(text: string): unknown {
 
 export const api = {
   get: <T>(path: string, signal?: AbortSignal): Promise<T> =>
-    request<T>(path, signal ? { signal } : {}),
+    signal ? request<T>(path, { signal }) : request<T>(path),
+  // Fetch a list endpoint shaped `{ data: T[] }` and return just the rows.
+  getData: <T>(path: string, signal?: AbortSignal): Promise<T[]> =>
+    api.get<{ data: T[] }>(path, signal).then((r) => r.data),
   post: <T>(path: string, body?: unknown, opts?: { auth?: boolean; attest?: boolean }): Promise<T> =>
     request<T>(path, {
       method: 'POST',

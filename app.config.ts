@@ -70,20 +70,17 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     plugins: [
       'expo-router',
       'expo-asset',
-      [
-        'expo-font',
-        {
-          fonts: [
-            './node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf',
-          ],
-        },
-      ],
       'expo-secure-store',
       'expo-local-authentication',
       'expo-notifications',
       [
         'expo-camera',
-        { cameraPermission: `${brand.name} uses the camera to scan charger QR codes.` },
+        {
+          cameraPermission: `${brand.name} uses the camera to scan charger QR codes.`,
+          // QR scanning needs video only; never request the microphone.
+          microphonePermission: false,
+          recordAudioAndroid: false,
+        },
       ],
       [
         '@stripe/stripe-react-native',
@@ -93,6 +90,8 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         './plugins/withAppAttest',
         { environment: process.env.EXPO_PUBLIC_APPATTEST_ENV ?? 'development' },
       ],
+      // Disable adb backup and strip unused permissions on Android.
+      './plugins/withAndroidSecurity',
       // Mirror the iOS cleartext exception on Android: allow HTTP when the API
       // host is a non-local cleartext remote, so release builds can reach it.
       ...(cleartextException != null ? ['./plugins/withAndroidCleartext'] : []),

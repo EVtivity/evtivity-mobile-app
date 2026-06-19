@@ -25,7 +25,7 @@ const PAD = { left: 44, right: 14, top: 12, bottom: 26 };
 // glowing endpoint dot. Mirrors the portal's PowerChart/EnergyChart look,
 // rebuilt for react-native-svg. The caller supplies the rounded yMax and the
 // value/time formatters so energy and power share one renderer.
-export function TrendAreaChart({
+export const TrendAreaChart = React.memo(function TrendAreaChart({
   points,
   color,
   yMax,
@@ -41,37 +41,45 @@ export function TrendAreaChart({
   formatX: (ms: number) => string;
 }): React.JSX.Element {
   const [width, setWidth] = React.useState(0);
-
-  const chartW = Math.max(0, width - PAD.left - PAD.right);
-  const chartH = height - PAD.top - PAD.bottom;
   const muted = hsl('mutedForeground');
   const border = hsl('border');
 
-  const xs = points.map((p) => p.x);
-  const xMin = xs.length > 0 ? Math.min(...xs) : 0;
-  const xMaxV = xs.length > 0 ? Math.max(...xs) : 1;
-  const xSpan = xMaxV - xMin || 1;
-  const safeMax = yMax > 0 ? yMax : 1;
+  // Recompute the scales and SVG path strings only when the data or width
+  // changes, not on every parent re-render (the session screen polls).
+  const { px, py, linePath, areaPath, yTicks, xTickVals, last } = React.useMemo(() => {
+    const chartW = Math.max(0, width - PAD.left - PAD.right);
+    const chartH = height - PAD.top - PAD.bottom;
+    const xs = points.map((p) => p.x);
+    const xMin = xs.length > 0 ? Math.min(...xs) : 0;
+    const xMaxV = xs.length > 0 ? Math.max(...xs) : 1;
+    const xSpan = xMaxV - xMin || 1;
+    const safeMax = yMax > 0 ? yMax : 1;
 
-  const px = (x: number): number => PAD.left + ((x - xMin) / xSpan) * chartW;
-  const py = (v: number): number =>
-    PAD.top + (1 - Math.min(Math.max(v, 0), safeMax) / safeMax) * chartH;
+    const sx = (x: number): number => PAD.left + ((x - xMin) / xSpan) * chartW;
+    const sy = (v: number): number =>
+      PAD.top + (1 - Math.min(Math.max(v, 0), safeMax) / safeMax) * chartH;
 
-  const linePath =
-    points.length > 0
-      ? points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${px(p.x).toFixed(1)} ${py(p.y).toFixed(1)}`).join(' ')
-      : '';
-  const baseY = py(0);
-  const areaPath =
-    points.length > 1
-      ? `${linePath} L ${px(points[points.length - 1]!.x).toFixed(1)} ${baseY.toFixed(1)} L ${px(points[0]!.x).toFixed(1)} ${baseY.toFixed(1)} Z`
-      : '';
-
-  const yTicks = [0, safeMax / 2, safeMax];
-  const xTickVals =
-    points.length > 1 ? [xMin, xMin + xSpan / 2, xMaxV] : points.length === 1 ? [xMin] : [];
-
-  const last = points[points.length - 1];
+    const line =
+      points.length > 0
+        ? points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${sx(p.x).toFixed(1)} ${sy(p.y).toFixed(1)}`).join(' ')
+        : '';
+    const baseY = sy(0);
+    const area =
+      points.length > 1
+        ? `${line} L ${sx(points[points.length - 1]!.x).toFixed(1)} ${baseY.toFixed(1)} L ${sx(points[0]!.x).toFixed(1)} ${baseY.toFixed(1)} Z`
+        : '';
+    const yt = [0, safeMax / 2, safeMax];
+    const xt = points.length > 1 ? [xMin, xMin + xSpan / 2, xMaxV] : points.length === 1 ? [xMin] : [];
+    return {
+      px: sx,
+      py: sy,
+      linePath: line,
+      areaPath: area,
+      yTicks: yt,
+      xTickVals: xt,
+      last: points[points.length - 1],
+    };
+  }, [points, width, yMax, height]);
 
   return (
     <View onLayout={(e) => setWidth(e.nativeEvent.layout.width)} style={{ height }}>
@@ -125,4 +133,4 @@ export function TrendAreaChart({
       ) : null}
     </View>
   );
-}
+});

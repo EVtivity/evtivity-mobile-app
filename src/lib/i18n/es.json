@@ -3,6 +3,7 @@
     "na": "n/d",
     "cancel": "Cancelar",
     "save": "Guardar",
+    "saved": "Guardado",
     "saving": "Guardando...",
     "retry": "Reintentar",
     "loading": "Cargando...",
@@ -101,6 +102,14 @@
     "title": "Cargar",
     "searchPlaceholder": "Busca por estación o dirección",
     "scanQr": "Escanear QR",
+    "scan": {
+      "permissionTitle": "Se necesita acceso a la cámara",
+      "permissionBody": "Permite el acceso a la cámara para escanear el código QR de un cargador.",
+      "grant": "Permitir acceso",
+      "invalid": "Ese código QR no es de un cargador EVtivity.",
+      "prompt": "Apunta la cámara al código QR del cargador",
+      "again": "Escanear de nuevo"
+    },
     "nearby": "Cerca",
     "noResults": "No se encontraron cargadores",
     "connectors": "Conectores",
@@ -122,6 +131,9 @@
     "favorited": "En favoritos",
     "online": "En línea",
     "offline": "Fuera de línea",
+    "available": "Disponible",
+    "inUse": "En uso",
+    "availableOfTotal": "{{available}} de {{total}} disponibles",
     "siteContact": "Contacto del sitio",
     "connectorPort": "Puerto {{id}}",
     "reportIssue": "Reportar problema",
@@ -198,6 +210,9 @@
     "distance": "Distancia",
     "statement": "Estado de cuenta mensual",
     "sessions": "Sesiones",
+    "sessionsCount": "{{count}} sesiones",
+    "previousMonth": "Mes anterior",
+    "nextMonth": "Mes siguiente",
     "noSessions": "Sin sesiones este mes",
     "co2Avoided": "CO₂ evitado",
     "co2AvoidedLine": "Evitaste {{kg}} kg de CO₂ este mes",
@@ -265,9 +280,11 @@
     "mfaEnabled": "Activada",
     "mfaDisabled": "Desactivada",
     "changePassword": "Cambiar contraseña",
+    "passwordChanged": "Contraseña cambiada",
     "addCard": "Añadir tarjeta",
     "addVehicle": "Añadir vehículo",
     "addRfid": "Añadir tarjeta RFID",
+    "rfidAdded": "Tarjeta RFID añadida",
     "noPaymentMethods": "Sin métodos de pago",
     "noVehicles": "Sin vehículos",
     "noRfid": "Sin tarjetas RFID",
@@ -300,14 +317,19 @@
     "mfaCodeSent": "Enviamos un código de 6 dígitos. Ingrésalo abajo.",
     "mfaDisable": "Desactivar",
     "mfaDisablePrompt": "Ingresa tu contraseña para desactivar la autenticación de dos factores.",
-    "mfaDisabledSuccess": "Autenticación de dos factores desactivada"
+    "mfaDisabledSuccess": "Autenticación de dos factores desactivada",
+    "vehicleAdded": "Vehículo añadido",
+    "vehicleRemoved": "Vehículo eliminado"
   },
   "payments": {
     "title": "Pago",
     "addCard": "Añadir una tarjeta",
     "pay": "Pagar",
     "setupComplete": "Tarjeta guardada",
-    "notConfigured": "Los pagos no están configurados para este operador."
+    "notConfigured": "Los pagos no están configurados para este operador.",
+    "default": "Predeterminada",
+    "setDefault": "Predeterminar",
+    "cardRemoved": "Tarjeta eliminada"
   },
   "support": {
     "title": "Soporte",
@@ -347,7 +369,8 @@
     "title": "Favoritos",
     "none": "Aún no tienes favoritos",
     "removeTitle": "¿Quitar favorito?",
-    "removeMessage": "Esta estación se quitará de tus favoritos."
+    "removeMessage": "Esta estación se quitará de tus favoritos.",
+    "removed": "Eliminado de favoritos"
   },
   "status": {
     "pending_payment": "Pago pendiente",
@@ -359,6 +382,33 @@
     "completed": "Completado",
     "failed": "Fallido",
     "expired": "Caducado"
+  },
+  "connectorStatus": {
+    "available": "Disponible",
+    "occupied": "Ocupado",
+    "reserved": "Reservado",
+    "unavailable": "No disponible",
+    "faulted": "Avería",
+    "charging": "Cargando",
+    "preparing": "Preparando",
+    "suspended_ev": "Suspendido (VE)",
+    "suspended_evse": "Suspendido (Estación)",
+    "finishing": "Finalizando",
+    "idle": "Inactivo",
+    "discharging": "Descargando",
+    "ev_connected": "VE conectado"
+  },
+  "paymentStatus": {
+    "pre_authorized": "Preautorizado",
+    "captured": "Cobrado",
+    "paid": "Pagado",
+    "succeeded": "Realizado",
+    "pending": "Pendiente",
+    "processing": "Procesando",
+    "failed": "Fallido",
+    "declined": "Rechazado",
+    "refunded": "Reembolsado",
+    "voided": "Anulado"
   },
   "location": {
     "chargerCount": "{{chargers}} cargadores, {{available}} disponibles",

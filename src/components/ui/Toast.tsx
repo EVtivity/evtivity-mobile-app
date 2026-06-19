@@ -25,17 +25,33 @@ const ToastContext = React.createContext<ToastContextValue | null>(null);
 export function ToastProvider({ children }: { children: React.ReactNode }): React.JSX.Element {
   const [toasts, setToasts] = React.useState<ToastMessage[]>([]);
   const idRef = React.useRef(0);
+  const timersRef = React.useRef<Map<number, ReturnType<typeof setTimeout>>>(new Map());
 
   const show = React.useCallback((text: string, tone: ToastTone = 'default') => {
     const id = ++idRef.current;
     setToasts((prev) => [...prev, { id, text, tone }]);
-    setTimeout(() => {
+    const handle = setTimeout(() => {
+      timersRef.current.delete(id);
       setToasts((prev) => prev.filter((t) => t.id !== id));
     }, 3000);
+    timersRef.current.set(id, handle);
   }, []);
 
+  // Clear any pending dismiss timers if the provider unmounts.
+  React.useEffect(() => {
+    const timers = timersRef.current;
+    return () => {
+      timers.forEach((h) => clearTimeout(h));
+      timers.clear();
+    };
+  }, []);
+
+  // Stable context value so every useToast() consumer doesn't re-render on each
+  // provider render (toasts cycle every few seconds).
+  const value = React.useMemo(() => ({ show }), [show]);
+
   return (
-    <ToastContext.Provider value={{ show }}>
+    <ToastContext.Provider value={value}>
       {children}
       <SafeAreaView
         edges={['top']}

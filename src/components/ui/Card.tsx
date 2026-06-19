@@ -3,7 +3,6 @@
 
 import React from 'react';
 import { View, Pressable, StyleSheet, type ViewProps } from 'react-native';
-import Svg, { Defs, LinearGradient, Stop, Rect } from 'react-native-svg';
 import { CardSurface } from './surface';
 import { cn } from '@/lib/cn';
 import { shadow } from '@/lib/shadow';
@@ -18,23 +17,17 @@ interface CardProps extends ViewProps {
   flat?: boolean;
 }
 
-// A barely-there diagonal sheen behind the card content: a light highlight at
-// the top-left fading to a faint brand-green warmth at the bottom-right. The
-// Rect is corner-rounded (rx) to match `rounded-2xl` instead of clipping the
-// card with overflow-hidden, which would cut off the iOS shadow.
+// A barely-there light sheen behind the card content, corner-rounded to match
+// `rounded-2xl`. A flat tint View (not an SVG gradient) so list rows don't each
+// compile an Svg/Defs node; the highlight is subtle enough that a single faint
+// white overlay reads the same.
 function CardSheen(): React.JSX.Element {
   return (
-    <View pointerEvents="none" style={StyleSheet.absoluteFill}>
-      <Svg width="100%" height="100%">
-        <Defs>
-          <LinearGradient id="cardSheen" x1="0" y1="0" x2="1" y2="1">
-            <Stop offset="0" stopColor="#ffffff" stopOpacity="0.045" />
-            <Stop offset="1" stopColor="#34d399" stopOpacity="0.03" />
-          </LinearGradient>
-        </Defs>
-        <Rect x="0" y="0" width="100%" height="100%" rx={24} ry={24} fill="url(#cardSheen)" />
-      </Svg>
-    </View>
+    <View
+      pointerEvents="none"
+      style={StyleSheet.absoluteFill}
+      className="rounded-2xl bg-white/[0.035]"
+    />
   );
 }
 

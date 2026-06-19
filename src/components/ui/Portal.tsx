@@ -51,13 +51,19 @@ export function PortalHost(): React.JSX.Element {
 export function Portal({ children }: { children: React.ReactNode }): null {
   const idRef = React.useRef<number>(0);
   if (idRef.current === 0) idRef.current = ++counter;
+  // Re-sync only when children actually change (not on every parent render),
+  // so opening a sheet doesn't force every portalled overlay to re-render.
   React.useEffect(() => {
     nodes.set(idRef.current, children);
     emit();
+  }, [children]);
+  // Remove from the host once, on unmount.
+  React.useEffect(() => {
+    const id = idRef.current;
     return () => {
-      nodes.delete(idRef.current);
+      nodes.delete(id);
       emit();
     };
-  });
+  }, []);
   return null;
 }

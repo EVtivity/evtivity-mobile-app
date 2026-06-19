@@ -2,7 +2,8 @@
 // SPDX-License-Identifier: BUSL-1.1
 
 import React from 'react';
-import { Image, Pressable, View } from 'react-native';
+import { Pressable, View } from 'react-native';
+import { Image } from 'expo-image';
 import { useQuery } from '@tanstack/react-query';
 import { ImageIcon } from '@/components/icons';
 import { Spinner } from '@/components/ui';
@@ -38,7 +39,12 @@ export function LocationImageThumb({
       className="h-28 w-40 overflow-hidden rounded-xl bg-muted active:opacity-80"
     >
       {url != null ? (
-        <Image source={{ uri: url }} resizeMode="cover" className="h-full w-full" />
+        <Image
+          source={{ uri: url }}
+          contentFit="cover"
+          cachePolicy="memory-disk"
+          style={{ width: '100%', height: '100%' }}
+        />
       ) : (
         <View className="h-full w-full items-center justify-center">
           {isLoading ? <Spinner /> : <ImageIcon size={22} color={hsl('mutedForeground')} />}

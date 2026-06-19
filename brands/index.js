@@ -67,12 +67,11 @@ const defaultBrand = {
   // Languages offered in the app. First entry is the default. A white-label
   // brand can narrow this (e.g. ['en'] or ['en', 'es']).
   languages: ['en', 'es', 'zh', 'de', 'ko', 'zh-TW'],
-  // Empty = derive the legal links from the operator's CSMS portal URL. A
-  // white-label brand can hardcode full URLs here to override that. Set to this
-  // deployment's portal (the pages live at the portal's /terms-of-service and
-  // /privacy-policy). Change to the production portal domain for a prod build.
-  termsUrl: 'http://198.255.149.70:7101/terms-of-service',
-  privacyUrl: 'http://198.255.149.70:7101/privacy-policy',
+  // Empty = derive the legal links from the operator's CSMS portal URL (the
+  // pages live at the portal's /terms-of-service and /privacy-policy). A
+  // white-label brand can hardcode full URLs here to override that.
+  termsUrl: '',
+  privacyUrl: '',
   colors: { light: lightColors, dark: darkColors },
   icon: './assets/icon.png',
   adaptiveIcon: './assets/adaptive-icon.png',

@@ -30,7 +30,8 @@ export function NotificationsSheet({
 }): React.JSX.Element {
   const { t } = useTranslation();
   const router = useRouter();
-  const notifications = useNotifications();
+  // Only fetch the list while the drawer is open.
+  const notifications = useNotifications(visible);
   const markAllRead = useMarkAllRead();
 
   // Clear the unread badge as soon as the drawer opens.

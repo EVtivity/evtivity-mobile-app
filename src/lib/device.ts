@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 
 import * as SecureStore from 'expo-secure-store';
+import * as Crypto from 'expo-crypto';
 
 // A stable per-install identifier sent as X-Device-Id. The server binds each
 // refresh token to this value so a token stolen from one device cannot be
@@ -9,18 +10,17 @@ import * as SecureStore from 'expo-secure-store';
 // carries no privacy-sensitive device fingerprint.
 const DEVICE_ID_KEY = 'ev_device_id';
 
+// Keep secrets readable only while the device is unlocked, and never restore
+// them to a different device via an encrypted backup. Shared by every module
+// that writes to SecureStore.
+export const SECURE_STORE_OPTS: SecureStore.SecureStoreOptions = {
+  keychainAccessible: SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
+};
+
 let cached: string | null = null;
 
 function randomId(): string {
-  const bytes = new Uint8Array(16);
-  // global.crypto is provided by Expo's runtime; fall back to Math.random only
-  // if absent (the value is an opaque identifier, not a secret).
-  const g = globalThis as { crypto?: { getRandomValues?: (a: Uint8Array) => void } };
-  if (g.crypto?.getRandomValues) {
-    g.crypto.getRandomValues(bytes);
-  } else {
-    for (let i = 0; i < bytes.length; i++) bytes[i] = Math.floor(Math.random() * 256);
-  }
+  const bytes = Crypto.getRandomBytes(16);
   return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
 }
 
@@ -32,7 +32,17 @@ export async function getDeviceId(): Promise<string> {
     return existing;
   }
   const id = randomId();
-  await SecureStore.setItemAsync(DEVICE_ID_KEY, id);
+  await SecureStore.setItemAsync(DEVICE_ID_KEY, id, SECURE_STORE_OPTS);
   cached = id;
   return id;
+}
+
+// The base headers every mobile request sends: a client tag and the device id.
+// Callers add Authorization / Content-Type / attestation headers as needed.
+export async function deviceHeaders(): Promise<Record<string, string>> {
+  return {
+    Accept: 'application/json',
+    'X-Client': 'mobile',
+    'X-Device-Id': await getDeviceId(),
+  };
 }

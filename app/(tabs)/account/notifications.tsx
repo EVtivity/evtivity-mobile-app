@@ -4,9 +4,8 @@
 import React from 'react';
 import { View, Switch } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Screen, Text, Card, Spinner, BackButton, useToast } from '@/components/ui';
+import { Screen, Text, Card, Spinner, BackButton, useApiErrorToast } from '@/components/ui';
 import { hsl } from '@/lib/theme';
-import { apiErrorMessage } from '@/lib/api';
 import {
   useNotificationPrefs,
   useUpdateNotificationPrefs,
@@ -15,7 +14,7 @@ import {
 
 export default function NotificationSettingsScreen(): React.JSX.Element {
   const { t } = useTranslation();
-  const toast = useToast();
+  const showApiError = useApiErrorToast();
   const prefs = useNotificationPrefs();
   const update = useUpdateNotificationPrefs();
 
@@ -24,10 +23,7 @@ export default function NotificationSettingsScreen(): React.JSX.Element {
   const save = (next: NotificationPrefs): void => {
     update.mutate(next, {
       onError: (err) => {
-        toast.show(
-          apiErrorMessage(err, t),
-          'error',
-        );
+        showApiError(err);
       },
     });
   };

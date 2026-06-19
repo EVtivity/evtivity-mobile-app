@@ -2,22 +2,24 @@
 // SPDX-License-Identifier: BUSL-1.1
 
 import React from 'react';
-import { View, Pressable } from 'react-native';
+import { View, Pressable, RefreshControl } from 'react-native';
+import { FlashList } from '@shopify/flash-list';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight, Leaf, Receipt } from '@/components/icons';
-import { Screen, Text, Card, Segmented, Spinner, EmptyState } from '@/components/ui';
+import { ScreenBackground, Text, Card, Segmented, Spinner, EmptyState } from '@/components/ui';
 import { AppHeader } from '@/components/AppHeader';
 import { SessionRow } from '@/components/SessionRow';
 import { hsl } from '@/lib/theme';
 import { cn } from '@/lib/cn';
-import { formatCurrency, formatEnergyWh, formatMiles } from '@/lib/format';
+import { formatCurrency, formatEnergyWh, formatMiles, formatMonth } from '@/lib/format';
 import {
   useSessionsByMonth,
   useMonthlySummary,
   useMonthlySummaries,
   type MonthlySummary,
 } from '@/features/sessions';
+import type { ChargingSession } from '@/lib/types';
 import { usePullToRefresh } from '@/lib/use-pull-to-refresh';
 
 type Metric = 'cost' | 'energy' | 'distance';
@@ -29,11 +31,7 @@ function monthKey(date: Date): string {
 }
 
 function monthLabel(month: string): string {
-  const [y, m] = month.split('-');
-  const d = new Date(Date.UTC(Number(y), Number(m) - 1, 1));
-  return d
-    .toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })
-    .toUpperCase();
+  return formatMonth(month).toUpperCase();
 }
 
 function shiftMonth(month: string, delta: number): string {
@@ -42,11 +40,7 @@ function shiftMonth(month: string, delta: number): string {
 }
 
 function monthAbbrev(month: string): string {
-  const [y, m] = month.split('-');
-  return new Date(Date.UTC(Number(y), Number(m) - 1, 1)).toLocaleDateString('en-US', {
-    month: 'short',
-    timeZone: 'UTC',
-  });
+  return formatMonth(month, { month: 'short', year: false });
 }
 
 const CHART_HEIGHT = 110;
@@ -92,19 +86,31 @@ export default function ActivityScreen(): React.JSX.Element {
   const trendMax = Math.max(...trendValues, 1);
   const trendLoading = trend.some((q) => q.isLoading);
 
-  return (
-    <Screen
-      scroll
-      refreshing={refreshing}
-      onRefresh={onRefresh}
-    >
+  const list = sessions.data ?? [];
+
+  const renderItem = React.useCallback(
+    ({ item }: { item: ChargingSession }) => (
+      <Card className="mb-3 py-1">
+        <SessionRow
+          session={item}
+          onPress={() => router.push({ pathname: '/session/[id]', params: { id: item.id } })}
+        />
+      </Card>
+    ),
+    [router],
+  );
+
+  // The header (filters, summary, trend, links) scrolls with the virtualized
+  // session list as FlashList's ListHeaderComponent, so only on-screen rows mount.
+  const header = (
+    <View className="gap-4">
       <AppHeader />
       <Text variant="h1">{t('activity.title')}</Text>
 
       <View className="flex-row items-center justify-between">
         <Pressable
           testID="activity-prev-month"
-          accessibilityLabel={t('common.back')}
+          accessibilityLabel={t('activity.previousMonth')}
           onPress={() => setMonth((m) => shiftMonth(m, -1))}
           hitSlop={12}
           className="h-10 w-10 items-center justify-center rounded-full active:opacity-70"
@@ -114,7 +120,7 @@ export default function ActivityScreen(): React.JSX.Element {
         <Text variant="h3">{monthLabel(month)}</Text>
         <Pressable
           testID="activity-next-month"
-          accessibilityLabel={t('common.done')}
+          accessibilityLabel={t('activity.nextMonth')}
           onPress={() => setMonth((m) => shiftMonth(m, 1))}
           disabled={isCurrentMonth}
           hitSlop={12}
@@ -143,7 +149,7 @@ export default function ActivityScreen(): React.JSX.Element {
             {summaryValue()}
           </Text>
           <Text variant="muted">
-            {summary.data?.sessionCount ?? 0} {t('activity.sessions').toLowerCase()}
+            {t('activity.sessionsCount', { count: summary.data?.sessionCount ?? 0 })}
           </Text>
         </View>
         {trendLoading ? (
@@ -207,26 +213,29 @@ export default function ActivityScreen(): React.JSX.Element {
         <ChevronRight size={22} color={hsl('mutedForeground')} />
       </Card>
 
-      <Text variant="h3">{t('activity.sessions')}</Text>
-      {sessions.isLoading ? (
-        <Spinner />
-      ) : (sessions.data?.length ?? 0) === 0 ? (
-        <EmptyState title={t('activity.noSessions')} />
-      ) : (
-        <Card className="py-0">
-          {sessions.data?.map((s, i) => (
-            <View
-              key={s.id}
-              className={i > 0 ? 'border-t border-muted-foreground/30' : undefined}
-            >
-              <SessionRow
-                session={s}
-                onPress={() => router.push({ pathname: '/session/[id]', params: { id: s.id } })}
-              />
-            </View>
-          ))}
-        </Card>
-      )}
-    </Screen>
+      <Text variant="h3" className="mb-1">
+        {t('activity.sessions')}
+      </Text>
+    </View>
+  );
+
+  return (
+    <ScreenBackground>
+      <FlashList
+        data={list}
+        keyExtractor={(s) => s.id}
+        estimatedItemSize={72}
+        renderItem={renderItem}
+        ListHeaderComponent={header}
+        ListEmptyComponent={
+          sessions.isLoading ? <Spinner /> : <EmptyState title={t('activity.noSessions')} />
+        }
+        contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 16, paddingBottom: 24 }}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#ffffff" />
+        }
+      />
+    </ScreenBackground>
   );
 }

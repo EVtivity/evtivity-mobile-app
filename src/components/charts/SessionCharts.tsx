@@ -41,7 +41,7 @@ function niceKwh(maxKwh: number): number {
   return Math.ceil(maxKwh / 5) * 5;
 }
 
-export function SessionCharts({
+export const SessionCharts = React.memo(function SessionCharts({
   powerData,
   energyData,
   currentPowerW,
@@ -55,18 +55,29 @@ export function SessionCharts({
   const { t } = useTranslation();
   const [mode, setMode] = React.useState<Mode>('energy');
 
-  const powerPoints: ChartPoint[] = powerData.map((p) => ({ x: new Date(p.timestamp).getTime(), y: p.powerW }));
-  const energyPoints: ChartPoint[] = energyData.map((p) => ({
-    x: new Date(p.timestamp).getTime(),
-    y: p.energyWh / 1000,
-  }));
+  // Derive point arrays + axis ceilings only when the underlying data changes,
+  // not on every parent re-render (the session screen re-renders on each poll).
+  const powerPoints = React.useMemo<ChartPoint[]>(
+    () => powerData.map((p) => ({ x: new Date(p.timestamp).getTime(), y: p.powerW })),
+    [powerData],
+  );
+  const energyPoints = React.useMemo<ChartPoint[]>(
+    () => energyData.map((p) => ({ x: new Date(p.timestamp).getTime(), y: p.energyWh / 1000 })),
+    [energyData],
+  );
 
   const points = mode === 'power' ? powerPoints : energyPoints;
   const color = mode === 'power' ? hsl('info') : hsl('primary');
   const collecting = points.length < 2;
 
-  const powerMax = niceWatts(Math.max(0, ...powerPoints.map((p) => p.y)));
-  const energyMax = niceKwh(Math.max(0, ...energyPoints.map((p) => p.y)));
+  const powerMax = React.useMemo(
+    () => niceWatts(Math.max(0, ...powerPoints.map((p) => p.y))),
+    [powerPoints],
+  );
+  const energyMax = React.useMemo(
+    () => niceKwh(Math.max(0, ...energyPoints.map((p) => p.y))),
+    [energyPoints],
+  );
 
   const headerValue =
     mode === 'power'
@@ -127,4 +138,4 @@ export function SessionCharts({
       )}
     </Card>
   );
-}
+});

@@ -17,35 +17,33 @@ import {
   Spinner,
   EmptyState,
   useToast,
-  useConfirm,
+  useApiErrorToast,
 } from '@/components/ui';
 import { AppHeader } from '@/components/AppHeader';
 import { hsl } from '@/lib/theme';
-import { formatDateTime, formatCurrency } from '@/lib/format';
-import { apiErrorMessage } from '@/lib/api';
+import { formatDateTime } from '@/lib/format';
 import { reservationStatusVariant } from '@/lib/status-variants';
-import { useFeatures } from '@/features/app-info';
 import {
   useReservations,
   useCancelReservation,
+  UPCOMING_RESERVATION_STATUSES,
   type ReservationItem,
 } from '@/features/reservations';
+import { useConfirmCancelReservation } from '@/features/useReservationCancel';
 import { usePullToRefresh } from '@/lib/use-pull-to-refresh';
 
 type Tab = 'upcoming' | 'past';
-
-const UPCOMING_STATUSES = new Set(['scheduled', 'active']);
 
 export default function ReservationsScreen(): React.JSX.Element {
   const { t } = useTranslation();
   const router = useRouter();
   const toast = useToast();
+  const showApiError = useApiErrorToast();
 
   const reservations = useReservations();
   const { refreshing, onRefresh } = usePullToRefresh(() => reservations.refetch());
   const cancel = useCancelReservation();
-  const features = useFeatures();
-  const confirm = useConfirm();
+  const confirmCancel = useConfirmCancelReservation();
 
   const [tab, setTab] = React.useState<Tab>('upcoming');
   // Track which reservation is cancelling so only its button spins, not every
@@ -54,33 +52,20 @@ export default function ReservationsScreen(): React.JSX.Element {
 
   const all = reservations.data ?? [];
   const items = all.filter((r) =>
-    tab === 'upcoming' ? UPCOMING_STATUSES.has(r.status) : !UPCOMING_STATUSES.has(r.status),
+    tab === 'upcoming'
+      ? UPCOMING_RESERVATION_STATUSES.has(r.status)
+      : !UPCOMING_RESERVATION_STATUSES.has(r.status),
   );
 
   const onCancel = async (r: ReservationItem): Promise<void> => {
-    const feeCents = features.data?.reservationCancellationFeeCents ?? 0;
-    const windowMin = features.data?.reservationCancellationWindowMinutes ?? 0;
-    const currency = features.data?.currency ?? 'USD';
-    const startMs = r.startsAt != null ? new Date(r.startsAt).getTime() : Date.now();
-    const minutesUntilStart = (startMs - Date.now()) / 60_000;
-    const feeApplies = feeCents > 0 && minutesUntilStart < windowMin;
-    const message = feeApplies
-      ? t('reservations.cancelFeeWarning', { fee: formatCurrency(feeCents, currency) })
-      : t('reservations.cancelMessage');
-
-    const ok = await confirm({
-      title: t('reservations.cancel'),
-      message,
-      confirmText: t('reservations.cancel'),
-      destructive: true,
-    });
+    const ok = await confirmCancel(r.startsAt);
     if (!ok) return;
     setCancellingId(r.id);
     try {
       await cancel.mutateAsync(r.id);
       toast.show(t('reservations.cancelled'), 'success');
     } catch (err) {
-      toast.show(apiErrorMessage(err, t), 'error');
+      showApiError(err);
     } finally {
       setCancellingId(null);
     }

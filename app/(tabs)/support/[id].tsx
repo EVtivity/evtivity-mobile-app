@@ -9,7 +9,6 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { ChevronLeft, Send } from '@/components/icons';
@@ -21,12 +20,11 @@ import {
   Spinner,
   EmptyState,
   ScreenBackground,
-  useToast,
+  useApiErrorToast,
 } from '@/components/ui';
 import { hsl, SURFACE_TEXT_VARS } from '@/lib/theme';
 import { cn } from '@/lib/cn';
 import { formatDate, formatDateTime } from '@/lib/format';
-import { apiErrorMessage } from '@/lib/api';
 import { useSupportCase, useReplyCase } from '@/features/support';
 import { supportCaseStatusVariant } from '@/lib/status-variants';
 import type { SupportMessage } from '@/lib/types';
@@ -65,7 +63,7 @@ function MessageBubble({ message }: { message: SupportMessage }): React.JSX.Elem
 export default function SupportCaseDetailScreen(): React.JSX.Element {
   const { t } = useTranslation();
   const router = useRouter();
-  const toast = useToast();
+  const showApiError = useApiErrorToast();
   const { id } = useLocalSearchParams<{ id: string }>();
   const caseId = id ?? '';
 
@@ -89,12 +87,9 @@ export default function SupportCaseDetailScreen(): React.JSX.Element {
     try {
       await reply.mutateAsync(body);
       setText('');
-      void detail.refetch();
+      // useReplyCase invalidates this case on success, which refetches it.
     } catch (err) {
-      toast.show(
-        apiErrorMessage(err, t),
-        'error',
-      );
+      showApiError(err);
     }
   };
 
@@ -104,9 +99,9 @@ export default function SupportCaseDetailScreen(): React.JSX.Element {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         className="flex-1"
       >
-        <View className="flex-row items-center gap-2 px-4 pb-2 pt-2">
-          <Pressable testID="back-button" onPress={() => router.back()} hitSlop={12}>
-            <ChevronLeft size={26} color="#ffffff" />
+        <View className="flex-row items-center gap-2 px-4 pb-2 pt-4">
+          <Pressable testID="back-button" onPress={() => router.back()} hitSlop={12} className="-ml-1">
+            <ChevronLeft size={28} color="#ffffff" />
           </Pressable>
           <View className="flex-1">
             <Text variant="h3" numberOfLines={1}>
@@ -165,8 +160,7 @@ export default function SupportCaseDetailScreen(): React.JSX.Element {
         {detail.data != null &&
         detail.data.status !== 'closed' &&
         detail.data.status !== 'resolved' ? (
-          <SafeAreaView
-            edges={['bottom']}
+          <View
             style={SURFACE_TEXT_VARS}
             className="border-t border-white/15 bg-card/[0.7]"
           >
@@ -189,7 +183,7 @@ export default function SupportCaseDetailScreen(): React.JSX.Element {
                 <Send size={20} color={hsl('primaryForeground')} />
               </Pressable>
             </View>
-          </SafeAreaView>
+          </View>
         ) : null}
       </KeyboardAvoidingView>
     </ScreenBackground>

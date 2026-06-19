@@ -103,7 +103,7 @@ export function TabBar({ state, navigation }: BottomTabBarProps): React.JSX.Elem
             <Text
               numberOfLines={1}
               weight={focused ? 'semibold' : 'medium'}
-              className={`text-[10px] ${focused ? 'text-primary' : 'text-muted-foreground'}`}
+              className={`text-[10px] ${focused ? 'text-primary' : 'text-white/70'}`}
             >
               {t(item.labelKey)}
             </Text>

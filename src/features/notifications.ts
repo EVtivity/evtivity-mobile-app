@@ -3,7 +3,6 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
-import type { Paginated } from '@/lib/types';
 
 // The portal notifications endpoint returns the push-channel rows. It does not
 // include a body field, only subject/eventType (the drawer shows the summary).
@@ -15,13 +14,14 @@ export interface PortalNotification {
   createdAt: string;
 }
 
-export function useNotifications() {
+// `enabled` is false until the drawer opens, so the 50-row list is never fetched
+// just to render the badge on a tab mount (the badge uses useUnreadCount).
+export function useNotifications(enabled = true) {
   return useQuery({
     queryKey: ['notifications'],
-    queryFn: () =>
-      api
-        .get<Paginated<PortalNotification>>('/v1/portal/notifications?limit=50')
-        .then((r) => r.data),
+    queryFn: () => api.getData<PortalNotification>('/v1/portal/notifications?limit=50'),
+    enabled,
+    staleTime: 30_000,
   });
 }
 

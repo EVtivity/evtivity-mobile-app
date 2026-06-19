@@ -3,7 +3,8 @@
 
 import React from 'react';
 import { View } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
+import { useRouter } from 'expo-router';
+import { usePreventScreenCapture } from 'expo-screen-capture';
 import { useTranslation } from 'react-i18next';
 import { Screen, Field, Button, FormSuccess } from '@/components/ui';
 import { AuthHeader } from '@/components/AuthHeader';
@@ -13,20 +14,35 @@ import { api, apiErrorMessage } from '@/lib/api';
 
 export default function MfaScreen(): React.JSX.Element {
   const { t } = useTranslation();
-  const params = useLocalSearchParams<{ mfaToken: string; method: string }>();
+  const router = useRouter();
   const verifyMfa = useAuth((s) => s.verifyMfa);
+  const pending = useAuth((s) => s.mfaPending);
+  const status = useAuth((s) => s.status);
+
+  // Keep the one-time code off screenshots and the app switcher snapshot.
+  usePreventScreenCapture();
 
   const [code, setCode] = React.useState('');
   const [error, setError] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(false);
   const [resent, setResent] = React.useState(false);
+  const [resending, setResending] = React.useState(false);
 
-  const mfaToken = params.mfaToken ?? '';
-  const canResend = params.method === 'email' || params.method === 'sms';
+  // Reached without a pending challenge (deep link or back navigation): bounce
+  // to login rather than render a dead form. Not on the success path, where
+  // verifyMfa clears the challenge AND authenticates — there the root navigator
+  // redirects into the tabs.
+  React.useEffect(() => {
+    if (pending == null && status !== 'authenticated') router.replace('/(auth)/login');
+  }, [pending, status, router]);
+
+  const mfaToken = pending?.mfaToken ?? '';
+  const method = pending?.method;
+  const canResend = method === 'email' || method === 'sms';
   const methodLabel =
-    params.method === 'totp'
+    method === 'totp'
       ? t('auth.mfaMethodTotp')
-      : params.method === 'sms'
+      : method === 'sms'
         ? t('auth.mfaMethodSms')
         : t('auth.mfaMethodEmail');
 
@@ -48,11 +64,16 @@ export default function MfaScreen(): React.JSX.Element {
   };
 
   const onResend = async (): Promise<void> => {
+    setResending(true);
+    setResent(false);
+    setError(null);
     try {
       await api.post('/v1/portal/auth/mfa/resend', { mfaToken }, { auth: false });
       setResent(true);
     } catch {
       setError(t('common.somethingWrong'));
+    } finally {
+      setResending(false);
     }
   };
 
@@ -75,7 +96,12 @@ export default function MfaScreen(): React.JSX.Element {
         {resent ? <FormSuccess message={t('auth.mfaResend')} /> : null}
         <Button title={t('auth.mfaVerify')} loading={loading} onPress={() => void onVerify()} />
         {canResend ? (
-          <Button title={t('auth.mfaResend')} variant="ghost" onPress={() => void onResend()} />
+          <Button
+            title={t('auth.mfaResend')}
+            variant="ghost"
+            loading={resending}
+            onPress={() => void onResend()}
+          />
         ) : null}
       </View>
       <AuthFooter />

@@ -3,6 +3,7 @@
 
 import React from 'react';
 import { View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { MapPin, Zap } from '@/components/icons';
 import { Card, Text, Badge } from '@/components/ui';
 import { hsl } from '@/lib/theme';
@@ -17,7 +18,7 @@ interface StationCardProps {
   onPress: () => void;
 }
 
-export function StationCard({
+export const StationCard = React.memo(function StationCard({
   name,
   address,
   isOnline,
@@ -26,6 +27,7 @@ export function StationCard({
   distanceKm,
   onPress,
 }: StationCardProps): React.JSX.Element {
+  const { t } = useTranslation();
   const hasAvail = availableCount > 0 && isOnline;
   return (
     <Card onPress={onPress} className="gap-3">
@@ -53,14 +55,14 @@ export function StationCard({
         <View className="flex-row items-center gap-1.5">
           <Zap size={14} color={hasAvail ? hsl('primary') : hsl('mutedForeground')} />
           <Text variant="caption" className="text-muted-foreground">
-            {availableCount} of {evseCount} available
+            {t('charge.availableOfTotal', { available: availableCount, total: evseCount })}
           </Text>
         </View>
         <Badge
           variant={!isOnline ? 'secondary' : hasAvail ? 'success' : 'warning'}
-          label={!isOnline ? 'Offline' : hasAvail ? 'Available' : 'In use'}
+          label={!isOnline ? t('charge.offline') : hasAvail ? t('charge.available') : t('charge.inUse')}
         />
       </View>
     </Card>
   );
-}
+});

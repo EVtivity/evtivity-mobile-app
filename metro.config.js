@@ -13,4 +13,10 @@ const config = getDefaultConfig(__dirname);
 // folder and Watchman has disk access.
 config.resolver.useWatchman = false;
 
+// Defer module evaluation until first require, cutting cold-start cost of
+// module-scope work (i18n catalogues, large JSON, barrel files).
+config.transformer.getTransformOptions = async () => ({
+  transform: { experimentalImportSupport: false, inlineRequires: true },
+});
+
 module.exports = withNativeWind(config, { input: './global.css' });

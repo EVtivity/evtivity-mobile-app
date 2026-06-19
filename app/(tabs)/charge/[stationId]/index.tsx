@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 
 import React from 'react';
-import { View, Pressable, Linking } from 'react-native';
+import { View, Pressable } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import {
@@ -27,6 +27,7 @@ import {
   useToast,
 } from '@/components/ui';
 import { ConnectorTile } from '@/components/ConnectorTile';
+import { openEmail, openPhone } from '@/lib/safe-link';
 import { hsl } from '@/lib/theme';
 import { cn } from '@/lib/cn';
 import { isStartable, isCableDetected } from '@/lib/status';
@@ -76,6 +77,14 @@ export default function StationDetailScreen(): React.JSX.Element {
   const cards = paymentMethods.data ?? [];
   const selectedCard =
     cards.find((c) => c.id === selectedCardId) ?? cards.find((c) => c.isDefault) ?? cards[0] ?? null;
+
+  const cardLabel = (card: PaymentCard): string =>
+    [
+      `${card.cardBrand ?? t('charge.card')} ····${card.cardLast4 ?? '----'}`,
+      card.isDefault ? t('charge.cardDefault') : null,
+    ]
+      .filter(Boolean)
+      .join(' · ');
 
   // Preselect the connector from a scanned QR code (the `evseId` param) once the
   // station loads. Guarded so it runs once and never overrides a later manual tap.
@@ -209,6 +218,7 @@ export default function StationDetailScreen(): React.JSX.Element {
       {address !== '' ? (
         data.siteId != null ? (
           <Pressable
+            testID="station-location"
             className="flex-row items-start gap-2 active:opacity-70"
             onPress={() =>
               router.push({ pathname: '/charge/location', params: { siteId: data.siteId ?? '' } })
@@ -248,7 +258,7 @@ export default function StationDetailScreen(): React.JSX.Element {
           {data.siteContactEmail != null ? (
             <Pressable
               className="flex-row items-center gap-2 active:opacity-70"
-              onPress={() => void Linking.openURL(`mailto:${data.siteContactEmail ?? ''}`)}
+              onPress={() => openEmail(data.siteContactEmail)}
             >
               <Mail size={16} color={hsl('mutedForeground')} />
               <Text className="text-sm text-primary">{data.siteContactEmail}</Text>
@@ -257,7 +267,7 @@ export default function StationDetailScreen(): React.JSX.Element {
           {data.siteContactPhone != null ? (
             <Pressable
               className="flex-row items-center gap-2 active:opacity-70"
-              onPress={() => void Linking.openURL(`tel:${data.siteContactPhone ?? ''}`)}
+              onPress={() => openPhone(data.siteContactPhone)}
             >
               <Phone size={16} color={hsl('mutedForeground')} />
               <Text className="text-sm text-primary">{data.siteContactPhone}</Text>
@@ -271,14 +281,7 @@ export default function StationDetailScreen(): React.JSX.Element {
       {data.paymentEnabled && selectedCard != null && !hasActiveSession ? (
         <Card className="flex-row items-center gap-3">
           <CreditCard size={20} color={hsl('primary')} />
-          <Text className="flex-1 text-sm text-foreground">
-            {[
-              `${selectedCard.cardBrand ?? t('charge.card')} ····${selectedCard.cardLast4 ?? '----'}`,
-              selectedCard.isDefault ? t('charge.cardDefault') : null,
-            ]
-              .filter(Boolean)
-              .join(' · ')}
-          </Text>
+          <Text className="flex-1 text-sm text-foreground">{cardLabel(selectedCard)}</Text>
           <Pressable
             onPress={() => setCardSheetVisible(true)}
             hitSlop={10}
@@ -395,14 +398,7 @@ export default function StationDetailScreen(): React.JSX.Element {
                 }}
               >
                 <CreditCard size={20} color={hsl('primary')} />
-                <Text className="flex-1 text-sm text-foreground">
-                  {[
-                    `${card.cardBrand ?? t('charge.card')} ····${card.cardLast4 ?? '----'}`,
-                    card.isDefault ? t('charge.cardDefault') : null,
-                  ]
-                    .filter(Boolean)
-                    .join(' · ')}
-                </Text>
+                <Text className="flex-1 text-sm text-foreground">{cardLabel(card)}</Text>
                 {isActive ? <Check size={18} color={hsl('primary')} /> : null}
               </Card>
             );

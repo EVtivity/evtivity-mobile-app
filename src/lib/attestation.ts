@@ -11,7 +11,7 @@ import {
   requestIntegrityToken,
 } from '../../modules/evtivity-attest';
 import { API_BASE_URL } from './config';
-import { getDeviceId } from './device';
+import { deviceHeaders } from './device';
 
 // Mobile device attestation. On the pre-auth endpoints the app proves it is a
 // genuine, unmodified build with Apple App Attest (iOS) or Google Play Integrity
@@ -26,14 +26,6 @@ const KEY_ID_STORE = 'ev_attest_key_id';
 // requests work without it for Play-distributed apps; it is only needed when the
 // app is sideloaded.
 const ANDROID_CLOUD_PROJECT_NUMBER = process.env.EXPO_PUBLIC_GMS_PROJECT_NUMBER ?? null;
-
-async function deviceHeaders(): Promise<Record<string, string>> {
-  return {
-    Accept: 'application/json',
-    'X-Client': 'mobile',
-    'X-Device-Id': await getDeviceId(),
-  };
-}
 
 // A challenge is single-use, so registration and each assertion each fetch their
 // own. Plain fetch (no attestation header) to avoid recursing through the gate.

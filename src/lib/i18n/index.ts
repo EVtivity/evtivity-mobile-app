@@ -11,12 +11,6 @@ import {
   SUPPORTED_LANGUAGES,
   type LanguageCode,
 } from '@/lib/config';
-import en from './en.json';
-import es from './es.json';
-import zh from './zh.json';
-import de from './de.json';
-import ko from './ko.json';
-import zhTW from './zh-TW.json';
 
 // Native-script display names, shown in the language picker.
 export const LANGUAGE_LABELS: Record<LanguageCode, string> = {
@@ -28,26 +22,36 @@ export const LANGUAGE_LABELS: Record<LanguageCode, string> = {
   'zh-TW': '繁體中文',
 };
 
-const CATALOGUES: Record<LanguageCode, Record<string, unknown>> = {
-  en,
-  es,
-  zh,
-  de,
-  ko,
-  'zh-TW': zhTW,
+// Lazy loaders: only the active language's catalogue is parsed at startup; the
+// rest are required on demand when the user (or server preference) switches.
+// Static require strings keep each catalogue bundle-analyzable.
+const LOADERS: Record<LanguageCode, () => Record<string, unknown>> = {
+  en: () => require('./en.json') as Record<string, unknown>,
+  es: () => require('./es.json') as Record<string, unknown>,
+  zh: () => require('./zh.json') as Record<string, unknown>,
+  de: () => require('./de.json') as Record<string, unknown>,
+  ko: () => require('./ko.json') as Record<string, unknown>,
+  'zh-TW': () => require('./zh-TW.json') as Record<string, unknown>,
 };
 
 const STORAGE_KEY = 'app.language';
+const loadedCatalogues = new Set<LanguageCode>();
 
-// All catalogues are bundled (a few KB each); the brand only controls which
-// appear in the picker, so a language is still resolvable when a stored or
-// server value falls outside the enabled set.
-const resources = Object.fromEntries(
-  SUPPORTED_LANGUAGES.map((code) => [code, { translation: CATALOGUES[code] }]),
-);
+function isSupported(code: string): code is LanguageCode {
+  return (SUPPORTED_LANGUAGES as readonly string[]).includes(code);
+}
+
+// Register a language's catalogue with i18next once, on first use.
+function ensureCatalogue(code: LanguageCode): void {
+  if (loadedCatalogues.has(code)) return;
+  i18n.addResourceBundle(code, 'translation', LOADERS[code](), true, true);
+  loadedCatalogues.add(code);
+}
 
 void i18n.use(initReactI18next).init({
-  resources,
+  // Start with only the default language; 'en' is also loaded below as the
+  // fallback so missing keys never render blank.
+  resources: { [DEFAULT_LANGUAGE]: { translation: LOADERS[DEFAULT_LANGUAGE]() } },
   lng: DEFAULT_LANGUAGE,
   fallbackLng: 'en',
   supportedLngs: [...SUPPORTED_LANGUAGES],
@@ -57,6 +61,8 @@ void i18n.use(initReactI18next).init({
   // Intl dependency (and its dev warning).
   compatibilityJSON: 'v3',
 });
+loadedCatalogues.add(DEFAULT_LANGUAGE);
+ensureCatalogue('en');
 
 function isEnabled(code: string): code is LanguageCode {
   return (ENABLED_LANGUAGES as string[]).includes(code);
@@ -70,6 +76,7 @@ export function enabledLanguageOptions(): { code: LanguageCode; label: string }[
 // User's explicit choice: switch live and remember it across launches.
 export async function setAppLanguage(code: string): Promise<void> {
   if (!isEnabled(code)) return;
+  ensureCatalogue(code);
   await i18n.changeLanguage(code);
   try {
     await AsyncStorage.setItem(STORAGE_KEY, code);
@@ -82,7 +89,8 @@ export async function setAppLanguage(code: string): Promise<void> {
 export async function bootstrapLanguage(): Promise<void> {
   try {
     const stored = await AsyncStorage.getItem(STORAGE_KEY);
-    if (stored != null && isEnabled(stored) && i18n.language !== stored) {
+    if (stored != null && isSupported(stored) && i18n.language !== stored) {
+      ensureCatalogue(stored);
       await i18n.changeLanguage(stored);
     }
   } catch {
@@ -93,14 +101,17 @@ export async function bootstrapLanguage(): Promise<void> {
 // Adopt the server-side driver preference, but only when the user has not made
 // an explicit local choice (a stored value always wins).
 export async function applyDriverLanguage(code: string | null | undefined): Promise<void> {
-  if (code == null || !isEnabled(code)) return;
+  if (code == null || !isSupported(code)) return;
   try {
     const stored = await AsyncStorage.getItem(STORAGE_KEY);
     if (stored != null) return;
   } catch {
     /* if storage is unreadable, still apply the server preference */
   }
-  if (i18n.language !== code) await i18n.changeLanguage(code);
+  if (i18n.language !== code) {
+    ensureCatalogue(code);
+    await i18n.changeLanguage(code);
+  }
 }
 
 export default i18n;
