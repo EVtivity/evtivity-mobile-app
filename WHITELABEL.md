@@ -26,7 +26,6 @@ your brand object.
    | `apiUrl` | Base URL of your EVtivity API deployment. |
    | `easProjectId` | Your Expo EAS project id. Required to mint push tokens. |
    | `termsUrl` / `privacyUrl` | Full URLs to your legal pages. Leave empty to derive them from your CSMS portal. |
-   | `appleMerchantId` | Apple merchant id (`merchant.com.acme.driver`). Display only; the Stripe publishable key is fetched from the API at runtime. |
    | `languages` | Languages offered in the app, from `en`, `es`, `zh`, `de`, `ko`, `zh-TW`. The first entry is the default for a fresh install. Omit to offer all. See [Languages](#languages). |
    | `colors` | Light and dark palettes. See below. |
    | `icon` / `adaptiveIcon` / `splash` | Asset paths, default to `./assets/*`. |
@@ -117,7 +116,6 @@ const acmeBrand = {
   iosBundleId: 'com.acme.charge',
   androidPackage: 'com.acme.charge',
   apiUrl: process.env.EXPO_PUBLIC_API_URL ?? 'https://api.acmecharge.com',
-  appleMerchantId: 'merchant.com.acme.charge',
   languages: ['en', 'es'],
   colors: {
     light: {

@@ -82,7 +82,10 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           recordAudioAndroid: false,
         },
       ],
-      '@stripe/stripe-react-native',
+      // Props object is required: the Stripe config plugin destructures props
+      // and crashes on a bare string. No wallet payments, so Google Pay stays off
+      // and no Apple Pay merchant entitlement is added.
+      ['@stripe/stripe-react-native', { enableGooglePay: false }],
       [
         './plugins/withAppAttest',
         { environment: process.env.EXPO_PUBLIC_APPATTEST_ENV ?? 'development' },
@@ -99,7 +102,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         slug: brand.slug,
         apiUrl: brand.apiUrl,
         colors: brand.colors,
-        appleMerchantId: brand.appleMerchantId,
         termsUrl: brand.termsUrl,
         privacyUrl: brand.privacyUrl,
         languages: brand.languages,

@@ -42,7 +42,6 @@ describe('baked brand on Android with a localhost API alias', () => {
           slug: 'baked',
           apiUrl: 'http://localhost:7102/',
           colors: { light: palette('9'), dark: palette('19') },
-          appleMerchantId: 'merchant.baked',
           termsUrl: 'https://terms.example',
           privacyUrl: 'https://privacy.example',
           languages: ['es', 'en', 'xx'],
@@ -54,16 +53,14 @@ describe('baked brand on Android with a localhost API alias', () => {
       slug: 'def',
       apiUrl: 'http://def.test',
       colors: { light: palette('1'), dark: palette('2') },
-      appleMerchantId: 'merchant.def',
       termsUrl: 'https://def-terms',
       privacyUrl: 'https://def-privacy',
       languages: ['en'],
     },
   });
 
-  it('prefers the baked brand fields and merchant id', () => {
+  it('prefers the baked brand fields', () => {
     expect(cfg.BRAND.name).toBe('Baked');
-    expect(cfg.BRAND.appleMerchantId).toBe('merchant.baked');
     expect(cfg.APP_NAME).toBe('Baked');
     expect(cfg.BRAND.colors.light.primary).toBe('9');
   });
@@ -96,13 +93,11 @@ describe('no baked brand on iOS, defaults supply everything', () => {
       slug: 'def',
       apiUrl: 'http://localhost:8000',
       colors: { light: palette('1'), dark: palette('2') },
-      appleMerchantId: 'merchant.def',
     },
   });
 
-  it('falls back to the default brand and its merchant id', () => {
+  it('falls back to the default brand', () => {
     expect(cfg.BRAND.name).toBe('Def');
-    expect(cfg.BRAND.appleMerchantId).toBe('merchant.def');
   });
   it('rewrites localhost to IPv4 loopback on iOS using the brand apiUrl', () => {
     expect(cfg.API_BASE_URL).toBe('http://127.0.0.1:8000');
@@ -144,9 +139,6 @@ describe('remote host with no merchant id and an empty language list', () => {
     },
   });
 
-  it('omits the merchant id when neither source provides one', () => {
-    expect('appleMerchantId' in cfg.BRAND).toBe(false);
-  });
   it('passes a non-alias remote host through untouched', () => {
     expect(cfg.API_BASE_URL).toBe('https://remote.example.com');
   });
