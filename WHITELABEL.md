@@ -24,7 +24,9 @@ your brand object.
    | `iosBundleId` | Your reverse-DNS iOS bundle identifier (`com.acme.driver`). |
    | `androidPackage` | Your Android package name (`com.acme.driver`). |
    | `apiUrl` | Base URL of your EVtivity API deployment. |
-   | `appleMerchantId` | Apple Pay merchant id (`merchant.com.acme.driver`). Display only; the Stripe publishable key is fetched from the API at runtime. |
+   | `easProjectId` | Your Expo EAS project id. Required to mint push tokens. |
+   | `termsUrl` / `privacyUrl` | Full URLs to your legal pages. Leave empty to derive them from your CSMS portal. |
+   | `appleMerchantId` | Apple merchant id (`merchant.com.acme.driver`). Display only; the Stripe publishable key is fetched from the API at runtime. |
    | `languages` | Languages offered in the app, from `en`, `es`, `zh`, `de`, `ko`, `zh-TW`. The first entry is the default for a fresh install. Omit to offer all. See [Languages](#languages). |
    | `colors` | Light and dark palettes. See below. |
    | `icon` / `adaptiveIcon` / `splash` | Asset paths, default to `./assets/*`. |
@@ -39,7 +41,7 @@ your brand object.
    ```
 
 4. Replace the assets in `assets/` with your artwork, keeping the filenames (or
-   update the brand's asset paths). Sizes from `assets/README.md`:
+   update the brand's asset paths). Sizes:
 
    | File | Size |
    |---|---|
@@ -71,9 +73,10 @@ You own your certificates, signing, store listings, Stripe account
 Each palette is a set of HSL triplets written as `"H S% L%"` strings (no `hsl()`
 wrapper, no commas), for example `"221.2 83.2% 53.3%"`. They mirror the web
 portal's css-spec tokens, so the app matches the portal design. NativeWind reads
-these at runtime and maps them to theme tokens (`primary`, `background`,
-`foreground`, `card`, `muted`, `border`, `success`, `warning`, `destructive`,
-`info`, and their foreground variants).
+these at runtime and maps them to theme tokens (`primary`, `cta`, `accent`,
+`background`, `foreground`, `card`, `elevated`, `muted`, `border`, `ring`,
+`success`, `warning`, `destructive`, `info`, and the matching foreground
+variants).
 
 Provide both `light` and `dark`. The app follows the device appearance and
 switches palettes automatically.

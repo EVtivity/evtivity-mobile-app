@@ -38,7 +38,7 @@ paid EAS cloud subscription is required.
 | Data fetching | TanStack Query |
 | Client state | Zustand |
 | i18n | i18next + react-i18next |
-| Icons | lucide-react-native |
+| Icons | phosphor-react-native |
 | Payments | @stripe/stripe-react-native (native PaymentSheet) |
 | Secure storage | expo-secure-store (Keychain / Keystore) |
 | Biometrics | expo-local-authentication |

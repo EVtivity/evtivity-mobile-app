@@ -8,7 +8,7 @@ are the ones this app was built and verified against (Expo SDK 52, React Native
 
 | Tool | Version used | Install |
 |---|---|---|
-| Node.js | 20 LTS or newer (verified on 24.12) | `brew install node` or nvm |
+| Node.js | 24 LTS (verified on 24.12) | `brew install node` or nvm |
 | npm | 10+ (verified on 11.6) | ships with Node |
 | Watchman | 2026.06 | `brew install watchman` (optional, see gotcha 2) |
 | Expo CLI / EAS CLI | via `npx` | no global install needed (`npx expo`, `npx eas-cli`) |
