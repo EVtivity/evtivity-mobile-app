@@ -19,6 +19,9 @@ interface ConnectorTileProps {
   status: ConnectorStatus;
   port: number;
   selected: boolean;
+  // Overrides the status-derived default so callers can gate on reservation,
+  // online, and maintenance state too. Falls back to !isStartable(status).
+  disabled?: boolean;
   onPress: () => void;
 }
 
@@ -32,10 +35,11 @@ export function ConnectorTile({
   status,
   port,
   selected,
+  disabled: disabledProp,
   onPress,
 }: ConnectorTileProps): React.JSX.Element {
   const { t } = useTranslation();
-  const disabled = !isStartable(status);
+  const disabled = disabledProp ?? !isStartable(status);
   const isCharging = CHARGING.includes(status);
   const isIdle = IDLE.includes(status);
 

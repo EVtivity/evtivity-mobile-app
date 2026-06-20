@@ -25,6 +25,29 @@ export function isStartable(status: ConnectorStatus): boolean {
   return STARTABLE.has(status);
 }
 
+export interface SelectableEvse {
+  connectors: { status: ConnectorStatus }[];
+  reservationDriverId: string | null;
+}
+
+// Whether the driver can start on an EVSE. Online, a startable connector, and not
+// reserved by another driver (a reservation flips the connector to a startable
+// status the moment the holder plugs in, so without the reserved-by-other gate
+// any driver could start against the holder's plug). Kept identical to the web
+// portal's isEvseSelectable so both clients gate selection the same way.
+export function isEvseSelectable(
+  evse: SelectableEvse,
+  opts: { isOnline: boolean; maintenanceActive: boolean; currentDriverId: string | null },
+): boolean {
+  if (opts.maintenanceActive || !opts.isOnline) return false;
+  const connectorStatus = evse.connectors[0]?.status ?? 'unavailable';
+  const reservedByOther =
+    evse.reservationDriverId != null && evse.reservationDriverId !== opts.currentDriverId;
+  const reservedForMe =
+    evse.reservationDriverId != null && evse.reservationDriverId === opts.currentDriverId;
+  return !reservedByOther && (isStartable(connectorStatus) || reservedForMe);
+}
+
 // Statuses that mean a cable is physically connected. The pre-start flow uses
 // this to detect whether the driver has plugged in (mirrors the portal).
 const CABLE_DETECTED = new Set<ConnectorStatus>([

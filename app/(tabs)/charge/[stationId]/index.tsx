@@ -30,7 +30,8 @@ import { ConnectorTile } from '@/components/ConnectorTile';
 import { openEmail, openPhone } from '@/lib/safe-link';
 import { hsl } from '@/lib/theme';
 import { cn } from '@/lib/cn';
-import { isStartable, isCableDetected } from '@/lib/status';
+import { isStartable, isCableDetected, isEvseSelectable } from '@/lib/status';
+import { useAuth } from '@/lib/auth';
 import { PricingCard } from '@/components/PricingCard';
 import {
   useStation,
@@ -67,6 +68,7 @@ export default function StationDetailScreen(): React.JSX.Element {
   const paymentMethods = usePaymentMethods();
   const start = useStartCharging();
   const activeSessions = useActiveSessions();
+  const currentDriverId = useAuth((s) => s.driver?.id ?? null);
 
   const [selected, setSelected] = React.useState<SelectedConnector | null>(null);
   const [warnVisible, setWarnVisible] = React.useState(false);
@@ -94,33 +96,46 @@ export default function StationDetailScreen(): React.JSX.Element {
   const preselectedRef = React.useRef(false);
   React.useEffect(() => {
     if (preselectedRef.current || evseId == null) return;
-    const evses = station.data?.evses;
-    if (evses == null) return;
+    const data = station.data;
+    if (data == null) return;
     preselectedRef.current = true;
-    const evse = evses.find((e) => e.evseId === Number(evseId));
+    const evse = data.evses.find((e) => e.evseId === Number(evseId));
     if (evse == null) return;
-    // Only preselect a connector that can actually start. An unavailable or
-    // incompatible connector is left unselected (not highlighted).
+    // Only preselect a connector that can actually start and is not reserved by
+    // another driver. An unavailable, reserved-by-other, or incompatible
+    // connector is left unselected (not highlighted).
+    const opts = {
+      isOnline: data.isOnline,
+      maintenanceActive: data.maintenance?.active === true,
+      currentDriverId,
+    };
+    if (!isEvseSelectable(evse, opts)) return;
     const connector = firstStartableConnector(evse);
     if (connector != null) setSelected({ evseId: evse.evseId, connector });
-  }, [evseId, station.data]);
+  }, [evseId, station.data, currentDriverId]);
 
   // When exactly one connector at the station can start, select it automatically
   // so the driver can start without a tap. Runs only while nothing is selected,
   // so it never fights a manual choice or the QR preselection above.
   React.useEffect(() => {
     if (selected != null) return;
-    const evses = station.data?.evses;
-    if (evses == null) return;
-    const startable = evses
+    const data = station.data;
+    if (data == null) return;
+    const opts = {
+      isOnline: data.isOnline,
+      maintenanceActive: data.maintenance?.active === true,
+      currentDriverId,
+    };
+    const startable = data.evses
       .map((evse): SelectedConnector | null => {
+        if (!isEvseSelectable(evse, opts)) return null;
         const connector = firstStartableConnector(evse);
         return connector != null ? { evseId: evse.evseId, connector } : null;
       })
       .filter((c): c is SelectedConnector => c != null);
     const [only] = startable;
     if (startable.length === 1 && only != null) setSelected(only);
-  }, [selected, station.data]);
+  }, [selected, station.data, currentDriverId]);
 
   const onToggleFavorite = React.useCallback(() => {
     toggleFavorite.mutate({
@@ -338,6 +353,11 @@ export default function StationDetailScreen(): React.JSX.Element {
             {data.evses.map((evse) => {
               const connector = firstStartableConnector(evse) ?? evse.connectors[0];
               if (connector == null) return null;
+              const selectable = isEvseSelectable(evse, {
+                isOnline: data.isOnline,
+                maintenanceActive,
+                currentDriverId,
+              });
               const isSelected =
                 selected?.evseId === evse.evseId &&
                 selected.connector.connectorId === connector.connectorId;
@@ -350,6 +370,7 @@ export default function StationDetailScreen(): React.JSX.Element {
                   status={connector.status}
                   port={evse.evseId}
                   selected={isSelected}
+                  disabled={!selectable}
                   onPress={() => setSelected({ evseId: evse.evseId, connector })}
                 />
               );
