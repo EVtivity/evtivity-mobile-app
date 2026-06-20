@@ -1,0 +1,41 @@
+# Customize the Home quick-action cards from Account > Home Screen: the default
+# set leads with Scan QR Code and leaves Support off. Swap Vehicles out for
+# Support, confirm the Home grid reflects it, then restore the default selection
+# so the flow is idempotent.
+appId: com.evtivity.driver
+name: 31 - Home cards
+tags:
+  - account
+  - home
+---
+- runFlow: ../subflows/session.yaml
+# Default home leads with Scan QR Code; Support is not a card.
+- assertVisible: "Scan QR Code"
+- tapOn:
+    id: "tab-account"
+- tapOn:
+    id: "account-row-home-cards"
+- assertVisible: "On your home screen"
+- assertVisible: "Available"
+# At the 4-card maximum, drop Vehicles to make room, then add Support.
+- tapOn:
+    id: "home-cards-remove-vehicles"
+- tapOn:
+    id: "home-cards-add-support"
+# Home now shows the Support card alongside Scan QR Code.
+- tapOn:
+    id: "tab-index"
+- assertVisible: "Scan QR Code"
+- assertVisible: "Support"
+# Restore the default selection (remove Support, add Vehicles back).
+- tapOn:
+    id: "tab-account"
+- tapOn:
+    id: "account-row-home-cards"
+- tapOn:
+    id: "home-cards-remove-support"
+- tapOn:
+    id: "home-cards-add-vehicles"
+- tapOn:
+    id: "tab-index"
+- assertVisible: "Vehicles"

@@ -96,7 +96,15 @@
     "favorites": "Favorites",
     "stopTitle": "Stop charging?",
     "stopMessage": "This will end your active charging session.",
-    "stopped": "Charging stopped"
+    "stopped": "Charging stopped",
+    "scanQr": "Scan QR Code"
+  },
+  "homeCards": {
+    "title": "Home Screen",
+    "hint": "Choose 2 to 4 cards for your home screen. Touch and hold a card to reorder.",
+    "onHome": "On your home screen",
+    "available": "Available",
+    "allAdded": "All cards are on your home screen."
   },
   "charge": {
     "title": "Charge",
@@ -260,6 +268,7 @@
     "personalInfo": "Personal Info",
     "security": "Security",
     "notifications": "Notifications",
+    "homeScreen": "Home Screen",
     "paymentMethods": "Payment Methods",
     "rfid": "RFID Cards",
     "vehicles": "Vehicles",
