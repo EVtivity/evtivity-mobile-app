@@ -40,8 +40,7 @@ export function useActiveSessions() {
 export function useRecentSessions(limit = 3) {
   return useQuery({
     queryKey: ['sessions', 'recent', limit],
-    queryFn: () =>
-      api.getData<ChargingSession>(`/v1/portal/sessions?limit=${String(limit)}`),
+    queryFn: () => api.getData<ChargingSession>(`/v1/portal/sessions?limit=${String(limit)}`),
     refetchInterval: 30_000,
   });
 }
@@ -142,8 +141,7 @@ export function useSession(id: string) {
     queryKey: ['session', id],
     queryFn: () => api.get<SessionDetail>(`/v1/portal/sessions/${id}`),
     enabled: id.length > 0,
-    refetchInterval: (query) =>
-      query.state.data?.status === 'active' ? 5_000 : false,
+    refetchInterval: (query) => (query.state.data?.status === 'active' ? 5_000 : false),
   });
 }
 

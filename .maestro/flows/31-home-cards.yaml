@@ -10,32 +10,32 @@ tags:
 ---
 - runFlow: ../subflows/session.yaml
 # Default home leads with Scan QR Code; Support is not a card.
-- assertVisible: "Scan QR Code"
+- assertVisible: 'Scan QR Code'
 - tapOn:
-    id: "tab-account"
+    id: 'tab-account'
 - tapOn:
-    id: "account-row-home-cards"
-- assertVisible: "On your home screen"
-- assertVisible: "Available"
+    id: 'account-row-home-cards'
+- assertVisible: 'On your home screen'
+- assertVisible: 'Available'
 # At the 4-card maximum, drop Vehicles to make room, then add Support.
 - tapOn:
-    id: "home-cards-remove-vehicles"
+    id: 'home-cards-remove-vehicles'
 - tapOn:
-    id: "home-cards-add-support"
+    id: 'home-cards-add-support'
 # Home now shows the Support card alongside Scan QR Code.
 - tapOn:
-    id: "tab-index"
-- assertVisible: "Scan QR Code"
-- assertVisible: "Support"
+    id: 'tab-index'
+- assertVisible: 'Scan QR Code'
+- assertVisible: 'Support'
 # Restore the default selection (remove Support, add Vehicles back).
 - tapOn:
-    id: "tab-account"
+    id: 'tab-account'
 - tapOn:
-    id: "account-row-home-cards"
+    id: 'account-row-home-cards'
 - tapOn:
-    id: "home-cards-remove-support"
+    id: 'home-cards-remove-support'
 - tapOn:
-    id: "home-cards-add-vehicles"
+    id: 'home-cards-add-vehicles'
 - tapOn:
-    id: "tab-index"
-- assertVisible: "Vehicles"
+    id: 'tab-index'
+- assertVisible: 'Vehicles'

@@ -3,13 +3,13 @@
 appId: com.evtivity.driver
 ---
 - tapOn:
-    id: "login-email"
+    id: 'login-email'
 - inputText: ${EMAIL}
 - tapOn:
-    id: "login-password"
+    id: 'login-password'
 - inputText: ${PASSWORD}
 # No hideKeyboard: on iOS the dismiss animation races the Sign In tap (the button
 # disables + shows a spinner the moment login starts). The button sits above the
 # keyboard, so tap it directly.
 - tapOn:
-    id: "login-submit"
+    id: 'login-submit'

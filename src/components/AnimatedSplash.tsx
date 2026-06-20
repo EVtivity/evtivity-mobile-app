@@ -33,8 +33,18 @@ const LOGO = Math.round(Math.min(width, height) * 0.6);
 function Ring(): React.JSX.Element {
   return (
     <Svg width={LOGO} height={LOGO} viewBox="0 0 120 120">
-      <Path d="M73.45 11.84 A 50 50 0 0 1 56.16 109.85" fill="none" stroke={GREEN} strokeWidth="12" />
-      <Path d="M48.24 108.60 A 50 50 0 0 1 65.57 10.31" fill="none" stroke={GREEN} strokeWidth="12" />
+      <Path
+        d="M73.45 11.84 A 50 50 0 0 1 56.16 109.85"
+        fill="none"
+        stroke={GREEN}
+        strokeWidth="12"
+      />
+      <Path
+        d="M48.24 108.60 A 50 50 0 0 1 65.57 10.31"
+        fill="none"
+        stroke={GREEN}
+        strokeWidth="12"
+      />
     </Svg>
   );
 }

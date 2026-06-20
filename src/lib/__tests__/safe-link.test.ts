@@ -36,11 +36,8 @@ describe('openPhone', () => {
     expect(openURL).toHaveBeenCalledWith('tel:%2B1%20(555)%20123-4567');
   });
 
-  it.each([null, undefined, '', 'abc', '12', 'tel:evil'])(
-    'rejects invalid number %p',
-    (value) => {
-      expect(openPhone(value)).toBe(false);
-      expect(openURL).not.toHaveBeenCalled();
-    },
-  );
+  it.each([null, undefined, '', 'abc', '12', 'tel:evil'])('rejects invalid number %p', (value) => {
+    expect(openPhone(value)).toBe(false);
+    expect(openURL).not.toHaveBeenCalled();
+  });
 });

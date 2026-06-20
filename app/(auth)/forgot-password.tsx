@@ -54,7 +54,8 @@ export default function ForgotPasswordScreen(): React.JSX.Element {
           <FormSuccess message={t('auth.resetLinkSent')} />
         ) : (
           <>
-            <Field labelClassName="text-base"
+            <Field
+              labelClassName="text-base"
               testID="forgot-email"
               label={t('auth.email')}
               value={email}
@@ -63,7 +64,12 @@ export default function ForgotPasswordScreen(): React.JSX.Element {
               keyboardType="email-address"
               error={emailError}
             />
-            <Button testID="forgot-submit" title={t('auth.sendResetLink')} loading={loading} onPress={() => void onSubmit()} />
+            <Button
+              testID="forgot-submit"
+              title={t('auth.sendResetLink')}
+              loading={loading}
+              onPress={() => void onSubmit()}
+            />
           </>
         )}
         <Button title={t('auth.backToLogin')} variant="ghost" onPress={() => router.back()} />

@@ -111,7 +111,9 @@ export default function ScanScreen(): React.JSX.Element {
           {error != null ? (
             <>
               <View className="rounded-xl bg-destructive px-4 py-2">
-                <Text weight="semibold" className="text-sm text-white">{error}</Text>
+                <Text weight="semibold" className="text-sm text-white">
+                  {error}
+                </Text>
               </View>
               <Button
                 title={t('charge.scan.again')}
@@ -126,10 +128,7 @@ export default function ScanScreen(): React.JSX.Element {
         </View>
       </SafeAreaView>
       <View pointerEvents="none" className="absolute inset-0 items-center justify-center">
-        <View
-          className="h-64 w-64 rounded-2xl border-2"
-          style={{ borderColor: hsl('primary') }}
-        />
+        <View className="h-64 w-64 rounded-2xl border-2" style={{ borderColor: hsl('primary') }} />
       </View>
     </View>
   );

@@ -18,7 +18,10 @@ function loadConfig(s: Scenario): ConfigModule {
   let out = {} as ConfigModule;
   jest.isolateModules(() => {
     jest.doMock('react-native', () => ({ Platform: { OS: s.platform } }));
-    jest.doMock('expo-constants', () => ({ __esModule: true, default: { expoConfig: s.expoConfig } }));
+    jest.doMock('expo-constants', () => ({
+      __esModule: true,
+      default: { expoConfig: s.expoConfig },
+    }));
     jest.doMock('@brands/index', () => ({ defaultBrand: s.defaultBrand }));
     if (s.env === undefined) delete process.env.EXPO_PUBLIC_API_URL;
     else process.env.EXPO_PUBLIC_API_URL = s.env;

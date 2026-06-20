@@ -6,26 +6,26 @@ tags:
 ---
 - runFlow: ../subflows/session.yaml
 - tapOn:
-    id: "tab-account"
+    id: 'tab-account'
 - tapOn:
-    id: "account-row-notifications"
+    id: 'account-row-notifications'
 - extendedWaitUntil:
-    visible: "Email notifications"
+    visible: 'Email notifications'
     timeout: 8000
 - tapOn:
-    id: "notif-email"
+    id: 'notif-email'
 - tapOn:
-    id: "notif-sms"
+    id: 'notif-sms'
 - tapOn:
-    id: "notif-push"
+    id: 'notif-push'
 # restore original states
 - tapOn:
-    id: "notif-email"
+    id: 'notif-email'
 - tapOn:
-    id: "notif-sms"
+    id: 'notif-sms'
 - tapOn:
-    id: "notif-push"
+    id: 'notif-push'
 - tapOn:
-    id: "back-button"
+    id: 'back-button'
 - assertVisible:
-    id: "tab-account"
+    id: 'tab-account'

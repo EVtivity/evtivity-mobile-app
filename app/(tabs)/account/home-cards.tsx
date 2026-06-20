@@ -41,7 +41,11 @@ export default function HomeCardsScreen(): React.JSX.Element {
     if (canAdd) setCards([...cards, id]);
   };
 
-  const renderItem = ({ item, drag, isActive }: RenderItemParams<HomeCardId>): React.JSX.Element => {
+  const renderItem = ({
+    item,
+    drag,
+    isActive,
+  }: RenderItemParams<HomeCardId>): React.JSX.Element => {
     const def = HOME_CARDS[item];
     const Icon = def.icon;
     return (

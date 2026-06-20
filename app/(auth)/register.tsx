@@ -70,7 +70,8 @@ export default function RegisterScreen(): React.JSX.Element {
     <Screen scroll>
       <AuthHeader title={t('auth.createAccount')} />
       <View className="gap-4">
-        <Field labelClassName="text-base"
+        <Field
+          labelClassName="text-base"
           testID="register-firstName"
           label={t('auth.firstName')}
           value={firstName}
@@ -78,7 +79,8 @@ export default function RegisterScreen(): React.JSX.Element {
           autoCapitalize="words"
           error={fieldErrors.firstName}
         />
-        <Field labelClassName="text-base"
+        <Field
+          labelClassName="text-base"
           testID="register-lastName"
           label={t('auth.lastName')}
           value={lastName}
@@ -86,7 +88,8 @@ export default function RegisterScreen(): React.JSX.Element {
           autoCapitalize="words"
           error={fieldErrors.lastName}
         />
-        <Field labelClassName="text-base"
+        <Field
+          labelClassName="text-base"
           testID="register-email"
           label={t('auth.email')}
           value={email}
@@ -96,7 +99,8 @@ export default function RegisterScreen(): React.JSX.Element {
           autoComplete="email"
           error={fieldErrors.email}
         />
-        <Field labelClassName="text-base"
+        <Field
+          labelClassName="text-base"
           testID="register-password"
           label={t('auth.password')}
           value={password}
@@ -105,12 +109,19 @@ export default function RegisterScreen(): React.JSX.Element {
           autoComplete="new-password"
           error={fieldErrors.password}
         />
-        <Button testID="register-submit" title={t('auth.createAccount')} loading={loading} onPress={() => void onSubmit()} />
+        <Button
+          testID="register-submit"
+          title={t('auth.createAccount')}
+          loading={loading}
+          onPress={() => void onSubmit()}
+        />
       </View>
       <View className="mt-8 flex-row justify-center gap-1">
         <Text className="text-base text-muted-foreground">{t('auth.haveAccount')}</Text>
         <Link href="/(auth)/login">
-          <Text weight="semibold" className="text-base text-primary">{t('auth.signIn')}</Text>
+          <Text weight="semibold" className="text-base text-primary">
+            {t('auth.signIn')}
+          </Text>
         </Link>
       </View>
       <AuthFooter />

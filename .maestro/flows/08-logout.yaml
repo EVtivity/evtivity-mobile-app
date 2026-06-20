@@ -10,11 +10,11 @@ tags:
     env:
       EMAIL: driver@evtivity.local
       PASSWORD: driver123
-- assertVisible: "Ready to charge"
+- assertVisible: 'Ready to charge'
 - tapOn:
-    id: "tab-account"
+    id: 'tab-account'
 - tapOn:
-    id: "account-signout"
+    id: 'account-signout'
 - assertVisible:
-    id: "login-email"
-- assertVisible: "Sign In"
+    id: 'login-email'
+- assertVisible: 'Sign In'

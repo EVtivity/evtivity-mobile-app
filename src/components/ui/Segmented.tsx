@@ -39,7 +39,10 @@ export function Segmented<T extends string>({
           >
             <Text
               weight={active ? 'semibold' : 'medium'}
-              className={cn('text-sm', active ? 'text-primary-foreground' : 'text-muted-foreground')}
+              className={cn(
+                'text-sm',
+                active ? 'text-primary-foreground' : 'text-muted-foreground',
+              )}
             >
               {s.label}
             </Text>

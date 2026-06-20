@@ -6,18 +6,18 @@ tags:
 ---
 - runFlow: ../subflows/session.yaml
 - tapOn:
-    id: "tab-account"
+    id: 'tab-account'
 - scrollUntilVisible:
     element:
-      id: "account-row-about"
+      id: 'account-row-about'
     direction: DOWN
 - tapOn:
-    id: "account-row-about"
-- assertVisible: "App version"
-- assertVisible: "CSMS version"
-- assertVisible: "Privacy Policy"
-- assertVisible: "Terms of Service"
+    id: 'account-row-about'
+- assertVisible: 'App version'
+- assertVisible: 'CSMS version'
+- assertVisible: 'Privacy Policy'
+- assertVisible: 'Terms of Service'
 - tapOn:
-    id: "back-button"
+    id: 'back-button'
 - assertVisible:
-    id: "tab-account"
+    id: 'tab-account'

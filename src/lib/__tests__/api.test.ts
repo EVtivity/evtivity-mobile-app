@@ -17,12 +17,7 @@ jest.mock('@/lib/session', () => ({
   hasSession: jest.fn(() => false),
 }));
 
-import {
-  api,
-  ApiError,
-  apiErrorMessage,
-  getApiErrorFieldDetails,
-} from '@/lib/api';
+import { api, ApiError, apiErrorMessage, getApiErrorFieldDetails } from '@/lib/api';
 import * as session from '@/lib/session';
 import * as attestation from '@/lib/attestation';
 

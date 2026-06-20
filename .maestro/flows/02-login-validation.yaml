@@ -7,8 +7,8 @@ tags:
 ---
 - runFlow: ../subflows/ensure-logged-out.yaml
 - tapOn:
-    id: "login-submit"
-- assertVisible: "Email is required."
-- assertVisible: "Password is required."
+    id: 'login-submit'
+- assertVisible: 'Email is required.'
+- assertVisible: 'Password is required.'
 - assertVisible:
-    id: "login-email"
+    id: 'login-email'

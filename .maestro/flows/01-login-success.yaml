@@ -11,5 +11,5 @@ tags:
     env:
       EMAIL: driver@evtivity.local
       PASSWORD: driver123
-- assertVisible: "Ready to charge"
-- assertVisible: "Activity"
+- assertVisible: 'Ready to charge'
+- assertVisible: 'Activity'

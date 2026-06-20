@@ -9,25 +9,25 @@ tags:
 ---
 - runFlow: ../subflows/session.yaml
 - tapOn:
-    id: "tab-activity"
-- assertVisible: "Activity"
+    id: 'tab-activity'
+- assertVisible: 'Activity'
 # open the monthly statement from the Activity entry card
 - scrollUntilVisible:
     element:
-      id: "activity-statement"
+      id: 'activity-statement'
     direction: DOWN
 - tapOn:
-    id: "activity-statement"
+    id: 'activity-statement'
 # the statement screen opened
-- assertVisible: "Statement"
+- assertVisible: 'Statement'
 # a session renders as a row in the standardized list
 - scrollUntilVisible:
     element:
-      id: "statement-row-.*"
+      id: 'statement-row-.*'
     direction: DOWN
 - assertVisible:
-    id: "statement-row-.*"
+    id: 'statement-row-.*'
 # Back returns to Activity
 - tapOn:
-    id: "back-button"
-- assertVisible: "Activity"
+    id: 'back-button'
+- assertVisible: 'Activity'

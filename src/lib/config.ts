@@ -46,9 +46,14 @@ export function resolveLegalUrls(portalUrl?: string): { terms: string; privacy: 
   const base = (portalUrl ?? '').replace(/\/$/, '');
   const fromPortal = (path: string): string => (base !== '' ? `${base}/${path}` : '');
   return {
-    terms: BRAND.termsUrl != null && BRAND.termsUrl !== '' ? BRAND.termsUrl : fromPortal('terms-of-service'),
+    terms:
+      BRAND.termsUrl != null && BRAND.termsUrl !== ''
+        ? BRAND.termsUrl
+        : fromPortal('terms-of-service'),
     privacy:
-      BRAND.privacyUrl != null && BRAND.privacyUrl !== '' ? BRAND.privacyUrl : fromPortal('privacy-policy'),
+      BRAND.privacyUrl != null && BRAND.privacyUrl !== ''
+        ? BRAND.privacyUrl
+        : fromPortal('privacy-policy'),
   };
 }
 
@@ -94,9 +99,7 @@ export type LanguageCode = (typeof SUPPORTED_LANGUAGES)[number];
 // this field. Never empty; always includes at least 'en'.
 function resolveEnabledLanguages(): LanguageCode[] {
   const raw =
-    baked?.languages ??
-    (defaultBrand as { languages?: string[] }).languages ??
-    SUPPORTED_LANGUAGES;
+    baked?.languages ?? (defaultBrand as { languages?: string[] }).languages ?? SUPPORTED_LANGUAGES;
   const valid = raw.filter((c): c is LanguageCode =>
     (SUPPORTED_LANGUAGES as readonly string[]).includes(c),
   );

@@ -4,7 +4,17 @@
 import React from 'react';
 import { View, Pressable } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Screen, Text, Field, Button, Card, Segmented, Sheet, BackButton, useToast } from '@/components/ui';
+import {
+  Screen,
+  Text,
+  Field,
+  Button,
+  Card,
+  Segmented,
+  Sheet,
+  BackButton,
+  useToast,
+} from '@/components/ui';
 import { useAuth } from '@/lib/auth';
 import { ApiError, getApiErrorFieldDetails } from '@/lib/api';
 import { useUpdateProfile } from '@/features/account';

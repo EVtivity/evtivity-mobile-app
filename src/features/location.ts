@@ -58,16 +58,16 @@ export function useLocationImages(siteId: string) {
   return useQuery({
     queryKey: ['location', siteId, 'images'],
     queryFn: () =>
-      api.get<LocationImage[]>(
-        `/v1/portal/chargers/location/${encodeURIComponent(siteId)}/images`,
-      ),
+      api.get<LocationImage[]>(`/v1/portal/chargers/location/${encodeURIComponent(siteId)}/images`),
     enabled: siteId.length > 0,
   });
 }
 
 export function fetchImageDownloadUrl(siteId: string, imageId: number): Promise<string> {
   return api
-    .get<{ downloadUrl: string }>(
+    .get<{
+      downloadUrl: string;
+    }>(
       `/v1/portal/chargers/location/${encodeURIComponent(siteId)}/images/${String(imageId)}/download-url`,
     )
     .then((r) => r.downloadUrl);

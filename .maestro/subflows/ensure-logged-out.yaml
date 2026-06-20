@@ -9,34 +9,34 @@ appId: com.evtivity.driver
 - runFlow:
     when:
       visible:
-        id: "tab-account"
+        id: 'tab-account'
     commands:
       - tapOn:
-          id: "tab-account"
+          id: 'tab-account'
       # Wait for the Account screen to render before tapping sign out.
       - assertVisible:
-          id: "account-signout"
+          id: 'account-signout'
       - tapOn:
-          id: "account-signout"
+          id: 'account-signout'
 # Parked on Forgot Password: walk back to login.
 - runFlow:
     when:
-      visible: "Back to Login"
+      visible: 'Back to Login'
     commands:
-      - tapOn: "Back to Login"
+      - tapOn: 'Back to Login'
 # Parked on Register: scroll the back-link into view, then walk back to login.
 - runFlow:
     when:
-      visible: "Already have an account?"
+      visible: 'Already have an account?'
     commands:
       - scrollUntilVisible:
           element:
-            text: "Already have an account?"
+            text: 'Already have an account?'
           direction: DOWN
-      - tapOn: "Sign In"
+      - tapOn: 'Sign In'
 # Sign-out makes a server round-trip before the redirect to login, so wait for
 # the login screen rather than asserting it immediately.
 - extendedWaitUntil:
     visible:
-      id: "login-email"
+      id: 'login-email'
     timeout: 15000

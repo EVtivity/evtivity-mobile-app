@@ -2,13 +2,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 
 import React from 'react';
-import {
-  View,
-  Pressable,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native';
+import { View, Pressable, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Send } from '@/components/icons';
@@ -45,12 +39,14 @@ function MessageBubble({ message }: { message: SupportMessage }): React.JSX.Elem
     <View className={cn('w-full', isDriver ? 'items-end' : 'items-start')}>
       <View
         style={isDriver ? undefined : SURFACE_TEXT_VARS}
-        className={cn(
-          'max-w-[80%] rounded-2xl px-4 py-2.5',
-          isDriver ? 'bg-primary' : 'bg-muted',
-        )}
+        className={cn('max-w-[80%] rounded-2xl px-4 py-2.5', isDriver ? 'bg-primary' : 'bg-muted')}
       >
-        <Text className={cn('text-base leading-relaxed', isDriver ? 'text-primary-foreground' : 'text-foreground')}>
+        <Text
+          className={cn(
+            'text-base leading-relaxed',
+            isDriver ? 'text-primary-foreground' : 'text-foreground',
+          )}
+        >
           {message.body}
         </Text>
       </View>
@@ -112,7 +108,9 @@ export default function SupportCaseDetailScreen(): React.JSX.Element {
             </View>
             {detail.data != null ? (
               <Badge
-                label={t(`support.status.${detail.data.status}`, { defaultValue: detail.data.status })}
+                label={t(`support.status.${detail.data.status}`, {
+                  defaultValue: detail.data.status,
+                })}
                 variant={supportCaseStatusVariant(detail.data.status)}
               />
             ) : null}
@@ -160,10 +158,7 @@ export default function SupportCaseDetailScreen(): React.JSX.Element {
         {detail.data != null &&
         detail.data.status !== 'closed' &&
         detail.data.status !== 'resolved' ? (
-          <View
-            style={SURFACE_TEXT_VARS}
-            className="border-t border-white/15 bg-card/[0.7]"
-          >
+          <View style={SURFACE_TEXT_VARS} className="border-t border-white/15 bg-card/[0.7]">
             <View className="flex-row items-end gap-2 px-4 py-2">
               <Input
                 value={text}

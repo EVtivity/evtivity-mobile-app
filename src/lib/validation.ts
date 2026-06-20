@@ -7,10 +7,7 @@
 export const EMAIL_REGEX = /^\S+@\S+\.\S+$/;
 export const MIN_PASSWORD_LENGTH = 12;
 
-export function validateEmail(
-  value: string,
-  t: (key: string) => string,
-): string | undefined {
+export function validateEmail(value: string, t: (key: string) => string): string | undefined {
   const trimmed = value.trim();
   if (trimmed.length === 0) return t('auth.emailRequired');
   if (!EMAIL_REGEX.test(trimmed)) return t('auth.emailInvalid');

@@ -95,7 +95,11 @@ function paymentVariant(
   }
 }
 
-function vehicleLabel(v: { make: string | null; model: string | null; year: string | null }): string {
+function vehicleLabel(v: {
+  make: string | null;
+  model: string | null;
+  year: string | null;
+}): string {
   const name = [v.make, v.model].filter((p) => p != null && p !== '').join(' ');
   return v.year != null && v.year !== '' ? `${name} (${v.year})` : name;
 }
@@ -387,9 +391,7 @@ export default function SessionScreen(): React.JSX.Element {
         <View className="flex-1">
           <Text variant="title">{data.stationName ?? t('charge.detail.unknownStation')}</Text>
           {data.siteName != null ? <Text variant="muted">{data.siteName}</Text> : null}
-          {address !== '' ? (
-            <Text className="text-xs text-muted-foreground">{address}</Text>
-          ) : null}
+          {address !== '' ? <Text className="text-xs text-muted-foreground">{address}</Text> : null}
         </View>
       </Card>
 
@@ -444,7 +446,9 @@ export default function SessionScreen(): React.JSX.Element {
               {t('charge.detail.payment')}
             </Text>
             <Badge
-              label={t(`paymentStatus.${data.payment.status}`, { defaultValue: data.payment.status })}
+              label={t(`paymentStatus.${data.payment.status}`, {
+                defaultValue: data.payment.status,
+              })}
               variant={paymentVariant(data.payment.status)}
             />
           </View>

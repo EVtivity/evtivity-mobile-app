@@ -17,11 +17,7 @@ export const Input = React.forwardRef<TextInput, InputProps>(function Input(
   ref,
 ): React.JSX.Element {
   const [focused, setFocused] = React.useState(false);
-  const borderClass = error
-    ? 'border-destructive'
-    : focused
-      ? 'border-primary'
-      : 'border-border';
+  const borderClass = error ? 'border-destructive' : focused ? 'border-primary' : 'border-border';
 
   return (
     <TextInput

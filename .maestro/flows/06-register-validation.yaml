@@ -6,15 +6,15 @@ tags:
   - auth
 ---
 - runFlow: ../subflows/ensure-logged-out.yaml
-- tapOn: "Create One"
+- tapOn: 'Create One'
 - assertVisible:
-    id: "register-firstName"
+    id: 'register-firstName'
 - tapOn:
-    id: "register-submit"
-- assertVisible: "First name is required."
-- assertVisible: "Last name is required."
-- assertVisible: "Email is required."
+    id: 'register-submit'
+- assertVisible: 'First name is required.'
+- assertVisible: 'Last name is required.'
+- assertVisible: 'Email is required.'
 - scrollUntilVisible:
     element:
-      text: "Password is required."
+      text: 'Password is required.'
     direction: DOWN

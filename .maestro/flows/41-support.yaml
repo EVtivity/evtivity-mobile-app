@@ -9,46 +9,46 @@ tags:
 ---
 - runFlow: ../subflows/session.yaml
 - tapOn:
-    id: "tab-account"
+    id: 'tab-account'
 - scrollUntilVisible:
     element:
-      id: "account-row-support"
+      id: 'account-row-support'
     direction: DOWN
 - tapOn:
-    id: "account-row-support"
-- assertVisible: "Support"
-- assertVisible: "New Case"
+    id: 'account-row-support'
+- assertVisible: 'Support'
+- assertVisible: 'New Case'
 # open a case's detail when one exists, then return
 - runFlow:
     when:
       visible:
-        id: "support-case-.*"
+        id: 'support-case-.*'
     commands:
       - tapOn:
-          id: "support-case-.*"
+          id: 'support-case-.*'
       - assertVisible:
-          id: "back-button"
+          id: 'back-button'
       - tapOn:
-          id: "back-button"
-      - assertVisible: "Support"
+          id: 'back-button'
+      - assertVisible: 'Support'
 # new case form
-- tapOn: "New Case"
+- tapOn: 'New Case'
 - assertVisible:
-    id: "support-subject"
+    id: 'support-subject'
 - assertVisible:
-    id: "support-submit"
+    id: 'support-submit'
     enabled: false
 - tapOn:
-    id: "support-subject"
-- inputText: "E2E subject"
+    id: 'support-subject'
+- inputText: 'E2E subject'
 - hideKeyboard
 - tapOn:
-    id: "support-description"
-- inputText: "E2E description"
+    id: 'support-description'
+- inputText: 'E2E description'
 - hideKeyboard
 - assertVisible:
-    id: "support-submit"
+    id: 'support-submit'
     enabled: true
 - tapOn:
-    id: "back-button"
-- assertVisible: "Support"
+    id: 'back-button'
+- assertVisible: 'Support'

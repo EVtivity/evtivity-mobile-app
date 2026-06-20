@@ -10,14 +10,7 @@ export interface ReservationItem {
   id: string;
   reservationId: number;
   stationOcppId: string;
-  status:
-    | 'scheduled'
-    | 'active'
-    | 'used'
-    | 'cancelled'
-    | 'expired'
-    | 'system_cancelled'
-    | string;
+  status: 'scheduled' | 'active' | 'used' | 'cancelled' | 'expired' | 'system_cancelled' | string;
   startsAt: string | null;
   expiresAt: string;
   createdAt: string;
@@ -77,8 +70,7 @@ export interface ReservationDetail {
 export function useReservation(id: string) {
   return useQuery({
     queryKey: ['reservation', id],
-    queryFn: () =>
-      api.get<ReservationDetail>(`/v1/portal/reservations/${encodeURIComponent(id)}`),
+    queryFn: () => api.get<ReservationDetail>(`/v1/portal/reservations/${encodeURIComponent(id)}`),
     enabled: id.length > 0,
   });
 }

@@ -34,16 +34,21 @@ export function ListRow({
       testID={testID}
       onPress={onPress}
       disabled={onPress == null}
-      className={cn('flex-row items-center gap-3 py-4', onPress != null && 'active:opacity-70', className)}
+      className={cn(
+        'flex-row items-center gap-3 py-4',
+        onPress != null && 'active:opacity-70',
+        className,
+      )}
     >
       {left != null ? <View>{left}</View> : null}
       <View className="flex-1">
         <Text variant="title">{title}</Text>
         {subtitle != null ? <Text variant="muted">{subtitle}</Text> : null}
       </View>
-      {right ?? (showChevron && onPress != null ? (
-        <ChevronRight size={18} color={hsl('mutedForeground')} />
-      ) : null)}
+      {right ??
+        (showChevron && onPress != null ? (
+          <ChevronRight size={18} color={hsl('mutedForeground')} />
+        ) : null)}
     </Pressable>
   );
 }

@@ -10,59 +10,59 @@ tags:
 ---
 - runFlow: ../subflows/session.yaml
 - tapOn:
-    id: "tab-account"
+    id: 'tab-account'
 - tapOn:
-    id: "account-row-personal"
-- assertVisible: "Preferences"
+    id: 'account-row-personal'
+- assertVisible: 'Preferences'
 - tapOn:
-    id: "back-button"
+    id: 'back-button'
 - tapOn:
-    id: "account-row-security"
+    id: 'account-row-security'
 - assertVisible:
-    id: "back-button"
+    id: 'back-button'
 - tapOn:
-    id: "back-button"
+    id: 'back-button'
 - tapOn:
-    id: "account-row-notifications"
+    id: 'account-row-notifications'
 - extendedWaitUntil:
-    visible: "Email notifications"
+    visible: 'Email notifications'
     timeout: 8000
 - tapOn:
-    id: "back-button"
+    id: 'back-button'
 - tapOn:
-    id: "account-row-payment"
+    id: 'account-row-payment'
 - assertVisible:
-    id: "back-button"
+    id: 'back-button'
 - tapOn:
-    id: "back-button"
+    id: 'back-button'
 - tapOn:
-    id: "account-row-rfid"
-- assertVisible: "Add RFID Card"
+    id: 'account-row-rfid'
+- assertVisible: 'Add RFID Card'
 - tapOn:
-    id: "back-button"
+    id: 'back-button'
 - tapOn:
-    id: "account-row-vehicles"
-- assertVisible: "Add Vehicle"
+    id: 'account-row-vehicles'
+- assertVisible: 'Add Vehicle'
 - tapOn:
-    id: "back-button"
+    id: 'back-button'
 - scrollUntilVisible:
     element:
-      id: "account-row-favorites"
+      id: 'account-row-favorites'
     direction: DOWN
 - tapOn:
-    id: "account-row-favorites"
+    id: 'account-row-favorites'
 - assertVisible:
-    id: "back-button"
+    id: 'back-button'
 - tapOn:
-    id: "back-button"
+    id: 'back-button'
 - scrollUntilVisible:
     element:
-      id: "account-row-about"
+      id: 'account-row-about'
     direction: DOWN
 - tapOn:
-    id: "account-row-about"
-- assertVisible: "App version"
+    id: 'account-row-about'
+- assertVisible: 'App version'
 - tapOn:
-    id: "back-button"
+    id: 'back-button'
 - assertVisible:
-    id: "account-row-about"
+    id: 'account-row-about'

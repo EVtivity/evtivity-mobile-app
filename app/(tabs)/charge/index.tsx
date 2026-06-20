@@ -7,11 +7,27 @@ import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import * as Location from 'expo-location';
 import { QrCode, Globe } from '@/components/icons';
-import { Screen, Text, Input, Button, Spinner, EmptyState, Segmented, Card, Badge, useToast } from '@/components/ui';
+import {
+  Screen,
+  Text,
+  Input,
+  Button,
+  Spinner,
+  EmptyState,
+  Segmented,
+  Card,
+  Badge,
+  useToast,
+} from '@/components/ui';
 import { AppHeader } from '@/components/AppHeader';
 import { StationCard } from '@/components/StationCard';
 import { hsl } from '@/lib/theme';
-import { useNearbyChargers, useSearchChargers, useSearchRoaming, type RoamingStation } from '@/features/charge';
+import {
+  useNearbyChargers,
+  useSearchChargers,
+  useSearchRoaming,
+  type RoamingStation,
+} from '@/features/charge';
 import { useFeatures } from '@/features/app-info';
 import { useDebouncedValue } from '@/lib/use-debounced-value';
 
@@ -130,7 +146,10 @@ export default function ChargeScreen(): React.JSX.Element {
             <View className="gap-3">
               <Text variant="h3">{t('charge.nearby')}</Text>
               {coords == null ? (
-                <EmptyState title={t('charge.nearby')} description={t('charge.searchPlaceholder')} />
+                <EmptyState
+                  title={t('charge.nearby')}
+                  description={t('charge.searchPlaceholder')}
+                />
               ) : nearby.isLoading ? (
                 <Spinner />
               ) : (nearby.data?.length ?? 0) === 0 ? (
@@ -203,7 +222,9 @@ function RoamingCard({
   onPress: () => void;
 }): React.JSX.Element {
   const { t } = useTranslation();
-  const locationLine = [station.city, station.address].filter((p) => p != null && p.length > 0).join(', ');
+  const locationLine = [station.city, station.address]
+    .filter((p) => p != null && p.length > 0)
+    .join(', ');
   return (
     <Card onPress={onPress} className="gap-3">
       <View className="flex-row items-start justify-between gap-3">

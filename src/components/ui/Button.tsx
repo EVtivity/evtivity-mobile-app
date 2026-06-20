@@ -87,7 +87,9 @@ export function Button({
 
   const icon =
     leftIcon != null && React.isValidElement(leftIcon)
-      ? React.cloneElement(leftIcon as React.ReactElement<{ color?: string }>, { color: contentColor })
+      ? React.cloneElement(leftIcon as React.ReactElement<{ color?: string }>, {
+          color: contentColor,
+        })
       : leftIcon;
 
   return (

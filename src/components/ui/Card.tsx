@@ -31,7 +31,14 @@ function CardSheen(): React.JSX.Element {
   );
 }
 
-export function Card({ className, onPress, flat = false, children, style, ...props }: CardProps): React.JSX.Element {
+export function Card({
+  className,
+  onPress,
+  flat = false,
+  children,
+  style,
+  ...props
+}: CardProps): React.JSX.Element {
   // Translucent "glass" surface: the white card token over the branded backdrop
   // with a faint light rim so the green network shows through the edges. The
   // SURFACE_TEXT_VARS make text inside render dark. A plain (non-reanimated)

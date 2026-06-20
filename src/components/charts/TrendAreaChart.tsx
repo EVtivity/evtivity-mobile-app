@@ -61,7 +61,9 @@ export const TrendAreaChart = React.memo(function TrendAreaChart({
 
     const line =
       points.length > 0
-        ? points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${sx(p.x).toFixed(1)} ${sy(p.y).toFixed(1)}`).join(' ')
+        ? points
+            .map((p, i) => `${i === 0 ? 'M' : 'L'} ${sx(p.x).toFixed(1)} ${sy(p.y).toFixed(1)}`)
+            .join(' ')
         : '';
     const baseY = sy(0);
     const area =
@@ -69,7 +71,8 @@ export const TrendAreaChart = React.memo(function TrendAreaChart({
         ? `${line} L ${sx(points[points.length - 1]!.x).toFixed(1)} ${baseY.toFixed(1)} L ${sx(points[0]!.x).toFixed(1)} ${baseY.toFixed(1)} Z`
         : '';
     const yt = [0, safeMax / 2, safeMax];
-    const xt = points.length > 1 ? [xMin, xMin + xSpan / 2, xMaxV] : points.length === 1 ? [xMin] : [];
+    const xt =
+      points.length > 1 ? [xMin, xMin + xSpan / 2, xMaxV] : points.length === 1 ? [xMin] : [];
     return {
       px: sx,
       py: sy,
@@ -96,8 +99,23 @@ export const TrendAreaChart = React.memo(function TrendAreaChart({
             const y = py(v);
             return (
               <React.Fragment key={`y${i}`}>
-                <Line x1={PAD.left} y1={y} x2={width - PAD.right} y2={y} stroke={border} strokeWidth={1} strokeDasharray="3 5" />
-                <SvgText x={PAD.left - 8} y={y + 4} fontSize={10} fill={muted} textAnchor="end" fontFamily="Inter_500Medium">
+                <Line
+                  x1={PAD.left}
+                  y1={y}
+                  x2={width - PAD.right}
+                  y2={y}
+                  stroke={border}
+                  strokeWidth={1}
+                  strokeDasharray="3 5"
+                />
+                <SvgText
+                  x={PAD.left - 8}
+                  y={y + 4}
+                  fontSize={10}
+                  fill={muted}
+                  textAnchor="end"
+                  fontFamily="Inter_500Medium"
+                >
                   {formatY(v)}
                 </SvgText>
               </React.Fragment>
@@ -106,7 +124,14 @@ export const TrendAreaChart = React.memo(function TrendAreaChart({
 
           {areaPath !== '' ? <Path d={areaPath} fill="url(#area)" /> : null}
           {linePath !== '' ? (
-            <Path d={linePath} fill="none" stroke={color} strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" />
+            <Path
+              d={linePath}
+              fill="none"
+              stroke={color}
+              strokeWidth={2.5}
+              strokeLinejoin="round"
+              strokeLinecap="round"
+            />
           ) : null}
 
           {last != null ? (

@@ -170,11 +170,7 @@ export default function PaymentMethodsScreen(): React.JSX.Element {
         const key = await fetchEphemeralKey();
         if (active) setEphemeralKey(key);
       } catch (err) {
-        if (
-          active &&
-          err instanceof ApiError &&
-          err.code === 'PAYMENT_PROVIDER_NOT_CONFIGURED'
-        ) {
+        if (active && err instanceof ApiError && err.code === 'PAYMENT_PROVIDER_NOT_CONFIGURED') {
           setNotConfigured(true);
         }
       } finally {

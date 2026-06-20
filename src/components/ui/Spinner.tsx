@@ -7,10 +7,7 @@ import { hsl } from '@/lib/theme';
 
 export function Spinner({ size = 'large' }: { size?: 'small' | 'large' }): React.JSX.Element {
   return (
-    <View
-      accessibilityRole="progressbar"
-      className="flex-1 items-center justify-center py-8"
-    >
+    <View accessibilityRole="progressbar" className="flex-1 items-center justify-center py-8">
       <ActivityIndicator size={size} color={hsl('primary')} />
     </View>
   );
