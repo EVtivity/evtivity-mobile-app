@@ -30,7 +30,10 @@ import {
   Warning as PWarning,
   Check as PCheck,
   Plus as PPlus,
+  Minus as PMinus,
   Trash as PTrash,
+  DotsSixVertical as PDotsSixVertical,
+  SquaresFour as PSquaresFour,
   X as PX,
   PaperPlaneRight as PPaperPlaneRight,
   CalendarDots as PCalendarDots,
@@ -100,6 +103,9 @@ export const Nfc = make(PCardholder);
 export const Plug = make(PPlug);
 export const PlugZap = make(PPlugCharging);
 export const Plus = make(PPlus);
+export const Minus = make(PMinus);
+export const GripVertical = make(PDotsSixVertical);
+export const LayoutGrid = make(PSquaresFour);
 export const QrCode = make(PQrCode);
 export const Send = make(PPaperPlaneRight);
 export const ShieldCheck = make(PShieldCheck);

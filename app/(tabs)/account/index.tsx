@@ -9,6 +9,7 @@ import {
   User,
   ShieldCheck,
   BellRing,
+  LayoutGrid,
   CreditCard,
   Nfc,
   Car,
@@ -65,6 +66,13 @@ export default function AccountScreen(): React.JSX.Element {
           title={t('account.notifications')}
           left={<BellRing size={20} color={hsl('mutedForeground')} />}
           onPress={() => router.push('/account/notifications')}
+        />
+        <ListRow
+          testID="account-row-home-cards"
+          className="border-t border-muted-foreground/30"
+          title={t('account.homeScreen')}
+          left={<LayoutGrid size={20} color={hsl('mutedForeground')} />}
+          onPress={() => router.push('/account/home-cards')}
         />
       </Card>
 

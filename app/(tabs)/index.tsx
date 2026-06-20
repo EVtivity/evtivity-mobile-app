@@ -5,21 +5,14 @@ import React from 'react';
 import { View, Pressable } from 'react-native';
 import { useRouter, type Href } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import {
-  Zap,
-  ChevronRight,
-  CreditCard,
-  Nfc,
-  Car,
-  LifeBuoy,
-  Pause,
-  type LucideIcon,
-} from '@/components/icons';
+import { Zap, ChevronRight, Pause, type LucideIcon } from '@/components/icons';
 import { Screen, Text, Card, Button, Skeleton, EmptyState, useToast, useConfirm } from '@/components/ui';
 import { AppHeader } from '@/components/AppHeader';
 import { SessionRow } from '@/components/SessionRow';
 import { hsl } from '@/lib/theme';
 import { useAuth } from '@/lib/auth';
+import { useHomeCards } from '@/lib/home-cards-store';
+import { HOME_CARDS, type HomeCardId } from '@/lib/home-cards';
 import { usePullToRefresh } from '@/lib/use-pull-to-refresh';
 import { formatEnergyWh } from '@/lib/format';
 import { notifyError } from '@/lib/haptics';
@@ -48,6 +41,20 @@ function QuickAction({
   );
 }
 
+// Greyed-out empty slot that fills the 4th grid position when exactly three
+// cards are chosen, so the 2x2 layout keeps its shape.
+function HomeCardPlaceholder(): React.JSX.Element {
+  return (
+    <View
+      testID="home-card-placeholder"
+      className="flex-1 items-center justify-center gap-3 rounded-2xl border border-dashed border-white/15 bg-card/[0.2] py-6"
+    >
+      <View className="h-[72px] w-[72px] rounded-2xl bg-white/[0.06]" />
+      <View className="h-4 w-16 rounded bg-white/[0.06]" />
+    </View>
+  );
+}
+
 export default function HomeScreen(): React.JSX.Element {
   const { t } = useTranslation();
   const router = useRouter();
@@ -58,6 +65,18 @@ export default function HomeScreen(): React.JSX.Element {
   const active = useActiveSessions();
   const recent = useRecentSessions(3);
   const stop = useStopSession();
+
+  const homeCards = useHomeCards((s) => s.cards);
+  const loadHomeCards = useHomeCards((s) => s.load);
+  React.useEffect(() => {
+    void loadHomeCards();
+  }, [loadHomeCards]);
+
+  // Pad three cards with a placeholder so the grid keeps its 2x2 shape; two
+  // cards render as a single row and Recent Sessions moves up beneath them.
+  const cardSlots: (HomeCardId | null)[] = homeCards.length === 3 ? [...homeCards, null] : homeCards;
+  const cardRows: (HomeCardId | null)[][] = [];
+  for (let i = 0; i < cardSlots.length; i += 2) cardRows.push(cardSlots.slice(i, i + 2));
   const { refreshing, onRefresh } = usePullToRefresh(() =>
     Promise.all([active.refetch(), recent.refetch()]),
   );
@@ -148,14 +167,22 @@ export default function HomeScreen(): React.JSX.Element {
       ) : null}
 
       <View className="gap-3">
-        <View className="flex-row gap-3">
-          <QuickAction icon={CreditCard} label={t('account.paymentMethods')} to="/account/payment-methods" />
-          <QuickAction icon={Nfc} label={t('account.rfid')} to="/account/rfid" />
-        </View>
-        <View className="flex-row gap-3">
-          <QuickAction icon={Car} label={t('account.vehicles')} to="/account/vehicles" />
-          <QuickAction icon={LifeBuoy} label={t('account.support')} to="/support" />
-        </View>
+        {cardRows.map((row, ri) => (
+          <View key={`card-row-${String(ri)}`} className="flex-row gap-3">
+            {row.map((id, ci) =>
+              id == null ? (
+                <HomeCardPlaceholder key={`card-ph-${String(ri)}-${String(ci)}`} />
+              ) : (
+                <QuickAction
+                  key={id}
+                  icon={HOME_CARDS[id].icon}
+                  label={t(HOME_CARDS[id].labelKey)}
+                  to={HOME_CARDS[id].to}
+                />
+              ),
+            )}
+          </View>
+        ))}
       </View>
 
       <View className="flex-row items-center justify-between">
