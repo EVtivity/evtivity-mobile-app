@@ -4,12 +4,13 @@
 import React from 'react';
 import { View, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Star, Bell } from '@/components/icons';
+import { Star, Bell, Eye } from '@/components/icons';
 import { Text } from '@/components/ui';
 import { BrandLogo } from '@/components/BrandLogo';
 import { NotificationsSheet } from '@/components/NotificationsSheet';
 import { useUnreadCount } from '@/features/notifications';
 import { useFavorites } from '@/features/favorites';
+import { useWatches } from '@/features/station-watch';
 import { useBranding } from '@/features/app-info';
 import { APP_NAME } from '@/lib/config';
 import { hsl } from '@/lib/theme';
@@ -21,10 +22,12 @@ export function AppHeader(): React.JSX.Element {
   const router = useRouter();
   const unread = useUnreadCount();
   const favorites = useFavorites();
+  const watches = useWatches();
   const { data: branding } = useBranding();
   const [sheetOpen, setSheetOpen] = React.useState(false);
   const count = unread.data ?? 0;
   const hasFavorites = (favorites.data?.length ?? 0) > 0;
+  const watchCount = watches.data?.length ?? 0;
 
   const name = branding?.name != null && branding.name !== '' ? branding.name : APP_NAME;
 
@@ -48,6 +51,26 @@ export function AppHeader(): React.JSX.Element {
             weight={hasFavorites ? 'fill' : 'regular'}
             color={hasFavorites ? hsl('warning') : hsl('mutedForeground')}
           />
+        </Pressable>
+        <Pressable
+          accessibilityLabel="Watching"
+          onPress={() => router.push('/watching')}
+          hitSlop={8}
+          className="h-10 w-10 items-center justify-center rounded-full bg-muted active:opacity-60"
+        >
+          <Eye size={20} color={hsl('mutedForeground')} />
+          {watchCount > 0 ? (
+            <View className="absolute -right-2 -top-1 h-[18px] min-w-[18px] items-center justify-center rounded-full bg-primary px-1.5">
+              <Text
+                weight="bold"
+                tabular
+                className="text-[11px] text-white"
+                style={{ lineHeight: 14, textAlign: 'center', includeFontPadding: false }}
+              >
+                {watchCount > 99 ? '99+' : watchCount}
+              </Text>
+            </View>
+          ) : null}
         </Pressable>
         <Pressable
           accessibilityLabel="Notifications"

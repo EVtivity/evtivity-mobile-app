@@ -127,8 +127,8 @@ export default function ChargeScreen(): React.JSX.Element {
                 search.data?.map((s) => (
                   <StationCard
                     key={s.stationId}
-                    name={s.stationId}
-                    address={s.siteName}
+                    name={s.siteName ?? s.stationId}
+                    address={[s.siteAddress, s.siteCity].filter(Boolean).join(', ') || null}
                     isOnline={s.isOnline}
                     availableCount={s.availableCount}
                     evseCount={s.evseCount}

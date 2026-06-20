@@ -81,9 +81,17 @@ function RootNavigator(): React.JSX.Element {
   // Route to the relevant area when the user taps a push notification.
   React.useEffect(() => {
     const sub = Notifications.addNotificationResponseReceivedListener((response) => {
-      const data = response.notification.request.content.data as { eventType?: string };
+      const data = response.notification.request.content.data as {
+        eventType?: string;
+        stationId?: string;
+      };
       const evt = data?.eventType ?? '';
-      if (evt.startsWith('support')) router.push('/support');
+      if (evt.startsWith('watch') && typeof data?.stationId === 'string' && data.stationId !== '') {
+        router.push({
+          pathname: '/charge/[stationId]',
+          params: { stationId: data.stationId },
+        });
+      } else if (evt.startsWith('support')) router.push('/support');
       else if (evt.startsWith('session')) router.push('/(tabs)');
       else router.push('/(tabs)/account');
     });

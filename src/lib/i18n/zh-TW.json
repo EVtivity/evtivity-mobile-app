@@ -433,5 +433,16 @@
     "totals": "總計",
     "sessionCount": "充電次數",
     "co2Row": "{{kg}} kg CO₂"
+  },
+  "watch": {
+    "notifyWhenFree": "空閒時通知我",
+    "watching": "取消關注",
+    "added": "該充電樁空閒時將通知您。",
+    "removed": "已取消關注。",
+    "addFailed": "無法關注該充電樁。",
+    "title": "關注",
+    "empty": "您還沒有關注任何充電樁。",
+    "removeTitle": "取消關注",
+    "removeMessage": "當該充電站空閒時，你將不再收到通知。"
   }
 }

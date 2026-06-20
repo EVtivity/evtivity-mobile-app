@@ -433,5 +433,16 @@
     "totals": "Totales",
     "sessionCount": "Sesiones",
     "co2Row": "{{kg}} kg de CO₂"
+  },
+  "watch": {
+    "notifyWhenFree": "Avisarme cuando este libre",
+    "watching": "Dejar de seguir",
+    "added": "Te avisaremos cuando esta estacion este libre.",
+    "removed": "Vigilancia eliminada.",
+    "addFailed": "No se pudo empezar a vigilar esta estacion.",
+    "title": "Vigilando",
+    "empty": "No estas vigilando ninguna estacion.",
+    "removeTitle": "Dejar de seguir",
+    "removeMessage": "Ya no recibiras una notificacion cuando esta estacion este libre."
   }
 }

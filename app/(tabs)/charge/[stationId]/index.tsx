@@ -25,6 +25,7 @@ import {
   Sheet,
   BackButton,
   useToast,
+  useConfirm,
 } from '@/components/ui';
 import { ConnectorTile } from '@/components/ConnectorTile';
 import { openEmail, openPhone } from '@/lib/safe-link';
@@ -42,6 +43,7 @@ import {
   type StationConnector,
 } from '@/features/charge';
 import { useIsFavorite, useToggleFavorite } from '@/features/favorites';
+import { useIsWatching, useToggleWatch } from '@/features/station-watch';
 import { usePaymentMethods, type PaymentCard } from '@/features/payments';
 import { useActiveSessions } from '@/features/sessions';
 import { apiErrorMessage } from '@/lib/api';
@@ -59,12 +61,15 @@ export default function StationDetailScreen(): React.JSX.Element {
   const { t } = useTranslation();
   const router = useRouter();
   const toast = useToast();
+  const confirm = useConfirm();
   const { stationId, evseId } = useLocalSearchParams<{ stationId: string; evseId?: string }>();
   const sid = stationId ?? '';
   const station = useStation(sid);
   const pricing = usePricing(sid);
   const favorite = useIsFavorite(sid);
   const toggleFavorite = useToggleFavorite();
+  const watch = useIsWatching(sid);
+  const toggleWatch = useToggleWatch();
   const paymentMethods = usePaymentMethods();
   const start = useStartCharging();
   const activeSessions = useActiveSessions();
@@ -144,6 +149,34 @@ export default function StationDetailScreen(): React.JSX.Element {
       isFavorited: favorite.data?.isFavorite ?? false,
     });
   }, [toggleFavorite, sid, favorite.data]);
+
+  const onToggleWatch = React.useCallback(async () => {
+    const isWatching = watch.data?.isWatching === true;
+    // Removing a watch is destructive (you stop being notified), so confirm it.
+    // Arming a watch is not, so it stays a single tap.
+    if (isWatching) {
+      const ok = await confirm({
+        title: t('watch.removeTitle'),
+        message: t('watch.removeMessage'),
+        confirmText: t('common.remove'),
+        destructive: true,
+      });
+      if (!ok) return;
+    }
+    toggleWatch.mutate(
+      {
+        stationId: sid,
+        watchId: watch.data?.watchId ?? null,
+        isWatching: watch.data?.isWatching ?? false,
+      },
+      {
+        onSuccess: () => {
+          toast.show(isWatching ? t('watch.removed') : t('watch.added'), 'success');
+        },
+        onError: () => toast.show(t('watch.addFailed'), 'error'),
+      },
+    );
+  }, [toggleWatch, sid, watch.data, toast, t, confirm]);
 
   const runStart = React.useCallback(
     (sel: SelectedConnector) => {
@@ -392,6 +425,15 @@ export default function StationDetailScreen(): React.JSX.Element {
         loading={toggleFavorite.isPending}
         onPress={onToggleFavorite}
       />
+
+      {!data.evses.some((e) => e.connectors.some((c) => c.status === 'available')) ? (
+        <Button
+          title={watch.data?.isWatching === true ? t('watch.watching') : t('watch.notifyWhenFree')}
+          variant="outline"
+          loading={toggleWatch.isPending}
+          onPress={() => void onToggleWatch()}
+        />
+      ) : null}
 
       <Button
         title={t('charge.reportIssue')}

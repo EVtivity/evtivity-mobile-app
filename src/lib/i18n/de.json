@@ -433,5 +433,16 @@
     "totals": "Summen",
     "sessionCount": "Sitzungen",
     "co2Row": "{{kg}} kg CO₂"
+  },
+  "watch": {
+    "notifyWhenFree": "Benachrichtigen wenn frei",
+    "watching": "Nicht mehr beobachten",
+    "added": "Sie werden benachrichtigt, wenn diese Ladestation frei ist.",
+    "removed": "Beobachtung entfernt.",
+    "addFailed": "Diese Ladestation konnte nicht beobachtet werden.",
+    "title": "Beobachtet",
+    "empty": "Sie beobachten keine Ladestationen.",
+    "removeTitle": "Nicht mehr beobachten",
+    "removeMessage": "Du wirst nicht mehr benachrichtigt, wenn diese Station frei ist."
   }
 }
