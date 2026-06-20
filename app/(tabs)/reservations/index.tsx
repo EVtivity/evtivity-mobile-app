@@ -72,11 +72,7 @@ export default function ReservationsScreen(): React.JSX.Element {
   };
 
   return (
-    <Screen
-      scroll
-      refreshing={refreshing}
-      onRefresh={onRefresh}
-    >
+    <Screen scroll refreshing={refreshing} onRefresh={onRefresh}>
       <AppHeader />
       <Text variant="h1">{t('reservations.title')}</Text>
       <AddButton title={t('reservations.new')} onPress={() => router.push('/reservations/new')} />

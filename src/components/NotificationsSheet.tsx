@@ -9,7 +9,11 @@ import { Bell } from '@/components/icons';
 import { Sheet, Text, Spinner, EmptyState } from '@/components/ui';
 import { hsl } from '@/lib/theme';
 import { formatRelative } from '@/lib/format';
-import { useNotifications, useMarkAllRead, type PortalNotification } from '@/features/notifications';
+import {
+  useNotifications,
+  useMarkAllRead,
+  type PortalNotification,
+} from '@/features/notifications';
 
 type NotificationRoute = '/support' | '/reservations' | '/(tabs)/activity';
 
@@ -69,9 +73,7 @@ export function NotificationsSheet({
                 <Text variant="label" numberOfLines={1}>
                   {n.subject ?? n.eventType ?? t('notifications.title')}
                 </Text>
-                <Text className="text-xs text-muted-foreground">
-                  {formatRelative(n.createdAt)}
-                </Text>
+                <Text className="text-xs text-muted-foreground">{formatRelative(n.createdAt)}</Text>
               </Pressable>
             ))}
           </View>

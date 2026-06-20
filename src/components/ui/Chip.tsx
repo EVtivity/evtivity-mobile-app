@@ -26,7 +26,10 @@ export function Chip({
         active ? 'border-primary bg-primary/12' : 'border-border bg-card',
       )}
     >
-      <Text weight="semibold" className={cn('text-sm', active ? 'text-primary' : 'text-foreground')}>
+      <Text
+        weight="semibold"
+        className={cn('text-sm', active ? 'text-primary' : 'text-foreground')}
+      >
         {label}
       </Text>
     </Pressable>

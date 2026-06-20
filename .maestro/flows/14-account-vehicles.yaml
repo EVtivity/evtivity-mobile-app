@@ -8,15 +8,15 @@ tags:
 ---
 - runFlow: ../subflows/session.yaml
 - tapOn:
-    id: "tab-account"
+    id: 'tab-account'
 - scrollUntilVisible:
     element:
-      id: "account-row-vehicles"
+      id: 'account-row-vehicles'
     direction: DOWN
 - tapOn:
-    id: "account-row-vehicles"
-- assertVisible: "Add Vehicle"
+    id: 'account-row-vehicles'
+- assertVisible: 'Add Vehicle'
 - assertVisible:
-    id: "vehicle-add"
+    id: 'vehicle-add'
 - tapOn:
-    id: "vehicle-add"
+    id: 'vehicle-add'

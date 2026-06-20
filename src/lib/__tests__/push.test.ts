@@ -18,7 +18,9 @@ jest.mock('expo-secure-store', () => ({
   setItemAsync: jest.fn(async () => undefined),
   deleteItemAsync: jest.fn(async () => undefined),
 }));
-jest.mock('@/lib/api', () => ({ api: { post: jest.fn(async () => undefined), del: jest.fn(async () => undefined) } }));
+jest.mock('@/lib/api', () => ({
+  api: { post: jest.fn(async () => undefined), del: jest.fn(async () => undefined) },
+}));
 
 import { Platform } from 'react-native';
 import * as Notifications from 'expo-notifications';

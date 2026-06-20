@@ -136,8 +136,7 @@ export function useSearchRoaming(query: string) {
 export function useStation(stationId: string) {
   return useQuery({
     queryKey: ['station', stationId],
-    queryFn: () =>
-      api.get<StationDetail>(`/v1/portal/chargers/${encodeURIComponent(stationId)}`),
+    queryFn: () => api.get<StationDetail>(`/v1/portal/chargers/${encodeURIComponent(stationId)}`),
     enabled: stationId.length > 0,
     // Connector status (plugged/unplugged, charging, faulted) changes on the
     // station side with no push channel to the app. Poll while the detail

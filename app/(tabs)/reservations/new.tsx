@@ -163,14 +163,10 @@ export default function NewReservationScreen(): React.JSX.Element {
                   <Card flat className="flex-row items-center justify-between">
                     <View className="flex-1 pr-2">
                       <Text variant="title">{s.stationId}</Text>
-                      {s.siteName != null ? (
-                        <Text variant="muted">{s.siteName}</Text>
-                      ) : null}
+                      {s.siteName != null ? <Text variant="muted">{s.siteName}</Text> : null}
                     </View>
                     <Badge
-                      label={
-                        s.isOnline ? t('reservations.online') : t('reservations.offline')
-                      }
+                      label={s.isOnline ? t('reservations.online') : t('reservations.offline')}
                       variant={s.isOnline ? 'success' : 'secondary'}
                     />
                   </Card>

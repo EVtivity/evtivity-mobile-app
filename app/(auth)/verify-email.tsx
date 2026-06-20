@@ -56,7 +56,9 @@ export default function VerifyEmailScreen(): React.JSX.Element {
         ) : status === 'success' ? (
           <>
             <Check size={48} color={hsl('success')} />
-            <Text variant="h3" className="text-center">{t('auth.verifyEmailSuccess')}</Text>
+            <Text variant="h3" className="text-center">
+              {t('auth.verifyEmailSuccess')}
+            </Text>
             <Button title={t('auth.backToLogin')} onPress={() => router.replace('/(auth)/login')} />
           </>
         ) : status === 'missing' ? (
@@ -65,12 +67,18 @@ export default function VerifyEmailScreen(): React.JSX.Element {
             <Text className="text-center text-base leading-relaxed text-foreground/70">
               {t('auth.verifyEmailCheckInbox')}
             </Text>
-            <Button title={t('auth.backToLogin')} variant="outline" onPress={() => router.replace('/(auth)/login')} />
+            <Button
+              title={t('auth.backToLogin')}
+              variant="outline"
+              onPress={() => router.replace('/(auth)/login')}
+            />
           </>
         ) : (
           <>
             <AlertTriangle size={48} color={hsl('destructive')} />
-            <Text variant="h3" className="text-center">{t('auth.verifyEmailFailed')}</Text>
+            <Text variant="h3" className="text-center">
+              {t('auth.verifyEmailFailed')}
+            </Text>
             <Text className="text-center text-base leading-relaxed text-foreground/70">
               {apiErrorMessage(error, t)}
             </Text>

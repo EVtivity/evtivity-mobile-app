@@ -9,42 +9,42 @@ tags:
 ---
 - runFlow: ../subflows/session.yaml
 - tapOn:
-    id: "tab-account"
+    id: 'tab-account'
 - tapOn:
-    id: "account-row-personal"
-- assertVisible: "Preferences"
+    id: 'account-row-personal'
+- assertVisible: 'Preferences'
 # phone field entry, then revert. Clear first so the assertion is exact
 # regardless of any seeded phone value already in the field.
 - tapOn:
-    id: "personal-phone"
+    id: 'personal-phone'
 - eraseText
-- inputText: "5551234567"
+- inputText: '5551234567'
 - hideKeyboard
-- assertVisible: "5551234567"
+- assertVisible: '5551234567'
 - tapOn:
-    id: "personal-phone"
+    id: 'personal-phone'
 - eraseText
 - hideKeyboard
 # distance segment, toggled back to default
 - scrollUntilVisible:
     element:
-      text: "Kilometers"
+      text: 'Kilometers'
     direction: DOWN
-- tapOn: "Kilometers"
-- tapOn: "Miles"
+- tapOn: 'Kilometers'
+- tapOn: 'Miles'
 # save the net-zero change
 - scrollUntilVisible:
     element:
-      id: "personal-save"
+      id: 'personal-save'
     direction: DOWN
 - tapOn:
-    id: "personal-save"
+    id: 'personal-save'
 # back-button is at the top of the screen, scrolled off after reaching Save
 - scrollUntilVisible:
     element:
-      id: "back-button"
+      id: 'back-button'
     direction: UP
 - tapOn:
-    id: "back-button"
+    id: 'back-button'
 - assertVisible:
-    id: "account-row-personal"
+    id: 'account-row-personal'

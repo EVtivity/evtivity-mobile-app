@@ -9,13 +9,13 @@ tags:
 - runFlow: ../subflows/session.yaml
 # evseId is a query param on the station route, not a path segment.
 - openLink: com.evtivity.driver://charge/CS-0001?evseId=1
-- assertVisible: "CS-0001"
-- assertVisible: "Start Charging"
+- assertVisible: 'CS-0001'
+- assertVisible: 'Start Charging'
 # view location (tap the address row) opens the location screen
 - tapOn:
-    id: "station-location"
+    id: 'station-location'
 - assertVisible:
-    id: "back-button"
+    id: 'back-button'
 - tapOn:
-    id: "back-button"
-- assertVisible: "Start Charging"
+    id: 'back-button'
+- assertVisible: 'Start Charging'

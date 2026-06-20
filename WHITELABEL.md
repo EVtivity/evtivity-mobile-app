@@ -16,19 +16,19 @@ your brand object.
 
 2. Edit the fields on your new brand object:
 
-   | Field | What to set |
-   |---|---|
-   | `name` | Display name shown under the icon and in stores. |
-   | `slug` | Unique short id. Matches the registry key and `ACTIVE_BRAND`. |
-   | `scheme` | URL scheme for deep links (`acme://`). Lowercase, no spaces. |
-   | `iosBundleId` | Your reverse-DNS iOS bundle identifier (`com.acme.driver`). |
-   | `androidPackage` | Your Android package name (`com.acme.driver`). |
-   | `apiUrl` | Base URL of your EVtivity API deployment. |
-   | `easProjectId` | Your Expo EAS project id. Required to mint push tokens. |
-   | `termsUrl` / `privacyUrl` | Full URLs to your legal pages. Leave empty to derive them from your CSMS portal. |
-   | `languages` | Languages offered in the app, from `en`, `es`, `zh`, `de`, `ko`, `zh-TW`. The first entry is the default for a fresh install. Omit to offer all. See [Languages](#languages). |
-   | `colors` | Light and dark palettes. See below. |
-   | `icon` / `adaptiveIcon` / `splash` | Asset paths, default to `./assets/*`. |
+   | Field                              | What to set                                                                                                                                                                   |
+   | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+   | `name`                             | Display name shown under the icon and in stores.                                                                                                                              |
+   | `slug`                             | Unique short id. Matches the registry key and `ACTIVE_BRAND`.                                                                                                                 |
+   | `scheme`                           | URL scheme for deep links (`acme://`). Lowercase, no spaces.                                                                                                                  |
+   | `iosBundleId`                      | Your reverse-DNS iOS bundle identifier (`com.acme.driver`).                                                                                                                   |
+   | `androidPackage`                   | Your Android package name (`com.acme.driver`).                                                                                                                                |
+   | `apiUrl`                           | Base URL of your EVtivity API deployment.                                                                                                                                     |
+   | `easProjectId`                     | Your Expo EAS project id. Required to mint push tokens.                                                                                                                       |
+   | `termsUrl` / `privacyUrl`          | Full URLs to your legal pages. Leave empty to derive them from your CSMS portal.                                                                                              |
+   | `languages`                        | Languages offered in the app, from `en`, `es`, `zh`, `de`, `ko`, `zh-TW`. The first entry is the default for a fresh install. Omit to offer all. See [Languages](#languages). |
+   | `colors`                           | Light and dark palettes. See below.                                                                                                                                           |
+   | `icon` / `adaptiveIcon` / `splash` | Asset paths, default to `./assets/*`.                                                                                                                                         |
 
 3. Register the brand in the `brands` map in the same file:
 
@@ -42,11 +42,11 @@ your brand object.
 4. Replace the assets in `assets/` with your artwork, keeping the filenames (or
    update the brand's asset paths). Sizes:
 
-   | File | Size |
-   |---|---|
-   | `icon.png` | 1024x1024 |
+   | File                | Size                      |
+   | ------------------- | ------------------------- |
+   | `icon.png`          | 1024x1024                 |
    | `adaptive-icon.png` | 1024x1024 (safe zone 66%) |
-   | `splash.png` | 1284x2778 |
+   | `splash.png`        | 1284x2778                 |
 
 5. Select the brand:
 

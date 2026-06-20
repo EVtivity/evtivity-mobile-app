@@ -7,24 +7,24 @@ tags:
   - navigation
 ---
 - runFlow: ../subflows/session.yaml
-- assertVisible: "Ready to charge"
-- assertVisible: "Payment Methods"
-- assertVisible: "Recent sessions"
+- assertVisible: 'Ready to charge'
+- assertVisible: 'Payment Methods'
+- assertVisible: 'Recent sessions'
 # open the first recent session's detail and return
 - scrollUntilVisible:
     element:
-      id: "session-row-.*"
+      id: 'session-row-.*'
     direction: DOWN
 - tapOn:
-    id: "session-row-.*"
+    id: 'session-row-.*'
 - assertVisible:
-    id: "back-button"
+    id: 'back-button'
 - tapOn:
-    id: "back-button"
-- assertVisible: "Ready to charge"
+    id: 'back-button'
+- assertVisible: 'Ready to charge'
 # View All goes to Activity
-- tapOn: "View All"
-- assertVisible: "Activity"
+- tapOn: 'View All'
+- assertVisible: 'Activity'
 - tapOn:
-    id: "tab-index"
-- assertVisible: "Ready to charge"
+    id: 'tab-index'
+- assertVisible: 'Ready to charge'

@@ -28,7 +28,9 @@ describe('validatePassword', () => {
     expect(validatePassword('', t)).toBe('auth.passwordRequired');
   });
   it('rejects a too-short password with the minimum length', () => {
-    expect(validatePassword('short', t)).toBe(`auth.passwordTooShort:${String(MIN_PASSWORD_LENGTH)}`);
+    expect(validatePassword('short', t)).toBe(
+      `auth.passwordTooShort:${String(MIN_PASSWORD_LENGTH)}`,
+    );
   });
   it('accepts a long-enough password', () => {
     expect(validatePassword('a'.repeat(MIN_PASSWORD_LENGTH), t)).toBeUndefined();

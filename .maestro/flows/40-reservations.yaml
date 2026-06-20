@@ -10,37 +10,37 @@ tags:
 ---
 - runFlow: ../subflows/session.yaml
 - tapOn:
-    id: "tab-reservations"
-- assertVisible: "Reservations"
-- tapOn: "Past"
-- tapOn: "Upcoming"
+    id: 'tab-reservations'
+- assertVisible: 'Reservations'
+- tapOn: 'Past'
+- tapOn: 'Upcoming'
 # open a reservation's detail when one exists, then return
 - runFlow:
     when:
       visible:
-        id: "reservation-card-.*"
+        id: 'reservation-card-.*'
     commands:
       - tapOn:
-          id: "reservation-card-.*"
+          id: 'reservation-card-.*'
       - assertVisible:
-          id: "back-button"
+          id: 'back-button'
       - tapOn:
-          id: "back-button"
-      - assertVisible: "Reservations"
+          id: 'back-button'
+      - assertVisible: 'Reservations'
 # new reservation form
-- tapOn: "New Reservation"
+- tapOn: 'New Reservation'
 - assertVisible:
-    id: "reservation-station"
+    id: 'reservation-station'
 - assertVisible:
-    id: "reservation-submit"
+    id: 'reservation-submit'
     enabled: false
 - tapOn:
-    id: "reservation-station"
-- inputText: "CS-0001"
+    id: 'reservation-station'
+- inputText: 'CS-0001'
 - hideKeyboard
-- assertVisible: "CS-0001"
-- tapOn: "Schedule"
-- tapOn: "Now"
+- assertVisible: 'CS-0001'
+- tapOn: 'Schedule'
+- tapOn: 'Now'
 - tapOn:
-    id: "back-button"
-- assertVisible: "Reservations"
+    id: 'back-button'
+- assertVisible: 'Reservations'

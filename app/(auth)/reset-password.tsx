@@ -56,12 +56,10 @@ export default function ResetPasswordScreen(): React.JSX.Element {
 
   return (
     <Screen scroll>
-      <AuthHeader
-        title={t('auth.resetPasswordTitle')}
-        subtitle={t('auth.resetPasswordSubtitle')}
-      />
+      <AuthHeader title={t('auth.resetPasswordTitle')} subtitle={t('auth.resetPasswordSubtitle')} />
       <View className="gap-4">
-        <Field labelClassName="text-base"
+        <Field
+          labelClassName="text-base"
           label={t('auth.newPassword')}
           value={password}
           onChangeText={setPassword}
@@ -70,7 +68,8 @@ export default function ResetPasswordScreen(): React.JSX.Element {
           autoComplete="new-password"
           error={fieldErrors.password}
         />
-        <Field labelClassName="text-base"
+        <Field
+          labelClassName="text-base"
           label={t('auth.confirmPassword')}
           value={confirm}
           onChangeText={setConfirm}

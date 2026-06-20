@@ -6,12 +6,12 @@ are the ones this app was built and verified against (Expo SDK 52, React Native
 
 ## 1. Common tools (both platforms)
 
-| Tool | Version used | Install |
-|---|---|---|
-| Node.js | 24 LTS (verified on 24.12) | `brew install node` or nvm |
-| npm | 10+ (verified on 11.6) | ships with Node |
-| Watchman | 2026.06 | `brew install watchman` (optional, see gotcha 2) |
-| Expo CLI / EAS CLI | via `npx` | no global install needed (`npx expo`, `npx eas-cli`) |
+| Tool               | Version used               | Install                                              |
+| ------------------ | -------------------------- | ---------------------------------------------------- |
+| Node.js            | 24 LTS (verified on 24.12) | `brew install node` or nvm                           |
+| npm                | 10+ (verified on 11.6)     | ships with Node                                      |
+| Watchman           | 2026.06                    | `brew install watchman` (optional, see gotcha 2)     |
+| Expo CLI / EAS CLI | via `npx`                  | no global install needed (`npx expo`, `npx eas-cli`) |
 
 ```bash
 npm install
@@ -38,16 +38,16 @@ or follow the CLI-only recipe below.
 
 ### Required components
 
-| Component | Version used | Notes |
-|---|---|---|
-| JDK | Temurin 17 (17.0.19) | Gradle for RN 0.76 requires JDK 17, not 11 or 21. |
-| Android SDK platform | `platforms;android-35` | compileSdk/targetSdk 35 |
-| Build-tools | `build-tools;35.0.0` (and `34.0.0`) | 34 is pulled in by a native module |
-| Platform-tools | 37.0.0 | `adb` |
-| Emulator | 36.6.11 | |
-| System image | `system-images;android-35;google_apis;arm64-v8a` | arm64 for Apple Silicon |
-| NDK | 26.1.10909125 | auto-installed by Gradle on first build (~1 GB) |
-| CMake | auto | auto-installed by Gradle |
+| Component            | Version used                                     | Notes                                             |
+| -------------------- | ------------------------------------------------ | ------------------------------------------------- |
+| JDK                  | Temurin 17 (17.0.19)                             | Gradle for RN 0.76 requires JDK 17, not 11 or 21. |
+| Android SDK platform | `platforms;android-35`                           | compileSdk/targetSdk 35                           |
+| Build-tools          | `build-tools;35.0.0` (and `34.0.0`)              | 34 is pulled in by a native module                |
+| Platform-tools       | 37.0.0                                           | `adb`                                             |
+| Emulator             | 36.6.11                                          |                                                   |
+| System image         | `system-images;android-35;google_apis;arm64-v8a` | arm64 for Apple Silicon                           |
+| NDK                  | 26.1.10909125                                    | auto-installed by Gradle on first build (~1 GB)   |
+| CMake                | auto                                             | auto-installed by Gradle                          |
 
 ### CLI-only install (no Android Studio, no sudo)
 
@@ -92,13 +92,13 @@ minutes; code-only changes hot-reload through Metro in seconds.
 
 ## 3. iOS toolchain
 
-| Component | Version | Install |
-|---|---|---|
-| Xcode | latest | App Store (~7 GB, GUI, requires Apple ID). Cannot be scripted. |
-| Command Line Tools | bundled | `sudo xcode-select -s /Applications/Xcode.app/Contents/Developer` |
-| CocoaPods | 1.x | `brew install cocoapods` |
-| watchman | latest | `brew install watchman` |
-| Apple Developer Program | 99 USD/yr | required for App Store, APNs push, and App Attest |
+| Component               | Version   | Install                                                           |
+| ----------------------- | --------- | ----------------------------------------------------------------- |
+| Xcode                   | latest    | App Store (~7 GB, GUI, requires Apple ID). Cannot be scripted.    |
+| Command Line Tools      | bundled   | `sudo xcode-select -s /Applications/Xcode.app/Contents/Developer` |
+| CocoaPods               | 1.x       | `brew install cocoapods`                                          |
+| watchman                | latest    | `brew install watchman`                                           |
+| Apple Developer Program | 99 USD/yr | required for App Store, APNs push, and App Attest                 |
 
 ```bash
 npx expo run:ios            # prebuild + pod install + Xcode build + launch
@@ -123,6 +123,7 @@ npm run build:ios           # eas build --local --platform ios --profile product
    `gradle-8.10.2-all.zip` (~200 MB) with a hard 10 s read timeout; on a slow
    link it fails with `SocketTimeoutException`. Fix: pre-download the smaller
    `-bin` distribution and point the wrapper at the local file:
+
    ```bash
    curl -fsSL -o /tmp/gradle-8.10.2-bin.zip \
      https://services.gradle.org/distributions/gradle-8.10.2-bin.zip

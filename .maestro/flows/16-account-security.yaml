@@ -9,27 +9,27 @@ tags:
 ---
 - runFlow: ../subflows/session.yaml
 - tapOn:
-    id: "tab-account"
+    id: 'tab-account'
 - tapOn:
-    id: "account-row-security"
-- assertVisible: "Change Password"
+    id: 'account-row-security'
+- assertVisible: 'Change Password'
 - assertVisible:
-    id: "security-change-password"
+    id: 'security-change-password'
     enabled: false
 - tapOn:
-    id: "security-current-password"
-- inputText: "currentPass1"
+    id: 'security-current-password'
+- inputText: 'currentPass1'
 - hideKeyboard
 - tapOn:
-    id: "security-new-password"
-- inputText: "newStrongPass123"
+    id: 'security-new-password'
+- inputText: 'newStrongPass123'
 - hideKeyboard
 - assertVisible:
-    id: "security-change-password"
+    id: 'security-change-password'
     enabled: true
 # MFA section is reachable
 - scrollUntilVisible:
     element:
-      text: "Two-factor authentication"
+      text: 'Two-factor authentication'
     direction: DOWN
-- assertVisible: "Two-factor authentication"
+- assertVisible: 'Two-factor authentication'

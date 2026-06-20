@@ -79,7 +79,8 @@ export function hsl(token: keyof BrandColors, scheme: 'light' | 'dark' = 'light'
   if (cached != null) return cached;
   const palette = scheme === 'dark' ? BRAND.colors.dark : BRAND.colors.light;
   const raw = palette[token];
-  const value = raw == null || raw === '' ? 'transparent' : `hsl(${raw.trim().replace(/\s+/g, ', ')})`;
+  const value =
+    raw == null || raw === '' ? 'transparent' : `hsl(${raw.trim().replace(/\s+/g, ', ')})`;
   hslCache.set(key, value);
   return value;
 }

@@ -4,12 +4,7 @@
 import { API_BASE_URL } from './config';
 import { deviceHeaders } from './device';
 import { getAttestationHeaders } from './attestation';
-import {
-  getAccessToken,
-  isAccessTokenStale,
-  refreshSession,
-  hasSession,
-} from './session';
+import { getAccessToken, isAccessTokenStale, refreshSession, hasSession } from './session';
 
 export class ApiError extends Error {
   constructor(
@@ -161,7 +156,11 @@ export const api = {
   // Fetch a list endpoint shaped `{ data: T[] }` and return just the rows.
   getData: <T>(path: string, signal?: AbortSignal): Promise<T[]> =>
     api.get<{ data: T[] }>(path, signal).then((r) => r.data),
-  post: <T>(path: string, body?: unknown, opts?: { auth?: boolean; attest?: boolean }): Promise<T> =>
+  post: <T>(
+    path: string,
+    body?: unknown,
+    opts?: { auth?: boolean; attest?: boolean },
+  ): Promise<T> =>
     request<T>(path, {
       method: 'POST',
       body,

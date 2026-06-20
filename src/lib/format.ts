@@ -13,7 +13,9 @@ export function formatCurrency(
   if (cents == null || Number.isNaN(cents)) return NA;
   const code = currency ?? 'USD';
   try {
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: code }).format(cents / 100);
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: code }).format(
+      cents / 100,
+    );
   } catch {
     return `$${(cents / 100).toFixed(2)}`;
   }

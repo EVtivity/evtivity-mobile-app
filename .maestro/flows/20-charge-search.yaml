@@ -8,27 +8,27 @@ tags:
 ---
 - runFlow: ../subflows/session.yaml
 - tapOn:
-    id: "tab-charge"
-- assertVisible: "Charge"
+    id: 'tab-charge'
+- assertVisible: 'Charge'
 - assertVisible:
-    id: "charge-search"
+    id: 'charge-search'
 # scan QR opens the camera screen
 - assertVisible:
-    id: "charge-scan"
+    id: 'charge-scan'
 - tapOn:
-    id: "charge-scan"
-- assertVisible: "Point your camera at the charger QR code"
-- tapOn: "Close"
-- assertVisible: "Charge"
+    id: 'charge-scan'
+- assertVisible: 'Point your camera at the charger QR code'
+- tapOn: 'Close'
+- assertVisible: 'Charge'
 # roaming tab — only when the operator has OCPI roaming enabled (gated by the
 # roaming.enabled feature flag), so the tab may not be present
 - runFlow:
     when:
-      visible: "Roaming"
+      visible: 'Roaming'
     commands:
-      - tapOn: "Roaming"
+      - tapOn: 'Roaming'
       - assertVisible:
-          id: "charge-roaming-search"
-      - tapOn: "Local"
+          id: 'charge-roaming-search'
+      - tapOn: 'Local'
       - assertVisible:
-          id: "charge-search"
+          id: 'charge-search'

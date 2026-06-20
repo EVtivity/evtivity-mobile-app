@@ -103,9 +103,7 @@ function RootNavigator(): React.JSX.Element {
   if (status === 'authenticated' && locked) return <BiometricLock />;
 
   return (
-    <Stack
-      screenOptions={{ headerShown: false, contentStyle: { backgroundColor: '#0f172a' } }}
-    >
+    <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: '#0f172a' } }}>
       <Stack.Screen name="(auth)" />
       <Stack.Screen name="(tabs)" />
     </Stack>

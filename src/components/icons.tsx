@@ -2,7 +2,10 @@
 // SPDX-License-Identifier: BUSL-1.1
 
 import React from 'react';
-import type { Icon as PhosphorComponent, IconProps as PhosphorIconProps } from 'phosphor-react-native';
+import type {
+  Icon as PhosphorComponent,
+  IconProps as PhosphorIconProps,
+} from 'phosphor-react-native';
 import {
   House as PHouse,
   Lightning as PLightning,

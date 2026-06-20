@@ -7,15 +7,15 @@ tags:
 ---
 - runFlow: ../subflows/session.yaml
 - tapOn:
-    id: "tab-account"
+    id: 'tab-account'
 - scrollUntilVisible:
     element:
-      id: "account-row-payment"
+      id: 'account-row-payment'
     direction: DOWN
 - tapOn:
-    id: "account-row-payment"
-- assertVisible: "Payment"
+    id: 'account-row-payment'
+- assertVisible: 'Payment'
 - tapOn:
-    id: "back-button"
+    id: 'back-button'
 - assertVisible:
-    id: "account-row-personal"
+    id: 'account-row-personal'

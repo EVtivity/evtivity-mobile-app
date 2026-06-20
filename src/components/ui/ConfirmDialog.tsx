@@ -77,7 +77,11 @@ export function ConfirmProvider({ children }: { children: React.ReactNode }): Re
               )}
               <View className="flex-row gap-3">
                 <View className="flex-1">
-                  <Button title={opts?.cancelText ?? 'Cancel'} variant="secondary" onPress={() => settle(false)} />
+                  <Button
+                    title={opts?.cancelText ?? 'Cancel'}
+                    variant="secondary"
+                    onPress={() => settle(false)}
+                  />
                 </View>
                 <View className="flex-1">
                   <Button

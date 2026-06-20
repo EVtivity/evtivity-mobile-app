@@ -70,7 +70,11 @@ export function Screen({
       showsVerticalScrollIndicator={false}
       refreshControl={
         onRefresh != null ? (
-          <RefreshControl refreshing={refreshing ?? false} onRefresh={onRefresh} tintColor="#ffffff" />
+          <RefreshControl
+            refreshing={refreshing ?? false}
+            onRefresh={onRefresh}
+            tintColor="#ffffff"
+          />
         ) : undefined
       }
     >

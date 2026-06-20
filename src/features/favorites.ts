@@ -33,9 +33,7 @@ export function useIsFavorite(stationId: string) {
   return useQuery({
     queryKey: ['favorites', 'check', stationId],
     queryFn: () =>
-      api.get<CheckFavoriteResult>(
-        `/v1/portal/favorites/check/${encodeURIComponent(stationId)}`,
-      ),
+      api.get<CheckFavoriteResult>(`/v1/portal/favorites/check/${encodeURIComponent(stationId)}`),
     enabled: stationId.length > 0,
   });
 }

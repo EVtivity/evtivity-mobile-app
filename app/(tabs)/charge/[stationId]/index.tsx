@@ -76,7 +76,10 @@ export default function StationDetailScreen(): React.JSX.Element {
 
   const cards = paymentMethods.data ?? [];
   const selectedCard =
-    cards.find((c) => c.id === selectedCardId) ?? cards.find((c) => c.isDefault) ?? cards[0] ?? null;
+    cards.find((c) => c.id === selectedCardId) ??
+    cards.find((c) => c.isDefault) ??
+    cards[0] ??
+    null;
 
   const cardLabel = (card: PaymentCard): string =>
     [
@@ -180,9 +183,7 @@ export default function StationDetailScreen(): React.JSX.Element {
   const isFavorited = favorite.data?.isFavorite ?? false;
   const address = [data.siteAddress, data.siteCity, data.siteState].filter(Boolean).join(', ');
   const hasContact =
-    data.siteContactName != null ||
-    data.siteContactEmail != null ||
-    data.siteContactPhone != null;
+    data.siteContactName != null || data.siteContactEmail != null || data.siteContactPhone != null;
 
   // A driver may only run one session at a time. When one is already active on
   // another station, block starting here and point them to it instead of
@@ -367,7 +368,9 @@ export default function StationDetailScreen(): React.JSX.Element {
         onClose={() => setWarnVisible(false)}
         title={t('charge.evNotDetectedTitle')}
       >
-        <Text className="text-sm text-muted-foreground">{t('charge.evNotDetectedDescription')}</Text>
+        <Text className="text-sm text-muted-foreground">
+          {t('charge.evNotDetectedDescription')}
+        </Text>
         {data.isSimulator ? (
           <Card flat className="flex-row items-start gap-2">
             <AlertTriangle size={18} color={hsl('info')} />

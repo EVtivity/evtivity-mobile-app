@@ -35,7 +35,11 @@ const FAMILY: Record<Weight, string> = {
 // Color is NOT baked into the variant; it comes from the surface (light on the
 // branded backdrop, dark inside cards) unless overridden via className.
 const VARIANT: Record<Variant, { class: string; weight: Weight; tone: Tone }> = {
-  display: { class: 'text-[32px] leading-tight tracking-tighter', weight: 'extrabold', tone: 'default' },
+  display: {
+    class: 'text-[32px] leading-tight tracking-tighter',
+    weight: 'extrabold',
+    tone: 'default',
+  },
   h1: { class: 'text-[26px] leading-tight tracking-tight', weight: 'bold', tone: 'default' },
   h2: { class: 'text-[21px] leading-tight tracking-tight', weight: 'bold', tone: 'default' },
   h3: { class: 'text-[17px] tracking-tight', weight: 'semibold', tone: 'default' },
@@ -73,6 +77,10 @@ export function Text({
     ...(tabular ? { fontVariant: ['tabular-nums'] } : {}),
   };
   return (
-    <RNText className={cn(v.class, colorFor(v.tone), className)} style={[fontStyle, style]} {...props} />
+    <RNText
+      className={cn(v.class, colorFor(v.tone), className)}
+      style={[fontStyle, style]}
+      {...props}
+    />
   );
 }

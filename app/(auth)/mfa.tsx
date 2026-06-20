@@ -84,7 +84,8 @@ export default function MfaScreen(): React.JSX.Element {
         subtitle={t('auth.mfaSubtitle', { method: methodLabel })}
       />
       <View className="gap-4">
-        <Field labelClassName="text-base"
+        <Field
+          labelClassName="text-base"
           label={t('auth.mfaPrompt')}
           value={code}
           onChangeText={setCode}

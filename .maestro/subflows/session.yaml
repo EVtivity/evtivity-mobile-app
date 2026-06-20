@@ -7,4 +7,4 @@ appId: com.evtivity.driver
     env:
       EMAIL: driver@evtivity.local
       PASSWORD: driver123
-- assertVisible: "Ready to charge"
+- assertVisible: 'Ready to charge'

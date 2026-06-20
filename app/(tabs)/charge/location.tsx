@@ -8,7 +8,16 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { MapPin, Clock, Plug, Navigation, Mail, MessageSquare, User, X } from '@/components/icons';
-import { Screen, Text, Button, Card, Spinner, EmptyState, Segmented, BackButton } from '@/components/ui';
+import {
+  Screen,
+  Text,
+  Button,
+  Card,
+  Spinner,
+  EmptyState,
+  Segmented,
+  BackButton,
+} from '@/components/ui';
 import { LocationImageThumb } from '@/components/LocationImageThumb';
 import { PopularTimesChart } from '@/components/PopularTimesChart';
 import { openEmail, openPhone } from '@/lib/safe-link';
@@ -60,7 +69,11 @@ export default function LocationDetailScreen(): React.JSX.Element {
   }
 
   const data = detail.data;
-  const addressLine = [data.address, data.city, [data.state, data.postalCode].filter(Boolean).join(' ')]
+  const addressLine = [
+    data.address,
+    data.city,
+    [data.state, data.postalCode].filter(Boolean).join(' '),
+  ]
     .map((s) => s.trim())
     .filter((s) => s.length > 0)
     .join(', ');

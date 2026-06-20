@@ -70,10 +70,9 @@ export function useReplyCase(id: string) {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (body: string) =>
-      api.post<SupportMessage>(
-        `/v1/portal/support-cases/${encodeURIComponent(id)}/messages`,
-        { body },
-      ),
+      api.post<SupportMessage>(`/v1/portal/support-cases/${encodeURIComponent(id)}/messages`, {
+        body,
+      }),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ['support-case', id] });
       void qc.invalidateQueries({ queryKey: CASES_KEY });

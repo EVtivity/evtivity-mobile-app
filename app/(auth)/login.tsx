@@ -65,7 +65,8 @@ export default function LoginScreen(): React.JSX.Element {
     <Screen scroll>
       <AuthHeader title={t('auth.signIn')} />
       <View className="gap-4">
-        <Field labelClassName="text-base"
+        <Field
+          labelClassName="text-base"
           testID="login-email"
           label={t('auth.email')}
           value={email}
@@ -75,7 +76,8 @@ export default function LoginScreen(): React.JSX.Element {
           autoComplete="email"
           error={fieldErrors.email}
         />
-        <Field labelClassName="text-base"
+        <Field
+          labelClassName="text-base"
           testID="login-password"
           label={t('auth.password')}
           value={password}
@@ -84,7 +86,12 @@ export default function LoginScreen(): React.JSX.Element {
           autoComplete="current-password"
           error={fieldErrors.password}
         />
-        <Button testID="login-submit" title={t('auth.signIn')} loading={loading} onPress={() => void onSubmit()} />
+        <Button
+          testID="login-submit"
+          title={t('auth.signIn')}
+          loading={loading}
+          onPress={() => void onSubmit()}
+        />
         <Link href="/(auth)/forgot-password" className="self-center">
           <Text className="text-base text-primary">{t('auth.forgotPassword')}</Text>
         </Link>
@@ -92,7 +99,9 @@ export default function LoginScreen(): React.JSX.Element {
       <View className="mt-8 flex-row justify-center gap-1">
         <Text className="text-base text-muted-foreground">{t('auth.noAccount')}</Text>
         <Link href="/(auth)/register">
-          <Text weight="semibold" className="text-base text-primary">{t('auth.createOne')}</Text>
+          <Text weight="semibold" className="text-base text-primary">
+            {t('auth.createOne')}
+          </Text>
         </Link>
       </View>
       <AuthFooter />

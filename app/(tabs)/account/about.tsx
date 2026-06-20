@@ -44,9 +44,7 @@ export default function AboutScreen(): React.JSX.Element {
         <Text variant="h3">{companyName}</Text>
         <View className="flex-row justify-between">
           <Text variant="muted">{t('account.appVersion')}</Text>
-          <Text variant="label">
-            {APP_VERSION !== '' ? `v${APP_VERSION}` : t('common.na')}
-          </Text>
+          <Text variant="label">{APP_VERSION !== '' ? `v${APP_VERSION}` : t('common.na')}</Text>
         </View>
         <View className="flex-row justify-between">
           <Text variant="muted">{t('account.csmsVersion')}</Text>

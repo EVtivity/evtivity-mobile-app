@@ -8,29 +8,29 @@ tags:
 ---
 - runFlow: ../subflows/session.yaml
 - openLink: com.evtivity.driver://charge/CS-0001
-- assertVisible: "Select a connector"
-- assertVisible: "CS-0001"
+- assertVisible: 'Select a connector'
+- assertVisible: 'CS-0001'
 # view location (tap the address row) and return
 - tapOn:
-    id: "station-location"
+    id: 'station-location'
 - assertVisible:
-    id: "back-button"
+    id: 'back-button'
 - tapOn:
-    id: "back-button"
-- assertVisible: "Select a connector"
+    id: 'back-button'
+- assertVisible: 'Select a connector'
 # favorite toggle, then revert. The favorite id loads asynchronously after
 # adding, so re-open the screen (location round-trip) before removing to ensure
 # the id is present for the delete.
-- tapOn: "Add to Favorites"
-- assertVisible: "Remove from Favorites"
+- tapOn: 'Add to Favorites'
+- assertVisible: 'Remove from Favorites'
 - tapOn:
-    id: "station-location"
+    id: 'station-location'
 - assertVisible:
-    id: "back-button"
+    id: 'back-button'
 - tapOn:
-    id: "back-button"
-- assertVisible: "Remove from Favorites"
-- tapOn: "Remove from Favorites"
+    id: 'back-button'
+- assertVisible: 'Remove from Favorites'
+- tapOn: 'Remove from Favorites'
 - extendedWaitUntil:
-    visible: "Add to Favorites"
+    visible: 'Add to Favorites'
     timeout: 10000

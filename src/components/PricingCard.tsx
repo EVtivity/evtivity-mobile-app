@@ -33,16 +33,24 @@ export function PricingCard({ pricing }: { pricing: PricingInfo }): React.JSX.El
     parts.push(t('charge.pricingPerKwh', { amount: rateLabel(pricing.pricePerKwh, currency) }));
   }
   if (pricing.pricePerMinute != null) {
-    parts.push(t('charge.pricingPerMinute', { amount: rateLabel(pricing.pricePerMinute, currency) }));
+    parts.push(
+      t('charge.pricingPerMinute', { amount: rateLabel(pricing.pricePerMinute, currency) }),
+    );
   }
   if (pricing.pricePerSession != null) {
-    parts.push(t('charge.pricingPerSession', { amount: rateLabel(pricing.pricePerSession, currency) }));
+    parts.push(
+      t('charge.pricingPerSession', { amount: rateLabel(pricing.pricePerSession, currency) }),
+    );
   }
   if (pricing.idleFeePricePerMinute != null) {
-    parts.push(t('charge.pricingIdle', { amount: rateLabel(pricing.idleFeePricePerMinute, currency) }));
+    parts.push(
+      t('charge.pricingIdle', { amount: rateLabel(pricing.idleFeePricePerMinute, currency) }),
+    );
   }
   if (pricing.taxRate != null) {
-    parts.push(t('charge.pricingTax', { percent: (pricing.taxRate * 100).toFixed(2).replace(/\.?0+$/, '') }));
+    parts.push(
+      t('charge.pricingTax', { percent: (pricing.taxRate * 100).toFixed(2).replace(/\.?0+$/, '') }),
+    );
   }
 
   if (parts.length === 0) return null;

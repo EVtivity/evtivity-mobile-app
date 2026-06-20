@@ -6,7 +6,16 @@ import { View, Pressable } from 'react-native';
 import { useRouter, type Href } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Zap, ChevronRight, Pause, type LucideIcon } from '@/components/icons';
-import { Screen, Text, Card, Button, Skeleton, EmptyState, useToast, useConfirm } from '@/components/ui';
+import {
+  Screen,
+  Text,
+  Card,
+  Button,
+  Skeleton,
+  EmptyState,
+  useToast,
+  useConfirm,
+} from '@/components/ui';
 import { AppHeader } from '@/components/AppHeader';
 import { SessionRow } from '@/components/SessionRow';
 import { hsl } from '@/lib/theme';
@@ -74,7 +83,8 @@ export default function HomeScreen(): React.JSX.Element {
 
   // Pad three cards with a placeholder so the grid keeps its 2x2 shape; two
   // cards render as a single row and Recent Sessions moves up beneath them.
-  const cardSlots: (HomeCardId | null)[] = homeCards.length === 3 ? [...homeCards, null] : homeCards;
+  const cardSlots: (HomeCardId | null)[] =
+    homeCards.length === 3 ? [...homeCards, null] : homeCards;
   const cardRows: (HomeCardId | null)[][] = [];
   for (let i = 0; i < cardSlots.length; i += 2) cardRows.push(cardSlots.slice(i, i + 2));
   const { refreshing, onRefresh } = usePullToRefresh(() =>
@@ -115,11 +125,7 @@ export default function HomeScreen(): React.JSX.Element {
   }, [stopping]);
 
   return (
-    <Screen
-      scroll
-      refreshing={refreshing}
-      onRefresh={onRefresh}
-    >
+    <Screen scroll refreshing={refreshing} onRefresh={onRefresh}>
       <AppHeader />
 
       <View className="mb-1 mt-1 gap-0.5">

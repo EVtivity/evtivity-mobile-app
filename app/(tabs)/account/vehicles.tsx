@@ -41,9 +41,7 @@ export default function VehiclesScreen(): React.JSX.Element {
   const [year, setYear] = React.useState('');
 
   const makes = lookup.data?.makes ?? [];
-  const models = (lookup.data?.models ?? [])
-    .filter((m) => m.make === make)
-    .map((m) => m.model);
+  const models = (lookup.data?.models ?? []).filter((m) => m.make === make).map((m) => m.model);
 
   const onAdd = async (): Promise<void> => {
     try {
@@ -85,12 +83,19 @@ export default function VehiclesScreen(): React.JSX.Element {
         {t('account.vehicles')}
       </Text>
 
-      <AddButton testID="vehicle-add" title={t('account.addVehicle')} onPress={() => setOpen(true)} />
+      <AddButton
+        testID="vehicle-add"
+        title={t('account.addVehicle')}
+        onPress={() => setOpen(true)}
+      />
 
       {vehicles.isLoading ? (
         <Spinner />
       ) : items.length === 0 ? (
-        <EmptyState icon={<Car size={40} color={hsl('mutedForeground')} />} title={t('account.noVehicles')} />
+        <EmptyState
+          icon={<Car size={40} color={hsl('mutedForeground')} />}
+          title={t('account.noVehicles')}
+        />
       ) : (
         <View className="gap-3">
           {items.map((v) => {

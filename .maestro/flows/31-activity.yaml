@@ -8,21 +8,21 @@ tags:
 ---
 - runFlow: ../subflows/session.yaml
 - tapOn:
-    id: "tab-activity"
-- assertVisible: "Activity"
+    id: 'tab-activity'
+- assertVisible: 'Activity'
 # month navigation
 - tapOn:
-    id: "activity-prev-month"
+    id: 'activity-prev-month'
 - tapOn:
-    id: "activity-next-month"
+    id: 'activity-next-month'
 # metric segments
-- tapOn: "Energy"
-- tapOn: "Distance"
-- tapOn: "Cost"
+- tapOn: 'Energy'
+- tapOn: 'Distance'
+- tapOn: 'Cost'
 # the monthly statement entry is present
 - scrollUntilVisible:
     element:
-      id: "activity-statement"
+      id: 'activity-statement'
     direction: DOWN
 - assertVisible:
-    id: "activity-statement"
+    id: 'activity-statement'

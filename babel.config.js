@@ -6,9 +6,6 @@ module.exports = function (api) {
   // babel-preset-expo auto-adds the react-native-reanimated plugin when the
   // package is installed, so it must not be listed manually.
   return {
-    presets: [
-      ['babel-preset-expo', { jsxImportSource: 'nativewind' }],
-      'nativewind/babel',
-    ],
+    presets: [['babel-preset-expo', { jsxImportSource: 'nativewind' }], 'nativewind/babel'],
   };
 };

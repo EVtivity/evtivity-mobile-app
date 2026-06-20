@@ -60,7 +60,9 @@ export const StationCard = React.memo(function StationCard({
         </View>
         <Badge
           variant={!isOnline ? 'secondary' : hasAvail ? 'success' : 'warning'}
-          label={!isOnline ? t('charge.offline') : hasAvail ? t('charge.available') : t('charge.inUse')}
+          label={
+            !isOnline ? t('charge.offline') : hasAvail ? t('charge.available') : t('charge.inUse')
+          }
         />
       </View>
     </Card>
