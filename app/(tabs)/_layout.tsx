@@ -22,6 +22,7 @@ export default function TabsLayout(): React.JSX.Element {
       <Tabs.Screen name="session" options={{ href: null }} />
       <Tabs.Screen name="support" options={{ href: null }} />
       <Tabs.Screen name="favorites" options={{ href: null }} />
+      <Tabs.Screen name="watching" options={{ href: null }} />
       <Tabs.Screen name="statement" options={{ href: null }} />
     </Tabs>
   );

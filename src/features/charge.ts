@@ -30,6 +30,8 @@ export interface SearchStation {
   model: string | null;
   isOnline: boolean;
   siteName: string | null;
+  siteAddress: string | null;
+  siteCity: string | null;
   evseCount: number;
   availableCount: number;
   connectors: ConnectorSummary[];

@@ -433,5 +433,16 @@
     "totals": "合计",
     "sessionCount": "会话",
     "co2Row": "{{kg}} kg CO₂"
+  },
+  "watch": {
+    "notifyWhenFree": "空闲时通知我",
+    "watching": "取消关注",
+    "added": "该充电站空闲时将通知您。",
+    "removed": "已取消关注。",
+    "addFailed": "无法关注该充电站。",
+    "title": "关注",
+    "empty": "您还没有关注任何充电站。",
+    "removeTitle": "取消关注",
+    "removeMessage": "当该充电站空闲时，你将不再收到通知。"
   }
 }

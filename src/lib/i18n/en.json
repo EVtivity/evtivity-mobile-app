@@ -442,5 +442,16 @@
     "totals": "Totals",
     "sessionCount": "Sessions",
     "co2Row": "{{kg}} kg CO₂"
+  },
+  "watch": {
+    "notifyWhenFree": "Notify me when free",
+    "watching": "Remove from Watching",
+    "added": "You will be notified when this station is free.",
+    "removed": "Watch removed.",
+    "addFailed": "Could not start watching this station.",
+    "title": "Watching",
+    "empty": "You are not watching any stations.",
+    "removeTitle": "Remove from Watching",
+    "removeMessage": "You will no longer be notified when this station is free."
   }
 }
