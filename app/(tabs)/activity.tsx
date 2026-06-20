@@ -10,7 +10,7 @@ import { ChevronLeft, ChevronRight, Leaf, Receipt } from '@/components/icons';
 import { ScreenBackground, Text, Card, Segmented, Spinner, EmptyState } from '@/components/ui';
 import { AppHeader } from '@/components/AppHeader';
 import { SessionRow } from '@/components/SessionRow';
-import { hsl } from '@/lib/theme';
+import { hsl, SURFACE_TEXT_VARS } from '@/lib/theme';
 import { cn } from '@/lib/cn';
 import { formatCurrency, formatEnergyWh, formatMiles, formatMonth } from '@/lib/format';
 import {
@@ -88,16 +88,32 @@ export default function ActivityScreen(): React.JSX.Element {
 
   const list = sessions.data ?? [];
 
+  // Sessions render as one continuous divided list (a standardized list control),
+  // not per-item cards: contiguous rows on a single card surface, rounded on the
+  // ends, with hairline dividers between them.
   const renderItem = React.useCallback(
-    ({ item }: { item: ChargingSession }) => (
-      <Card className="mb-3 py-1">
-        <SessionRow
-          session={item}
-          onPress={() => router.push({ pathname: '/session/[id]', params: { id: item.id } })}
-        />
-      </Card>
-    ),
-    [router],
+    ({ item, index }: { item: ChargingSession; index: number }) => {
+      const first = index === 0;
+      const last = index === list.length - 1;
+      return (
+        <View
+          style={SURFACE_TEXT_VARS}
+          className={cn(
+            'border-x border-white/20 bg-card/[0.85] px-5',
+            first && 'rounded-t-2xl border-t',
+            last && 'rounded-b-2xl border-b',
+          )}
+        >
+          <View className={cn(!first && 'border-t border-muted-foreground/30')}>
+            <SessionRow
+              session={item}
+              onPress={() => router.push({ pathname: '/session/[id]', params: { id: item.id } })}
+            />
+          </View>
+        </View>
+      );
+    },
+    [router, list.length],
   );
 
   // The header (filters, summary, trend, links) scrolls with the virtualized
