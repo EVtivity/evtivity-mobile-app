@@ -5,10 +5,12 @@ import {
   connectorStatusLabel,
   isStartable,
   isCableDetected,
+  isEvseSelectable,
   sessionStatusTone,
   SESSION_TONE_COLOR,
   sessionStatusLabelKey,
   connectorStatusColor,
+  type SelectableEvse,
 } from '@/lib/status';
 import type { ConnectorStatus } from '@/lib/types';
 
@@ -27,6 +29,37 @@ describe('isStartable', () => {
   });
   it('rejects others', () => {
     expect(isStartable('faulted')).toBe(false);
+  });
+});
+
+describe('isEvseSelectable', () => {
+  const evse = (
+    status: ConnectorStatus,
+    reservationDriverId: string | null = null,
+  ): SelectableEvse => ({
+    connectors: [{ status }],
+    reservationDriverId,
+  });
+  const online = { isOnline: true, maintenanceActive: false, currentDriverId: 'drv_self' };
+
+  it('selects an available, unreserved connector', () => {
+    expect(isEvseSelectable(evse('available'), online)).toBe(true);
+  });
+  it('rejects a non-startable connector', () => {
+    expect(isEvseSelectable(evse('faulted'), online)).toBe(false);
+  });
+  it('rejects when offline', () => {
+    expect(isEvseSelectable(evse('available'), { ...online, isOnline: false })).toBe(false);
+  });
+  it('rejects when maintenance is active', () => {
+    expect(isEvseSelectable(evse('available'), { ...online, maintenanceActive: true })).toBe(false);
+  });
+  it('rejects a connector reserved by another driver even when startable', () => {
+    expect(isEvseSelectable(evse('preparing', 'drv_other'), online)).toBe(false);
+  });
+  it('allows a connector reserved for the current driver', () => {
+    expect(isEvseSelectable(evse('preparing', 'drv_self'), online)).toBe(true);
+    expect(isEvseSelectable(evse('reserved', 'drv_self'), online)).toBe(true);
   });
 });
 

@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "@expo-google-fonts/inter": "^0.4.2",
+    "@expo/metro-runtime": "~4.0.1",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@shopify/flash-list": "1.7.3",
     "@stripe/stripe-react-native": "0.38.6",
