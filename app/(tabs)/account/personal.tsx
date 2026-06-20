@@ -47,6 +47,8 @@ export default function PersonalInfoScreen(): React.JSX.Element {
 
     try {
       await updateProfile.mutateAsync(input);
+      // Apply the new UI language only once the preference is saved.
+      if (input.language != null) await setAppLanguage(language);
       toast.show(t('common.saved'), 'success');
     } catch (err) {
       if (err instanceof ApiError) {
@@ -149,10 +151,8 @@ export default function PersonalInfoScreen(): React.JSX.Element {
           <Pressable
             key={l.code}
             onPress={() => {
-              // Switch the UI immediately and remember the choice; the profile
-              // Save still syncs the preference to the server.
+              // Remember the choice; the UI language switches on Save.
               setLanguage(l.code);
-              void setAppLanguage(l.code);
               setLangPickerVisible(false);
             }}
             className="py-2"
