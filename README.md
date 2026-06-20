@@ -1,6 +1,7 @@
 # EVtivity Mobile App
 
 <p align="center">
+  <a href="https://github.com/EVtivity/evtivity-mobile-app/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/EVtivity/evtivity-mobile-app/actions/workflows/ci.yml/badge.svg"></a>
   <a href="./LICENSE.md"><img alt="License: BUSL-1.1" src="https://img.shields.io/badge/license-BUSL--1.1-blue.svg"></a>
   <img alt="Platform: iOS and Android" src="https://img.shields.io/badge/platform-iOS%20%7C%20Android-lightgrey.svg">
   <img alt="Expo SDK 52" src="https://img.shields.io/badge/Expo%20SDK-52-000020.svg?logo=expo&logoColor=white">

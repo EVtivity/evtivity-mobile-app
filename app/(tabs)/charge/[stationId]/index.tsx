@@ -105,6 +105,23 @@ export default function StationDetailScreen(): React.JSX.Element {
     if (connector != null) setSelected({ evseId: evse.evseId, connector });
   }, [evseId, station.data]);
 
+  // When exactly one connector at the station can start, select it automatically
+  // so the driver can start without a tap. Runs only while nothing is selected,
+  // so it never fights a manual choice or the QR preselection above.
+  React.useEffect(() => {
+    if (selected != null) return;
+    const evses = station.data?.evses;
+    if (evses == null) return;
+    const startable = evses
+      .map((evse): SelectedConnector | null => {
+        const connector = firstStartableConnector(evse);
+        return connector != null ? { evseId: evse.evseId, connector } : null;
+      })
+      .filter((c): c is SelectedConnector => c != null);
+    const [only] = startable;
+    if (startable.length === 1 && only != null) setSelected(only);
+  }, [selected, station.data]);
+
   const onToggleFavorite = React.useCallback(() => {
     toggleFavorite.mutate({
       stationId: sid,
