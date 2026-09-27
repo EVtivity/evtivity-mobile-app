@@ -36,6 +36,11 @@ on:
           - android
           - all
 
+# Least privilege: jobs only check out code and upload artifacts (artifact
+# uploads use the runtime token, not GITHUB_TOKEN).
+permissions:
+  contents: read
+
 env:
   ACTIVE_BRAND: ${{ github.event.inputs.brand }}
   PLATFORM: ${{ github.event.inputs.platform }}
