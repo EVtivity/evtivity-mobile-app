@@ -8,7 +8,7 @@
       "@/*": ["./src/*"],
       "@brands/*": ["./brands/*"]
     },
-    "types": ["jest", "node"]
+    "types": ["expo/types", "jest", "node"]
   },
   "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts", "nativewind-env.d.ts"]
 }
