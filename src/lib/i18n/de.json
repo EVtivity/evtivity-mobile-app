@@ -444,5 +444,14 @@
     "empty": "Sie beobachten keine Ladestationen.",
     "removeTitle": "Nicht mehr beobachten",
     "removeMessage": "Du wirst nicht mehr benachrichtigt, wenn diese Station frei ist."
+  },
+  "errors": {
+    "STATION_OFFLINE": "Ladestation ist offline",
+    "STATION_NOT_FOUND": "Ladestation nicht gefunden",
+    "CONNECTOR_NOT_FOUND": "Stecker nicht gefunden",
+    "RATE_LIMITED": "Zu viele Statusprüfungen für diese Ladestation",
+    "STATION_TIMEOUT": "Ladestation hat nicht geantwortet",
+    "STATUS_CHECK_REJECTED": "Ladestation hat die Statusabfrage abgelehnt",
+    "STATUS_CHECK_TIMEOUT": "Zeitüberschreitung bei der Statusabfrage. Stecker neu einstecken und erneut versuchen."
   }
 }

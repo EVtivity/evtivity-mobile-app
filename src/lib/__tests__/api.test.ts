@@ -60,9 +60,34 @@ describe('ApiError', () => {
     expect(new ApiError(503, null).isServerDown).toBe(true);
     expect(new ApiError(404, null).isServerDown).toBe(false);
   });
+  it('treats a gateway status without an error code as server-down', () => {
+    expect(new ApiError(502, '<html>Bad Gateway</html>').isServerDown).toBe(true);
+    expect(new ApiError(504, null).isServerDown).toBe(true);
+  });
+  it('treats a coded 502/504 as a station failure, not server-down', () => {
+    expect(new ApiError(502, { error: 'x', code: 'STATUS_CHECK_REJECTED' }).isServerDown).toBe(
+      false,
+    );
+    expect(new ApiError(504, { error: 'x', code: 'STATUS_CHECK_TIMEOUT' }).isServerDown).toBe(
+      false,
+    );
+  });
 });
 
 describe('apiErrorMessage', () => {
+  const translated: Record<string, string> = {
+    'errors.STATUS_CHECK_TIMEOUT': 'Zeitüberschreitung bei der Statusabfrage.',
+  };
+  const tr = (key: string): string => translated[key] ?? key;
+  it('prefers the translated message for a known error code', () => {
+    const err = new ApiError(504, { error: 'English text', code: 'STATUS_CHECK_TIMEOUT' });
+    expect(apiErrorMessage(err, tr)).toBe('Zeitüberschreitung bei der Statusabfrage.');
+  });
+  it('falls back to the server message when the code has no translation', () => {
+    expect(apiErrorMessage(new ApiError(400, { error: 'nope', code: 'UNKNOWN_CODE' }), tr)).toBe(
+      'nope',
+    );
+  });
   it('maps a server-down ApiError to the offline copy', () => {
     expect(apiErrorMessage(new ApiError(500, null), t)).toBe('common.offline');
   });

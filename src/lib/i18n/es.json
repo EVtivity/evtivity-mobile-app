@@ -444,5 +444,14 @@
     "empty": "No estas vigilando ninguna estacion.",
     "removeTitle": "Dejar de seguir",
     "removeMessage": "Ya no recibiras una notificacion cuando esta estacion este libre."
+  },
+  "errors": {
+    "STATION_OFFLINE": "La estacion esta fuera de linea",
+    "STATION_NOT_FOUND": "Estacion no encontrada",
+    "CONNECTOR_NOT_FOUND": "Conector no encontrado",
+    "RATE_LIMITED": "Demasiadas verificaciones de estado para esta estacion",
+    "STATION_TIMEOUT": "La estacion no respondio",
+    "STATUS_CHECK_REJECTED": "La estación rechazó la verificación de estado",
+    "STATUS_CHECK_TIMEOUT": "La verificación de estado expiró. Vuelva a conectar el conector e inténtelo de nuevo."
   }
 }

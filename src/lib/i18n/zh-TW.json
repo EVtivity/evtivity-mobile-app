@@ -444,5 +444,14 @@
     "empty": "您還沒有關注任何充電樁。",
     "removeTitle": "取消關注",
     "removeMessage": "當該充電站空閒時，你將不再收到通知。"
+  },
+  "errors": {
+    "STATION_OFFLINE": "充電站已離線",
+    "STATION_NOT_FOUND": "找不到充電站",
+    "CONNECTOR_NOT_FOUND": "找不到連接器",
+    "RATE_LIMITED": "此充電站的狀態查詢次數過多",
+    "STATION_TIMEOUT": "充電站未回應",
+    "STATUS_CHECK_REJECTED": "充電站拒絕了狀態檢查",
+    "STATUS_CHECK_TIMEOUT": "狀態檢查逾時。請重新插入連接器後重試。"
   }
 }

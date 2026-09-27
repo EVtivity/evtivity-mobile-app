@@ -31,15 +31,22 @@ export class ApiError extends Error {
     return undefined;
   }
 
+  // A coded 502/504 is a station failure from the API, not an unreachable server.
   get isServerDown(): boolean {
-    return [0, 500, 502, 503, 504].includes(this.status);
+    if (this.status === 502 || this.status === 504) return this.code == null;
+    return [0, 500, 503].includes(this.status);
   }
 }
 
-// Maps any thrown error to a user-facing message: the server's message for an
-// ApiError, otherwise the generic offline copy. `t` is the i18next translator.
+// Maps any thrown error to a user-facing message: the translated errors.{code}
+// entry, then the server's message, otherwise the generic offline copy.
 export function apiErrorMessage(err: unknown, t: (key: string) => string): string {
   if (err instanceof ApiError) {
+    if (err.code != null) {
+      const key = `errors.${err.code}`;
+      const translated = t(key);
+      if (translated !== key) return translated;
+    }
     // A network failure or 5xx means the server is unreachable: show the
     // friendly offline copy, not the raw "Network request failed".
     if (err.isServerDown) return t('common.offline');
