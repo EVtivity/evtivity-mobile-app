@@ -6,7 +6,7 @@ import { View, Pressable, StyleSheet } from 'react-native';
 import Svg, { Defs, LinearGradient, Stop, Rect } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
-import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import type { BottomTabBarProps } from 'expo-router/js-tabs';
 import { Home, PlugZap, CalendarClock, Activity, User, type LucideIcon } from '@/components/icons';
 import { Text } from '@/components/ui';
 import { useFeatures } from '@/features/app-info';

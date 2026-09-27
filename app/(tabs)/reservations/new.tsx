@@ -56,6 +56,10 @@ export default function NewReservationScreen(): React.JSX.Element {
 
   const results = useSearchChargers(search);
 
+  // When the form opened. Render must stay pure, so slot filtering and the
+  // submit button use this snapshot; onSubmit reads the live clock.
+  const [openedAt] = React.useState(() => Date.now());
+
   // The seven selectable days, anchored to local midnight.
   const days = React.useMemo(() => {
     const base = startOfDay(new Date());
@@ -64,17 +68,16 @@ export default function NewReservationScreen(): React.JSX.Element {
 
   // 30-minute slots for the chosen day. Past slots on today are excluded.
   const slots = React.useMemo(() => {
-    const nowMs = Date.now();
     const dayMs = days[dayOffset] ?? startOfDay(new Date());
     const result: number[] = [];
     for (let m = 0; m < 24 * 60; m += SLOT_MINUTES) {
-      if (dayMs + m * MS_PER_MINUTE > nowMs) result.push(m);
+      if (dayMs + m * MS_PER_MINUTE > openedAt) result.push(m);
     }
     return result;
-  }, [days, dayOffset]);
+  }, [days, dayOffset, openedAt]);
 
-  const startMs = now ? Date.now() : (days[dayOffset] ?? 0) + slotMinutes * MS_PER_MINUTE;
-  const startInFuture = now || startMs > Date.now();
+  const scheduledStartMs = (days[dayOffset] ?? 0) + slotMinutes * MS_PER_MINUTE;
+  const startInFuture = now || scheduledStartMs > openedAt;
 
   const dayLabel = (dayMs: number, index: number): string => {
     if (index === 0) return t('reservations.today');
@@ -91,7 +94,11 @@ export default function NewReservationScreen(): React.JSX.Element {
 
   const onSubmit = async (): Promise<void> => {
     const trimmed = stationId.trim();
-    if (trimmed.length === 0 || !startInFuture) return;
+    const nowMs = Date.now();
+    const startMs = now ? nowMs : scheduledStartMs;
+    // Re-check against the live clock: the chosen slot may have passed while
+    // the form was open.
+    if (trimmed.length === 0 || (!now && startMs <= nowMs)) return;
 
     const expiresMs = startMs + durationMinutes * MS_PER_MINUTE;
 

@@ -40,38 +40,38 @@ const { hsl, ThemeProvider, BACKDROP_TEXT_VARS, SURFACE_TEXT_VARS } = require('@
 const mockUseColorScheme = useColorScheme as jest.Mock;
 
 describe('hsl', () => {
-  it('converts a space-separated brand token to comma form', () => {
+  it('converts a space-separated brand token to comma form', async () => {
     expect(hsl('primary')).toBe('hsl(142, 72%, 33%)');
   });
-  it('falls back to transparent for an empty token', () => {
+  it('falls back to transparent for an empty token', async () => {
     expect(hsl('ring')).toBe('transparent');
   });
-  it('caches by scheme and token', () => {
+  it('caches by scheme and token', async () => {
     expect(hsl('primary')).toBe(hsl('primary'));
     expect(hsl('primary', 'dark')).toBe('hsl(142, 72%, 33%)');
   });
 });
 
 describe('text variable bundles', () => {
-  it('expose the backdrop and surface overrides', () => {
+  it('expose the backdrop and surface overrides', async () => {
     expect(BACKDROP_TEXT_VARS['--foreground']).toBe('0 0% 100%');
     expect(SURFACE_TEXT_VARS['--card-foreground']).toBe(FULL_PALETTE.cardForeground);
   });
 });
 
 describe('ThemeProvider', () => {
-  it('renders children under the light palette', () => {
+  it('renders children under the light palette', async () => {
     mockUseColorScheme.mockReturnValue({ colorScheme: 'light' });
-    const { getByText } = render(
+    const { getByText } = await render(
       <ThemeProvider>
         <Text>child</Text>
       </ThemeProvider>,
     );
     expect(getByText('child')).toBeTruthy();
   });
-  it('renders children under the dark palette', () => {
+  it('renders children under the dark palette', async () => {
     mockUseColorScheme.mockReturnValue({ colorScheme: 'dark' });
-    const { getByText } = render(
+    const { getByText } = await render(
       <ThemeProvider>
         <Text>dark-child</Text>
       </ThemeProvider>,

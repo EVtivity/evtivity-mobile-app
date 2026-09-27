@@ -12,7 +12,6 @@ const LAST_TOKEN_KEY = 'ev_push_token';
 // Foreground presentation: show the banner even while the app is open.
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowAlert: true,
     shouldShowBanner: true,
     shouldShowList: true,
     shouldPlaySound: false,

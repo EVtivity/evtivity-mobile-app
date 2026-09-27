@@ -10,7 +10,7 @@ jest.mock('expo-font', () => ({ useFonts: jest.fn() }));
 const mockUseFonts = useFonts as jest.Mock;
 
 describe('FONT_MAP', () => {
-  it('registers every Inter weight the UI selects by name', () => {
+  it('registers every Inter weight the UI selects by name', async () => {
     expect(Object.keys(FONT_MAP)).toEqual([
       'Inter_400Regular',
       'Inter_500Medium',
@@ -26,17 +26,17 @@ describe('useAppFonts', () => {
   beforeEach(() => jest.useFakeTimers());
   afterEach(() => jest.useRealTimers());
 
-  it('is ready once the font loads', () => {
+  it('is ready once the font loads', async () => {
     mockUseFonts.mockReturnValue([true]);
-    const { result } = renderHook(() => useAppFonts());
+    const { result } = await renderHook(() => useAppFonts());
     expect(result.current).toBe(true);
   });
 
-  it('is ready after the safety timeout even if the font never loads', () => {
+  it('is ready after the safety timeout even if the font never loads', async () => {
     mockUseFonts.mockReturnValue([false]);
-    const { result } = renderHook(() => useAppFonts());
+    const { result } = await renderHook(() => useAppFonts());
     expect(result.current).toBe(false);
-    act(() => jest.advanceTimersByTime(4000));
+    await act(() => jest.advanceTimersByTime(4000));
     expect(result.current).toBe(true);
   });
 });

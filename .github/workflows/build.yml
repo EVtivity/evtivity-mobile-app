@@ -40,7 +40,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
 
       - name: Setup Java 17
@@ -70,32 +70,46 @@ jobs:
 
   ios:
     name: iOS (unsigned verify)
-    runs-on: macos-latest
+    # Pinned rather than macos-latest so the image (and its Xcode set) only
+    # changes on purpose. Expo SDK 57 requires Xcode 26.4 or later.
+    runs-on: macos-26
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_26.6.app
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
 
       - name: Install dependencies
         run: npm ci
 
-      # Generate the native ios/ project (Xcode workspace + Pods).
+      # Generate the native ios/ project. --no-install skips the package manager
+      # and CocoaPods; pods are installed in the next step.
       - name: Prebuild iOS
         run: npx expo prebuild --platform ios --no-install
 
+      # Creates the .xcworkspace the build step needs.
+      - name: Install CocoaPods dependencies
+        working-directory: ios
+        run: pod install
+
       # Unsigned archive: verifies the project compiles. A signed, uploadable
       # .ipa is produced separately via `eas build --local` with credentials.
+      # Prebuild names the workspace and the app scheme after the brand, so the
+      # scheme is read from the workspace file name.
       - name: Build unsigned archive
         working-directory: ios
         run: |
-          SCHEME="$(xcodebuild -list -json | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>console.log(JSON.parse(s).workspace.schemes[0]))')"
+          WORKSPACE="$(ls -d *.xcworkspace)"
+          SCHEME="${WORKSPACE%.xcworkspace}"
           xcodebuild \
-            -workspace "$SCHEME.xcworkspace" \
+            -workspace "$WORKSPACE" \
             -scheme "$SCHEME" \
             -configuration Release \
             -sdk iphoneos \

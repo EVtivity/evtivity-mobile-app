@@ -17,7 +17,10 @@ const palette = (primary: string): Record<string, string> => ({ primary });
 function loadConfig(s: Scenario): ConfigModule {
   let out = {} as ConfigModule;
   jest.isolateModules(() => {
-    jest.doMock('react-native', () => ({ Platform: { OS: s.platform } }));
+    // Override only Platform.OS on the real module; other modules loaded during
+    // require (expo's fetch runtime, nativewind) still need the rest of it.
+    const { Platform } = require('react-native') as typeof import('react-native');
+    jest.replaceProperty(Platform, 'OS', s.platform as typeof Platform.OS);
     jest.doMock('expo-constants', () => ({
       __esModule: true,
       default: { expoConfig: s.expoConfig },

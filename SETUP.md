@@ -1,8 +1,8 @@
 # Setup
 
 How to install the toolchain and build the app locally. The exact versions below
-are the ones this app was built and verified against (Expo SDK 52, React Native
-0.76, New Architecture).
+are the ones this app was built and verified against (Expo SDK 57, React Native
+0.86, New Architecture).
 
 ## 1. Common tools (both platforms)
 
@@ -94,7 +94,7 @@ minutes; code-only changes hot-reload through Metro in seconds.
 
 | Component               | Version   | Install                                                           |
 | ----------------------- | --------- | ----------------------------------------------------------------- |
-| Xcode                   | latest    | App Store (~7 GB, GUI, requires Apple ID). Cannot be scripted.    |
+| Xcode                   | 26.4+     | App Store (~7 GB, GUI, requires Apple ID). Cannot be scripted.    |
 | Command Line Tools      | bundled   | `sudo xcode-select -s /Applications/Xcode.app/Contents/Developer` |
 | CocoaPods               | 1.x       | `brew install cocoapods`                                          |
 | watchman                | latest    | `brew install watchman`                                           |

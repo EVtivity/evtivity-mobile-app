@@ -57,9 +57,6 @@ void i18n.use(initReactI18next).init({
   supportedLngs: [...SUPPORTED_LANGUAGES],
   interpolation: { escapeValue: false },
   returnNull: false,
-  // Hermes ships without Intl.PluralRules; v3 plural handling avoids the runtime
-  // Intl dependency (and its dev warning).
-  compatibilityJSON: 'v3',
 });
 loadedCatalogues.add(DEFAULT_LANGUAGE);
 ensureCatalogue('en');

@@ -53,7 +53,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
 
       - name: Setup Java 17
@@ -97,15 +97,20 @@ jobs:
     name: iOS release
     # Skip unless platform is ios or all.
     if: ${{ github.event.inputs.platform == 'ios' || github.event.inputs.platform == 'all' }}
-    runs-on: macos-latest
+    # Pinned rather than macos-latest so the image (and its Xcode set) only
+    # changes on purpose. Expo SDK 57 requires Xcode 26.4 or later.
+    runs-on: macos-26
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_26.6.app
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
 
       - name: Install dependencies

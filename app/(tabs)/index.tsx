@@ -91,7 +91,11 @@ export default function HomeScreen(): React.JSX.Element {
     Promise.all([active.refetch(), recent.refetch()]),
   );
   const activeSession = active.data?.[0];
-  const [stopping, setStopping] = React.useState(false);
+  // Id of the session a stop was requested for. The stop completes after the
+  // OCPP roundtrip, so the button stays in its stopping state while that session
+  // is still the active one; it clears once the session leaves the active list.
+  const [stoppingId, setStoppingId] = React.useState<string | null>(null);
+  const stopping = stoppingId != null && activeSession?.id === stoppingId;
 
   const onStop = React.useCallback(async () => {
     if (activeSession == null) return;
@@ -101,11 +105,11 @@ export default function HomeScreen(): React.JSX.Element {
       destructive: true,
     });
     if (!ok) return;
-    setStopping(true);
+    setStoppingId(activeSession.id);
     stop.mutate(activeSession.id, {
       onSuccess: () => toast.show(t('home.stopped'), 'success'),
       onError: (err) => {
-        setStopping(false);
+        setStoppingId(null);
         notifyError();
         const msg = apiErrorMessage(err, t);
         toast.show(msg, 'error');
@@ -113,14 +117,10 @@ export default function HomeScreen(): React.JSX.Element {
     });
   }, [activeSession, confirm, stop, t, toast]);
 
-  // The stop completes after the OCPP roundtrip; keep the button in its
-  // stopping state until the session leaves the active list (or a timeout).
-  React.useEffect(() => {
-    if (stopping && activeSession == null) setStopping(false);
-  }, [stopping, activeSession]);
+  // Safety net: clear the stopping state if the station never acks.
   React.useEffect(() => {
     if (!stopping) return;
-    const h = setTimeout(() => setStopping(false), 30_000);
+    const h = setTimeout(() => setStoppingId(null), 30_000);
     return () => clearTimeout(h);
   }, [stopping]);
 
