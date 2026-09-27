@@ -59,7 +59,6 @@ describe('foreground notification handler', () => {
   it('shows the banner while the app is open', async () => {
     await expect(registeredHandler.handleNotification({})).resolves.toMatchObject({
       shouldShowBanner: true,
-      shouldShowAlert: true,
       shouldPlaySound: false,
     });
   });

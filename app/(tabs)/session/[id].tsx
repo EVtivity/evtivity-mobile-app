@@ -122,16 +122,14 @@ function StatusPill({
   const scale = useSharedValue(1);
   React.useEffect(() => {
     if (!pulse) {
-      scale.value = 1;
+      scale.set(1);
       return;
     }
-    scale.value = withRepeat(
-      withTiming(1.05, { duration: 1000, easing: Easing.inOut(Easing.ease) }),
-      -1,
-      true,
+    scale.set(
+      withRepeat(withTiming(1.05, { duration: 1000, easing: Easing.inOut(Easing.ease) }), -1, true),
     );
   }, [scale, pulse]);
-  const style = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
+  const style = useAnimatedStyle(() => ({ transform: [{ scale: scale.get() }] }));
   return (
     <Animated.View
       style={[style, { backgroundColor: SESSION_TONE_COLOR[tone] }]}
@@ -191,12 +189,15 @@ export default function SessionScreen(): React.JSX.Element {
   const session = useSession(sid);
   const stop = useStopSession();
   const setVehicle = useSetSessionVehicle(sid);
-  const [stopping, setStopping] = React.useState(false);
+  const [stopRequested, setStopRequested] = React.useState(false);
   const [vehicleSheet, setVehicleSheet] = React.useState(false);
   const vehicles = useVehicles();
 
   const data = session.data as SessionData | undefined;
   const isActive = data?.status === 'active';
+  // The API only acks the stop request; the session actually ends after the
+  // OCPP roundtrip. Hold the spinner until the polled status leaves 'active'.
+  const stopping = stopRequested && (data == null || isActive);
 
   const power = useSessionPowerHistory(sid, isActive === true);
   const energy = useSessionEnergyHistory(sid, isActive === true);
@@ -209,10 +210,10 @@ export default function SessionScreen(): React.JSX.Element {
       destructive: true,
     });
     if (!ok) return;
-    setStopping(true);
+    setStopRequested(true);
     stop.mutate(sid, {
       onError: (err) => {
-        setStopping(false);
+        setStopRequested(false);
         notifyError();
         showApiError(err);
       },
@@ -229,17 +230,11 @@ export default function SessionScreen(): React.JSX.Element {
     [setVehicle, t, toast],
   );
 
-  // The API only acks the stop request; the session actually ends after the
-  // OCPP roundtrip. Hold the spinner until the polled status leaves 'active'.
-  React.useEffect(() => {
-    if (stopping && data != null && data.status !== 'active') setStopping(false);
-  }, [stopping, data]);
-
   // Safety net: clear the spinner if the station never acks.
   React.useEffect(() => {
     if (!stopping) return;
     const h = setTimeout(() => {
-      setStopping(false);
+      setStopRequested(false);
       toast.show(t('charge.stopTimeout'), 'error');
     }, 30_000);
     return () => clearTimeout(h);

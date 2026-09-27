@@ -240,7 +240,6 @@ export default function ActivityScreen(): React.JSX.Element {
       <FlashList
         data={list}
         keyExtractor={(s) => s.id}
-        estimatedItemSize={72}
         renderItem={renderItem}
         ListHeaderComponent={header}
         ListEmptyComponent={

@@ -26,17 +26,17 @@ export function PressableScale({
   ...props
 }: PressableProps & { haptic?: boolean; scaleTo?: number }): React.JSX.Element {
   const scale = useSharedValue(1);
-  const animatedStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
+  const animatedStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.get() }] }));
 
   return (
     <AnimatedPressable
       onPressIn={(e) => {
-        scale.value = withTiming(scaleTo, { duration: 90, easing: Easing.out(Easing.quad) });
+        scale.set(withTiming(scaleTo, { duration: 90, easing: Easing.out(Easing.quad) }));
         if (haptic) tapLight();
         onPressIn?.(e);
       }}
       onPressOut={(e) => {
-        scale.value = withTiming(1, { duration: 140, easing: Easing.out(Easing.quad) });
+        scale.set(withTiming(1, { duration: 140, easing: Easing.out(Easing.quad) }));
         onPressOut?.(e);
       }}
       style={[animatedStyle, style]}

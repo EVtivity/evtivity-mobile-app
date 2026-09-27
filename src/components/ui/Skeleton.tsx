@@ -17,14 +17,12 @@ export function Skeleton({ className }: { className?: string }): React.JSX.Eleme
   const opacity = useSharedValue(0.5);
 
   React.useEffect(() => {
-    opacity.value = withRepeat(
-      withTiming(1, { duration: 850, easing: Easing.inOut(Easing.ease) }),
-      -1,
-      true,
+    opacity.set(
+      withRepeat(withTiming(1, { duration: 850, easing: Easing.inOut(Easing.ease) }), -1, true),
     );
   }, [opacity]);
 
-  const style = useAnimatedStyle(() => ({ opacity: opacity.value }));
+  const style = useAnimatedStyle(() => ({ opacity: opacity.get() }));
 
   return <Animated.View style={style} className={cn('rounded-xl bg-muted', className)} />;
 }

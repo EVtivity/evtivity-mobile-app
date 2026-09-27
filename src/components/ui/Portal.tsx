@@ -12,9 +12,8 @@ import { View } from 'react-native';
 
 type Listener = () => void;
 
-const nodes = new Map<number, React.ReactNode>();
+const nodes = new Map<string, React.ReactNode>();
 const listeners = new Set<Listener>();
-let counter = 0;
 
 function emit(): void {
   listeners.forEach((l) => {
@@ -49,21 +48,19 @@ export function PortalHost(): React.JSX.Element {
 }
 
 export function Portal({ children }: { children: React.ReactNode }): null {
-  const idRef = React.useRef<number>(0);
-  if (idRef.current === 0) idRef.current = ++counter;
+  const id = React.useId();
   // Re-sync only when children actually change (not on every parent render),
   // so opening a sheet doesn't force every portalled overlay to re-render.
   React.useEffect(() => {
-    nodes.set(idRef.current, children);
+    nodes.set(id, children);
     emit();
-  }, [children]);
+  }, [id, children]);
   // Remove from the host once, on unmount.
   React.useEffect(() => {
-    const id = idRef.current;
     return () => {
       nodes.delete(id);
       emit();
     };
-  }, []);
+  }, [id]);
   return null;
 }

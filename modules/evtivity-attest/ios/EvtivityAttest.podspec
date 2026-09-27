@@ -6,7 +6,7 @@ Pod::Spec.new do |s|
   s.author         = 'EVtivity'
   s.homepage       = 'https://evtivity.com'
   s.license        = 'BUSL-1.1'
-  s.platforms      = { :ios => '14.0', :tvos => '14.0' }
+  s.platforms      = { :ios => '16.4', :tvos => '16.4' }
   s.source         = { git: '' }
   s.static_framework = true
 

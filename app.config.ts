@@ -31,12 +31,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     orientation: 'portrait',
     icon: brand.icon,
     userInterfaceStyle: 'automatic',
-    newArchEnabled: true,
-    splash: {
-      image: brand.splash,
-      resizeMode: 'contain',
-      backgroundColor: '#0f172a',
-    },
     assetBundlePatterns: ['**/*'],
     ios: {
       bundleIdentifier: brand.iosBundleId,
@@ -73,6 +67,11 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       'expo-secure-store',
       'expo-local-authentication',
       'expo-notifications',
+      // The native splash is a solid brand fill; AnimatedSplash draws the mark.
+      [
+        'expo-splash-screen',
+        { image: brand.splash, imageWidth: 200, resizeMode: 'contain', backgroundColor: '#0f172a' },
+      ],
       [
         'expo-camera',
         {

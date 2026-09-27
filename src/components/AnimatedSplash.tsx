@@ -6,13 +6,13 @@ import { Dimensions, StyleSheet, Text, View } from 'react-native';
 import Animated, {
   Easing,
   cancelAnimation,
-  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
   withRepeat,
   withTiming,
 } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 import Svg, { Path } from 'react-native-svg';
 import * as SplashScreen from 'expo-splash-screen';
 
@@ -63,12 +63,12 @@ export function AnimatedSplash({ onFinish }: { onFinish: () => void }): React.JS
   const fade = useSharedValue(1);
 
   const ringStyle = useAnimatedStyle(() => ({
-    transform: [{ rotate: `${ringSpin.value}deg` }],
+    transform: [{ rotate: `${ringSpin.get()}deg` }],
   }));
   const boltStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: boltScale.value }],
+    transform: [{ scale: boltScale.get() }],
   }));
-  const containerStyle = useAnimatedStyle(() => ({ opacity: fade.value }));
+  const containerStyle = useAnimatedStyle(() => ({ opacity: fade.get() }));
 
   const hideNative = React.useCallback(() => {
     void SplashScreen.hideAsync().catch(() => undefined);
@@ -77,23 +77,19 @@ export function AnimatedSplash({ onFinish }: { onFinish: () => void }): React.JS
   React.useEffect(() => {
     // One continuous, constant-speed spin. Linear easing + a 360deg loop makes
     // the wrap from 360->0 seamless, so the ring never visibly stops.
-    ringSpin.value = withRepeat(
-      withTiming(360, { duration: 2200, easing: Easing.linear }),
-      -1,
-      false,
-    );
+    ringSpin.set(withRepeat(withTiming(360, { duration: 2200, easing: Easing.linear }), -1, false));
     // Subtle continuous pulse on the bolt.
-    boltScale.value = withRepeat(
-      withTiming(0.98, { duration: 800, easing: Easing.inOut(Easing.ease) }),
-      -1,
-      true,
+    boltScale.set(
+      withRepeat(withTiming(0.98, { duration: 800, easing: Easing.inOut(Easing.ease) }), -1, true),
     );
     // Hold briefly, fade out, then hand control to the app.
-    fade.value = withDelay(
-      1500,
-      withTiming(0, { duration: 350, easing: Easing.in(Easing.ease) }, (done) => {
-        if (done) runOnJS(onFinish)();
-      }),
+    fade.set(
+      withDelay(
+        1500,
+        withTiming(0, { duration: 350, easing: Easing.in(Easing.ease) }, (done) => {
+          if (done) scheduleOnRN(onFinish);
+        }),
+      ),
     );
     return () => {
       cancelAnimation(ringSpin);

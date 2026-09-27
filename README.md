@@ -4,8 +4,8 @@
   <a href="https://github.com/EVtivity/evtivity-mobile-app/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/EVtivity/evtivity-mobile-app/actions/workflows/ci.yml/badge.svg"></a>
   <a href="./LICENSE.md"><img alt="License: BUSL-1.1" src="https://img.shields.io/badge/license-BUSL--1.1-blue.svg"></a>
   <img alt="Platform: iOS and Android" src="https://img.shields.io/badge/platform-iOS%20%7C%20Android-lightgrey.svg">
-  <img alt="Expo SDK 52" src="https://img.shields.io/badge/Expo%20SDK-52-000020.svg?logo=expo&logoColor=white">
-  <img alt="React Native 0.76" src="https://img.shields.io/badge/React%20Native-0.76-61DAFB.svg?logo=react&logoColor=white">
+  <img alt="Expo SDK 57" src="https://img.shields.io/badge/Expo%20SDK-57-000020.svg?logo=expo&logoColor=white">
+  <img alt="React Native 0.86" src="https://img.shields.io/badge/React%20Native-0.86-61DAFB.svg?logo=react&logoColor=white">
   <img alt="Logic-layer coverage: 100%" src="https://img.shields.io/badge/logic%20coverage-100%25-brightgreen.svg">
 </p>
 
@@ -33,7 +33,7 @@ paid EAS cloud subscription is required.
 
 | Concern        | Choice                                            |
 | -------------- | ------------------------------------------------- |
-| Framework      | Expo SDK 52 + React Native 0.76, New Architecture |
+| Framework      | Expo SDK 57 + React Native 0.86, New Architecture |
 | Routing        | Expo Router (file-based)                          |
 | Styling        | NativeWind v4 (Tailwind for React Native)         |
 | Data fetching  | TanStack Query                                    |

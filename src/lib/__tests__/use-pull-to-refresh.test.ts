@@ -13,10 +13,10 @@ describe('usePullToRefresh', () => {
           resolve = r;
         }),
     );
-    const { result } = renderHook(() => usePullToRefresh(refetch));
+    const { result } = await renderHook(() => usePullToRefresh(refetch));
     expect(result.current.refreshing).toBe(false);
 
-    act(() => result.current.onRefresh());
+    await act(() => result.current.onRefresh());
     expect(result.current.refreshing).toBe(true);
     expect(refetch).toHaveBeenCalledTimes(1);
 

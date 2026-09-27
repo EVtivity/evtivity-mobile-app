@@ -75,7 +75,8 @@ export default function StationDetailScreen(): React.JSX.Element {
   const activeSessions = useActiveSessions();
   const currentDriverId = useAuth((s) => s.driver?.id ?? null);
 
-  const [selected, setSelected] = React.useState<SelectedConnector | null>(null);
+  // The driver's explicit connector tap; null until they choose one.
+  const [manualSelected, setSelected] = React.useState<SelectedConnector | null>(null);
   const [warnVisible, setWarnVisible] = React.useState(false);
   const [checking, setChecking] = React.useState(false);
   const [cardSheetVisible, setCardSheetVisible] = React.useState(false);
@@ -96,51 +97,35 @@ export default function StationDetailScreen(): React.JSX.Element {
       .filter(Boolean)
       .join(' · ');
 
-  // Preselect the connector from a scanned QR code (the `evseId` param) once the
-  // station loads. Guarded so it runs once and never overrides a later manual tap.
-  const preselectedRef = React.useRef(false);
-  React.useEffect(() => {
-    if (preselectedRef.current || evseId == null) return;
+  // Default selection, derived from station data and used until the driver taps
+  // a connector: the one from a scanned QR code (the `evseId` param), else the
+  // only startable connector at the station so the driver can start without a
+  // tap. Only a connector that can actually start and is not reserved by another
+  // driver qualifies; otherwise nothing is highlighted.
+  const autoSelected = React.useMemo((): SelectedConnector | null => {
     const data = station.data;
-    if (data == null) return;
-    preselectedRef.current = true;
-    const evse = data.evses.find((e) => e.evseId === Number(evseId));
-    if (evse == null) return;
-    // Only preselect a connector that can actually start and is not reserved by
-    // another driver. An unavailable, reserved-by-other, or incompatible
-    // connector is left unselected (not highlighted).
+    if (data == null) return null;
     const opts = {
       isOnline: data.isOnline,
       maintenanceActive: data.maintenance?.active === true,
       currentDriverId,
     };
-    if (!isEvseSelectable(evse, opts)) return;
-    const connector = firstStartableConnector(evse);
-    if (connector != null) setSelected({ evseId: evse.evseId, connector });
-  }, [evseId, station.data, currentDriverId]);
-
-  // When exactly one connector at the station can start, select it automatically
-  // so the driver can start without a tap. Runs only while nothing is selected,
-  // so it never fights a manual choice or the QR preselection above.
-  React.useEffect(() => {
-    if (selected != null) return;
-    const data = station.data;
-    if (data == null) return;
-    const opts = {
-      isOnline: data.isOnline,
-      maintenanceActive: data.maintenance?.active === true,
-      currentDriverId,
+    const startableOn = (evse: StationEvse): SelectedConnector | null => {
+      if (!isEvseSelectable(evse, opts)) return null;
+      const connector = firstStartableConnector(evse);
+      return connector != null ? { evseId: evse.evseId, connector } : null;
     };
-    const startable = data.evses
-      .map((evse): SelectedConnector | null => {
-        if (!isEvseSelectable(evse, opts)) return null;
-        const connector = firstStartableConnector(evse);
-        return connector != null ? { evseId: evse.evseId, connector } : null;
-      })
-      .filter((c): c is SelectedConnector => c != null);
+    if (evseId != null) {
+      const evse = data.evses.find((e) => e.evseId === Number(evseId));
+      const fromQr = evse != null ? startableOn(evse) : null;
+      if (fromQr != null) return fromQr;
+    }
+    const startable = data.evses.map(startableOn).filter((c): c is SelectedConnector => c != null);
     const [only] = startable;
-    if (startable.length === 1 && only != null) setSelected(only);
-  }, [selected, station.data, currentDriverId]);
+    return startable.length === 1 && only != null ? only : null;
+  }, [evseId, station.data, currentDriverId]);
+  // A manual tap always wins over the derived default.
+  const selected = manualSelected ?? autoSelected;
 
   const onToggleFavorite = React.useCallback(() => {
     toggleFavorite.mutate({
