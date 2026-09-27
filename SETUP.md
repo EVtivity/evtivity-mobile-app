@@ -38,16 +38,16 @@ or follow the CLI-only recipe below.
 
 ### Required components
 
-| Component            | Version used                                     | Notes                                             |
-| -------------------- | ------------------------------------------------ | ------------------------------------------------- |
-| JDK                  | Temurin 17 (17.0.19)                             | Gradle for RN 0.76 requires JDK 17, not 11 or 21. |
-| Android SDK platform | `platforms;android-35`                           | compileSdk/targetSdk 35                           |
-| Build-tools          | `build-tools;35.0.0` (and `34.0.0`)              | 34 is pulled in by a native module                |
-| Platform-tools       | 37.0.0                                           | `adb`                                             |
-| Emulator             | 36.6.11                                          |                                                   |
-| System image         | `system-images;android-35;google_apis;arm64-v8a` | arm64 for Apple Silicon                           |
-| NDK                  | 26.1.10909125                                    | auto-installed by Gradle on first build (~1 GB)   |
-| CMake                | auto                                             | auto-installed by Gradle                          |
+| Component            | Version used                                     | Notes                                           |
+| -------------------- | ------------------------------------------------ | ----------------------------------------------- |
+| JDK                  | Temurin 17 (17.0.19)                             | Verified with RN 0.86 (Gradle 9.3.1).           |
+| Android SDK platform | `platforms;android-36`                           | compileSdk/targetSdk 36                         |
+| Build-tools          | `build-tools;36.0.0`                             | auto-installed by Gradle on first build         |
+| Platform-tools       | 37.0.0                                           | `adb`                                           |
+| Emulator             | 36.6.11                                          |                                                 |
+| System image         | `system-images;android-35;google_apis;arm64-v8a` | arm64 for Apple Silicon                         |
+| NDK                  | 27.1.12297006                                    | auto-installed by Gradle on first build (~1 GB) |
+| CMake                | auto                                             | auto-installed by Gradle                        |
 
 ### CLI-only install (no Android Studio, no sudo)
 
@@ -71,8 +71,8 @@ export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$ANDROID_HOME/c
 
 # SDK packages (~1.5 GB)
 yes | sdkmanager --licenses
-sdkmanager "platform-tools" "emulator" "platforms;android-35" \
-  "build-tools;35.0.0" "system-images;android-35;google_apis;arm64-v8a"
+sdkmanager "platform-tools" "emulator" "platforms;android-36" \
+  "build-tools;36.0.0" "system-images;android-35;google_apis;arm64-v8a"
 
 # Create and start an emulator
 echo no | avdmanager create avd -n evtivity \
