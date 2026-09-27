@@ -444,5 +444,14 @@
     "empty": "您还没有关注任何充电站。",
     "removeTitle": "取消关注",
     "removeMessage": "当该充电站空闲时，你将不再收到通知。"
+  },
+  "errors": {
+    "STATION_OFFLINE": "充电站离线",
+    "STATION_NOT_FOUND": "未找到充电站",
+    "CONNECTOR_NOT_FOUND": "未找到连接器",
+    "RATE_LIMITED": "该充电站状态检查次数过多",
+    "STATION_TIMEOUT": "充电站未响应",
+    "STATUS_CHECK_REJECTED": "充电站拒绝了状态检查",
+    "STATUS_CHECK_TIMEOUT": "状态检查超时。请重新插入连接器后重试。"
   }
 }

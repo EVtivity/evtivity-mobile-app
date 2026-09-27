@@ -46,7 +46,7 @@ import { useIsFavorite, useToggleFavorite } from '@/features/favorites';
 import { useIsWatching, useToggleWatch } from '@/features/station-watch';
 import { usePaymentMethods, type PaymentCard } from '@/features/payments';
 import { useActiveSessions } from '@/features/sessions';
-import { apiErrorMessage } from '@/lib/api';
+import { ApiError, apiErrorMessage } from '@/lib/api';
 
 interface SelectedConnector {
   evseId: number;
@@ -190,10 +190,6 @@ export default function StationDetailScreen(): React.JSX.Element {
     setChecking(true);
     try {
       const result = await checkConnectorStatus(sid, selected.evseId);
-      if (result.error != null) {
-        toast.show(result.error, 'error');
-        return;
-      }
       // No cable detected: prompt the driver to plug in, then retry. There is
       // no "start anyway" override (mirrors the portal).
       if (!isCableDetected(result.connectorStatus)) {
@@ -201,8 +197,11 @@ export default function StationDetailScreen(): React.JSX.Element {
         return;
       }
       runStart(selected);
-    } catch {
-      toast.show(t('charge.statusCheckFailed'), 'error');
+    } catch (err: unknown) {
+      toast.show(
+        err instanceof ApiError ? apiErrorMessage(err, t) : t('charge.statusCheckFailed'),
+        'error',
+      );
     } finally {
       setChecking(false);
     }

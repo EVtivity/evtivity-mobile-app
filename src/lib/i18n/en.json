@@ -453,5 +453,14 @@
     "empty": "You are not watching any stations.",
     "removeTitle": "Remove from Watching",
     "removeMessage": "You will no longer be notified when this station is free."
+  },
+  "errors": {
+    "STATION_OFFLINE": "Station is offline",
+    "STATION_NOT_FOUND": "Station not found",
+    "CONNECTOR_NOT_FOUND": "Connector not found",
+    "RATE_LIMITED": "Too many status checks for this station",
+    "STATION_TIMEOUT": "Station did not respond",
+    "STATUS_CHECK_REJECTED": "Station rejected the status check",
+    "STATUS_CHECK_TIMEOUT": "Status check timed out. Replug the connector and try again."
   }
 }

@@ -175,8 +175,7 @@ export function useStartCharging() {
 }
 
 interface CheckStatusResult {
-  connectorStatus: ConnectorStatus | null;
-  error?: string;
+  connectorStatus: ConnectorStatus;
 }
 
 export function checkConnectorStatus(
