@@ -25,6 +25,11 @@ on:
     tags:
       - 'v*'
 
+# Least privilege: jobs only check out code and upload artifacts (artifact
+# uploads use the runtime token, not GITHUB_TOKEN).
+permissions:
+  contents: read
+
 # Tag pushes have no input, so fall back to the default brand.
 env:
   ACTIVE_BRAND: ${{ github.event.inputs.brand || 'default' }}
