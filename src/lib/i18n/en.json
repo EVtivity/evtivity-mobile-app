@@ -19,7 +19,8 @@
     "search": "Search",
     "somethingWrong": "Something went wrong",
     "offline": "Cannot reach the server. Check your connection.",
-    "offlineTitle": "Connection problem"
+    "offlineTitle": "Connection problem",
+    "amountInclTax": "{{amount}} incl. tax"
   },
   "auth": {
     "signIn": "Sign In",
@@ -166,7 +167,6 @@
     "pricingPerMinute": "{{amount}}/min",
     "pricingPerSession": "{{amount}} session",
     "pricingIdle": "{{amount}}/min idle",
-    "pricingTax": "{{percent}}% tax",
     "viewLocation": "View location details",
     "card": "Card",
     "cardDefault": "Default",
@@ -208,8 +208,17 @@
       "noVehicles": "Add a vehicle to estimate your mileage.",
       "addVehicle": "Add Vehicle",
       "clearVehicle": "No vehicle",
-      "vehicleUpdateFailed": "Could not update the vehicle. Try again."
-    }
+      "vehicleUpdateFailed": "Could not update the vehicle. Try again.",
+      "costInclTax": "Cost (incl. tax)",
+      "totalCostInclTax": "Total cost (incl. tax)",
+      "netCost": "Net amount (before tax)",
+      "taxAdded": "Tax ({{rate}}%)",
+      "taxAddedNoRate": "Tax",
+      "taxContained": "Tax included ({{rate}}%)",
+      "taxContainedNoRate": "Tax included"
+    },
+    "taxIncluded": "Prices include {{rate}}% tax",
+    "taxExcluded": "Prices exclude {{rate}}% tax, which is added to the amount charged"
   },
   "activity": {
     "title": "Activity",
@@ -328,7 +337,12 @@
     "mfaDisablePrompt": "Enter your password to turn off two-factor authentication.",
     "mfaDisabledSuccess": "Two-factor authentication disabled",
     "vehicleAdded": "Vehicle added",
-    "vehicleRemoved": "Vehicle removed"
+    "vehicleRemoved": "Vehicle removed",
+    "priceDisplay": "Show prices",
+    "priceDisplayDefault": "Operator default ({{value}})",
+    "priceDisplayGross": "Including tax (gross)",
+    "priceDisplayNet": "Excluding tax (net)",
+    "priceDisplayHelper": "Including tax shows prices with tax added. Excluding tax shows prices before tax. You are charged the same amount either way, and until you choose, the operator default applies."
   },
   "payments": {
     "title": "Payment",

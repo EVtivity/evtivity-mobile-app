@@ -18,8 +18,10 @@ import {
 import { useAuth } from '@/lib/auth';
 import { ApiError, getApiErrorFieldDetails } from '@/lib/api';
 import { useUpdateProfile } from '@/features/account';
+import { useCompanyPriceDisplay } from '@/features/price-display';
 import { enabledLanguageOptions, setAppLanguage, LANGUAGE_LABELS } from '@/lib/i18n';
 import type { LanguageCode } from '@/lib/config';
+import type { PriceDisplay } from '@/lib/price-display';
 
 // Brand-configured languages, in display order.
 const LANGUAGE_OPTIONS = enabledLanguageOptions();
@@ -40,10 +42,32 @@ export default function PersonalInfoScreen(): React.JSX.Element {
   const [distanceUnit, setDistanceUnit] = React.useState<DistanceUnit>(
     driver?.distanceUnit === 'km' ? 'km' : 'miles',
   );
+  // Null follows the company setting.
+  const [priceDisplay, setPriceDisplay] = React.useState<PriceDisplay | null>(
+    driver?.priceDisplay ?? null,
+  );
+  const companyPriceDisplay = useCompanyPriceDisplay();
   const [fieldErrors, setFieldErrors] = React.useState<Record<string, string>>({});
   const [langPickerVisible, setLangPickerVisible] = React.useState(false);
+  const [pricePickerVisible, setPricePickerVisible] = React.useState(false);
 
   const languageLabel = LANGUAGE_LABELS[language as LanguageCode] ?? language;
+
+  const priceDisplayValueLabel = (value: PriceDisplay): string =>
+    t(value === 'gross' ? 'account.priceDisplayGross' : 'account.priceDisplayNet');
+  const priceDisplayOptions: { value: PriceDisplay | null; label: string }[] = [
+    {
+      value: null,
+      label: t('account.priceDisplayDefault', {
+        // "..." until the company setting has loaded.
+        value: companyPriceDisplay == null ? '...' : priceDisplayValueLabel(companyPriceDisplay),
+      }),
+    },
+    { value: 'gross', label: priceDisplayValueLabel('gross') },
+    { value: 'net', label: priceDisplayValueLabel('net') },
+  ];
+  const priceDisplayLabel =
+    priceDisplayOptions.find((o) => o.value === priceDisplay)?.label ?? t('common.na');
 
   const onSave = async (): Promise<void> => {
     setFieldErrors({});
@@ -54,6 +78,7 @@ export default function PersonalInfoScreen(): React.JSX.Element {
     if (language !== (driver?.language ?? '')) input.language = language;
     if (timezone.trim() !== (driver?.timezone ?? '')) input.timezone = timezone.trim();
     if (distanceUnit !== driver?.distanceUnit) input.distanceUnit = distanceUnit;
+    if (priceDisplay !== (driver?.priceDisplay ?? null)) input.priceDisplay = priceDisplay;
 
     try {
       await updateProfile.mutateAsync(input);
@@ -134,6 +159,22 @@ export default function PersonalInfoScreen(): React.JSX.Element {
           />
         </View>
 
+        <View className="gap-2">
+          <Text variant="label">{t('account.priceDisplay')}</Text>
+          <Pressable
+            testID="personal-price-display"
+            accessibilityRole="button"
+            accessibilityHint={t('account.priceDisplayHelper')}
+            onPress={() => setPricePickerVisible(true)}
+            className="rounded-xl border border-border bg-card px-4 py-3"
+          >
+            <Text variant="label">{priceDisplayLabel}</Text>
+          </Pressable>
+          <Text variant="muted" className="text-xs">
+            {t('account.priceDisplayHelper')}
+          </Text>
+        </View>
+
         <Field
           testID="personal-timezone"
           label={t('account.timezone')}
@@ -168,6 +209,27 @@ export default function PersonalInfoScreen(): React.JSX.Element {
             className="py-2"
           >
             <Text variant={l.code === language ? 'label' : 'muted'}>{l.label}</Text>
+          </Pressable>
+        ))}
+      </Sheet>
+
+      <Sheet
+        visible={pricePickerVisible}
+        onClose={() => setPricePickerVisible(false)}
+        title={t('account.priceDisplay')}
+      >
+        {priceDisplayOptions.map((o) => (
+          <Pressable
+            key={o.value ?? 'default'}
+            testID={`personal-price-display-${o.value ?? 'default'}`}
+            onPress={() => {
+              // Remember the choice. It is saved with the profile on Save.
+              setPriceDisplay(o.value);
+              setPricePickerVisible(false);
+            }}
+            className="py-2"
+          >
+            <Text variant={o.value === priceDisplay ? 'label' : 'muted'}>{o.label}</Text>
           </Pressable>
         ))}
       </Sheet>

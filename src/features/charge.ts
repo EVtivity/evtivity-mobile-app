@@ -91,13 +91,17 @@ export function useSearchChargers(query: string) {
   });
 }
 
+// GET /v1/portal/chargers/:stationId/pricing. Prices are net decimal strings
+// in major units of the company currency ("0.2152"). taxRate is a decimal
+// string ("0.19") that the amount charged adds on top. Show prices through
+// priceForDisplay (@/lib/price-display) as the driver chose.
 export interface PricingInfo {
   currency: string;
-  pricePerKwh: number | null;
-  pricePerMinute: number | null;
-  pricePerSession: number | null;
-  idleFeePricePerMinute: number | null;
-  taxRate: number | null;
+  pricePerKwh: string | null;
+  pricePerMinute: string | null;
+  pricePerSession: string | null;
+  idleFeePricePerMinute: string | null;
+  taxRate: string | null;
   isFreeVend: boolean;
 }
 

@@ -19,7 +19,8 @@
     "search": "검색",
     "somethingWrong": "문제가 발생했습니다",
     "offline": "서버에 연결할 수 없습니다. 연결 상태를 확인하세요.",
-    "offlineTitle": "연결 문제"
+    "offlineTitle": "연결 문제",
+    "amountInclTax": "{{amount}} (세금 포함)"
   },
   "auth": {
     "signIn": "로그인",
@@ -158,7 +159,6 @@
     "pricingPerMinute": "{{amount}}/분",
     "pricingPerSession": "세션당 {{amount}}",
     "pricingIdle": "{{amount}}/분 대기",
-    "pricingTax": "세금 {{percent}}%",
     "viewLocation": "위치 세부 정보 보기",
     "card": "카드",
     "cardDefault": "기본",
@@ -200,8 +200,17 @@
       "noVehicles": "주행 거리를 추정하려면 차량을 추가하세요.",
       "addVehicle": "차량 추가",
       "clearVehicle": "차량 없음",
-      "vehicleUpdateFailed": "차량을 업데이트할 수 없습니다. 다시 시도하세요."
-    }
+      "vehicleUpdateFailed": "차량을 업데이트할 수 없습니다. 다시 시도하세요.",
+      "costInclTax": "비용 (세금 포함)",
+      "totalCostInclTax": "총 비용 (세금 포함)",
+      "netCost": "순액 (세전)",
+      "taxAdded": "세금 ({{rate}}%)",
+      "taxAddedNoRate": "세금",
+      "taxContained": "포함된 세금 ({{rate}}%)",
+      "taxContainedNoRate": "포함된 세금"
+    },
+    "taxIncluded": "가격에 {{rate}}% 세금 포함",
+    "taxExcluded": "가격에 {{rate}}% 세금 별도, 청구 금액에 세금이 추가됩니다"
   },
   "activity": {
     "title": "활동",
@@ -319,7 +328,12 @@
     "mfaDisablePrompt": "2단계 인증을 끄려면 비밀번호를 입력하세요.",
     "mfaDisabledSuccess": "2단계 인증이 사용 중지되었습니다",
     "vehicleAdded": "차량이 추가되었습니다",
-    "vehicleRemoved": "차량이 삭제되었습니다"
+    "vehicleRemoved": "차량이 삭제되었습니다",
+    "priceDisplay": "가격 표시",
+    "priceDisplayDefault": "운영자 기본값 ({{value}})",
+    "priceDisplayGross": "세금 포함 (총액)",
+    "priceDisplayNet": "세금 별도 (순액)",
+    "priceDisplayHelper": "세금 포함은 세금이 더해진 가격을 표시합니다. 세금 별도는 세전 가격을 표시합니다. 청구 금액은 어느 쪽이든 같으며, 직접 선택하기 전에는 운영자 기본값이 적용됩니다."
   },
   "payments": {
     "title": "결제",

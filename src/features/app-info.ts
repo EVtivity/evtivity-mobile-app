@@ -19,6 +19,8 @@ export interface Branding {
   zip?: string;
   country?: string;
   portalUrl?: string;
+  // Company price display ('gross' or 'net'), normalized by the API.
+  priceDisplay?: string;
 }
 
 export function useBranding() {

@@ -4,6 +4,8 @@
 // Shapes returned by the /v1/portal/* API. Kept permissive (optional fields)
 // because the API uses .passthrough() and individual endpoints return supersets.
 
+import type { PriceDisplay } from '@/lib/price-display';
+
 export interface Driver {
   id: string;
   firstName: string;
@@ -14,6 +16,9 @@ export interface Driver {
   timezone: string;
   themePreference: string;
   distanceUnit: string;
+  // Prices including ('gross') or excluding ('net') tax. Null follows the
+  // company setting (see usePriceDisplay).
+  priceDisplay?: PriceDisplay | null;
   emailVerified: boolean;
   mfaEnabled?: boolean;
   createdAt?: string;
@@ -66,6 +71,9 @@ export interface ChargingSession {
   finalCostCents?: number;
   // ISO 4217 currency the session was billed in. Costs are in this currency.
   currency: string;
+  // Tax rate of the session tariff as a decimal string ("0.19"), null without
+  // tax. Costs include it.
+  tariffTaxRate?: string | null;
   idleStartedAt?: string | null;
   co2AvoidedKg?: number | null;
 }

@@ -4,6 +4,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { useAuth } from '@/lib/auth';
+import type { PriceDisplay } from '@/lib/price-display';
 import type { Driver, Vehicle, RfidToken } from '@/lib/types';
 
 export interface NotificationPrefs {
@@ -26,6 +27,8 @@ interface UpdateProfileInput {
   timezone?: string;
   themePreference?: 'light' | 'dark';
   distanceUnit?: 'miles' | 'km';
+  // Null follows the company setting company.priceDisplay.
+  priceDisplay?: PriceDisplay | null;
 }
 
 export function useUpdateProfile() {

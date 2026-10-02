@@ -19,7 +19,8 @@
     "search": "搜索",
     "somethingWrong": "出错了",
     "offline": "无法连接服务器，请检查网络。",
-    "offlineTitle": "连接问题"
+    "offlineTitle": "连接问题",
+    "amountInclTax": "{{amount}}（含税）"
   },
   "auth": {
     "signIn": "登录",
@@ -158,7 +159,6 @@
     "pricingPerMinute": "{{amount}}/分钟",
     "pricingPerSession": "{{amount}}/次",
     "pricingIdle": "{{amount}}/分钟（占用费）",
-    "pricingTax": "{{percent}}% 税费",
     "viewLocation": "查看地点详情",
     "card": "银行卡",
     "cardDefault": "默认",
@@ -200,8 +200,17 @@
       "noVehicles": "添加车辆以估算您的里程。",
       "addVehicle": "添加车辆",
       "clearVehicle": "无车辆",
-      "vehicleUpdateFailed": "无法更新车辆，请重试。"
-    }
+      "vehicleUpdateFailed": "无法更新车辆，请重试。",
+      "costInclTax": "费用（含税）",
+      "totalCostInclTax": "总费用（含税）",
+      "netCost": "净额（税前）",
+      "taxAdded": "税费（{{rate}}%）",
+      "taxAddedNoRate": "税费",
+      "taxContained": "其中税费（{{rate}}%）",
+      "taxContainedNoRate": "其中税费"
+    },
+    "taxIncluded": "价格含 {{rate}}% 税",
+    "taxExcluded": "价格不含 {{rate}}% 税，税费计入实际扣款金额"
   },
   "activity": {
     "title": "记录",
@@ -319,7 +328,12 @@
     "mfaDisablePrompt": "请输入密码以关闭两步验证。",
     "mfaDisabledSuccess": "两步验证已停用",
     "vehicleAdded": "已添加车辆",
-    "vehicleRemoved": "已移除车辆"
+    "vehicleRemoved": "已移除车辆",
+    "priceDisplay": "价格显示",
+    "priceDisplayDefault": "运营商默认（{{value}}）",
+    "priceDisplayGross": "含税（总价）",
+    "priceDisplayNet": "不含税（净价）",
+    "priceDisplayHelper": "含税显示加上税费后的价格。不含税显示税前价格。两种方式下实际扣款金额相同，未选择时使用运营商的默认设置。"
   },
   "payments": {
     "title": "支付",
