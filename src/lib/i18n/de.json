@@ -19,7 +19,8 @@
     "search": "Suchen",
     "somethingWrong": "Etwas ist schiefgelaufen",
     "offline": "Server nicht erreichbar. Prüfe deine Verbindung.",
-    "offlineTitle": "Verbindungsproblem"
+    "offlineTitle": "Verbindungsproblem",
+    "amountInclTax": "{{amount}} inkl. Steuer"
   },
   "auth": {
     "signIn": "Anmelden",
@@ -158,7 +159,6 @@
     "pricingPerMinute": "{{amount}}/Min.",
     "pricingPerSession": "{{amount}} Sitzung",
     "pricingIdle": "{{amount}}/Min. Leerlauf",
-    "pricingTax": "{{percent}}% Steuer",
     "viewLocation": "Standortdetails anzeigen",
     "card": "Karte",
     "cardDefault": "Standard",
@@ -200,8 +200,17 @@
       "noVehicles": "Füge ein Fahrzeug hinzu, um deine Reichweite zu schätzen.",
       "addVehicle": "Fahrzeug hinzufügen",
       "clearVehicle": "Kein Fahrzeug",
-      "vehicleUpdateFailed": "Fahrzeug konnte nicht aktualisiert werden. Versuche es erneut."
-    }
+      "vehicleUpdateFailed": "Fahrzeug konnte nicht aktualisiert werden. Versuche es erneut.",
+      "costInclTax": "Kosten (inkl. Steuer)",
+      "totalCostInclTax": "Gesamtkosten (inkl. Steuer)",
+      "netCost": "Nettobetrag (vor Steuer)",
+      "taxAdded": "Steuer ({{rate}} %)",
+      "taxAddedNoRate": "Steuer",
+      "taxContained": "Enthaltene Steuer ({{rate}} %)",
+      "taxContainedNoRate": "Enthaltene Steuer"
+    },
+    "taxIncluded": "Preise inkl. {{rate}} % Steuer",
+    "taxExcluded": "Preise zzgl. {{rate}} % Steuer, die zum abgerechneten Betrag hinzukommt"
   },
   "activity": {
     "title": "Aktivität",
@@ -319,7 +328,12 @@
     "mfaDisablePrompt": "Gib dein Passwort ein, um die Zwei-Faktor-Authentifizierung auszuschalten.",
     "mfaDisabledSuccess": "Zwei-Faktor-Authentifizierung deaktiviert",
     "vehicleAdded": "Fahrzeug hinzugefügt",
-    "vehicleRemoved": "Fahrzeug entfernt"
+    "vehicleRemoved": "Fahrzeug entfernt",
+    "priceDisplay": "Preise anzeigen",
+    "priceDisplayDefault": "Vorgabe des Betreibers ({{value}})",
+    "priceDisplayGross": "Inklusive Steuer (brutto)",
+    "priceDisplayNet": "Exklusive Steuer (netto)",
+    "priceDisplayHelper": "Inklusive Steuer zeigt Preise mit Steuer. Exklusive Steuer zeigt Preise vor Steuer. Der abgerechnete Betrag ist in beiden Fällen gleich, und solange Sie nichts wählen, gilt die Vorgabe des Betreibers."
   },
   "payments": {
     "title": "Zahlung",

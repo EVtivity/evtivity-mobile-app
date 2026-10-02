@@ -19,7 +19,8 @@
     "search": "搜尋",
     "somethingWrong": "發生錯誤",
     "offline": "無法連線至伺服器，請檢查您的網路連線。",
-    "offlineTitle": "連線問題"
+    "offlineTitle": "連線問題",
+    "amountInclTax": "{{amount}}（含稅）"
   },
   "auth": {
     "signIn": "登入",
@@ -158,7 +159,6 @@
     "pricingPerMinute": "{{amount}}/分鐘",
     "pricingPerSession": "{{amount}} 每次",
     "pricingIdle": "{{amount}}/分鐘 閒置費",
-    "pricingTax": "{{percent}}% 稅",
     "viewLocation": "查看地點詳情",
     "card": "卡片",
     "cardDefault": "預設",
@@ -200,8 +200,17 @@
       "noVehicles": "新增車輛以估算您的里程。",
       "addVehicle": "新增車輛",
       "clearVehicle": "無車輛",
-      "vehicleUpdateFailed": "無法更新車輛，請再試一次。"
-    }
+      "vehicleUpdateFailed": "無法更新車輛，請再試一次。",
+      "costInclTax": "費用（含稅）",
+      "totalCostInclTax": "總費用（含稅）",
+      "netCost": "淨額（稅前）",
+      "taxAdded": "稅額（{{rate}}%）",
+      "taxAddedNoRate": "稅額",
+      "taxContained": "其中稅額（{{rate}}%）",
+      "taxContainedNoRate": "其中稅額"
+    },
+    "taxIncluded": "價格含 {{rate}}% 稅",
+    "taxExcluded": "價格未含 {{rate}}% 稅，稅額計入實際扣款金額"
   },
   "activity": {
     "title": "紀錄",
@@ -319,7 +328,12 @@
     "mfaDisablePrompt": "請輸入您的密碼以關閉雙重驗證。",
     "mfaDisabledSuccess": "雙重驗證已停用",
     "vehicleAdded": "已新增車輛",
-    "vehicleRemoved": "已移除車輛"
+    "vehicleRemoved": "已移除車輛",
+    "priceDisplay": "價格顯示",
+    "priceDisplayDefault": "營運商預設（{{value}}）",
+    "priceDisplayGross": "含稅（總價）",
+    "priceDisplayNet": "未稅（淨價）",
+    "priceDisplayHelper": "含稅顯示加上稅額後的價格。未稅顯示稅前價格。兩種方式下實際扣款金額相同，未選擇時使用營運商的預設設定。"
   },
   "payments": {
     "title": "付款",

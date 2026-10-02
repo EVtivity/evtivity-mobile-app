@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { Text, StatusBadge } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import { formatCurrency, formatEnergyWh, formatDuration, formatDate } from '@/lib/format';
+import { costIncludesTax } from '@/lib/price-display';
 import { sessionStatusTone, sessionStatusLabelKey, SESSION_TONE_COLOR } from '@/lib/status';
 import type { ChargingSession } from '@/lib/types';
 
@@ -26,6 +27,11 @@ export const SessionRow = React.memo(function SessionRow({
     session.status === 'completed'
       ? session.finalCostCents
       : (session.currentCostCents ?? session.finalCostCents);
+  // Costs include the tariff tax. Say so only when the amount contains tax.
+  const amount = formatCurrency(cost, session.currency);
+  const costLabel = costIncludesTax(cost, session.tariffTaxRate)
+    ? t('common.amountInclTax', { amount })
+    : amount;
   return (
     <Pressable
       testID={`session-row-${session.id}`}
@@ -47,8 +53,8 @@ export const SessionRow = React.memo(function SessionRow({
           {formatDate(session.startedAt)} · {formatDuration(session.startedAt, session.endedAt)} ·{' '}
           {formatEnergyWh(session.energyDeliveredWh)}
         </Text>
-        <Text variant="title" tabular>
-          {formatCurrency(cost, session.currency)}
+        <Text testID={`session-row-cost-${session.id}`} variant="title" tabular>
+          {costLabel}
         </Text>
       </View>
     </Pressable>

@@ -2,22 +2,48 @@
 // SPDX-License-Identifier: BUSL-1.1
 
 import React from 'react';
+import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { DollarSign } from '@/components/icons';
 import { Card, Text } from '@/components/ui';
 import { hsl } from '@/lib/theme';
-import { formatCurrency } from '@/lib/format';
+import { formatUnitPrice } from '@/lib/format';
+import { formatTaxRatePercent, priceForDisplay, type PriceDisplay } from '@/lib/price-display';
 import type { PricingInfo } from '@/features/charge';
 
-function rateLabel(rate: number, currency: string): string {
-  return formatCurrency(Math.round(rate * 100), currency);
+function toNumber(value: string | null): number {
+  return value != null ? Number(value) : 0;
 }
 
-export function PricingCard({ pricing }: { pricing: PricingInfo }): React.JSX.Element | null {
+// Tariff prices are net. With priceDisplay 'gross' every price is shown with
+// the tax rate added, and the note below the prices says which one it is.
+// Mirrors PricingDisplay in the driver portal.
+export function PricingCard({
+  pricing,
+  priceDisplay,
+}: {
+  pricing: PricingInfo;
+  priceDisplay: PriceDisplay;
+}): React.JSX.Element {
   const { t } = useTranslation();
   const { currency } = pricing;
+  const perKwh = toNumber(pricing.pricePerKwh);
+  const perMin = toNumber(pricing.pricePerMinute);
+  const perSession = toNumber(pricing.pricePerSession);
+  const idleFee = toNumber(pricing.idleFeePricePerMinute);
+  const taxRate = toNumber(pricing.taxRate);
+  const formatPrice = (price: number): string =>
+    formatUnitPrice(priceForDisplay(price, taxRate, priceDisplay), currency);
 
-  if (pricing.isFreeVend) {
+  const parts: string[] = [];
+  if (perKwh > 0) parts.push(t('charge.pricingPerKwh', { amount: formatPrice(perKwh) }));
+  if (perMin > 0) parts.push(t('charge.pricingPerMinute', { amount: formatPrice(perMin) }));
+  if (perSession > 0) {
+    parts.push(t('charge.pricingPerSession', { amount: formatPrice(perSession) }));
+  }
+  if (idleFee > 0) parts.push(t('charge.pricingIdle', { amount: formatPrice(idleFee) }));
+
+  if (pricing.isFreeVend || parts.length === 0) {
     return (
       <Card className="flex-row items-center gap-3">
         <DollarSign size={20} color={hsl('primary')} />
@@ -28,37 +54,24 @@ export function PricingCard({ pricing }: { pricing: PricingInfo }): React.JSX.El
     );
   }
 
-  const parts: string[] = [];
-  if (pricing.pricePerKwh != null) {
-    parts.push(t('charge.pricingPerKwh', { amount: rateLabel(pricing.pricePerKwh, currency) }));
-  }
-  if (pricing.pricePerMinute != null) {
-    parts.push(
-      t('charge.pricingPerMinute', { amount: rateLabel(pricing.pricePerMinute, currency) }),
-    );
-  }
-  if (pricing.pricePerSession != null) {
-    parts.push(
-      t('charge.pricingPerSession', { amount: rateLabel(pricing.pricePerSession, currency) }),
-    );
-  }
-  if (pricing.idleFeePricePerMinute != null) {
-    parts.push(
-      t('charge.pricingIdle', { amount: rateLabel(pricing.idleFeePricePerMinute, currency) }),
-    );
-  }
-  if (pricing.taxRate != null) {
-    parts.push(
-      t('charge.pricingTax', { percent: (pricing.taxRate * 100).toFixed(2).replace(/\.?0+$/, '') }),
-    );
-  }
-
-  if (parts.length === 0) return null;
+  const taxNote =
+    taxRate > 0
+      ? t(priceDisplay === 'gross' ? 'charge.taxIncluded' : 'charge.taxExcluded', {
+          rate: formatTaxRatePercent(taxRate),
+        })
+      : null;
 
   return (
     <Card className="flex-row items-center gap-3">
       <DollarSign size={20} color={hsl('primary')} />
-      <Text className="flex-1 text-sm text-foreground">{parts.join(' · ')}</Text>
+      <View className="flex-1 gap-1">
+        <Text className="text-sm text-foreground">{parts.join(' · ')}</Text>
+        {taxNote != null ? (
+          <Text testID="pricing-tax-note" className="text-xs text-muted-foreground">
+            {taxNote}
+          </Text>
+        ) : null}
+      </View>
     </Card>
   );
 }

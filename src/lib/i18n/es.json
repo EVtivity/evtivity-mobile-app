@@ -19,7 +19,8 @@
     "search": "Buscar",
     "somethingWrong": "Algo salió mal",
     "offline": "No se puede conectar con el servidor. Revisa tu conexión.",
-    "offlineTitle": "Problema de conexión"
+    "offlineTitle": "Problema de conexión",
+    "amountInclTax": "{{amount}} impuestos incluidos"
   },
   "auth": {
     "signIn": "Iniciar sesión",
@@ -158,7 +159,6 @@
     "pricingPerMinute": "{{amount}}/min",
     "pricingPerSession": "{{amount}} por sesión",
     "pricingIdle": "{{amount}}/min inactivo",
-    "pricingTax": "{{percent}}% de impuesto",
     "viewLocation": "Ver detalles de la ubicación",
     "card": "Tarjeta",
     "cardDefault": "Predeterminada",
@@ -200,8 +200,17 @@
       "noVehicles": "Añade un vehículo para estimar tu kilometraje.",
       "addVehicle": "Añadir vehículo",
       "clearVehicle": "Sin vehículo",
-      "vehicleUpdateFailed": "No se pudo actualizar el vehículo. Inténtalo de nuevo."
-    }
+      "vehicleUpdateFailed": "No se pudo actualizar el vehículo. Inténtalo de nuevo.",
+      "costInclTax": "Costo (impuestos incluidos)",
+      "totalCostInclTax": "Costo total (impuestos incluidos)",
+      "netCost": "Importe neto (antes de impuestos)",
+      "taxAdded": "Impuestos ({{rate}} %)",
+      "taxAddedNoRate": "Impuestos",
+      "taxContained": "Impuestos incluidos ({{rate}} %)",
+      "taxContainedNoRate": "Impuestos incluidos"
+    },
+    "taxIncluded": "Precios con impuestos del {{rate}} % incluidos",
+    "taxExcluded": "Precios sin el {{rate}} % de impuestos, que se suma al importe cobrado"
   },
   "activity": {
     "title": "Actividad",
@@ -319,7 +328,12 @@
     "mfaDisablePrompt": "Ingresa tu contraseña para desactivar la autenticación de dos factores.",
     "mfaDisabledSuccess": "Autenticación de dos factores desactivada",
     "vehicleAdded": "Vehículo añadido",
-    "vehicleRemoved": "Vehículo eliminado"
+    "vehicleRemoved": "Vehículo eliminado",
+    "priceDisplay": "Mostrar precios",
+    "priceDisplayDefault": "Predeterminado del operador ({{value}})",
+    "priceDisplayGross": "Impuestos incluidos (bruto)",
+    "priceDisplayNet": "Sin impuestos (neto)",
+    "priceDisplayHelper": "Con impuestos muestra los precios con los impuestos sumados. Sin impuestos muestra los precios antes de impuestos. El importe cobrado es el mismo en ambos casos, y mientras no elija, se aplica la opción del operador."
   },
   "payments": {
     "title": "Pago",

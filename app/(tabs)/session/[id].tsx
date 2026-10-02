@@ -42,6 +42,8 @@ import {
   useConfirm,
 } from '@/components/ui';
 import { SessionCharts } from '@/components/charts/SessionCharts';
+import { DetailRow as Row, SessionCostRows } from '@/components/SessionCostRows';
+import { usePriceDisplay } from '@/features/price-display';
 import { hsl } from '@/lib/theme';
 import { sessionStatusTone, sessionStatusLabelKey, SESSION_TONE_COLOR } from '@/lib/status';
 import {
@@ -143,17 +145,6 @@ function StatusPill({
   );
 }
 
-function Row({ label, value }: { label: string; value: string }): React.JSX.Element {
-  return (
-    <View className="flex-row items-center justify-between gap-3">
-      <Text variant="muted">{label}</Text>
-      <Text variant="label" tabular className="flex-1 text-right">
-        {value}
-      </Text>
-    </View>
-  );
-}
-
 // Self-ticking duration: while charging it re-renders once a second in
 // isolation, so the live counter never re-renders the whole screen or the charts.
 function LiveDuration({
@@ -192,6 +183,7 @@ export default function SessionScreen(): React.JSX.Element {
   const [stopRequested, setStopRequested] = React.useState(false);
   const [vehicleSheet, setVehicleSheet] = React.useState(false);
   const vehicles = useVehicles();
+  const priceDisplay = usePriceDisplay();
 
   const data = session.data as SessionData | undefined;
   const isActive = data?.status === 'active';
@@ -263,7 +255,8 @@ export default function SessionScreen(): React.JSX.Element {
     );
   }
 
-  const cost = isActive ? data.currentCostCents : data.finalCostCents;
+  // The same cost the API splits into netCents and taxCents, as in the portal.
+  const cost = data.finalCostCents ?? data.currentCostCents;
   const chargingIdle =
     isActive &&
     (data.connectorStatus === 'idle' ||
@@ -422,9 +415,14 @@ export default function SessionScreen(): React.JSX.Element {
         {data.batteryPercent != null ? (
           <Row label={t('charge.detail.battery')} value={`${Math.round(data.batteryPercent)}%`} />
         ) : null}
-        <Row
-          label={isActive ? t('charge.live.cost') : t('charge.detail.totalCost')}
-          value={formatCurrency(cost, data.currency)}
+        <SessionCostRows
+          costCents={cost}
+          currency={data.currency}
+          isActive={isActive}
+          netCents={data.netCents}
+          taxCents={data.taxCents}
+          taxRate={data.taxRate}
+          priceDisplay={priceDisplay}
         />
         {data.stoppedReason != null ? (
           <Row label={t('charge.detail.stopReason')} value={data.stoppedReason} />

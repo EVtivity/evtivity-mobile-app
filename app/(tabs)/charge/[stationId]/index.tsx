@@ -46,6 +46,7 @@ import { useIsFavorite, useToggleFavorite } from '@/features/favorites';
 import { useIsWatching, useToggleWatch } from '@/features/station-watch';
 import { usePaymentMethods, type PaymentCard } from '@/features/payments';
 import { useActiveSessions } from '@/features/sessions';
+import { usePriceDisplay } from '@/features/price-display';
 import { ApiError, apiErrorMessage } from '@/lib/api';
 
 interface SelectedConnector {
@@ -66,6 +67,7 @@ export default function StationDetailScreen(): React.JSX.Element {
   const sid = stationId ?? '';
   const station = useStation(sid);
   const pricing = usePricing(sid);
+  const priceDisplay = usePriceDisplay();
   const favorite = useIsFavorite(sid);
   const toggleFavorite = useToggleFavorite();
   const watch = useIsWatching(sid);
@@ -326,7 +328,11 @@ export default function StationDetailScreen(): React.JSX.Element {
         </Card>
       ) : null}
 
-      {pricing.data != null ? <PricingCard pricing={pricing.data} /> : null}
+      {/* Not rendered until the price display is known, so prices are not
+          shown one way and then switched. */}
+      {pricing.data != null && priceDisplay != null ? (
+        <PricingCard pricing={pricing.data} priceDisplay={priceDisplay} />
+      ) : null}
 
       {data.paymentEnabled && selectedCard != null && !hasActiveSession ? (
         <Card className="flex-row items-center gap-3">
