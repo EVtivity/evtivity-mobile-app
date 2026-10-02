@@ -36,7 +36,8 @@ export interface Features {
   reservationMaxHours?: number;
   reservationCancellationFeeCents?: number;
   reservationCancellationWindowMinutes?: number;
-  currency?: string;
+  // Company currency (ISO 4217) of every amount in this response.
+  currency: string;
 }
 
 // Operator feature toggles from the CSMS. Gates the Reserve tab and other

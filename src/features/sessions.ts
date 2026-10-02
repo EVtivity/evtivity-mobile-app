@@ -13,7 +13,7 @@ interface ActiveSession {
   startedAt: string;
   energyDeliveredWh: number | null;
   currentCostCents: number | null;
-  currency: string | null;
+  currency: string;
 }
 
 export interface MonthlySummary {
@@ -21,7 +21,7 @@ export interface MonthlySummary {
   totalEnergyWh: number;
   totalCo2AvoidedKg: number;
   sessionCount: number;
-  currency: string | null;
+  currency: string;
 }
 
 interface StopSessionResult {
@@ -120,7 +120,7 @@ export interface SessionDetail {
   co2AvoidedKg: number | null;
   finalCostCents: number | null;
   currentCostCents: number | null;
-  currency: string | null;
+  currency: string;
   stationName: string | null;
   siteName: string | null;
   siteAddress: string | null;
@@ -168,13 +168,13 @@ export interface MonthlyStatement {
     energyDeliveredWh: number | null;
     co2AvoidedKg: number | null;
     finalCostCents: number | null;
-    currency: string | null;
+    currency: string;
     siteName: string | null;
     siteCity: string | null;
   }[];
   totals: {
     totalCostCents: number;
-    currency: string | null;
+    currency: string;
     totalEnergyWh: number;
     totalCo2AvoidedKg: number;
     sessionCount: number;

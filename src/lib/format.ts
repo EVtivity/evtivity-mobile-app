@@ -1,23 +1,69 @@
 // Copyright (c) 2024-2026 EVtivity. All rights reserved.
 // SPDX-License-Identifier: BUSL-1.1
 
+import i18next from 'i18next';
+
 // Formatting helpers mirroring the portal css-spec data-formatting rules.
 // Currency is stored in cents. Empty values render as "n/a", never null/NaN.
 
 export const NA = 'n/a';
 
+const FALLBACK_LOCALE = 'en-US';
+
+// Returns the locale when Intl supports it, otherwise "en-US". Mirrors
+// resolveLocale in @evtivity/lib/number.
+export function resolveLocale(locale: string): string {
+  try {
+    return Intl.getCanonicalLocales(locale)[0] ?? FALLBACK_LOCALE;
+  } catch {
+    return FALLBACK_LOCALE;
+  }
+}
+
+// The selected UI language, which drives number and currency formatting. Read
+// from the global i18next instance that @/lib/i18n initializes, and "en" before
+// initialization (e.g. in unit tests).
+export function uiLocale(): string {
+  return i18next.isInitialized ? i18next.language : 'en';
+}
+
+// Formats cents in a currency (the session's, else the company currency) in the
+// UI language, e.g. 1250 EUR as "€12.50" (en) or "12,50 €" (de). Falls back to
+// "CODE 12.50" when the code is not a valid ISO 4217 currency. Mirrors
+// formatCurrencyAmount in @evtivity/lib/currency.
 export function formatCurrency(
   cents: number | null | undefined,
-  currency: string | null | undefined = 'USD',
+  currency: string,
+  locale: string = uiLocale(),
 ): string {
   if (cents == null || Number.isNaN(cents)) return NA;
-  const code = currency ?? 'USD';
   try {
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: code }).format(
+    return new Intl.NumberFormat(resolveLocale(locale), { style: 'currency', currency }).format(
       cents / 100,
     );
   } catch {
-    return `$${(cents / 100).toFixed(2)}`;
+    return `${currency.toUpperCase()} ${(cents / 100).toFixed(2)}`;
+  }
+}
+
+// Formats a unit price in major units (e.g. a tariff rate of 0.2561 EUR/kWh)
+// with 2 to 4 fraction digits, so rates finer than a cent are not rounded away.
+// Falls back like formatCurrency. Mirrors formatUnitPrice in
+// @evtivity/lib/currency.
+export function formatUnitPrice(
+  amount: number,
+  currency: string,
+  locale: string = uiLocale(),
+): string {
+  try {
+    return new Intl.NumberFormat(resolveLocale(locale), {
+      style: 'currency',
+      currency,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 4,
+    }).format(amount);
+  } catch {
+    return `${currency.toUpperCase()} ${amount.toFixed(2)}`;
   }
 }
 

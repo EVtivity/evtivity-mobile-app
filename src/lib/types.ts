@@ -64,7 +64,8 @@ export interface ChargingSession {
   energyDeliveredWh?: number;
   currentCostCents?: number;
   finalCostCents?: number;
-  currency?: string;
+  // ISO 4217 currency the session was billed in. Costs are in this currency.
+  currency: string;
   idleStartedAt?: string | null;
   co2AvoidedKg?: number | null;
 }

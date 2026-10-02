@@ -1,8 +1,12 @@
 // Copyright (c) 2024-2026 EVtivity. All rights reserved.
 // SPDX-License-Identifier: BUSL-1.1
 
+import i18next from 'i18next';
 import {
   formatCurrency,
+  formatUnitPrice,
+  resolveLocale,
+  uiLocale,
   formatEnergyWh,
   formatPowerKw,
   formatDateTime,
@@ -14,21 +18,67 @@ import {
   NA,
 } from '@/lib/format';
 
+// Same cases as packages/lib/src/__tests__/currency.test.ts in the CSMS, so the
+// app formats money like @evtivity/lib/currency.
 describe('formatCurrency', () => {
-  it('formats cents as currency', () => {
-    expect(formatCurrency(1234)).toBe('$12.34');
+  it('formats minor units in the given currency', () => {
+    expect(formatCurrency(1250, 'USD')).toBe('$12.50');
+    expect(formatCurrency(1250, 'EUR')).toBe('€12.50');
+    expect(formatCurrency(-500, 'GBP')).toBe('-£5.00');
   });
-  it('honors an explicit currency code', () => {
-    expect(formatCurrency(1000, 'EUR')).toContain('10.00');
+  it('falls back to the code for an invalid currency', () => {
+    expect(formatCurrency(1250, 'xx')).toBe('XX 12.50');
   });
-  it('defaults to USD when currency is null', () => {
-    expect(formatCurrency(500, null)).toBe('$5.00');
+  it('formats in the given locale', () => {
+    expect(formatCurrency(1250, 'EUR', 'de')).toBe('12,50\u00a0€');
+    expect(formatCurrency(123456, 'EUR', 'de')).toBe('1.234,56\u00a0€');
+    expect(formatCurrency(1250, 'EUR', 'en')).toBe('€12.50');
   });
-  it('falls back to a plain dollar string on an invalid currency code', () => {
-    expect(formatCurrency(1234, 'INVALID')).toBe('$12.34');
+  it('falls back to en-US for an invalid locale', () => {
+    expect(formatCurrency(1250, 'USD', 'not a locale!')).toBe('$12.50');
   });
   it.each([null, undefined, NaN])('returns n/a for %p', (value) => {
-    expect(formatCurrency(value)).toBe('n/a');
+    expect(formatCurrency(value, 'USD')).toBe('n/a');
+  });
+});
+
+describe('formatUnitPrice', () => {
+  it('keeps up to four fraction digits', () => {
+    expect(formatUnitPrice(0.256088, 'EUR')).toBe('€0.2561');
+    expect(formatUnitPrice(0.1, 'USD')).toBe('$0.10');
+  });
+  it('uses the separators of the locale', () => {
+    expect(formatUnitPrice(0.2561, 'EUR', 'de')).toBe('0,2561\u00a0€');
+  });
+  it('falls back to the code for an invalid currency', () => {
+    expect(formatUnitPrice(0.256, 'xx')).toBe('XX 0.26');
+  });
+});
+
+describe('resolveLocale', () => {
+  it('canonicalizes a valid locale', () => {
+    expect(resolveLocale('zh-tw')).toBe('zh-TW');
+  });
+  it('falls back to en-US for an invalid locale', () => {
+    expect(resolveLocale('not a locale!')).toBe('en-US');
+  });
+  it('falls back to en-US when Intl returns no locale', () => {
+    const spy = jest.spyOn(Intl, 'getCanonicalLocales').mockReturnValue([]);
+    expect(resolveLocale('en')).toBe('en-US');
+    spy.mockRestore();
+  });
+});
+
+describe('uiLocale', () => {
+  it('is "en" before i18next is initialized', () => {
+    expect(uiLocale()).toBe('en');
+  });
+  it('follows the i18next language once initialized', async () => {
+    // eslint-disable-next-line import/no-named-as-default-member -- init is the documented instance method on the default export.
+    await i18next.init({ lng: 'de', resources: {} });
+    expect(uiLocale()).toBe('de');
+    expect(formatCurrency(1250, 'EUR')).toBe('12,50\u00a0€');
+    expect(formatUnitPrice(0.2561, 'EUR')).toBe('0,2561\u00a0€');
   });
 });
 

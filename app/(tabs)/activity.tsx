@@ -77,7 +77,7 @@ export default function ActivityScreen(): React.JSX.Element {
   const summaryValue = (): string => {
     const s = summary.data;
     if (s == null) return t('common.na');
-    if (metric === 'cost') return formatCurrency(s.totalCostCents, s.currency ?? undefined);
+    if (metric === 'cost') return formatCurrency(s.totalCostCents, s.currency);
     if (metric === 'energy') return formatEnergyWh(s.totalEnergyWh);
     return formatMiles(s.totalEnergyWh);
   };

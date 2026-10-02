@@ -109,7 +109,11 @@ export default function StatementScreen(): React.JSX.Element {
                 />
                 <TotalRow
                   label={t('activity.cost')}
-                  value={formatCurrency(data?.totals.totalCostCents ?? 0, data?.totals.currency)}
+                  value={
+                    data != null
+                      ? formatCurrency(data.totals.totalCostCents, data.totals.currency)
+                      : t('common.na')
+                  }
                 />
                 <TotalRow
                   label={t('activity.co2Avoided')}

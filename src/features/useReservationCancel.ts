@@ -19,13 +19,16 @@ export function useConfirmCancelReservation(): (startsAt: string | null) => Prom
     (startsAt) => {
       const feeCents = features.data?.reservationCancellationFeeCents ?? 0;
       const windowMin = features.data?.reservationCancellationWindowMinutes ?? 0;
-      const currency = features.data?.currency ?? 'USD';
       const startMs = startsAt != null ? new Date(startsAt).getTime() : Date.now();
       const minutesUntilStart = (startMs - Date.now()) / 60_000;
+      // No features loaded means no fee (feeCents is 0), so the currency is known.
       const feeApplies = feeCents > 0 && minutesUntilStart < windowMin;
-      const message = feeApplies
-        ? t('reservations.cancelFeeWarning', { fee: formatCurrency(feeCents, currency) })
-        : t('reservations.cancelMessage');
+      const message =
+        features.data != null && feeApplies
+          ? t('reservations.cancelFeeWarning', {
+              fee: formatCurrency(feeCents, features.data.currency),
+            })
+          : t('reservations.cancelMessage');
       return confirm({
         title: t('reservations.cancel'),
         message,
