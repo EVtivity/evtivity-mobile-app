@@ -48,6 +48,9 @@ describe('isEvseSelectable', () => {
   it('rejects a non-startable connector', () => {
     expect(isEvseSelectable(evse('faulted'), online)).toBe(false);
   });
+  it('rejects an EVSE without connectors', () => {
+    expect(isEvseSelectable({ connectors: [], reservationDriverId: null }, online)).toBe(false);
+  });
   it('rejects when offline', () => {
     expect(isEvseSelectable(evse('available'), { ...online, isOnline: false })).toBe(false);
   });
