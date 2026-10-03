@@ -177,6 +177,8 @@ export interface MonthlyStatement {
     co2AvoidedKg: number | null;
     finalCostCents: number | null;
     currency: string;
+    // The tariff tax rate as a decimal string ("0.19"), null without tax.
+    tariffTaxRate: string | null;
     siteName: string | null;
     siteCity: string | null;
   }[];

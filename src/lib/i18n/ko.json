@@ -446,7 +446,9 @@
     "empty": "이번 달 항목으로 표시할 세션 없음",
     "totals": "합계",
     "sessionCount": "세션",
-    "co2Row": "{{kg}} kg CO₂"
+    "co2Row": "{{kg}} kg CO₂",
+    "cost": "비용",
+    "costInclTax": "비용 (세금 포함)"
   },
   "watch": {
     "notifyWhenFree": "사용 가능 시 알림",
