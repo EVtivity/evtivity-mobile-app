@@ -446,7 +446,9 @@
     "empty": "Keine Sitzungen für diesen Monat aufzulisten",
     "totals": "Summen",
     "sessionCount": "Sitzungen",
-    "co2Row": "{{kg}} kg CO₂"
+    "co2Row": "{{kg}} kg CO₂",
+    "cost": "Kosten",
+    "costInclTax": "Kosten (inkl. Steuer)"
   },
   "watch": {
     "notifyWhenFree": "Benachrichtigen wenn frei",

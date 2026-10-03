@@ -446,7 +446,9 @@
     "empty": "本月暂无可明细的会话",
     "totals": "合计",
     "sessionCount": "会话",
-    "co2Row": "{{kg}} kg CO₂"
+    "co2Row": "{{kg}} kg CO₂",
+    "cost": "费用",
+    "costInclTax": "费用（含税）"
   },
   "watch": {
     "notifyWhenFree": "空闲时通知我",

@@ -446,7 +446,9 @@
     "empty": "本月沒有可列出明細的充電紀錄",
     "totals": "總計",
     "sessionCount": "充電次數",
-    "co2Row": "{{kg}} kg CO₂"
+    "co2Row": "{{kg}} kg CO₂",
+    "cost": "費用",
+    "costInclTax": "費用（含稅）"
   },
   "watch": {
     "notifyWhenFree": "空閒時通知我",

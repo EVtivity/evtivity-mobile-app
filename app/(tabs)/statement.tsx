@@ -11,6 +11,7 @@ import { hsl } from '@/lib/theme';
 import { cn } from '@/lib/cn';
 import { formatCurrency, formatEnergyWh, formatDate, formatMonth } from '@/lib/format';
 import { useMonthlyStatement } from '@/features/sessions';
+import { StatementCostHeader, statementCostLabelKey } from '@/components/StatementCostHeader';
 import { usePullToRefresh } from '@/lib/use-pull-to-refresh';
 
 function TotalRow({ label, value }: { label: string; value: string }): React.JSX.Element {
@@ -61,6 +62,7 @@ export default function StatementScreen(): React.JSX.Element {
             <>
               {/* Sessions as a standardized divided list, not per-item cards. */}
               <Card className="p-0 px-5">
+                <StatementCostHeader sessions={sessions} />
                 {sessions.map((s, i) => {
                   const location =
                     [s.siteName, s.siteCity].filter((v) => v != null).join(', ') || t('common.na');
@@ -108,7 +110,7 @@ export default function StatementScreen(): React.JSX.Element {
                   value={formatEnergyWh(data?.totals.totalEnergyWh ?? 0)}
                 />
                 <TotalRow
-                  label={t('activity.cost')}
+                  label={t(statementCostLabelKey(sessions))}
                   value={
                     data != null
                       ? formatCurrency(data.totals.totalCostCents, data.totals.currency)

@@ -455,7 +455,9 @@
     "empty": "No sessions to itemize this month",
     "totals": "Totals",
     "sessionCount": "Sessions",
-    "co2Row": "{{kg}} kg CO₂"
+    "co2Row": "{{kg}} kg CO₂",
+    "cost": "Cost",
+    "costInclTax": "Cost (incl. tax)"
   },
   "watch": {
     "notifyWhenFree": "Notify me when free",
