@@ -366,6 +366,11 @@
     "setDefault": "設為預設",
     "cardRemoved": "卡片已移除"
   },
+  "paymentProviders": {
+    "adyen": {
+      "unavailable": "此版本的應用程式無法使用此付款服務商新增卡片。請安裝最新版本的應用程式。"
+    }
+  },
   "support": {
     "title": "客服支援",
     "newCase": "新增案件",

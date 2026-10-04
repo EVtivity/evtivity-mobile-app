@@ -375,6 +375,11 @@
     "setDefault": "Set default",
     "cardRemoved": "Card removed"
   },
+  "paymentProviders": {
+    "adyen": {
+      "unavailable": "This app build cannot add a card with this payment provider. Install the latest version of the app."
+    }
+  },
   "support": {
     "title": "Support",
     "newCase": "New Case",

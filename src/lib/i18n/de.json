@@ -366,6 +366,11 @@
     "setDefault": "Als Standard",
     "cardRemoved": "Karte entfernt"
   },
+  "paymentProviders": {
+    "adyen": {
+      "unavailable": "Diese App-Version kann mit diesem Zahlungsanbieter keine Karte hinzufügen. Installieren Sie die neueste Version der App."
+    }
+  },
   "support": {
     "title": "Support",
     "newCase": "Neuer Fall",

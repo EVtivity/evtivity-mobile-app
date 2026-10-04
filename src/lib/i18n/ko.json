@@ -366,6 +366,11 @@
     "setDefault": "기본으로 설정",
     "cardRemoved": "카드가 삭제되었습니다"
   },
+  "paymentProviders": {
+    "adyen": {
+      "unavailable": "이 앱 버전에서는 이 결제 제공업체로 카드를 추가할 수 없습니다. 최신 버전의 앱을 설치하세요."
+    }
+  },
   "support": {
     "title": "지원",
     "newCase": "새 문의",

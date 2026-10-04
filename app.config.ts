@@ -85,6 +85,11 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       // and crashes on a bare string. No wallet payments, so Google Pay stays off
       // and no Apple Pay merchant entitlement is added.
       ['@stripe/stripe-react-native', { enableGooglePay: false }],
+      // Adyen native SDK: patches AppDelegate (3DS redirect return through the
+      // app scheme) and MainActivity (launcher activity, intent handling) and
+      // sets a MaterialComponents theme on Android. The Podfile has no
+      // use_frameworks!, and no merchantIdentifier: no Apple Pay.
+      ['@adyen/react-native', { useFrameworks: false }],
       [
         './plugins/withAppAttest',
         { environment: process.env.EXPO_PUBLIC_APPATTEST_ENV ?? 'development' },

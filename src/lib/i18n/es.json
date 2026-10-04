@@ -366,6 +366,11 @@
     "setDefault": "Predeterminar",
     "cardRemoved": "Tarjeta eliminada"
   },
+  "paymentProviders": {
+    "adyen": {
+      "unavailable": "Esta versión de la aplicación no puede agregar una tarjeta con este proveedor de pagos. Instale la versión más reciente de la aplicación."
+    }
+  },
   "support": {
     "title": "Soporte",
     "newCase": "Nuevo caso",

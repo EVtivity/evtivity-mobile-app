@@ -38,15 +38,24 @@ export function newSetupAttemptId(): string {
   return Crypto.randomUUID();
 }
 
+/** Where the card UI runs, for a 3D Secure step (Adyen): the app platform and its SDK return URL. */
+export interface SetupBrowser {
+  platform: 'ios' | 'android';
+  returnUrl: string;
+  info?: unknown;
+}
+
 export function submitMethodSetup(
   provider: string,
   attemptId: string,
   payload: unknown,
+  browser?: SetupBrowser,
 ): Promise<SetupStepResponse> {
   return api.post<SetupStepResponse>('/v1/portal/payment-methods/setup/submit', {
     provider,
     attemptId,
     payload,
+    ...(browser != null ? { browser } : {}),
   });
 }
 

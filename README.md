@@ -31,21 +31,21 @@ paid EAS cloud subscription is required.
 
 ## Stack
 
-| Concern        | Choice                                                           |
-| -------------- | ---------------------------------------------------------------- |
-| Framework      | Expo SDK 57 + React Native 0.86, New Architecture                |
-| Routing        | Expo Router (file-based)                                         |
-| Styling        | NativeWind v4 (Tailwind for React Native)                        |
-| Data fetching  | TanStack Query                                                   |
-| Client state   | Zustand                                                          |
-| i18n           | i18next + react-i18next                                          |
-| Icons          | phosphor-react-native                                            |
-| Payments       | Stripe PaymentSheet or test provider through a provider registry |
-| Secure storage | expo-secure-store (Keychain / Keystore)                          |
-| Biometrics     | expo-local-authentication                                        |
-| Push           | expo-notifications (APNs + FCM)                                  |
-| Camera         | expo-camera (QR scan)                                            |
-| Build / CI     | Expo CLI + EAS CLI `--local` + GitHub Actions                    |
+| Concern        | Choice                                                                              |
+| -------------- | ----------------------------------------------------------------------------------- |
+| Framework      | Expo SDK 57 + React Native 0.86, New Architecture                                   |
+| Routing        | Expo Router (file-based)                                                            |
+| Styling        | NativeWind v4 (Tailwind for React Native)                                           |
+| Data fetching  | TanStack Query                                                                      |
+| Client state   | Zustand                                                                             |
+| i18n           | i18next + react-i18next                                                             |
+| Icons          | phosphor-react-native                                                               |
+| Payments       | Stripe PaymentSheet, Adyen native SDK, or test provider through a provider registry |
+| Secure storage | expo-secure-store (Keychain / Keystore)                                             |
+| Biometrics     | expo-local-authentication                                                           |
+| Push           | expo-notifications (APNs + FCM)                                                     |
+| Camera         | expo-camera (QR scan)                                                               |
+| Build / CI     | Expo CLI + EAS CLI `--local` + GitHub Actions                                       |
 
 ## Quick start
 

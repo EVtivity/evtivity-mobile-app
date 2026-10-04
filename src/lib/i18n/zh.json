@@ -366,6 +366,11 @@
     "setDefault": "设为默认",
     "cardRemoved": "卡片已移除"
   },
+  "paymentProviders": {
+    "adyen": {
+      "unavailable": "此版本的应用无法使用此支付服务商添加银行卡。请安装最新版本的应用。"
+    }
+  },
   "support": {
     "title": "支持",
     "newCase": "新建工单",
