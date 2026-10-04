@@ -498,6 +498,6 @@
     "PAYMENT_METHOD_IN_USE": "El método de pago está en uso por una sesión de carga activa",
     "DRIVER_NOT_FOUND": "Conductor no encontrado",
     "FORBIDDEN": "Prohibido",
-    "VALIDATION_ERROR": "Error de validacion"
+    "VALIDATION_ERROR": "Error de validación"
   }
 }
