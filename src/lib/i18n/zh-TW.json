@@ -497,6 +497,7 @@
     "PAYMENT_METHOD_NOT_FOUND": "找不到付款方式",
     "PAYMENT_METHOD_IN_USE": "支付方式正被活躍充電工作階段使用",
     "DRIVER_NOT_FOUND": "找不到駕駛",
-    "FORBIDDEN": "禁止存取"
+    "FORBIDDEN": "禁止存取",
+    "VALIDATION_ERROR": "驗證錯誤"
   }
 }

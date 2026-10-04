@@ -497,6 +497,7 @@
     "PAYMENT_METHOD_NOT_FOUND": "未找到支付方式",
     "PAYMENT_METHOD_IN_USE": "支付方式正被活跃充电会话使用",
     "DRIVER_NOT_FOUND": "未找到驾驶员",
-    "FORBIDDEN": "禁止访问"
+    "FORBIDDEN": "禁止访问",
+    "VALIDATION_ERROR": "验证错误"
   }
 }

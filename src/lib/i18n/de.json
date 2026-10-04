@@ -497,6 +497,7 @@
     "PAYMENT_METHOD_NOT_FOUND": "Zahlungsmethode nicht gefunden",
     "PAYMENT_METHOD_IN_USE": "Zahlungsmethode wird von einer aktiven Ladesitzung verwendet",
     "DRIVER_NOT_FOUND": "Fahrer nicht gefunden",
-    "FORBIDDEN": "Zugriff verweigert"
+    "FORBIDDEN": "Zugriff verweigert",
+    "VALIDATION_ERROR": "Validierungsfehler"
   }
 }
