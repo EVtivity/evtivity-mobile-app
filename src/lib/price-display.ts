@@ -49,11 +49,12 @@ export function formatTaxRatePercent(taxRate: number, locale: string = uiLocale(
   );
 }
 
-// Whether a session cost contains tax: an amount above 0 billed with a tariff
-// tax rate above 0. Labels such as "incl. tax" are shown only then.
-export function costIncludesTax(
+// Whether a session cost contains tax, from the tax the API stores with it
+// (taxCents): an amount above 0 whose tax is above 0. Labels such as
+// "incl. tax" are shown only then, as in the driver portal (costContainsTax).
+export function costContainsTax(
   costCents: number | null | undefined,
-  taxRate: string | number | null | undefined,
+  taxCents: number | null | undefined,
 ): boolean {
-  return costCents != null && costCents > 0 && Number(taxRate ?? 0) > 0;
+  return costCents != null && costCents > 0 && taxCents != null && taxCents > 0;
 }

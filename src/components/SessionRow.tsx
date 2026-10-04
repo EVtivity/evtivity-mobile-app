@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { Text, StatusBadge } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import { formatCurrency, formatEnergyWh, formatDuration, formatDate } from '@/lib/format';
-import { costIncludesTax } from '@/lib/price-display';
+import { costContainsTax } from '@/lib/price-display';
 import { sessionStatusTone, sessionStatusLabelKey, SESSION_TONE_COLOR } from '@/lib/status';
 import type { ChargingSession } from '@/lib/types';
 
@@ -27,9 +27,9 @@ export const SessionRow = React.memo(function SessionRow({
     session.status === 'completed'
       ? session.finalCostCents
       : (session.currentCostCents ?? session.finalCostCents);
-  // Costs include the tariff tax. Say so only when the amount contains tax.
+  // Costs include tax. Say so only when the tax stored with the cost is above 0.
   const amount = formatCurrency(cost, session.currency);
-  const costLabel = costIncludesTax(cost, session.tariffTaxRate)
+  const costLabel = costContainsTax(cost, session.taxCents)
     ? t('common.amountInclTax', { amount })
     : amount;
   return (
