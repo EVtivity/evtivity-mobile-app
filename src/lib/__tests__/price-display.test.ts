@@ -6,7 +6,7 @@
 
 import {
   DEFAULT_PRICE_DISPLAY,
-  costIncludesTax,
+  costContainsTax,
   formatTaxRatePercent,
   isPriceDisplay,
   priceForDisplay,
@@ -57,13 +57,13 @@ describe('formatTaxRatePercent', () => {
   });
 });
 
-describe('costIncludesTax', () => {
-  it('is true only for an amount above 0 with a tax rate above 0', () => {
-    expect(costIncludesTax(1234, '0.19')).toBe(true);
-    expect(costIncludesTax(1234, 0.19)).toBe(true);
-    expect(costIncludesTax(null, '0.19')).toBe(false);
-    expect(costIncludesTax(0, '0.19')).toBe(false);
-    expect(costIncludesTax(1234, null)).toBe(false);
-    expect(costIncludesTax(1234, '0')).toBe(false);
+describe('costContainsTax', () => {
+  it('is true only for an amount above 0 whose stored tax is above 0', () => {
+    expect(costContainsTax(1190, 190)).toBe(true);
+    expect(costContainsTax(1190, 0)).toBe(false);
+    expect(costContainsTax(1190, null)).toBe(false);
+    expect(costContainsTax(0, 0)).toBe(false);
+    expect(costContainsTax(null, 190)).toBe(false);
+    expect(costContainsTax(undefined, undefined)).toBe(false);
   });
 });

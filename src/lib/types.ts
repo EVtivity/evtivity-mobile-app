@@ -71,9 +71,9 @@ export interface ChargingSession {
   finalCostCents?: number;
   // ISO 4217 currency the session was billed in. Costs are in this currency.
   currency: string;
-  // Tax rate of the session tariff as a decimal string ("0.19"), null without
-  // tax. Costs include it.
-  tariffTaxRate?: string | null;
+  // Tax contained in the cost (final, else running) in cents, as the API
+  // stores it with the cost. Above 0 when the cost includes tax.
+  taxCents?: number | null;
   idleStartedAt?: string | null;
   co2AvoidedKg?: number | null;
 }

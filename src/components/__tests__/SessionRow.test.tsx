@@ -24,7 +24,7 @@ const SESSION: ChargingSession = {
   energyDeliveredWh: 10_000,
   finalCostCents: 1234,
   currency: 'EUR',
-  tariffTaxRate: '0.19',
+  taxCents: 197,
 };
 
 beforeAll(async () => {
@@ -32,15 +32,13 @@ beforeAll(async () => {
 });
 
 describe('SessionRow', () => {
-  it('says the cost includes tax when the tariff had tax', async () => {
+  it('says the cost includes tax when tax was charged', async () => {
     const { getByTestId } = await render(<SessionRow session={SESSION} />);
     expect(getByTestId('session-row-cost-ses_1')).toHaveTextContent('€12.34 incl. tax');
   });
 
   it('shows the plain amount without tax', async () => {
-    const { getByTestId } = await render(
-      <SessionRow session={{ ...SESSION, tariffTaxRate: null }} />,
-    );
+    const { getByTestId } = await render(<SessionRow session={{ ...SESSION, taxCents: null }} />);
     expect(getByTestId('session-row-cost-ses_1')).toHaveTextContent('€12.34', { exact: true });
   });
 
@@ -53,7 +51,7 @@ describe('SessionRow', () => {
 
   it('formats the cost in the session currency', async () => {
     const { getByTestId } = await render(
-      <SessionRow session={{ ...SESSION, currency: 'GBP', tariffTaxRate: null }} />,
+      <SessionRow session={{ ...SESSION, currency: 'GBP', taxCents: null }} />,
     );
     expect(getByTestId('session-row-cost-ses_1')).toHaveTextContent('£12.34', { exact: true });
   });

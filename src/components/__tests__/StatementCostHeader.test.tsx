@@ -12,8 +12,8 @@ import { render } from '@testing-library/react-native';
 import { initTestI18n } from '@/test-utils/i18n';
 import { StatementCostHeader, statementCostLabelKey } from '@/components/StatementCostHeader';
 
-const TAXED = { finalCostCents: 1234, tariffTaxRate: '0.19' };
-const UNTAXED = { finalCostCents: 1234, tariffTaxRate: null };
+const TAXED = { finalCostCents: 1234, taxCents: 197 };
+const UNTAXED = { finalCostCents: 1234, taxCents: null };
 
 beforeAll(async () => {
   await initTestI18n();
@@ -33,8 +33,8 @@ describe('statementCostLabelKey', () => {
     expect(statementCostLabelKey([{ ...TAXED, finalCostCents: null }])).toBe('statement.cost');
   });
 
-  it('says cost for a zero tax rate or no sessions', () => {
-    expect(statementCostLabelKey([{ ...TAXED, tariffTaxRate: '0' }])).toBe('statement.cost');
+  it('says cost when no tax was charged or no sessions', () => {
+    expect(statementCostLabelKey([{ ...TAXED, taxCents: 0 }])).toBe('statement.cost');
     expect(statementCostLabelKey([])).toBe('statement.cost');
   });
 });

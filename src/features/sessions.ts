@@ -121,7 +121,6 @@ export interface SessionDetail {
   finalCostCents: number | null;
   currentCostCents: number | null;
   currency: string;
-  tariffTaxRate: string | null;
   // The cost (finalCostCents, else currentCostCents) always includes tax. The
   // API splits out the tax it contains per tariff, as billed. All three are
   // null when the cost contains no tax or the split is not known yet. taxRate
@@ -177,8 +176,9 @@ export interface MonthlyStatement {
     co2AvoidedKg: number | null;
     finalCostCents: number | null;
     currency: string;
-    // The tariff tax rate as a decimal string ("0.19"), null without tax.
-    tariffTaxRate: string | null;
+    // Tax contained in finalCostCents in cents, as stored. Above 0 when the
+    // cost includes tax.
+    taxCents: number | null;
     siteName: string | null;
     siteCity: string | null;
   }[];

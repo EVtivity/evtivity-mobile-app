@@ -5,20 +5,17 @@ import React from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Text } from '@/components/ui';
-import { costIncludesTax } from '@/lib/price-display';
+import { costContainsTax } from '@/lib/price-display';
 import type { MonthlyStatement } from '@/features/sessions';
 
-type StatementSession = Pick<
-  MonthlyStatement['sessions'][number],
-  'finalCostCents' | 'tariffTaxRate'
->;
+type StatementSession = Pick<MonthlyStatement['sessions'][number], 'finalCostCents' | 'taxCents'>;
 
 // The statement cost column (and its total) reads "incl. tax" only when a
 // session's cost actually contains tax. Mirrors the driver portal statement.
 export function statementCostLabelKey(
   sessions: readonly StatementSession[],
 ): 'statement.costInclTax' | 'statement.cost' {
-  return sessions.some((s) => costIncludesTax(s.finalCostCents, s.tariffTaxRate))
+  return sessions.some((s) => costContainsTax(s.finalCostCents, s.taxCents))
     ? 'statement.costInclTax'
     : 'statement.cost';
 }
