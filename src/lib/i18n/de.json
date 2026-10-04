@@ -341,6 +341,7 @@
     "pay": "Bezahlen",
     "setupComplete": "Karte gespeichert",
     "notConfigured": "Für diesen Betreiber sind keine Zahlungen eingerichtet.",
+    "providerNotSupported": "Aktualisieren Sie die App, um mit diesem Zahlungsanbieter eine Karte hinzuzufügen.",
     "default": "Standard",
     "setDefault": "Als Standard",
     "cardRemoved": "Karte entfernt"

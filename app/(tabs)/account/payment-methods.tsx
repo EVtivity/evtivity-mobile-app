@@ -5,7 +5,6 @@ import React from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { usePreventScreenCapture } from 'expo-screen-capture';
-import { StripeProvider } from '@stripe/stripe-react-native';
 import { CreditCard, Trash2, Star } from '@/components/icons';
 import {
   Screen,
@@ -23,13 +22,15 @@ import {
 } from '@/components/ui';
 import { hsl } from '@/lib/theme';
 import { ApiError } from '@/lib/api';
+import { resolvePaymentModule, type ClientConfig } from '@/lib/payment-provider';
 import {
-  fetchEphemeralKey,
+  getPaymentModule,
   usePaymentMethods,
-  useAddCard,
+  usePaymentProvider,
   useSetDefaultCard,
   useDeleteCard,
-  type EphemeralKeyResponse,
+  REGISTERED_PAYMENT_PROVIDERS,
+  type MobilePaymentModule,
   type PaymentCard,
 } from '@/features/payments';
 
@@ -38,7 +39,13 @@ function formatBrand(brand: string | null): string | null {
   return brand.charAt(0).toUpperCase() + brand.slice(1);
 }
 
-function CardList({ ephemeralKey }: { ephemeralKey: EphemeralKeyResponse }): React.JSX.Element {
+function CardList({
+  module,
+  config,
+}: {
+  module: MobilePaymentModule;
+  config: ClientConfig;
+}): React.JSX.Element {
   const { t } = useTranslation();
   const toast = useToast();
   const showApiError = useApiErrorToast();
@@ -46,7 +53,7 @@ function CardList({ ephemeralKey }: { ephemeralKey: EphemeralKeyResponse }): Rea
   const confirm = useConfirm();
 
   const methods = usePaymentMethods();
-  const addCard = useAddCard(ephemeralKey);
+  const addCard = module.useAddCard(config);
   const setDefault = useSetDefaultCard();
   const deleteCard = useDeleteCard();
 
@@ -96,6 +103,7 @@ function CardList({ ephemeralKey }: { ephemeralKey: EphemeralKeyResponse }): Rea
   };
 
   const items = methods.data ?? [];
+  const Overlay = module.Overlay;
 
   return (
     <>
@@ -149,8 +157,64 @@ function CardList({ ephemeralKey }: { ephemeralKey: EphemeralKeyResponse }): Rea
           ))}
         </View>
       )}
+
+      {Overlay != null ? <Overlay /> : null}
     </>
   );
+}
+
+function ProviderCardList({
+  module,
+  config,
+}: {
+  module: MobilePaymentModule;
+  config: ClientConfig;
+}): React.JSX.Element {
+  const list = <CardList module={module} config={config} />;
+  const Provider = module.Provider;
+  return Provider != null ? <Provider config={config}>{list}</Provider> : list;
+}
+
+function PaymentMethodsBody(): React.JSX.Element {
+  const { t } = useTranslation();
+  const descriptor = usePaymentProvider();
+
+  if (descriptor.isLoading) return <Spinner />;
+
+  if (descriptor.isError || descriptor.data == null) {
+    return (
+      <EmptyState
+        title={t('common.somethingWrong')}
+        action={<Button title={t('common.retry')} onPress={() => void descriptor.refetch()} />}
+      />
+    );
+  }
+
+  const resolved = resolvePaymentModule(descriptor.data, REGISTERED_PAYMENT_PROVIDERS);
+  const module = resolved.kind === 'module' ? getPaymentModule(resolved.id) : null;
+  const config = descriptor.data.provider;
+
+  if (resolved.kind === 'unsupported') {
+    return (
+      <EmptyState
+        icon={<CreditCard size={40} color={hsl('mutedForeground')} />}
+        title={t('payments.providerNotSupported')}
+      />
+    );
+  }
+
+  if (module == null || config == null) {
+    return (
+      <EmptyState
+        icon={<CreditCard size={40} color={hsl('mutedForeground')} />}
+        title={t('payments.notConfigured')}
+      />
+    );
+  }
+
+  // Keyed by provider so an operator switching providers remounts the module
+  // and its hooks instead of reusing the previous provider's state.
+  return <ProviderCardList key={module.id} module={module} config={config} />;
 }
 
 export default function PaymentMethodsScreen(): React.JSX.Element {
@@ -159,48 +223,13 @@ export default function PaymentMethodsScreen(): React.JSX.Element {
   // Keep card details out of screenshots and the app switcher snapshot.
   usePreventScreenCapture();
 
-  const [ephemeralKey, setEphemeralKey] = React.useState<EphemeralKeyResponse | null>(null);
-  const [notConfigured, setNotConfigured] = React.useState(false);
-  const [loading, setLoading] = React.useState(true);
-
-  React.useEffect(() => {
-    let active = true;
-    void (async () => {
-      try {
-        const key = await fetchEphemeralKey();
-        if (active) setEphemeralKey(key);
-      } catch (err) {
-        if (active && err instanceof ApiError && err.code === 'PAYMENT_PROVIDER_NOT_CONFIGURED') {
-          setNotConfigured(true);
-        }
-      } finally {
-        if (active) setLoading(false);
-      }
-    })();
-    return () => {
-      active = false;
-    };
-  }, []);
-
   return (
     <Screen scroll>
       <BackButton />
       <Text variant="h1" className="mb-4">
         {t('payments.title')}
       </Text>
-
-      {loading ? (
-        <Spinner />
-      ) : notConfigured || ephemeralKey == null ? (
-        <EmptyState
-          icon={<CreditCard size={40} color={hsl('mutedForeground')} />}
-          title={t('payments.notConfigured')}
-        />
-      ) : (
-        <StripeProvider publishableKey={ephemeralKey.publishableKey}>
-          <CardList ephemeralKey={ephemeralKey} />
-        </StripeProvider>
-      )}
+      <PaymentMethodsBody />
     </Screen>
   );
 }

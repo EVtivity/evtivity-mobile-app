@@ -341,6 +341,7 @@
     "pay": "支付",
     "setupComplete": "银行卡已保存",
     "notConfigured": "该运营商尚未设置支付功能。",
+    "providerNotSupported": "请更新应用以使用此支付服务商添加银行卡。",
     "default": "默认",
     "setDefault": "设为默认",
     "cardRemoved": "卡片已移除"

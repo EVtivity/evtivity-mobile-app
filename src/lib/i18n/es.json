@@ -341,6 +341,7 @@
     "pay": "Pagar",
     "setupComplete": "Tarjeta guardada",
     "notConfigured": "Los pagos no están configurados para este operador.",
+    "providerNotSupported": "Actualice la aplicación para agregar una tarjeta con este proveedor de pagos.",
     "default": "Predeterminada",
     "setDefault": "Predeterminar",
     "cardRemoved": "Tarjeta eliminada"

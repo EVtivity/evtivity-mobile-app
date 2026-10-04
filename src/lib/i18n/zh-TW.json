@@ -341,6 +341,7 @@
     "pay": "付款",
     "setupComplete": "卡片已儲存",
     "notConfigured": "此營運商尚未設定付款功能。",
+    "providerNotSupported": "請更新應用程式，以使用此付款服務商新增卡片。",
     "default": "預設",
     "setDefault": "設為預設",
     "cardRemoved": "卡片已移除"

@@ -341,6 +341,7 @@
     "pay": "결제",
     "setupComplete": "카드가 저장되었습니다",
     "notConfigured": "이 운영자에 대한 결제가 설정되지 않았습니다.",
+    "providerNotSupported": "이 결제 제공업체로 카드를 추가하려면 앱을 업데이트하세요.",
     "default": "기본",
     "setDefault": "기본으로 설정",
     "cardRemoved": "카드가 삭제되었습니다"

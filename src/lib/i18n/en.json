@@ -350,6 +350,7 @@
     "pay": "Pay",
     "setupComplete": "Card saved",
     "notConfigured": "Payments are not set up for this operator.",
+    "providerNotSupported": "Update the app to add a card with this payment provider.",
     "default": "Default",
     "setDefault": "Set default",
     "cardRemoved": "Card removed"
