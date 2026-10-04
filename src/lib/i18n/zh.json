@@ -489,6 +489,14 @@
     "RATE_LIMITED": "该充电站状态检查次数过多",
     "STATION_TIMEOUT": "充电站未响应",
     "STATUS_CHECK_REJECTED": "充电站拒绝了状态检查",
-    "STATUS_CHECK_TIMEOUT": "状态检查超时。请重新插入连接器后重试。"
+    "STATUS_CHECK_TIMEOUT": "状态检查超时。请重新插入连接器后重试。",
+    "PAYMENT_FAILED": "支付失败",
+    "PAYMENT_PROVIDER_NOT_CONFIGURED": "支付提供商未配置",
+    "PAYMENT_PREAUTH_FAILED": "支付授权被拒绝",
+    "PAYMENT_METHOD_REQUIRED": "需要支付方式",
+    "PAYMENT_METHOD_NOT_FOUND": "未找到支付方式",
+    "PAYMENT_METHOD_IN_USE": "支付方式正被活跃充电会话使用",
+    "DRIVER_NOT_FOUND": "未找到驾驶员",
+    "FORBIDDEN": "禁止访问"
   }
 }

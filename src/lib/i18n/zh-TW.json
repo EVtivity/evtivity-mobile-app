@@ -489,6 +489,14 @@
     "RATE_LIMITED": "此充電站的狀態查詢次數過多",
     "STATION_TIMEOUT": "充電站未回應",
     "STATUS_CHECK_REJECTED": "充電站拒絕了狀態檢查",
-    "STATUS_CHECK_TIMEOUT": "狀態檢查逾時。請重新插入連接器後重試。"
+    "STATUS_CHECK_TIMEOUT": "狀態檢查逾時。請重新插入連接器後重試。",
+    "PAYMENT_FAILED": "付款失敗",
+    "PAYMENT_PROVIDER_NOT_CONFIGURED": "尚未設定付款服務提供者",
+    "PAYMENT_PREAUTH_FAILED": "支付授權被拒絕",
+    "PAYMENT_METHOD_REQUIRED": "需要付款方式",
+    "PAYMENT_METHOD_NOT_FOUND": "找不到付款方式",
+    "PAYMENT_METHOD_IN_USE": "支付方式正被活躍充電工作階段使用",
+    "DRIVER_NOT_FOUND": "找不到駕駛",
+    "FORBIDDEN": "禁止存取"
   }
 }

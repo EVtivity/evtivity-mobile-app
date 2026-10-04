@@ -489,6 +489,14 @@
     "RATE_LIMITED": "Demasiadas verificaciones de estado para esta estacion",
     "STATION_TIMEOUT": "La estacion no respondio",
     "STATUS_CHECK_REJECTED": "La estación rechazó la verificación de estado",
-    "STATUS_CHECK_TIMEOUT": "La verificación de estado expiró. Vuelva a conectar el conector e inténtelo de nuevo."
+    "STATUS_CHECK_TIMEOUT": "La verificación de estado expiró. Vuelva a conectar el conector e inténtelo de nuevo.",
+    "PAYMENT_FAILED": "Pago fallido",
+    "PAYMENT_PROVIDER_NOT_CONFIGURED": "Proveedor de pago no configurado",
+    "PAYMENT_PREAUTH_FAILED": "Autorización de pago rechazada",
+    "PAYMENT_METHOD_REQUIRED": "Se requiere metodo de pago",
+    "PAYMENT_METHOD_NOT_FOUND": "Metodo de pago no encontrado",
+    "PAYMENT_METHOD_IN_USE": "El método de pago está en uso por una sesión de carga activa",
+    "DRIVER_NOT_FOUND": "Conductor no encontrado",
+    "FORBIDDEN": "Prohibido"
   }
 }
