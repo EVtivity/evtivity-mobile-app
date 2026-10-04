@@ -64,7 +64,7 @@ your brand object.
    npm run build:ios        # or build:android, or run via CI
    ```
 
-You own your certificates, signing, store listings, Stripe account
+You own your certificates, signing, store listings, payment provider account
 (server-side), and API deployment.
 
 ## Colors

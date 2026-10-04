@@ -67,14 +67,10 @@ function CardList({
         toast.show(t('payments.setupComplete'), 'success');
       }
     } catch (err) {
-      toast.show(
-        err instanceof ApiError
-          ? (err.serverMessage ?? t('common.somethingWrong'))
-          : err instanceof Error
-            ? err.message
-            : t('common.offline'),
-        'error',
-      );
+      // API errors use their localized errors.{code} copy. Anything else comes
+      // from a provider SDK or module and carries no localized text.
+      if (err instanceof ApiError) showApiError(err);
+      else toast.show(t('common.somethingWrong'), 'error');
     } finally {
       setAdding(false);
     }

@@ -3,6 +3,7 @@
 
 import type React from 'react';
 import type { ClientConfig } from '@/lib/payment-provider';
+import { simulatedModule } from './providers/simulated';
 import { stripeModule } from './providers/stripe';
 
 export type AddCardResult = 'added' | 'cancelled';
@@ -23,6 +24,7 @@ export interface MobilePaymentModule {
 
 const MODULES: Readonly<Record<string, MobilePaymentModule>> = {
   stripe: stripeModule,
+  simulated: simulatedModule,
 };
 
 export const REGISTERED_PAYMENT_PROVIDERS: readonly string[] = Object.keys(MODULES);
