@@ -72,7 +72,8 @@ jobs:
         working-directory: android
         run: |
           sed -i '/^org\.gradle\.jvmargs=/d' gradle.properties
-          echo 'org.gradle.jvmargs=-Xmx6g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8' >> gradle.properties
+          # The generated file can end without a newline: start a new line.
+          printf '\norg.gradle.jvmargs=-Xmx6g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8\n' >> gradle.properties
           grep '^org.gradle.jvmargs=' gradle.properties
 
       - name: Build release APK
