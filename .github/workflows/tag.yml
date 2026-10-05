@@ -1,0 +1,149 @@
+# Release a pushed version tag: validate it, test, build, and create the GitHub
+# release. scripts/release.sh creates and pushes the tag (see RELEASE.md).
+#
+# Four channels, the same as the EVtivity CSMS: stable (v0.1.38), alpha
+# (v0.1.39-alpha.1), beta (v0.1.38-beta.2) and nightly (v0.1.38-nightly.7). An
+# alpha, beta or nightly is a GitHub prerelease and never Latest.
+# scripts/release-version.sh holds the tag grammar and rejects other labels.
+#
+# Jobs: prepare -> test -> build (build.yml: Android APK, unsigned iOS verify)
+# -> github-release (notes from the changelog base, APK attached).
+# Store submission is the manual release workflow (release.yml); tags never
+# trigger it.
+
+name: tag
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+concurrency:
+  group: tag-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    name: Resolve release type
+    runs-on: ubuntu-latest
+    outputs:
+      prerelease: ${{ steps.type.outputs.prerelease }}
+      channel: ${{ steps.type.outputs.channel }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Classify tag
+        id: type
+        env:
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          source scripts/release-version.sh
+          if ! release_tag_is_valid "$REF_NAME"; then
+            echo "::error::$REF_NAME is not a release tag (v1.2.3, or v1.2.3-alpha[.N], -beta[.N] or -nightly[.N])"
+            exit 1
+          fi
+          if ! release_build_number "$REF_NAME" >/dev/null; then
+            echo "::error::$REF_NAME is outside the build number limits (see RELEASE.md)"
+            exit 1
+          fi
+          # A tag pushed without scripts/release.sh carries the old version.
+          if ! release_check_version_files "$REF_NAME"; then
+            echo "::error::package.json, package-lock.json or app.config.ts do not match $REF_NAME. Cut releases with scripts/release.sh."
+            exit 1
+          fi
+          if release_tag_is_prerelease "$REF_NAME"; then
+            PRERELEASE=true
+          else
+            PRERELEASE=false
+          fi
+          CHANNEL=$(release_tag_channel "$REF_NAME")
+          BUILD_NUMBER=$(release_build_number "$REF_NAME")
+          echo "prerelease=${PRERELEASE}" >> "$GITHUB_OUTPUT"
+          echo "channel=${CHANNEL}" >> "$GITHUB_OUTPUT"
+          echo "${REF_NAME}: prerelease=${PRERELEASE} channel=${CHANNEL} build=${BUILD_NUMBER}" >> "$GITHUB_STEP_SUMMARY"
+
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    needs: prepare
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm test
+      - run: npm run test:release
+
+  build:
+    name: Build
+    needs: [prepare, test]
+    uses: ./.github/workflows/build.yml
+    permissions:
+      contents: read
+    with:
+      brand: default
+
+  github-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: [prepare, build]
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      # Stable: previous stable tag, so the notes cover everything since the last
+      # stable release. Prerelease: previous tag of any kind, so the notes cover
+      # only what changed since the last tested build.
+      - name: Find previous tag
+        id: prev_tag
+        env:
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          source scripts/release-version.sh
+          PREV=$(release_previous_tag "$REF_NAME")
+          echo "tag=${PREV}" >> "$GITHUB_OUTPUT"
+
+      - name: Generate changelog
+        env:
+          REF_NAME: ${{ github.ref_name }}
+          PREV_TAG: ${{ steps.prev_tag.outputs.tag }}
+        run: ./scripts/generate-changelog.sh "$PREV_TAG" "$REF_NAME" > release-notes.md
+
+      - name: Download Android APK
+        uses: actions/download-artifact@v8
+        with:
+          name: app-release-apk-default
+          path: apk
+
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REF_NAME: ${{ github.ref_name }}
+          PRERELEASE: ${{ needs.prepare.outputs.prerelease }}
+        run: |
+          shopt -s nullglob
+          apks=(apk/*.apk)
+          if [ "${#apks[@]}" -ne 1 ]; then
+            echo "::error::expected one APK, found ${#apks[@]}"
+            exit 1
+          fi
+          ASSET="evtivity-mobile-${REF_NAME}-android.apk"
+          cp "${apks[0]}" "$ASSET"
+          # A prerelease is never marked Latest: GitHub does not mark a
+          # prerelease as Latest, and no --latest flag is passed.
+          if [ "$PRERELEASE" = true ]; then
+            gh release create "$REF_NAME" --verify-tag --prerelease --notes-file release-notes.md "$ASSET"
+          else
+            gh release create "$REF_NAME" --verify-tag --notes-file release-notes.md "$ASSET"
+          fi

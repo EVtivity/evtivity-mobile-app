@@ -1,5 +1,9 @@
 # Build and optionally submit a store-ready release of the EVtivity driver app.
 #
+# Run it manually on a release tag ("Use workflow from" > Tags > vX.Y.Z), so the
+# store build carries the version and build number scripts/release.sh set for
+# that tag. Pushing a tag never triggers it (see RELEASE.md).
+#
 # This workflow uses `eas build --local`, which runs the build on the GitHub
 # runner itself. Local builds are free and do NOT require an EAS cloud
 # subscription. EXPO_TOKEN is only needed if you switch to EAS cloud builds

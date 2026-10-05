@@ -5,12 +5,13 @@
 # store-ready iOS builds use `eas build --local --platform ios` with credentials
 # (see release.yml and SETUP.md); CI here only proves the native project compiles.
 #
-# The active brand is selected by the ACTIVE_BRAND env var, sourced from a
-# workflow_dispatch input. app.config.ts reads it at prebuild time.
+# The active brand is selected by the ACTIVE_BRAND env var, sourced from the
+# brand input. app.config.ts reads it at prebuild time.
 #
 # Triggers:
 #   - workflow_dispatch: run on demand, choose the brand.
-#   - push to a tag matching v* : build the tagged release.
+#   - workflow_call: the tag workflow (tag.yml) builds a pushed v* tag after it
+#     validates the tag and the tests pass, then attaches the APK to the release.
 
 name: build
 
@@ -21,18 +22,21 @@ on:
         description: Brand slug (must exist in brands/index.js)
         required: false
         default: default
-  push:
-    tags:
-      - 'v*'
+  workflow_call:
+    inputs:
+      brand:
+        description: Brand slug (must exist in brands/index.js)
+        type: string
+        required: false
+        default: default
 
 # Least privilege: jobs only check out code and upload artifacts (artifact
 # uploads use the runtime token, not GITHUB_TOKEN).
 permissions:
   contents: read
 
-# Tag pushes have no input, so fall back to the default brand.
 env:
-  ACTIVE_BRAND: ${{ github.event.inputs.brand || 'default' }}
+  ACTIVE_BRAND: ${{ inputs.brand || 'default' }}
 
 jobs:
   android:
@@ -111,7 +115,7 @@ jobs:
       - name: Build unsigned archive
         working-directory: ios
         run: |
-          WORKSPACE="$(ls -d *.xcworkspace)"
+          WORKSPACE="$(ls -d -- *.xcworkspace)"
           SCHEME="${WORKSPACE%.xcworkspace}"
           xcodebuild \
             -workspace "$WORKSPACE" \
