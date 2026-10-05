@@ -15,8 +15,9 @@ set -euo pipefail
 #
 # It bumps package.json, the root entries of package-lock.json, and app.config.ts
 # (RELEASE_VERSION and BUILD_NUMBER), runs typecheck, lint, format check, unit
-# tests and release script tests, commits `release: version X.Y.Z` and tags
-# vX.Y.Z. Any failure before the commit restores every file it changed.
+# tests and release script tests, commits `release: version X.Y.Z` (a
+# prerelease commits `release: prepare X.Y.Z`, the base version) and tags the
+# full version. Any failure before the commit restores every file it changed.
 # Pushing the tag starts the tag workflow (.github/workflows/tag.yml).
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -137,12 +138,20 @@ run_check "Format check" npm run format:check
 run_check "Unit tests" env CI=true npm test
 run_check "Release script tests" npm run test:release
 
+# Commit messages never name a prerelease channel: a prerelease commit names
+# its base version, the tag and the GitHub release carry the rest.
+if release_tag_is_prerelease "$TAG"; then
+  RELEASE_SUBJECT="release: prepare ${VERSION%%-*}"
+else
+  RELEASE_SUBJECT="release: version $VERSION"
+fi
+
 git add package.json package-lock.json app.config.ts
-git commit -m "release: version $VERSION"
+git commit -m "$RELEASE_SUBJECT"
 RELEASE_COMMITTED=true
 git tag "$TAG"
 echo ""
-echo "Committed release: version $VERSION and tagged $TAG."
+echo "Committed $RELEASE_SUBJECT and tagged $TAG."
 
 if [ "$PUSH" = false ]; then
   echo ""

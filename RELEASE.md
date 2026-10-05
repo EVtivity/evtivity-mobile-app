@@ -43,7 +43,7 @@ The version is required. The script:
 2. Sets the version in `package.json`, the root entries of `package-lock.json`,
    and `app.config.ts` (`RELEASE_VERSION` and `BUILD_NUMBER`).
 3. Runs typecheck, lint, format check, unit tests, and the release script tests.
-4. Commits `release: version X.Y.Z` and tags `vX.Y.Z`.
+4. Commits `release: version X.Y.Z` and tags `vX.Y.Z`. A prerelease commits `release: prepare X.Y.Z` with its base version, so commit messages never name a prerelease channel. The tag and the GitHub release carry the full version.
 5. With `--push`, pushes the commit and the tag.
 
 A failure before the commit restores every file it changed. Without `--push`
