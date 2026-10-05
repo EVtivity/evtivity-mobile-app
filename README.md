@@ -77,9 +77,30 @@ GitHub Actions workflows in `.github/workflows/`. Building requires Xcode on
 macOS for iOS and Android Studio with JDK 17 for Android. The JS dev server does
 not produce store-ready binaries.
 
+## Releases
+
+The app version matches the EVtivity CSMS version it ships with: app v0.1.38
+ships with CSMS v0.1.38. Tags use the CSMS channels: stable `v0.1.38`, alpha
+`v0.1.39-alpha.N`, beta `v0.1.38-beta.N` and nightly `v0.1.38-nightly.N`.
+Alpha, beta and nightly are GitHub prereleases.
+
+`main` carries stable releases only. Prerelease work lives on a release branch
+that is merged into `main` at the CSMS stable cut. Cut a release from a clean
+checkout with the matching CSMS version:
+
+```bash
+scripts/release.sh v0.1.38 --push
+```
+
+The script sets the version and the native build numbers, runs the checks,
+commits, tags, and pushes. The tag workflow then tests, builds, and creates the
+GitHub release. Store submission stays a manual workflow run. See
+[RELEASE.md](./RELEASE.md) for the build number formula and the full process.
+
 ## Documentation
 
 - [SETUP.md](./SETUP.md) - prerequisites and local build instructions
+- [RELEASE.md](./RELEASE.md) - release channels, versioning, and how to cut a release
 - [WHITELABEL.md](./WHITELABEL.md) - create and ship an operator brand
 - [SECURITY.md](./SECURITY.md) - security posture and roadmap
 - [LICENSE.md](./LICENSE.md) - Business Source License 1.1
