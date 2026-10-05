@@ -15,6 +15,7 @@
     "format:check": "prettier --check .",
     "test": "jest",
     "test:coverage": "jest --coverage",
+    "test:release": "bash scripts/release-version.test.sh",
     "build:ios": "eas build --local --platform ios --profile production",
     "build:android": "eas build --local --platform android --profile production",
     "fix-deps": "expo install --fix",
