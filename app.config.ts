@@ -4,6 +4,14 @@
 import type { ConfigContext, ExpoConfig } from 'expo/config';
 import { resolveBrand } from './brands/index';
 
+// Release version and native build number. scripts/release.sh sets both from the
+// release tag, which matches the EVtivity CSMS version. The stores get the X.Y.Z
+// part as the app version and BUILD_NUMBER as the iOS buildNumber and Android
+// versionCode (formula in RELEASE.md). Do not edit by hand.
+const RELEASE_VERSION = '0.1.0';
+const BUILD_NUMBER = 100999;
+const MARKETING_VERSION = RELEASE_VERSION.split('-')[0];
+
 // Dynamic Expo config. The active brand (ACTIVE_BRAND env, default "default")
 // drives the app name, store identifiers, scheme, icons, and the API URL that
 // is baked into the JS bundle as EXPO_PUBLIC_API_URL. Operators never edit this
@@ -27,13 +35,14 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     name: brand.name,
     slug: 'evtivity-mobile-app',
     scheme: brand.scheme,
-    version: '0.1.0',
+    version: MARKETING_VERSION,
     orientation: 'portrait',
     icon: brand.icon,
     userInterfaceStyle: 'automatic',
     assetBundlePatterns: ['**/*'],
     ios: {
       bundleIdentifier: brand.iosBundleId,
+      buildNumber: String(BUILD_NUMBER),
       supportsTablet: true,
       infoPlist: {
         NSCameraUsageDescription: `${brand.name} uses the camera to scan charger QR codes.`,
@@ -48,6 +57,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     },
     android: {
       package: brand.androidPackage,
+      versionCode: BUILD_NUMBER,
       adaptiveIcon: {
         foregroundImage: brand.adaptiveIcon,
         backgroundColor: '#0f172a',
@@ -101,6 +111,9 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       ...(cleartextException != null ? ['./plugins/withAndroidCleartext'] : []),
     ],
     extra: {
+      // Full release version, prerelease label included (0.1.38-beta.1). The
+      // About screen shows it next to the CSMS version.
+      releaseVersion: RELEASE_VERSION,
       brand: {
         name: brand.name,
         slug: brand.slug,

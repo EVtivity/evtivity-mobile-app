@@ -197,3 +197,20 @@ describe('missing expo config', () => {
     expect(cfg.APP_VERSION).toBe('');
   });
 });
+
+describe('release version baked by app.config.ts', () => {
+  const cfg = loadConfig({
+    platform: 'ios',
+    expoConfig: { version: '0.1.38', extra: { releaseVersion: '0.1.38-beta.1' } },
+    defaultBrand: {
+      name: 'Def',
+      slug: 'def',
+      apiUrl: 'http://def.test',
+      colors: { light: palette('1'), dark: palette('2') },
+    },
+  });
+
+  it('shows the full release version, prerelease label included', () => {
+    expect(cfg.APP_VERSION).toBe('0.1.38-beta.1');
+  });
+});

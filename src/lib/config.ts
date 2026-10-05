@@ -113,5 +113,10 @@ export const ENABLED_LANGUAGES: LanguageCode[] = resolveEnabledLanguages();
 /* istanbul ignore next */
 export const DEFAULT_LANGUAGE: LanguageCode = ENABLED_LANGUAGES[0] ?? 'en';
 
-// The mobile app's own version, set from app.config.ts `version` at build time.
-export const APP_VERSION = Constants.expoConfig?.version ?? '';
+// The mobile app's own version, set from app.config.ts at build time. The full
+// release version (prerelease label included) matches the CSMS version it ships
+// with; `version` holds only the X.Y.Z part the stores accept.
+export const APP_VERSION =
+  (Constants.expoConfig?.extra as { releaseVersion?: string } | undefined)?.releaseVersion ??
+  Constants.expoConfig?.version ??
+  '';
