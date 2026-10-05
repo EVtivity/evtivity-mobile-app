@@ -66,6 +66,15 @@ jobs:
       - name: Prebuild Android
         run: npx expo prebuild --platform android --no-install
 
+      # The prebuild default heap (2 GB) runs out while packaging the release
+      # APK (OutOfMemoryError in :app:packageRelease). The runner has 16 GB.
+      - name: Raise the Gradle heap
+        working-directory: android
+        run: |
+          sed -i '/^org\.gradle\.jvmargs=/d' gradle.properties
+          echo 'org.gradle.jvmargs=-Xmx6g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8' >> gradle.properties
+          grep '^org.gradle.jvmargs=' gradle.properties
+
       - name: Build release APK
         working-directory: android
         run: ./gradlew assembleRelease
