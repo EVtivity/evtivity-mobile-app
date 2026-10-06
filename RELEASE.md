@@ -5,23 +5,23 @@ ships with CSMS v0.1.38. Tags use the same grammar and channels as the CSMS.
 
 ## Channels
 
-| Channel | Tag                 | Use                                        | GitHub release         |
-| ------- | ------------------- | ------------------------------------------ | ---------------------- |
-| stable  | `v0.1.38`           | Production release                         | Release, Latest        |
-| alpha   | `v0.1.39-alpha.N`   | A version whose features are still in work | Prerelease, not Latest |
-| beta    | `v0.1.38-beta.N`    | A version whose features are frozen        | Prerelease, not Latest |
-| nightly | `v0.1.38-nightly.N` | Test build of an alpha or beta             | Prerelease, not Latest |
+| Channel | Tag               | Use                                        | GitHub release         |
+| ------- | ----------------- | ------------------------------------------ | ---------------------- |
+| stable  | `v0.1.38`         | Production release                         | Release, Latest        |
+| alpha   | `v0.1.39-alpha.N` | A version whose features are still in work | Prerelease, not Latest |
+| beta    | `v0.1.38-beta.N`  | A version whose features are frozen        | Prerelease, not Latest |
 
-The `.N` number is optional. `rc`, `preview`, other labels, and `+build`
-metadata are refused. `scripts/release-version.sh` holds the grammar, and
+The `.N` number is optional. `nightly`, `rc`, `preview`, other labels, and
+`+build` metadata are refused (the CSMS dropped the nightly channel on
+2026-10-06: test cycles run on alpha and beta builds). `scripts/release-version.sh` holds the grammar, and
 `npm run test:release` tests it (CI runs it on every push).
 
 ## Branches
 
 - `main` carries stable releases only.
 - Prerelease work for an unreleased version lives on a release branch, the same
-  branch name the CSMS uses for that version. Alpha, beta and nightly tags are
-  cut from it.
+  branch name the CSMS uses for that version. Alpha and beta tags are cut from
+  it.
 - At the CSMS stable cut, merge the release branch into `main` (plain merge or
   fast-forward, never force), then cut the stable tag from `main`.
 
@@ -62,15 +62,13 @@ the commit and tag stay local; it prints the push command.
   major * 10000000 + minor * 100000 + patch * 1000 + ordinal
   ```
 
-  | Tag                | Ordinal | Example                      |
-  | ------------------ | ------- | ---------------------------- |
-  | `vX.Y.Z-alpha`     | 0       | `v0.1.38-alpha` = 138000     |
-  | `vX.Y.Z-alpha.N`   | 1 + N   | `v0.1.38-alpha.1` = 138002   |
-  | `vX.Y.Z-beta`      | 300     | `v0.1.38-beta` = 138300      |
-  | `vX.Y.Z-beta.N`    | 301 + N | `v0.1.38-beta.1` = 138302    |
-  | `vX.Y.Z-nightly`   | 600     | `v0.1.38-nightly` = 138600   |
-  | `vX.Y.Z-nightly.N` | 601 + N | `v0.1.38-nightly.7` = 138608 |
-  | `vX.Y.Z`           | 999     | `v0.1.38` = 138999           |
+  | Tag              | Ordinal | Example                    |
+  | ---------------- | ------- | -------------------------- |
+  | `vX.Y.Z-alpha`   | 0       | `v0.1.38-alpha` = 138000   |
+  | `vX.Y.Z-alpha.N` | 1 + N   | `v0.1.38-alpha.1` = 138002 |
+  | `vX.Y.Z-beta`    | 300     | `v0.1.38-beta` = 138300    |
+  | `vX.Y.Z-beta.N`  | 301 + N | `v0.1.38-beta.1` = 138302  |
+  | `vX.Y.Z`         | 999     | `v0.1.38` = 138999         |
 
   Limits: major up to 209, minor and patch up to 99, N up to 298. Android caps
   `versionCode` at 2100000000.
@@ -78,9 +76,8 @@ the commit and tag stay local; it prints the push command.
 The build number follows semver order, so every newer tag gets a higher build
 number. Two consequences:
 
-- Within one version, a beta cut after a nightly has a lower build number than
-  that nightly. Upload a nightly to TestFlight or Play testing only when no later
-  beta of the same version will be uploaded.
+- Within one version, every beta has a higher build number than every alpha,
+  and the stable release a higher one than every beta.
 - A hotfix for an older line would get a lower build number than the newest
   release, which the stores reject. `release.sh` refuses it. Ship a mobile fix as
   the next patch of the newest line.
@@ -109,8 +106,7 @@ Release notes come from Conventional Commits (`scripts/generate-changelog.sh`).
 A stable release compares with the previous stable tag, so its notes cover every
 change since the last stable release, prereleases included. A prerelease
 compares with the previous tag of any kind (semver order:
-`git -c versionsort.suffix=-`). Within a version, alpha sorts below beta and beta
-below nightly.
+`git -c versionsort.suffix=-`). Within a version, alpha sorts below beta.
 
 Only `github-release` gets `contents: write`. Every other job reads.
 

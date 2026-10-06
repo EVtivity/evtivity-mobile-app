@@ -1,9 +1,9 @@
 # Release a pushed version tag: validate it, test, build, and create the GitHub
 # release. scripts/release.sh creates and pushes the tag (see RELEASE.md).
 #
-# Four channels, the same as the EVtivity CSMS: stable (v0.1.38), alpha
-# (v0.1.39-alpha.1), beta (v0.1.38-beta.2) and nightly (v0.1.38-nightly.7). An
-# alpha, beta or nightly is a GitHub prerelease and never Latest.
+# Three channels, the same as the EVtivity CSMS: stable (v0.1.38), alpha
+# (v0.1.39-alpha.1) and beta (v0.1.38-beta.2). An alpha or beta is a GitHub
+# prerelease and never Latest.
 # scripts/release-version.sh holds the tag grammar and rejects other labels.
 #
 # Jobs: prepare -> test -> build (build.yml: Android APK, unsigned iOS verify)
@@ -42,7 +42,7 @@ jobs:
         run: |
           source scripts/release-version.sh
           if ! release_tag_is_valid "$REF_NAME"; then
-            echo "::error::$REF_NAME is not a release tag (v1.2.3, or v1.2.3-alpha[.N], -beta[.N] or -nightly[.N])"
+            echo "::error::$REF_NAME is not a release tag. $RELEASE_TAG_HELP"
             exit 1
           fi
           if ! release_build_number "$REF_NAME" >/dev/null; then

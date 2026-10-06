@@ -3,17 +3,17 @@
 #
 # Source this file; it defines functions only. The app version matches the
 # EVtivity CSMS version it ships with, and the tags use the same grammar: `v`
-# plus a semver 2.0.0 version (https://semver.org) in one of four channels:
-# stable `v0.1.38`, alpha `v0.1.38-alpha.1`, beta `v0.1.38-beta.2` and nightly
-# `v0.1.38-nightly.7` (the number is optional). No other prerelease label (rc,
-# preview) is used, so this grammar rejects them. Build metadata (`+...`) is
-# rejected too.
+# plus a semver 2.0.0 version (https://semver.org) in one of three channels:
+# stable `v0.1.38`, alpha `v0.1.38-alpha.1` and beta `v0.1.38-beta.2` (the number
+# is optional). No other prerelease label (nightly, rc, preview) is used, so this
+# grammar rejects them, and tags outside it are never a changelog base. Build
+# metadata (`+...`) is rejected too.
 #
 # Usage from a shell: bash scripts/release-version.sh <function> [args...]
 
 RELEASE_NUM='(0|[1-9][0-9]*)'
 RELEASE_STABLE_RE="^v${RELEASE_NUM}\\.${RELEASE_NUM}\\.${RELEASE_NUM}\$"
-RELEASE_TAG_RE="^v${RELEASE_NUM}\\.${RELEASE_NUM}\\.${RELEASE_NUM}(-(alpha|beta|nightly)(\\.${RELEASE_NUM})?)?\$"
+RELEASE_TAG_RE="^v${RELEASE_NUM}\\.${RELEASE_NUM}\\.${RELEASE_NUM}(-(alpha|beta)(\\.${RELEASE_NUM})?)?\$"
 
 # Native build number limits (see release_build_number).
 RELEASE_MAX_MAJOR=209
@@ -21,7 +21,10 @@ RELEASE_MAX_MINOR=99
 RELEASE_MAX_PATCH=99
 RELEASE_MAX_PRERELEASE_NUM=298
 
-# release_tag_is_valid <tag>: exit 0 when the tag is a stable, alpha, beta or nightly tag.
+# Printed when a tag does not match the grammar.
+RELEASE_TAG_HELP='Use v1.2.3 (stable), v1.2.3-alpha[.N] or v1.2.3-beta[.N]. The only prerelease channels are alpha and beta (no nightly, rc or preview, no +build metadata).'
+
+# release_tag_is_valid <tag>: exit 0 when the tag is a stable, alpha or beta tag.
 release_tag_is_valid() {
   [[ "${1:-}" =~ $RELEASE_TAG_RE ]]
 }
@@ -31,8 +34,8 @@ release_tag_is_prerelease() {
   release_tag_is_valid "${1:-}" && ! [[ "$1" =~ $RELEASE_STABLE_RE ]]
 }
 
-# release_tag_channel <tag>: print the release channel: `stable`, `alpha`, `beta`
-# or `nightly`. Exit 1 for an invalid tag.
+# release_tag_channel <tag>: print the release channel: `stable`, `alpha` or
+# `beta`. Exit 1 for an invalid tag.
 release_tag_channel() {
   local tag="${1:-}" pre
   release_tag_is_valid "$tag" || return 1
@@ -61,7 +64,6 @@ release_marketing_version() {
 # The ordinal orders the channels the way semver does within one X.Y.Z:
 #   alpha    0 (bare), 1 + N (alpha.N)
 #   beta     300 (bare), 301 + N (beta.N)
-#   nightly  600 (bare), 601 + N (nightly.N)
 #   stable   999
 # So the build number of a newer tag is always higher. Limits: major <= 209,
 # minor <= 99, patch <= 99, N <= 298 (Android caps versionCode at 2100000000).
@@ -86,7 +88,6 @@ release_build_number() {
     case "$channel" in
       alpha) base=0 ;;
       beta) base=300 ;;
-      nightly) base=600 ;;
     esac
     pre="${tag#*-}"
     if [ "$pre" = "$channel" ]; then
@@ -119,7 +120,7 @@ release_latest_stable_tag() {
 }
 
 # release_latest_channel_tag <channel>: print the highest tag of the channel
-# (stable, alpha, beta or nightly) in semver order, or nothing when there is none.
+# (stable, alpha or beta) in semver order, or nothing when there is none.
 release_latest_channel_tag() {
   local channel="${1:?release_latest_channel_tag needs a channel}" tag
   while IFS= read -r tag; do

@@ -6,7 +6,7 @@ set -euo pipefail
 # Usage:
 #   scripts/release.sh v0.1.38                  # Bump, check, commit and tag locally
 #   scripts/release.sh v0.1.38 --push           # Same, then push the commit and the tag
-#   scripts/release.sh v0.1.38-beta.1 --push    # Prerelease: alpha, beta or nightly only
+#   scripts/release.sh v0.1.38-beta.1 --push    # Prerelease: alpha or beta only
 #
 # The version is required and equals the EVtivity CSMS version the app ships
 # with. Tag grammar and build number formula: scripts/release-version.sh and
@@ -39,7 +39,7 @@ for arg in "$@"; do
       ;;
     *)
       echo "Unknown argument: $arg"
-      echo "Usage: scripts/release.sh vX.Y.Z[-alpha|-beta|-nightly[.N]] [--push]"
+      echo "Usage: scripts/release.sh vX.Y.Z[-alpha[.N]|-beta[.N]] [--push]"
       exit 1
       ;;
   esac
@@ -50,7 +50,7 @@ if [ -z "$TAG" ]; then
   exit 1
 fi
 if ! release_tag_is_valid "$TAG"; then
-  echo "Error: invalid version $TAG. Use v1.2.3, or v1.2.3-alpha[.N], -beta[.N] or -nightly[.N] (no rc, no +build metadata)."
+  echo "Error: invalid version $TAG. $RELEASE_TAG_HELP"
   exit 1
 fi
 if ! BUILD_NUMBER=$(release_build_number "$TAG"); then

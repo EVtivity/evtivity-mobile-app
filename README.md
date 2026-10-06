@@ -82,8 +82,8 @@ not produce store-ready binaries.
 
 The app version matches the EVtivity CSMS version it ships with: app v0.1.38
 ships with CSMS v0.1.38. Tags use the CSMS channels: stable `v0.1.38`, alpha
-`v0.1.39-alpha.N`, beta `v0.1.38-beta.N` and nightly `v0.1.38-nightly.N`.
-Alpha, beta and nightly are GitHub prereleases.
+`v0.1.39-alpha.N` and beta `v0.1.38-beta.N`. Alpha and beta are GitHub
+prereleases.
 
 `main` carries stable releases only. Prerelease work lives on a release branch
 that is merged into `main` at the CSMS stable cut. Cut a release from a clean
