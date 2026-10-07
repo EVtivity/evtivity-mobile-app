@@ -55,8 +55,8 @@ The version is required. The script:
 3. Runs typecheck, lint, format check, unit tests, and the release script tests.
 4. Commits `release: version X.Y.Z` and tags `vX.Y.Z`. A prerelease commits `release: prepare X.Y.Z` with its base version, so commit messages never name a prerelease channel. The tag and the GitHub release carry the full version.
 5. With `--push`, pushes the commit to its branch (`HEAD:refs/heads/main` or
-   `HEAD:refs/heads/<release branch>`) and the tag. Git refuses the push when
-   the branch moved on `origin`. It never forces.
+   `HEAD:refs/heads/<release branch>`) and the tag in one atomic push. Git
+   refuses both when the branch moved on `origin`. It never forces.
 
 A failure before the commit restores every file it changed. Without `--push`
 the commit and tag stay local; it prints the push command.

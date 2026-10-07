@@ -11,8 +11,8 @@ set -euo pipefail
 #
 # A stable release pushes its commit to main and a prerelease to its release
 # branch (the checked-out branch, or --branch), so a release can be cut from a
-# detached worktree. The push is `HEAD:refs/heads/<branch>` plus the tag, and
-# git refuses it when the branch moved on origin (no force).
+# detached worktree. The push is `HEAD:refs/heads/<branch>` plus the tag in one
+# atomic push: git refuses both when the branch moved on origin (no force).
 #
 # The version is required and equals the EVtivity CSMS version the app ships
 # with. Tag grammar and build number formula: scripts/release-version.sh and
@@ -181,12 +181,12 @@ echo "Committed $RELEASE_SUBJECT and tagged $TAG."
 
 if [ "$PUSH" = false ]; then
   echo ""
-  echo "Not pushed. To publish: git push origin HEAD:refs/heads/$PUSH_BRANCH refs/tags/$TAG"
+  echo "Not pushed. To publish: git push --atomic origin HEAD:refs/heads/$PUSH_BRANCH refs/tags/$TAG"
   echo "To discard instead: git tag -d $TAG && git reset --hard HEAD~1"
   exit 0
 fi
 
-git push origin "HEAD:refs/heads/$PUSH_BRANCH" "refs/tags/$TAG"
+git push --atomic origin "HEAD:refs/heads/$PUSH_BRANCH" "refs/tags/$TAG"
 echo ""
 echo "Pushed the release commit to $PUSH_BRANCH and $TAG. The tag workflow builds the app and creates the GitHub release."
 if release_tag_is_prerelease "$TAG"; then
