@@ -7,6 +7,12 @@ set -euo pipefail
 #   scripts/release.sh v0.1.38                  # Bump, check, commit and tag locally
 #   scripts/release.sh v0.1.38 --push           # Same, then push the commit and the tag
 #   scripts/release.sh v0.1.38-beta.1 --push    # Prerelease: alpha or beta only
+#   scripts/release.sh v0.1.38-beta.1 --push --branch v0138   # From a detached HEAD
+#
+# A stable release pushes its commit to main and a prerelease to its release
+# branch (the checked-out branch, or --branch), so a release can be cut from a
+# detached worktree. The push is `HEAD:refs/heads/<branch>` plus the tag, and
+# git refuses it when the branch moved on origin (no force).
 #
 # The version is required and equals the EVtivity CSMS version the app ships
 # with. Tag grammar and build number formula: scripts/release-version.sh and
@@ -26,23 +32,35 @@ source "$SCRIPT_DIR/release-version.sh"
 
 PUSH=false
 TAG=""
+BRANCH_ARG=""
+USAGE="Usage: scripts/release.sh vX.Y.Z[-alpha[.N]|-beta[.N]] [--push] [--branch <release branch>]"
 
-for arg in "$@"; do
-  case "$arg" in
+while [ $# -gt 0 ]; do
+  case "$1" in
     --push) PUSH=true ;;
+    --branch)
+      if [ $# -lt 2 ] || [ -z "$2" ]; then
+        echo "Error: --branch needs a branch name."
+        exit 1
+      fi
+      BRANCH_ARG="$2"
+      shift
+      ;;
+    --branch=*) BRANCH_ARG="${1#--branch=}" ;;
     v[0-9]*)
       if [ -n "$TAG" ]; then
         echo "Error: pass one version."
         exit 1
       fi
-      TAG="$arg"
+      TAG="$1"
       ;;
     *)
-      echo "Unknown argument: $arg"
-      echo "Usage: scripts/release.sh vX.Y.Z[-alpha[.N]|-beta[.N]] [--push]"
+      echo "Unknown argument: $1"
+      echo "$USAGE"
       exit 1
       ;;
   esac
+  shift
 done
 
 if [ -z "$TAG" ]; then
@@ -60,6 +78,13 @@ VERSION="${TAG#v}"
 CHANNEL=$(release_tag_channel "$TAG")
 
 cd "$(git rev-parse --show-toplevel)"
+
+# The branch the release commit goes to: main for a stable release, the release
+# branch for a prerelease. Checked before anything changes.
+CURRENT_BRANCH=$(git symbolic-ref -q --short HEAD || true)
+if ! PUSH_BRANCH=$(release_push_branch "$TAG" "${BRANCH_ARG:-$CURRENT_BRANCH}"); then
+  exit 1
+fi
 
 if [ -n "$(git status --porcelain)" ]; then
   echo "Error: the working tree has uncommitted changes. Commit or remove them first."
@@ -97,6 +122,7 @@ echo "Tag:          $TAG"
 echo "Channel:      $CHANNEL"
 echo "App version:  $(release_marketing_version "$TAG") (full: $VERSION)"
 echo "Build number: $BUILD_NUMBER (iOS buildNumber, Android versionCode)"
+echo "Branch:       $PUSH_BRANCH"
 echo ""
 
 # Save the files the release changes. Any failure before the release commit
@@ -155,14 +181,14 @@ echo "Committed $RELEASE_SUBJECT and tagged $TAG."
 
 if [ "$PUSH" = false ]; then
   echo ""
-  echo "Not pushed. To publish: git push origin HEAD $TAG"
+  echo "Not pushed. To publish: git push origin HEAD:refs/heads/$PUSH_BRANCH refs/tags/$TAG"
   echo "To discard instead: git tag -d $TAG && git reset --hard HEAD~1"
   exit 0
 fi
 
-git push origin HEAD "$TAG"
+git push origin "HEAD:refs/heads/$PUSH_BRANCH" "refs/tags/$TAG"
 echo ""
-echo "Pushed $TAG. The tag workflow builds the app and creates the GitHub release."
+echo "Pushed the release commit to $PUSH_BRANCH and $TAG. The tag workflow builds the app and creates the GitHub release."
 if release_tag_is_prerelease "$TAG"; then
   echo "Prerelease: the GitHub release is marked as a prerelease and never as Latest."
 fi

@@ -27,24 +27,36 @@ The `.N` number is optional. `nightly`, `rc`, `preview`, other labels, and
 
 ## Cutting a release
 
-From a clean checkout of the branch to release:
+From a clean checkout of the branch to release, or a detached worktree of it:
 
 ```bash
 npm ci
 scripts/release.sh v0.1.38 --push            # stable, from main
 scripts/release.sh v0.1.38-beta.1 --push     # prerelease, from the release branch
+
+# Detached worktree
+git worktree add --detach ../app-release origin/main
+cd ../app-release && npm ci
+scripts/release.sh v0.1.38 --push                          # stable
+scripts/release.sh v0.1.38-beta.1 --push --branch v0138    # prerelease (worktree at origin/v0138)
 ```
+
+A stable release pushes its commit to `main`. A prerelease pushes it to its
+release branch: the checked-out branch, or `--branch` from a detached HEAD.
 
 The version is required. The script:
 
-1. Refuses an invalid tag, a dirty tree, an existing tag (it fetches tags from
-   `origin` first), and a version that is not newer than the latest stable tag
-   or the latest tag of its channel.
+1. Refuses an invalid tag, a stable release from a branch other than `main`, a
+   prerelease without a release branch or on `main`, a dirty tree, an existing
+   tag (it fetches tags from `origin` first), and a version that is not newer
+   than the latest stable tag or the latest tag of its channel.
 2. Sets the version in `package.json`, the root entries of `package-lock.json`,
    and `app.config.ts` (`RELEASE_VERSION` and `BUILD_NUMBER`).
 3. Runs typecheck, lint, format check, unit tests, and the release script tests.
 4. Commits `release: version X.Y.Z` and tags `vX.Y.Z`. A prerelease commits `release: prepare X.Y.Z` with its base version, so commit messages never name a prerelease channel. The tag and the GitHub release carry the full version.
-5. With `--push`, pushes the commit and the tag.
+5. With `--push`, pushes the commit to its branch (`HEAD:refs/heads/main` or
+   `HEAD:refs/heads/<release branch>`) and the tag. Git refuses the push when
+   the branch moved on `origin`. It never forces.
 
 A failure before the commit restores every file it changed. Without `--push`
 the commit and tag stay local; it prints the push command.

@@ -177,6 +177,41 @@ release_previous_tag() {
   '
 }
 
+# release_push_branch <tag> [<branch>]: print the branch a release of <tag>
+# pushes its commit to. <branch> is the branch passed with --branch, else the
+# checked-out branch, empty for a detached HEAD.
+# A stable release goes to main, so it can be cut from a detached worktree; a
+# branch other than main fails. A prerelease goes to its release branch, which
+# must be given (a detached HEAD needs --branch) and is never main.
+release_push_branch() {
+  local tag="${1:?release_push_branch needs a tag}" branch="${2:-}"
+  if ! release_tag_is_valid "$tag"; then
+    echo "Error: invalid version $tag. $RELEASE_TAG_HELP" >&2
+    return 1
+  fi
+  if [ -n "$branch" ] && ! git check-ref-format --branch "$branch" >/dev/null 2>&1; then
+    echo "Error: invalid branch name '$branch'." >&2
+    return 1
+  fi
+  if release_tag_is_prerelease "$tag"; then
+    if [ -z "$branch" ]; then
+      echo "Error: a prerelease is pushed to its release branch. Check out the branch or pass --branch <release branch>." >&2
+      return 1
+    fi
+    if [ "$branch" = main ]; then
+      echo "Error: main carries stable releases only. Cut $tag from its release branch." >&2
+      return 1
+    fi
+    printf '%s\n' "$branch"
+  else
+    if [ -n "$branch" ] && [ "$branch" != main ]; then
+      echo "Error: a stable release is cut from main, not $branch. Merge $branch into main first." >&2
+      return 1
+    fi
+    printf '%s\n' main
+  fi
+}
+
 # release_version_files: print the files release.sh changes before its release
 # commit, relative to the repo root.
 release_version_files() {
@@ -280,7 +315,7 @@ if [ "${BASH_SOURCE[0]}" = "$0" ]; then
     release_tag_is_valid | release_tag_is_prerelease | release_tag_channel | \
       release_marketing_version | release_build_number | release_is_newer | \
       release_latest_stable_tag | release_latest_channel_tag | release_next_stable_tag | \
-      release_previous_tag | release_check_version_files) "$fn" "$@" ;;
+      release_previous_tag | release_push_branch | release_check_version_files) "$fn" "$@" ;;
     *)
       echo "Unknown function: $fn" >&2
       exit 1

@@ -146,6 +146,34 @@ check "beta after alpha prev is the alpha" v0.2.0-alpha.1 \
 # Hotfix: an older stable release compares against its own predecessor, not the newest tag.
 check "hotfix prev ignores newer tags" v0.1.10 "$(release_previous_tag v0.1.37)"
 
+# Push branch: a stable release goes to main (also from a detached HEAD), a
+# prerelease to its release branch.
+check "stable detached pushes main" main "$(release_push_branch v0.1.40)"
+check "stable on main pushes main" main "$(release_push_branch v0.1.40 main)"
+check "stable on another branch fails" no "$(status_of release_push_branch v0.1.40 v0140 2>/dev/null)"
+check "beta pushes its branch" v0140 "$(release_push_branch v0.1.40-beta.2 v0140)"
+check "alpha pushes its branch" v0141 "$(release_push_branch v0.1.41-alpha v0141)"
+check "detached prerelease fails" no "$(status_of release_push_branch v0.1.40-beta.2 2>/dev/null)"
+check "prerelease on main fails" no "$(status_of release_push_branch v0.1.40-beta.2 main 2>/dev/null)"
+check "invalid branch fails" no "$(status_of release_push_branch v0.1.40-beta.2 'a..b' 2>/dev/null)"
+check "invalid tag fails" no "$(status_of release_push_branch v0.1.40-rc.1 v0140 2>/dev/null)"
+check "cli push branch" main "$(bash "$SCRIPT_DIR/release-version.sh" release_push_branch v1.2.3)"
+
+# release.sh checks the branch before it changes anything.
+git checkout -q -b feature
+out=$(bash "$SCRIPT_DIR/release.sh" v9.0.0 2>&1) && rc=0 || rc=$?
+check "release.sh stable on a feature branch exits 1" 1 "$rc"
+check "release.sh names main" yes "$(status_of grep -q 'cut from main, not feature' <<< "$out")"
+git checkout -q --detach
+out=$(bash "$SCRIPT_DIR/release.sh" v9.0.0-beta.1 2>&1) && rc=0 || rc=$?
+check "release.sh detached prerelease exits 1" 1 "$rc"
+check "release.sh asks for --branch" yes "$(status_of grep -q 'pass --branch' <<< "$out")"
+out=$(bash "$SCRIPT_DIR/release.sh" v9.0.0 --branch 2>&1) && rc=0 || rc=$?
+check "release.sh --branch without a name exits 1" 1 "$rc"
+out=$(bash "$SCRIPT_DIR/release.sh" v9.0.0-beta.1 --branch=main 2>&1) && rc=0 || rc=$?
+check "release.sh prerelease to main exits 1" 1 "$rc"
+check "release.sh left no change" "" "$(git status --porcelain)"
+
 # Version files: backup and restore (a failed release leaves no bump behind),
 # then set and check the version.
 cd "$TREE"
