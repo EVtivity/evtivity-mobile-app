@@ -507,6 +507,7 @@
     "PAYMENT_FAILED": "Payment failed",
     "PAYMENT_PROVIDER_NOT_CONFIGURED": "Payment provider is not configured",
     "PAYMENT_PREAUTH_FAILED": "Payment authorization declined",
+    "FLEET_CREDIT_LIMIT_REACHED": "The credit limit of the fleet your charging is billed to is reached. Contact your fleet manager.",
     "PAYMENT_METHOD_REQUIRED": "Payment method required",
     "PAYMENT_METHOD_NOT_FOUND": "Payment method not found",
     "PAYMENT_METHOD_IN_USE": "Payment method is in use by an active charging session",

@@ -507,6 +507,7 @@
     "PAYMENT_FAILED": "Zahlung fehlgeschlagen",
     "PAYMENT_PROVIDER_NOT_CONFIGURED": "Zahlungsanbieter nicht konfiguriert",
     "PAYMENT_PREAUTH_FAILED": "Zahlungsautorisierung abgelehnt",
+    "FLEET_CREDIT_LIMIT_REACHED": "Das Kreditlimit der Flotte, über die dein Laden abgerechnet wird, ist erreicht. Wende dich an deinen Flottenverwalter.",
     "PAYMENT_METHOD_REQUIRED": "Zahlungsmethode erforderlich",
     "PAYMENT_METHOD_NOT_FOUND": "Zahlungsmethode nicht gefunden",
     "PAYMENT_METHOD_IN_USE": "Zahlungsmethode wird von einem aktiven Ladevorgang verwendet",

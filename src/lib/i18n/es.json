@@ -507,6 +507,7 @@
     "PAYMENT_FAILED": "Pago fallido",
     "PAYMENT_PROVIDER_NOT_CONFIGURED": "Proveedor de pago no configurado",
     "PAYMENT_PREAUTH_FAILED": "Autorización de pago rechazada",
+    "FLEET_CREDIT_LIMIT_REACHED": "Se alcanzó el límite de crédito de la flota a la que se factura su carga. Contacte al responsable de su flota.",
     "PAYMENT_METHOD_REQUIRED": "Se requiere un método de pago",
     "PAYMENT_METHOD_NOT_FOUND": "Método de pago no encontrado",
     "PAYMENT_METHOD_IN_USE": "El método de pago está en uso por una sesión de carga activa",

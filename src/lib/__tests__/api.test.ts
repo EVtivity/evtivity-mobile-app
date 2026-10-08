@@ -83,6 +83,18 @@ describe('apiErrorMessage', () => {
     const err = new ApiError(504, { error: 'English text', code: 'STATUS_CHECK_TIMEOUT' });
     expect(apiErrorMessage(err, tr)).toBe('Zeitüberschreitung bei der Statusabfrage.');
   });
+  it.each(['en', 'es', 'zh', 'de', 'ko', 'zh-TW'])(
+    'translates FLEET_CREDIT_LIMIT_REACHED in %s',
+    (lang) => {
+      const locale = require(`../i18n/${lang}.json`) as { errors: Record<string, string> };
+      const expected = locale.errors['FLEET_CREDIT_LIMIT_REACHED'];
+      expect(typeof expected).toBe('string');
+      const tLocale = (key: string): string =>
+        key.startsWith('errors.') ? (locale.errors[key.slice(7)] ?? key) : key;
+      const err = new ApiError(402, { error: 'English text', code: 'FLEET_CREDIT_LIMIT_REACHED' });
+      expect(apiErrorMessage(err, tLocale)).toBe(expected);
+    },
+  );
   it('falls back to the server message when the code has no translation', () => {
     expect(apiErrorMessage(new ApiError(400, { error: 'nope', code: 'UNKNOWN_CODE' }), tr)).toBe(
       'nope',

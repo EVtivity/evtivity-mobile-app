@@ -507,6 +507,7 @@
     "PAYMENT_FAILED": "付款失敗",
     "PAYMENT_PROVIDER_NOT_CONFIGURED": "尚未設定付款服務商",
     "PAYMENT_PREAUTH_FAILED": "付款授權遭拒",
+    "FLEET_CREDIT_LIMIT_REACHED": "為您的充電付費的車隊已達到信用額度。請聯絡您的車隊管理員。",
     "PAYMENT_METHOD_REQUIRED": "需要付款方式",
     "PAYMENT_METHOD_NOT_FOUND": "找不到付款方式",
     "PAYMENT_METHOD_IN_USE": "此付款方式正由進行中的充電工作階段使用",
