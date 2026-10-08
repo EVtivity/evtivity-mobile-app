@@ -9,6 +9,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { Stack, useRouter, useSegments } from 'expo-router';
+import { pushTarget, type PushData } from '@/lib/push-route';
 import { StatusBar } from 'expo-status-bar';
 import * as Notifications from 'expo-notifications';
 import * as SplashScreen from 'expo-splash-screen';
@@ -81,19 +82,7 @@ function RootNavigator(): React.JSX.Element {
   // Route to the relevant area when the user taps a push notification.
   React.useEffect(() => {
     const sub = Notifications.addNotificationResponseReceivedListener((response) => {
-      const data = response.notification.request.content.data as {
-        eventType?: string;
-        stationId?: string;
-      };
-      const evt = data?.eventType ?? '';
-      if (evt.startsWith('watch') && typeof data?.stationId === 'string' && data.stationId !== '') {
-        router.push({
-          pathname: '/charge/[stationId]',
-          params: { stationId: data.stationId },
-        });
-      } else if (evt.startsWith('support')) router.push('/support');
-      else if (evt.startsWith('session')) router.push('/(tabs)');
-      else router.push('/(tabs)/account');
+      router.push(pushTarget(response.notification.request.content.data as PushData));
     });
     return () => sub.remove();
   }, [router]);
