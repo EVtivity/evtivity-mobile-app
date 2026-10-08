@@ -513,5 +513,19 @@
     "DRIVER_NOT_FOUND": "未找到驾驶员",
     "FORBIDDEN": "禁止访问",
     "VALIDATION_ERROR": "验证错误"
+  },
+  "fleetBilling": {
+    "billedTo": "记账到 {{fleet}}",
+    "startHint": "此充电会话由您的车队支付，无需支付方式。",
+    "title": "车队记账",
+    "fleet": "记账到",
+    "status": "状态",
+    "state": {
+      "unbilled": "尚未开票",
+      "invoiced": "已向车队开票",
+      "paid": "车队已支付"
+    },
+    "sessionLine": "{{fleet}}：{{state}}",
+    "paymentMethodsNote": "您的充电费用记账到 {{fleet}}，充电无需支付方式。"
   }
 }

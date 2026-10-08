@@ -44,6 +44,7 @@ import {
 import { SessionCharts } from '@/components/charts/SessionCharts';
 import { DetailRow as Row, SessionCostRows } from '@/components/SessionCostRows';
 import { usePriceDisplay } from '@/features/price-display';
+import { accountBillingStateKey } from '@/lib/fleet-billing';
 import { hsl } from '@/lib/theme';
 import { sessionStatusTone, sessionStatusLabelKey, SESSION_TONE_COLOR } from '@/lib/status';
 import {
@@ -431,6 +432,19 @@ export default function SessionScreen(): React.JSX.Element {
           <Row label={t('charge.detail.rfid')} value={data.token.idToken} />
         ) : null}
       </Card>
+
+      {data.accountBilling != null ? (
+        <Card className="gap-3" testID="session-fleet-billing">
+          <Text weight="semibold" className="text-sm text-muted-foreground">
+            {t('fleetBilling.title')}
+          </Text>
+          <Row label={t('fleetBilling.fleet')} value={data.accountBilling.fleetName} />
+          <Row
+            label={t('fleetBilling.status')}
+            value={t(accountBillingStateKey(data.accountBilling.state))}
+          />
+        </Card>
+      ) : null}
 
       {data.payment != null ? (
         <Card className="gap-3">

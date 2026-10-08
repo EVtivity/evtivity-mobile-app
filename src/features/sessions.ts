@@ -4,6 +4,7 @@
 import { useQuery, useQueries, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import type { ChargingSession } from '@/lib/types';
+import type { SessionAccountBilling } from '@/lib/fleet-billing';
 
 interface ActiveSession {
   id: string;
@@ -139,6 +140,8 @@ export interface SessionDetail {
   updatedAt: string | null;
   currentPowerW: number | null;
   payment: SessionPayment | null;
+  // Set when the session is billed to a fleet (charge on account).
+  accountBilling?: SessionAccountBilling | null;
   token: { idToken: string; tokenType: string } | null;
   vehicle: SessionVehicle | null;
 }

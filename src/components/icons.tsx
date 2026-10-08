@@ -8,6 +8,7 @@ import type {
 } from 'phosphor-react-native';
 import {
   House as PHouse,
+  Buildings as PBuildings,
   Lightning as PLightning,
   BatteryCharging as PBatteryCharging,
   Gauge as PGauge,
@@ -85,6 +86,7 @@ export const AlertTriangle = make(PWarning);
 export const BatteryCharging = make(PBatteryCharging);
 export const Bell = make(PBell);
 export const BellRing = make(PBellRinging);
+export const Building = make(PBuildings);
 export const CalendarClock = make(PCalendarDots);
 export const Car = make(PCar);
 export const Check = make(PCheck);

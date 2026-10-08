@@ -6,6 +6,19 @@ import { api } from '@/lib/api';
 import { useAuth } from '@/lib/auth';
 import type { PriceDisplay } from '@/lib/price-display';
 import type { Driver, Vehicle, RfidToken } from '@/lib/types';
+import type { DriverBilling } from '@/lib/fleet-billing';
+
+// How the signed-in driver pays (GET /v1/portal/auth/me billing). A fleet
+// change reaches the driver by push, so a minute of staleness is fine.
+export function useDriverBilling(enabled = true): DriverBilling | undefined {
+  const { data } = useQuery({
+    queryKey: ['driver-billing'],
+    queryFn: () => api.get<{ billing?: DriverBilling }>('/v1/portal/auth/me'),
+    enabled,
+    staleTime: 60_000,
+  });
+  return data?.billing;
+}
 
 export interface NotificationPrefs {
   emailEnabled: boolean;

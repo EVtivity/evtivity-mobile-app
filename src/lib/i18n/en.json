@@ -513,5 +513,19 @@
     "DRIVER_NOT_FOUND": "Driver not found",
     "FORBIDDEN": "Forbidden",
     "VALIDATION_ERROR": "Validation error"
+  },
+  "fleetBilling": {
+    "billedTo": "Billed to {{fleet}}",
+    "startHint": "Your fleet pays for this session. You need no payment method.",
+    "title": "Fleet billing",
+    "fleet": "Billed to",
+    "status": "Status",
+    "state": {
+      "unbilled": "Not invoiced yet",
+      "invoiced": "Invoiced to the fleet",
+      "paid": "Paid by the fleet"
+    },
+    "sessionLine": "{{fleet}}: {{state}}",
+    "paymentMethodsNote": "Your charging is billed to {{fleet}}. You need no payment method to charge."
   }
 }

@@ -9,6 +9,7 @@ import {
   MapPin,
   AlertTriangle,
   CreditCard,
+  Building,
   Star,
   Check,
   User,
@@ -47,6 +48,8 @@ import { useIsWatching, useToggleWatch } from '@/features/station-watch';
 import { usePaymentMethods, type PaymentCard } from '@/features/payments';
 import { useActiveSessions } from '@/features/sessions';
 import { usePriceDisplay } from '@/features/price-display';
+import { useDriverBilling } from '@/features/account';
+import { billedToFleet } from '@/lib/fleet-billing';
 import { ApiError, apiErrorMessage } from '@/lib/api';
 
 interface SelectedConnector {
@@ -76,6 +79,9 @@ export default function StationDetailScreen(): React.JSX.Element {
   const start = useStartCharging();
   const activeSessions = useActiveSessions();
   const currentDriverId = useAuth((s) => s.driver?.id ?? null);
+  const driverBilling = useDriverBilling();
+  // Charge on account: the fleet pays, so no card is shown or sent.
+  const fleetName = billedToFleet(pricing.data, driverBilling);
 
   // The driver's explicit connector tap; null until they choose one.
   const [manualSelected, setSelected] = React.useState<SelectedConnector | null>(null);
@@ -171,7 +177,7 @@ export default function StationDetailScreen(): React.JSX.Element {
         {
           stationId: sid,
           evseId: sel.evseId,
-          paymentMethodId: selectedCard?.id,
+          paymentMethodId: fleetName == null ? selectedCard?.id : undefined,
         },
         {
           onSuccess: ({ sessionId }) => {
@@ -184,7 +190,7 @@ export default function StationDetailScreen(): React.JSX.Element {
         },
       );
     },
-    [router, start, sid, selectedCard, t, toast],
+    [router, start, sid, selectedCard, fleetName, t, toast],
   );
 
   const onStart = React.useCallback(async () => {
@@ -334,7 +340,19 @@ export default function StationDetailScreen(): React.JSX.Element {
         <PricingCard pricing={pricing.data} priceDisplay={priceDisplay} />
       ) : null}
 
-      {data.paymentEnabled && selectedCard != null && !hasActiveSession ? (
+      {fleetName != null && pricing.data?.isFreeVend !== true && !hasActiveSession ? (
+        <Card testID="fleet-billing" className="flex-row items-center gap-3">
+          <Building size={20} color={hsl('primary')} />
+          <View className="flex-1 gap-0.5">
+            <Text weight="semibold" className="text-sm text-foreground">
+              {t('fleetBilling.billedTo', { fleet: fleetName })}
+            </Text>
+            <Text className="text-xs text-muted-foreground">{t('fleetBilling.startHint')}</Text>
+          </View>
+        </Card>
+      ) : null}
+
+      {data.paymentEnabled && fleetName == null && selectedCard != null && !hasActiveSession ? (
         <Card className="flex-row items-center gap-3">
           <CreditCard size={20} color={hsl('primary')} />
           <Text className="flex-1 text-sm text-foreground">{cardLabel(selectedCard)}</Text>

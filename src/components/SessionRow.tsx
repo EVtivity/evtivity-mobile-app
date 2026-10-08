@@ -9,6 +9,7 @@ import { cn } from '@/lib/cn';
 import { formatCurrency, formatEnergyWh, formatDuration, formatDate } from '@/lib/format';
 import { costContainsTax } from '@/lib/price-display';
 import { sessionStatusTone, sessionStatusLabelKey, SESSION_TONE_COLOR } from '@/lib/status';
+import { accountBillingStateKey } from '@/lib/fleet-billing';
 import type { ChargingSession } from '@/lib/types';
 
 interface SessionRowProps {
@@ -57,6 +58,14 @@ export const SessionRow = React.memo(function SessionRow({
           {costLabel}
         </Text>
       </View>
+      {session.accountBilling != null ? (
+        <Text testID={`session-row-fleet-${session.id}`} variant="muted" numberOfLines={1}>
+          {t('fleetBilling.sessionLine', {
+            fleet: session.accountBilling.fleetName,
+            state: t(accountBillingStateKey(session.accountBilling.state)),
+          })}
+        </Text>
+      ) : null}
     </Pressable>
   );
 });

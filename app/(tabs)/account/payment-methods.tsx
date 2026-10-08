@@ -16,6 +16,7 @@ import {
   EmptyState,
   BackButton,
   ListItemCard,
+  Card,
   useToast,
   useApiErrorToast,
   useConfirm,
@@ -33,6 +34,7 @@ import {
   type MobilePaymentModule,
   type PaymentCard,
 } from '@/features/payments';
+import { useDriverBilling } from '@/features/account';
 
 function formatBrand(brand: string | null): string | null {
   if (brand == null || brand.length === 0) return null;
@@ -215,6 +217,7 @@ function PaymentMethodsBody(): React.JSX.Element {
 
 export default function PaymentMethodsScreen(): React.JSX.Element {
   const { t } = useTranslation();
+  const billing = useDriverBilling();
 
   // Keep card details out of screenshots and the app switcher snapshot.
   usePreventScreenCapture();
@@ -225,6 +228,13 @@ export default function PaymentMethodsScreen(): React.JSX.Element {
       <Text variant="h1" className="mb-4">
         {t('payments.title')}
       </Text>
+      {billing?.mode === 'account' && billing.fleetName != null ? (
+        <Card testID="fleet-billing-note" flat className="mb-4">
+          <Text className="text-sm text-muted-foreground">
+            {t('fleetBilling.paymentMethodsNote', { fleet: billing.fleetName })}
+          </Text>
+        </Card>
+      ) : null}
       <PaymentMethodsBody />
     </Screen>
   );

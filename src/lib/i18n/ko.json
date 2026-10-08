@@ -513,5 +513,19 @@
     "DRIVER_NOT_FOUND": "드라이버를 찾을 수 없습니다",
     "FORBIDDEN": "접근이 금지되었습니다",
     "VALIDATION_ERROR": "유효성 검사 오류입니다"
+  },
+  "fleetBilling": {
+    "billedTo": "{{fleet}}(으)로 청구",
+    "startHint": "차량대가 이 충전 세션 요금을 지불합니다. 결제 수단이 필요하지 않습니다.",
+    "title": "차량대 청구",
+    "fleet": "청구 대상",
+    "status": "상태",
+    "state": {
+      "unbilled": "아직 청구되지 않음",
+      "invoiced": "차량대에 청구됨",
+      "paid": "차량대가 결제함"
+    },
+    "sessionLine": "{{fleet}}: {{state}}",
+    "paymentMethodsNote": "충전 요금은 {{fleet}}(으)로 청구됩니다. 충전에 결제 수단이 필요하지 않습니다."
   }
 }

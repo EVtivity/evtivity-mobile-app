@@ -513,5 +513,19 @@
     "DRIVER_NOT_FOUND": "Conductor no encontrado",
     "FORBIDDEN": "Prohibido",
     "VALIDATION_ERROR": "Error de validación"
+  },
+  "fleetBilling": {
+    "billedTo": "Facturado a {{fleet}}",
+    "startHint": "Su flota paga esta sesión. No necesita un método de pago.",
+    "title": "Facturación de la flota",
+    "fleet": "Facturado a",
+    "status": "Estado",
+    "state": {
+      "unbilled": "Aún no facturada",
+      "invoiced": "Facturada a la flota",
+      "paid": "Pagada por la flota"
+    },
+    "sessionLine": "{{fleet}}: {{state}}",
+    "paymentMethodsNote": "Su carga se factura a {{fleet}}. No necesita un método de pago para cargar."
   }
 }

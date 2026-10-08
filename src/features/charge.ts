@@ -4,6 +4,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import type { ConnectorStatus } from '@/lib/types';
+import type { DriverBilling } from '@/lib/fleet-billing';
 
 export interface ConnectorSummary {
   connectorType: string;
@@ -103,6 +104,9 @@ export interface PricingInfo {
   idleFeePricePerMinute: string | null;
   taxRate: string | null;
   isFreeVend: boolean;
+  // How the driver pays a session started here: account means the fleet pays
+  // and no card is needed. Null at a free vend site.
+  billing?: DriverBilling | null;
 }
 
 export function usePricing(stationId: string) {

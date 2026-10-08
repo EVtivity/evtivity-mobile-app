@@ -513,5 +513,19 @@
     "DRIVER_NOT_FOUND": "找不到駕駛員",
     "FORBIDDEN": "禁止存取",
     "VALIDATION_ERROR": "驗證錯誤"
+  },
+  "fleetBilling": {
+    "billedTo": "記帳到 {{fleet}}",
+    "startHint": "此充電工作階段由您的車隊付款，無需付款方式。",
+    "title": "車隊記帳",
+    "fleet": "記帳到",
+    "status": "狀態",
+    "state": {
+      "unbilled": "尚未開立發票",
+      "invoiced": "已向車隊開立發票",
+      "paid": "車隊已付款"
+    },
+    "sessionLine": "{{fleet}}：{{state}}",
+    "paymentMethodsNote": "您的充電費用記帳到 {{fleet}}，充電無需付款方式。"
   }
 }

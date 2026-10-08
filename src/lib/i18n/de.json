@@ -513,5 +513,19 @@
     "DRIVER_NOT_FOUND": "Fahrer nicht gefunden",
     "FORBIDDEN": "Zugriff verweigert",
     "VALIDATION_ERROR": "Validierungsfehler"
+  },
+  "fleetBilling": {
+    "billedTo": "Abgerechnet über {{fleet}}",
+    "startHint": "Deine Flotte zahlt diesen Ladevorgang. Du brauchst keine Zahlungsmethode.",
+    "title": "Flottenabrechnung",
+    "fleet": "Abgerechnet über",
+    "status": "Status",
+    "state": {
+      "unbilled": "Noch nicht abgerechnet",
+      "invoiced": "Der Flotte in Rechnung gestellt",
+      "paid": "Von der Flotte bezahlt"
+    },
+    "sessionLine": "{{fleet}}: {{state}}",
+    "paymentMethodsNote": "Dein Laden wird über {{fleet}} abgerechnet. Zum Laden brauchst du keine Zahlungsmethode."
   }
 }

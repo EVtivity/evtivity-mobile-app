@@ -5,6 +5,7 @@
 // because the API uses .passthrough() and individual endpoints return supersets.
 
 import type { PriceDisplay } from '@/lib/price-display';
+import type { SessionAccountBilling } from '@/lib/fleet-billing';
 
 export interface Driver {
   id: string;
@@ -76,6 +77,8 @@ export interface ChargingSession {
   taxCents?: number | null;
   idleStartedAt?: string | null;
   co2AvoidedKg?: number | null;
+  // Set when the session is billed to a fleet (charge on account).
+  accountBilling?: SessionAccountBilling | null;
 }
 
 export interface SupportCase {

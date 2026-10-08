@@ -55,4 +55,21 @@ describe('SessionRow', () => {
     );
     expect(getByTestId('session-row-cost-ses_1')).toHaveTextContent('£12.34', { exact: true });
   });
+
+  it('shows the fleet and the billing state of a session billed on account', async () => {
+    const { getByTestId } = await render(
+      <SessionRow
+        session={{ ...SESSION, accountBilling: { state: 'invoiced', fleetName: 'Acme' } }}
+      />,
+    );
+    expect(getByTestId('session-row-fleet-ses_1')).toHaveTextContent(
+      'Acme: Invoiced to the fleet',
+      { exact: true },
+    );
+  });
+
+  it('shows no fleet line for a card session', async () => {
+    const { queryByTestId } = await render(<SessionRow session={SESSION} />);
+    expect(queryByTestId('session-row-fleet-ses_1')).toBeNull();
+  });
 });
