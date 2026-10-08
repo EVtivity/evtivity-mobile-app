@@ -8,8 +8,8 @@ import { resolveBrand } from './brands/index';
 // release tag, which matches the EVtivity CSMS version. The stores get the X.Y.Z
 // part as the app version and BUILD_NUMBER as the iOS buildNumber and Android
 // versionCode (formula in RELEASE.md). Do not edit by hand.
-const RELEASE_VERSION = '0.1.40';
-const BUILD_NUMBER = 140999;
+const RELEASE_VERSION = '0.1.41-alpha.6';
+const BUILD_NUMBER = 141007;
 const MARKETING_VERSION = RELEASE_VERSION.split('-')[0];
 
 // Dynamic Expo config. The active brand (ACTIVE_BRAND env, default "default")
