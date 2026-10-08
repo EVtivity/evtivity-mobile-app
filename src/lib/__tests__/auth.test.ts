@@ -19,6 +19,7 @@ jest.mock('@/lib/session', () => ({
   setOnLogout: jest.fn(),
 }));
 jest.mock('@/lib/push', () => ({ unregisterPushToken: jest.fn(async () => undefined) }));
+jest.mock('@/lib/query', () => ({ queryClient: { clear: jest.fn() } }));
 
 type AuthModule = typeof import('@/lib/auth');
 type ApiMock = { api: { get: jest.Mock; post: jest.Mock } };
@@ -32,6 +33,7 @@ type SessionMock = {
 };
 type StoreMock = { getItemAsync: jest.Mock; setItemAsync: jest.Mock };
 type PushMock = { unregisterPushToken: jest.Mock };
+type QueryMock = { queryClient: { clear: jest.Mock } };
 
 interface Loaded {
   auth: AuthModule;
@@ -39,6 +41,7 @@ interface Loaded {
   session: SessionMock;
   store: StoreMock;
   push: PushMock;
+  queryClient: QueryMock['queryClient'];
 }
 
 function load(): Loaded {
@@ -50,6 +53,7 @@ function load(): Loaded {
       session: require('@/lib/session') as SessionMock,
       store: require('expo-secure-store') as StoreMock,
       push: require('@/lib/push') as PushMock,
+      queryClient: (require('@/lib/query') as QueryMock).queryClient,
     };
   });
   return out;
@@ -78,6 +82,7 @@ describe('hydrate', () => {
     const onLogout = m.session.setOnLogout.mock.calls[0][0] as () => void;
     onLogout();
     expect(m.auth.useAuth.getState().status).toBe('unauthenticated');
+    expect(m.queryClient.clear).toHaveBeenCalled();
   });
 
   it('stays unauthenticated when no session is restored', async () => {
@@ -185,6 +190,7 @@ describe('logout', () => {
     expect(m.api.post).toHaveBeenCalledWith('/v1/portal/auth/logout', { refreshToken: 'r' });
     expect(m.session.clearSession).toHaveBeenCalled();
     expect(m.auth.useAuth.getState().status).toBe('unauthenticated');
+    expect(m.queryClient.clear).toHaveBeenCalled();
   });
 
   it('tolerates push and server failures and still clears state', async () => {
@@ -204,6 +210,7 @@ describe('logout', () => {
     m.session.hasSession.mockReturnValue(false);
     await m.auth.useAuth.getState().logout();
     expect(m.api.post).not.toHaveBeenCalled();
+    expect(m.queryClient.clear).toHaveBeenCalled();
   });
 });
 

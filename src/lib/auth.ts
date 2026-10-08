@@ -14,6 +14,7 @@ import {
   setOnLogout,
 } from './session';
 import { unregisterPushToken } from './push';
+import { queryClient } from './query';
 import type { AuthSuccess, Driver, LoginResult } from './types';
 import { isMfaRequired } from './types';
 
@@ -71,6 +72,8 @@ export const useAuth = create<AuthState>((set) => ({
   hydrate: async () => {
     setOnLogout(() => {
       set({ status: 'unauthenticated', driver: null, locked: false });
+      // The server ended the session: drop the cached driver queries too.
+      queryClient.clear();
     });
     const restored = await loadSession();
     const biometricEnabled = (await SecureStore.getItemAsync(BIOMETRIC_PREF_KEY)) === '1';
@@ -141,6 +144,9 @@ export const useAuth = create<AuthState>((set) => ({
     }
     await clearSession();
     set({ status: 'unauthenticated', driver: null, locked: false, mfaPending: null });
+    // Drop every cached driver query (billing, sessions, payment methods), so
+    // the next driver to sign in on this device never sees this driver's data.
+    queryClient.clear();
   },
 
   setDriver: (driver) => set({ driver }),
