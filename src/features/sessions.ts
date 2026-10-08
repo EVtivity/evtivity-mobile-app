@@ -1,8 +1,10 @@
 // Copyright (c) 2024-2026 EVtivity. All rights reserved.
 // SPDX-License-Identifier: BUSL-1.1
 
+import { useEffect, useRef } from 'react';
 import { useQuery, useQueries, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
+import { createSettleTracker, isSessionSettled, sessionListStateKey } from '@/lib/session-refresh';
 import type { ChargingSession } from '@/lib/types';
 import type { SessionAccountBilling } from '@/lib/fleet-billing';
 
@@ -146,13 +148,35 @@ export interface SessionDetail {
   vehicle: SessionVehicle | null;
 }
 
+const settleTracker = createSettleTracker();
+
+// Polls while the session charges, then until its payment settles (bounded by
+// SETTLE_POLL_CAP_MS), so a pre-authorized payment turns captured on screen.
+// An unsettled session is never served from cache on mount. When the polled
+// status, payment or fleet billing state changes, the session lists (Activity,
+// recent, active) refetch so their rows match the detail.
 export function useSession(id: string) {
-  return useQuery({
+  const qc = useQueryClient();
+  const query = useQuery({
     queryKey: ['session', id],
     queryFn: () => api.get<SessionDetail>(`/v1/portal/sessions/${id}`),
     enabled: id.length > 0,
-    refetchInterval: (query) => (query.state.data?.status === 'active' ? 5_000 : false),
+    staleTime: (q) => (q.state.data != null && isSessionSettled(q.state.data) ? 60_000 : 0),
+    refetchInterval: (q) => settleTracker.refetchInterval(id, q.state.data, Date.now()),
   });
+
+  const stateKey = query.data != null ? sessionListStateKey(query.data) : null;
+  const lastStateKey = useRef<string | null>(null);
+  useEffect(() => {
+    if (stateKey == null) return;
+    const previous = lastStateKey.current;
+    lastStateKey.current = stateKey;
+    if (previous != null && previous !== stateKey) {
+      void qc.invalidateQueries({ queryKey: ['sessions'] });
+    }
+  }, [qc, stateKey]);
+
+  return query;
 }
 
 // Assigns (or clears, with null) the vehicle used to estimate mileage on a

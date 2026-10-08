@@ -81,6 +81,18 @@ export interface ChargingSession {
   accountBilling?: SessionAccountBilling | null;
 }
 
+// Status of a session's payment record (GET /v1/portal/sessions/:id, payment.status),
+// as the API stores it. pending and pre_authorized can still change; the others
+// are terminal.
+export type PaymentStatus =
+  | 'pending'
+  | 'pre_authorized'
+  | 'captured'
+  | 'partially_refunded'
+  | 'refunded'
+  | 'failed'
+  | 'cancelled';
+
 export interface SupportCase {
   id: string;
   caseNumber: string;

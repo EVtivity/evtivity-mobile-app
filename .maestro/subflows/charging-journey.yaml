@@ -122,13 +122,28 @@ appId: com.evtivity.driver
     env:
       STEP: settled
 
-# Reopen the app so Activity and the session load fresh, as a driver checking
-# later would see them.
-- launchApp
-- extendedWaitUntil:
-    visible:
-      id: 'tab-activity'
-    timeout: 15000
+# The open session screen keeps refreshing until the payment settles: card
+# shows the captured payment, account shows the unbilled fleet bill.
+- runFlow:
+    when:
+      true: ${BILLING == 'card'}
+    commands:
+      - scrollUntilVisible:
+          element:
+            id: 'session-payment-status-captured'
+          direction: DOWN
+          timeout: 30000
+- runFlow:
+    when:
+      true: ${BILLING == 'account'}
+    commands:
+      - scrollUntilVisible:
+          element:
+            id: 'session-fleet-billing-state-unbilled'
+          direction: DOWN
+          timeout: 30000
+
+# Activity refreshes with the settled session, without reopening the app.
 - tapOn:
     id: 'tab-activity'
 - scrollUntilVisible:

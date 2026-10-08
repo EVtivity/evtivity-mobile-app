@@ -42,8 +42,9 @@ The flows find every element by testID, so they pass in every app language.
 
 ### Requirements
 
-- Xcode at the version [SETUP.md](./SETUP.md) lists, and the iOS app built
-  with `npx expo run:ios` against the stack (`EXPO_PUBLIC_API_URL`).
+- Xcode 26.4 or later ([SETUP.md](./SETUP.md)), which needs macOS Tahoe 26.2
+  or later, and the iOS app built with `npx expo run:ios` against the stack
+  (`EXPO_PUBLIC_API_URL`).
 - Maestro CLI 1.39 or later (`curl -Ls "https://get.maestro.mobile.dev" | bash`).
 - An EVtivity CSMS Docker stack with demo data, its API on
   `http://localhost:7102`, and the station simulator in standby
