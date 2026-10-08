@@ -1,0 +1,177 @@
+# One charging journey, from sign-in to the session in Activity. The caller sets
+# EMAIL, PASSWORD, BILLING (card or account), STATION_ID, EVSE_ID and API_URL.
+# Every app check uses a testID, so the journey passes in every language.
+# .maestro/scripts/journey.js drives the station simulator through the CSMS
+# API between the app steps and checks the session on the server.
+appId: com.evtivity.driver
+---
+- runFlow: ensure-logged-out.yaml
+- runFlow:
+    file: login.yaml
+    env:
+      EMAIL: ${EMAIL}
+      PASSWORD: ${PASSWORD}
+- extendedWaitUntil:
+    visible:
+      id: 'tab-charge'
+    timeout: 15000
+
+# Server side: no active session, the expected billing mode, a saved card for a
+# card journey, then the EV is plugged in so the app can start.
+- runScript:
+    file: ../scripts/journey.js
+    env:
+      STEP: prepare
+
+# Find the station by search and open it.
+- tapOn:
+    id: 'tab-charge'
+- tapOn:
+    id: 'charge-search'
+- inputText: ${STATION_ID}
+- extendedWaitUntil:
+    visible:
+      id: 'station-card-${STATION_ID}'
+    timeout: 15000
+- tapOn:
+    id: 'station-card-${STATION_ID}'
+- extendedWaitUntil:
+    visible:
+      id: 'station-connector-${EVSE_ID}'
+    timeout: 15000
+- tapOn:
+    id: 'station-connector-${EVSE_ID}'
+
+# Card: the saved card shows and no fleet hint. Account: the "Billed to" hint
+# shows and no card is asked for.
+- runFlow:
+    when:
+      true: ${BILLING == 'card'}
+    commands:
+      - assertVisible:
+          id: 'station-payment-card'
+      - assertNotVisible:
+          id: 'fleet-billing'
+- runFlow:
+    when:
+      true: ${BILLING == 'account'}
+    commands:
+      - assertVisible:
+          id: 'fleet-billing'
+      - assertNotVisible:
+          id: 'station-payment-card'
+
+- scrollUntilVisible:
+    element:
+      id: 'station-start'
+    direction: DOWN
+- tapOn:
+    id: 'station-start'
+
+# Live session: charging, idle while the EV suspends, charging again, and
+# completed once the EV is unplugged. The session screen polls every 5 s.
+- extendedWaitUntil:
+    visible:
+      id: 'session-state-charging'
+    timeout: 90000
+- runScript:
+    file: ../scripts/journey.js
+    env:
+      STEP: session
+- runScript:
+    file: ../scripts/journey.js
+    env:
+      STEP: suspend
+- extendedWaitUntil:
+    visible:
+      id: 'session-state-idle'
+    timeout: 60000
+- runScript:
+    file: ../scripts/journey.js
+    env:
+      STEP: resume
+- extendedWaitUntil:
+    visible:
+      id: 'session-state-charging'
+    timeout: 60000
+- runScript:
+    file: ../scripts/journey.js
+    env:
+      STEP: unplug
+- extendedWaitUntil:
+    visible:
+      id: 'session-state-completed'
+    timeout: 90000
+
+# Final cost: the server's final cost is what the app shows.
+- runScript:
+    file: ../scripts/journey.js
+    env:
+      STEP: final
+- scrollUntilVisible:
+    element:
+      id: 'session-cost-value'
+    direction: DOWN
+- assertVisible:
+    id: 'session-cost-value'
+    text: ${output.journey.costPattern}
+
+# Settlement on the server: captured for the final cost, or unbilled on account.
+- runScript:
+    file: ../scripts/journey.js
+    env:
+      STEP: settled
+
+# Reopen the app so Activity and the session load fresh, as a driver checking
+# later would see them.
+- launchApp
+- extendedWaitUntil:
+    visible:
+      id: 'tab-activity'
+    timeout: 15000
+- tapOn:
+    id: 'tab-activity'
+- scrollUntilVisible:
+    element:
+      id: 'session-row-${output.journey.sessionId}'
+    direction: DOWN
+    timeout: 30000
+- assertVisible:
+    id: 'session-row-cost-${output.journey.sessionId}'
+    text: ${output.journey.costPattern}
+- runFlow:
+    when:
+      true: ${BILLING == 'account'}
+    commands:
+      - assertVisible:
+          id: 'session-row-fleet-${output.journey.sessionId}'
+- tapOn:
+    id: 'session-row-${output.journey.sessionId}'
+- extendedWaitUntil:
+    visible:
+      id: 'session-state-completed'
+    timeout: 15000
+
+# Card: payment captured for the final cost. Account: the fleet bill is
+# unbilled and there is no card payment.
+- runFlow:
+    when:
+      true: ${BILLING == 'card'}
+    commands:
+      - scrollUntilVisible:
+          element:
+            id: 'session-payment-status-captured'
+          direction: DOWN
+      - assertVisible:
+          id: 'session-payment-captured-value'
+          text: ${output.journey.costPattern}
+- runFlow:
+    when:
+      true: ${BILLING == 'account'}
+    commands:
+      - scrollUntilVisible:
+          element:
+            id: 'session-fleet-billing-state-unbilled'
+          direction: DOWN
+      - assertNotVisible:
+          id: 'session-payment'

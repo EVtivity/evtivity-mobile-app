@@ -101,6 +101,7 @@ GitHub release. Store submission stays a manual workflow run. See
 ## Documentation
 
 - [SETUP.md](./SETUP.md) - prerequisites and local build instructions
+- [TESTING.md](./TESTING.md) - unit tests, Maestro UI flows, and charging journeys
 - [RELEASE.md](./RELEASE.md) - release channels, versioning, and how to cut a release
 - [WHITELABEL.md](./WHITELABEL.md) - create and ship an operator brand
 - [SECURITY.md](./SECURITY.md) - security posture and roadmap

@@ -8,7 +8,8 @@ import { Text } from '@/components/ui';
 import { formatCurrency } from '@/lib/format';
 import { formatTaxRatePercent, type PriceDisplay } from '@/lib/price-display';
 
-// Label and value on one line, as in the session detail card.
+// Label and value on one line, as in the session detail card. With a testID,
+// the value carries `<testID>-value`, so a test can read the amount alone.
 export function DetailRow({
   label,
   value,
@@ -21,7 +22,12 @@ export function DetailRow({
   return (
     <View testID={testID} className="flex-row items-center justify-between gap-3">
       <Text variant="muted">{label}</Text>
-      <Text variant="label" tabular className="flex-1 text-right">
+      <Text
+        testID={testID != null ? `${testID}-value` : undefined}
+        variant="label"
+        tabular
+        className="flex-1 text-right"
+      >
         {value}
       </Text>
     </View>

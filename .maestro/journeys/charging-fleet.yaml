@@ -1,0 +1,17 @@
+# Charging journey billed to the driver's fleet (charge on account): the demo
+# fleet driver sees "Billed to" instead of a card, charges with an idle period,
+# and finds the session in Activity unbilled on the fleet account with no card
+# payment. See TESTING.md.
+appId: com.evtivity.driver
+name: Charging journey - fleet account
+tags:
+  - journey
+env:
+  EMAIL: ${FLEET_EMAIL || 'fleet.driver@evtivity.local'}
+  PASSWORD: ${FLEET_PASSWORD || 'driver123'}
+  STATION_ID: ${STATION_ID || 'CS-0001'}
+  EVSE_ID: ${EVSE_ID || '1'}
+  API_URL: ${API_URL || 'http://localhost:7102'}
+  BILLING: account
+---
+- runFlow: ../subflows/charging-journey.yaml

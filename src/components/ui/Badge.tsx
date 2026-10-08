@@ -35,13 +35,18 @@ export function Badge({
   label,
   variant = 'default',
   className,
+  testID,
 }: {
   label: string;
   variant?: Variant;
   className?: string;
+  testID?: string;
 }): React.JSX.Element {
   return (
-    <View className={cn('self-start rounded-full px-2.5 py-1', CONTAINER[variant], className)}>
+    <View
+      testID={testID}
+      className={cn('self-start rounded-full px-2.5 py-1', CONTAINER[variant], className)}
+    >
       <Text weight="semibold" className={cn('text-sm', LABEL[variant])}>
         {label}
       </Text>

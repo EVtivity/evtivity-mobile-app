@@ -50,6 +50,7 @@ import { useActiveSessions } from '@/features/sessions';
 import { usePriceDisplay } from '@/features/price-display';
 import { useDriverBilling } from '@/features/account';
 import { billedToFleet } from '@/lib/fleet-billing';
+import { connectorTileTestId } from '@/lib/test-ids';
 import { ApiError, apiErrorMessage } from '@/lib/api';
 
 interface SelectedConnector {
@@ -353,7 +354,7 @@ export default function StationDetailScreen(): React.JSX.Element {
       ) : null}
 
       {data.paymentEnabled && fleetName == null && selectedCard != null && !hasActiveSession ? (
-        <Card className="flex-row items-center gap-3">
+        <Card testID="station-payment-card" className="flex-row items-center gap-3">
           <CreditCard size={20} color={hsl('primary')} />
           <Text className="flex-1 text-sm text-foreground">{cardLabel(selectedCard)}</Text>
           <Pressable
@@ -405,6 +406,7 @@ export default function StationDetailScreen(): React.JSX.Element {
               return (
                 <ConnectorTile
                   key={evse.evseId}
+                  testID={connectorTileTestId(evse.evseId)}
                   connectorType={connector.connectorType}
                   maxPowerKw={connector.maxPowerKw}
                   maxCurrentAmps={connector.maxCurrentAmps}
@@ -419,6 +421,7 @@ export default function StationDetailScreen(): React.JSX.Element {
           </View>
 
           <Button
+            testID="station-start"
             title={starting ? t('charge.starting') : t('charge.start')}
             loading={starting}
             disabled={selected == null || maintenanceActive || !data.isOnline}

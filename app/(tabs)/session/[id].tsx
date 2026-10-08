@@ -45,6 +45,7 @@ import { SessionCharts } from '@/components/charts/SessionCharts';
 import { DetailRow as Row, SessionCostRows } from '@/components/SessionCostRows';
 import { usePriceDisplay } from '@/features/price-display';
 import { accountBillingStateKey } from '@/lib/fleet-billing';
+import { sessionStateTestId, paymentStatusTestId, fleetBillingStateTestId } from '@/lib/test-ids';
 import { hsl } from '@/lib/theme';
 import { sessionStatusTone, sessionStatusLabelKey, SESSION_TONE_COLOR } from '@/lib/status';
 import {
@@ -116,11 +117,13 @@ function StatusPill({
   icon,
   tone,
   pulse,
+  testID,
 }: {
   label: string;
   icon: React.ReactNode;
   tone: PillTone;
   pulse: boolean;
+  testID: string;
 }): React.JSX.Element {
   const scale = useSharedValue(1);
   React.useEffect(() => {
@@ -135,6 +138,7 @@ function StatusPill({
   const style = useAnimatedStyle(() => ({ transform: [{ scale: scale.get() }] }));
   return (
     <Animated.View
+      testID={testID}
       style={[style, { backgroundColor: SESSION_TONE_COLOR[tone] }]}
       className="flex-row items-center gap-2.5 self-center rounded-full px-7 py-3.5"
     >
@@ -294,7 +298,13 @@ export default function SessionScreen(): React.JSX.Element {
 
       {/* Status + tappable mileage estimate (sets the vehicle for the estimate) */}
       <View className="items-center gap-2">
-        <StatusPill tone={pillTone} icon={pillIcon} label={pillLabel} pulse={isActive} />
+        <StatusPill
+          testID={sessionStateTestId(data.status, chargingIdle === true)}
+          tone={pillTone}
+          icon={pillIcon}
+          label={pillLabel}
+          pulse={isActive}
+        />
 
         <Pressable
           className="items-center active:opacity-70"
@@ -440,6 +450,7 @@ export default function SessionScreen(): React.JSX.Element {
           </Text>
           <Row label={t('fleetBilling.fleet')} value={data.accountBilling.fleetName} />
           <Row
+            testID={fleetBillingStateTestId(data.accountBilling.state)}
             label={t('fleetBilling.status')}
             value={t(accountBillingStateKey(data.accountBilling.state))}
           />
@@ -447,12 +458,13 @@ export default function SessionScreen(): React.JSX.Element {
       ) : null}
 
       {data.payment != null ? (
-        <Card className="gap-3">
+        <Card className="gap-3" testID="session-payment">
           <View className="flex-row items-center justify-between">
             <Text weight="semibold" className="text-sm text-muted-foreground">
               {t('charge.detail.payment')}
             </Text>
             <Badge
+              testID={paymentStatusTestId(data.payment.status)}
               label={t(`paymentStatus.${data.payment.status}`, {
                 defaultValue: data.payment.status,
               })}
@@ -464,6 +476,7 @@ export default function SessionScreen(): React.JSX.Element {
             value={formatCurrency(data.payment.preAuthAmountCents, data.payment.currency)}
           />
           <Row
+            testID="session-payment-captured"
             label={t('charge.detail.captured')}
             value={formatCurrency(data.payment.capturedAmountCents, data.payment.currency)}
           />

@@ -55,6 +55,21 @@ describe('SessionCostRows', () => {
     expect(getByText('€12.34')).toBeTruthy();
   });
 
+  it('gives each amount a value testID, so a test reads it without the label', async () => {
+    const { getByTestId } = await render(
+      <SessionCostRows
+        costCents={1234}
+        currency="EUR"
+        isActive={false}
+        {...SPLIT}
+        priceDisplay="net"
+      />,
+    );
+    expect(getByTestId('session-cost-value')).toHaveTextContent('€12.34');
+    expect(getByTestId('session-net-cost-value')).toHaveTextContent('€10.37');
+    expect(getByTestId('session-tax-value')).toHaveTextContent('€1.97');
+  });
+
   it('labels a running session cost', async () => {
     const { getByText } = await render(
       <SessionCostRows costCents={1234} currency="EUR" isActive {...SPLIT} priceDisplay="gross" />,

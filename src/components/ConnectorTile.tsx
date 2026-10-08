@@ -23,6 +23,7 @@ interface ConnectorTileProps {
   // online, and maintenance state too. Falls back to !isStartable(status).
   disabled?: boolean;
   onPress: () => void;
+  testID?: string;
 }
 
 const CHARGING: ConnectorStatus[] = ['charging', 'discharging'];
@@ -37,6 +38,7 @@ export function ConnectorTile({
   selected,
   disabled: disabledProp,
   onPress,
+  testID,
 }: ConnectorTileProps): React.JSX.Element {
   const { t } = useTranslation();
   const disabled = disabledProp ?? !isStartable(status);
@@ -49,6 +51,7 @@ export function ConnectorTile({
 
   return (
     <Pressable
+      testID={testID}
       onPress={onPress}
       disabled={disabled}
       accessibilityRole="button"

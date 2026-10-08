@@ -19,6 +19,19 @@ module.exports = [
       '@typescript-eslint/no-require-imports': 'off',
     },
   },
+  {
+    // Maestro runScript helpers run on Maestro's own JS engine (GraalJS or
+    // Rhino), not in the app. They are written in ES5 so both engines run them,
+    // and Maestro provides http, json, output and maestro as globals.
+    files: ['.maestro/scripts/**/*.js'],
+    languageOptions: {
+      sourceType: 'script',
+      globals: { http: 'readonly', json: 'readonly', output: 'writable', maestro: 'readonly' },
+    },
+    rules: {
+      'no-var': 'off',
+    },
+  },
   // Last: disable ESLint rules that conflict with Prettier so formatting is owned
   // solely by Prettier (run via lint-staged and `npm run format`).
   eslintConfigPrettier,

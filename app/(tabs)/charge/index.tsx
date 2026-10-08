@@ -30,6 +30,7 @@ import {
 } from '@/features/charge';
 import { useFeatures } from '@/features/app-info';
 import { useDebouncedValue } from '@/lib/use-debounced-value';
+import { stationCardTestId } from '@/lib/test-ids';
 
 type Mode = 'local' | 'roaming';
 
@@ -127,6 +128,7 @@ export default function ChargeScreen(): React.JSX.Element {
                 search.data?.map((s) => (
                   <StationCard
                     key={s.stationId}
+                    testID={stationCardTestId(s.stationId)}
                     name={s.siteName ?? s.stationId}
                     address={[s.siteAddress, s.siteCity].filter(Boolean).join(', ') || null}
                     isOnline={s.isOnline}
@@ -158,6 +160,7 @@ export default function ChargeScreen(): React.JSX.Element {
                 nearby.data?.map((s) => (
                   <StationCard
                     key={s.stationId}
+                    testID={stationCardTestId(s.stationId)}
                     name={s.siteName ?? s.stationId}
                     address={s.siteAddress}
                     isOnline={s.isOnline}

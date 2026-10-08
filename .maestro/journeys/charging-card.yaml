@@ -1,0 +1,19 @@
+# Charging journey paid by a saved card: the demo driver finds the station,
+# starts with the saved card, watches the session charge, go idle
+# (SuspendedEV), charge again and complete when the EV is unplugged, then finds
+# it in Activity with the captured payment.
+# Needs a stack with the simulated payment provider and the simulator journey
+# actions. See TESTING.md.
+appId: com.evtivity.driver
+name: Charging journey - saved card
+tags:
+  - journey
+env:
+  EMAIL: ${EMAIL || 'driver@evtivity.local'}
+  PASSWORD: ${PASSWORD || 'driver123'}
+  STATION_ID: ${STATION_ID || 'CS-0001'}
+  EVSE_ID: ${EVSE_ID || '1'}
+  API_URL: ${API_URL || 'http://localhost:7102'}
+  BILLING: card
+---
+- runFlow: ../subflows/charging-journey.yaml

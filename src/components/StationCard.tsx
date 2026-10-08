@@ -16,6 +16,7 @@ interface StationCardProps {
   evseCount: number;
   distanceKm?: number | null;
   onPress: () => void;
+  testID?: string;
 }
 
 export const StationCard = React.memo(function StationCard({
@@ -26,11 +27,12 @@ export const StationCard = React.memo(function StationCard({
   evseCount,
   distanceKm,
   onPress,
+  testID,
 }: StationCardProps): React.JSX.Element {
   const { t } = useTranslation();
   const hasAvail = availableCount > 0 && isOnline;
   return (
-    <Card onPress={onPress} className="gap-3">
+    <Card testID={testID} onPress={onPress} className="gap-3">
       <View className="flex-row items-start justify-between gap-3">
         <View className="flex-1 gap-1">
           <Text variant="title" className="flex-1" numberOfLines={1}>
