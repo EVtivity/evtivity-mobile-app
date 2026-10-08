@@ -1,7 +1,48 @@
 // Copyright (c) 2024-2026 EVtivity. All rights reserved.
 // SPDX-License-Identifier: BUSL-1.1
 
+import type { PaymentStatus } from '@/lib/types';
+
 export type BadgeVariant = 'success' | 'secondary' | 'warning' | 'destructive' | 'info';
+
+const PAYMENT_STATUSES: ReadonlySet<string> = new Set<PaymentStatus>([
+  'pending',
+  'pre_authorized',
+  'captured',
+  'partially_refunded',
+  'refunded',
+  'failed',
+  'cancelled',
+]);
+
+export function isPaymentStatus(status: string): status is PaymentStatus {
+  return PAYMENT_STATUSES.has(status);
+}
+
+// Session payment status -> Badge variant. Values outside PaymentStatus (an API
+// newer than the app) fall back to secondary. The switch is exhaustive, so a new
+// PaymentStatus member fails the typecheck until it gets a variant.
+export function paymentStatusVariant(status: string): BadgeVariant {
+  if (!isPaymentStatus(status)) return 'secondary';
+  switch (status) {
+    case 'pending':
+    case 'pre_authorized':
+      return 'info';
+    case 'captured':
+      return 'success';
+    case 'partially_refunded':
+    case 'refunded':
+      return 'warning';
+    case 'failed':
+      return 'destructive';
+    case 'cancelled':
+      return 'secondary';
+    default: {
+      const unhandled: never = status;
+      return unhandled;
+    }
+  }
+}
 
 // Reservation status -> Badge variant. Shared by the reservation list and detail.
 export function reservationStatusVariant(status: string): BadgeVariant {

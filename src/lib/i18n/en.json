@@ -448,16 +448,13 @@
     "ev_connected": "EV Connected"
   },
   "paymentStatus": {
+    "pending": "Pending",
     "pre_authorized": "Pre-authorized",
     "captured": "Captured",
-    "paid": "Paid",
-    "succeeded": "Succeeded",
-    "pending": "Pending",
-    "processing": "Processing",
-    "failed": "Failed",
-    "declined": "Declined",
+    "partially_refunded": "Partially refunded",
     "refunded": "Refunded",
-    "voided": "Voided"
+    "failed": "Failed",
+    "cancelled": "Cancelled"
   },
   "location": {
     "chargerCount": "{{chargers}} chargers, {{available}} available",

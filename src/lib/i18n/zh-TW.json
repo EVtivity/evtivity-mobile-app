@@ -448,16 +448,13 @@
     "ev_connected": "車輛已連接"
   },
   "paymentStatus": {
+    "pending": "待處理",
     "pre_authorized": "已預先授權",
     "captured": "已扣款",
-    "paid": "已付款",
-    "succeeded": "成功",
-    "pending": "待處理",
-    "processing": "處理中",
-    "failed": "失敗",
-    "declined": "已拒絕",
+    "partially_refunded": "部分退款",
     "refunded": "已退款",
-    "voided": "已作廢"
+    "failed": "失敗",
+    "cancelled": "已取消"
   },
   "location": {
     "chargerCount": "{{chargers}} 個充電站，{{available}} 個可用",

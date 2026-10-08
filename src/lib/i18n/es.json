@@ -448,16 +448,13 @@
     "ev_connected": "VE conectado"
   },
   "paymentStatus": {
+    "pending": "Pendiente",
     "pre_authorized": "Preautorizado",
     "captured": "Cobrado",
-    "paid": "Pagado",
-    "succeeded": "Realizado",
-    "pending": "Pendiente",
-    "processing": "Procesando",
-    "failed": "Fallido",
-    "declined": "Rechazado",
+    "partially_refunded": "Reembolsado parcialmente",
     "refunded": "Reembolsado",
-    "voided": "Anulado"
+    "failed": "Fallido",
+    "cancelled": "Cancelado"
   },
   "location": {
     "chargerCount": "{{chargers}} cargadores, {{available}} disponibles",

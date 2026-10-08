@@ -448,16 +448,13 @@
     "ev_connected": "Fahrzeug angeschlossen"
   },
   "paymentStatus": {
+    "pending": "Ausstehend",
     "pre_authorized": "Vorautorisiert",
     "captured": "Eingezogen",
-    "paid": "Bezahlt",
-    "succeeded": "Erfolgreich",
-    "pending": "Ausstehend",
-    "processing": "In Bearbeitung",
-    "failed": "Fehlgeschlagen",
-    "declined": "Abgelehnt",
+    "partially_refunded": "Teilweise erstattet",
     "refunded": "Erstattet",
-    "voided": "Storniert"
+    "failed": "Fehlgeschlagen",
+    "cancelled": "Storniert"
   },
   "location": {
     "chargerCount": "{{chargers}} Ladestationen, {{available}} verfügbar",

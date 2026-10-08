@@ -48,6 +48,7 @@ import { accountBillingStateKey } from '@/lib/fleet-billing';
 import { sessionStateTestId, paymentStatusTestId, fleetBillingStateTestId } from '@/lib/test-ids';
 import { hsl } from '@/lib/theme';
 import { sessionStatusTone, sessionStatusLabelKey, SESSION_TONE_COLOR } from '@/lib/status';
+import { paymentStatusVariant } from '@/lib/status-variants';
 import {
   formatCurrency,
   formatEnergyWh,
@@ -75,29 +76,6 @@ interface LiveSession extends ChargingSession {
 
 // The screen consumes both the live charging fields and the full detail shape.
 type SessionData = LiveSession & SessionDetail;
-
-function paymentVariant(
-  status: string,
-): 'success' | 'warning' | 'destructive' | 'info' | 'secondary' {
-  switch (status) {
-    case 'captured':
-    case 'paid':
-    case 'succeeded':
-      return 'success';
-    case 'pre_authorized':
-    case 'pending':
-    case 'processing':
-      return 'info';
-    case 'failed':
-    case 'declined':
-      return 'destructive';
-    case 'refunded':
-    case 'voided':
-      return 'warning';
-    default:
-      return 'secondary';
-  }
-}
 
 function vehicleLabel(v: {
   make: string | null;
@@ -468,7 +446,7 @@ export default function SessionScreen(): React.JSX.Element {
               label={t(`paymentStatus.${data.payment.status}`, {
                 defaultValue: data.payment.status,
               })}
-              variant={paymentVariant(data.payment.status)}
+              variant={paymentStatusVariant(data.payment.status)}
             />
           </View>
           <Row

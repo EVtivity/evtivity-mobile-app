@@ -448,16 +448,13 @@
     "ev_connected": "차량 연결됨"
   },
   "paymentStatus": {
+    "pending": "대기 중",
     "pre_authorized": "사전 승인됨",
     "captured": "청구됨",
-    "paid": "결제됨",
-    "succeeded": "성공",
-    "pending": "대기 중",
-    "processing": "처리 중",
-    "failed": "실패",
-    "declined": "거절됨",
+    "partially_refunded": "부분 환불됨",
     "refunded": "환불됨",
-    "voided": "취소됨"
+    "failed": "실패",
+    "cancelled": "취소됨"
   },
   "location": {
     "chargerCount": "충전기 {{chargers}}대, {{available}}대 사용 가능",
