@@ -1,6 +1,6 @@
 {
   "name": "evtivity-mobile-app",
-  "version": "0.1.42-beta.6",
+  "version": "0.1.42",
   "main": "expo-router/entry",
   "license": "BUSL-1.1",
   "scripts": {
