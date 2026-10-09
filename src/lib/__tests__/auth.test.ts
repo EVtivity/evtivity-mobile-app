@@ -168,6 +168,50 @@ describe('register', () => {
   });
 });
 
+// The API checks device attestation on these pre-auth routes when it is enabled
+// (403 ATTESTATION_FAILED without it), so each call must request the header.
+describe('attested pre-auth calls', () => {
+  it('login sends attestation without a session', async () => {
+    const m = load();
+    m.api.post.mockResolvedValue(authSuccess);
+    await m.auth.useAuth.getState().login('a@b.com', 'pw');
+    expect(m.api.post).toHaveBeenCalledWith(
+      '/v1/portal/auth/login',
+      { email: 'a@b.com', password: 'pw' },
+      { auth: false, attest: true },
+    );
+  });
+
+  it('register sends attestation without a session', async () => {
+    const m = load();
+    m.api.post.mockResolvedValue(authSuccess);
+    const input = { firstName: 'A', lastName: 'B', email: 'a@b.com', password: 'pw' };
+    await m.auth.useAuth.getState().register(input);
+    expect(m.api.post).toHaveBeenCalledWith('/v1/portal/auth/register', input, {
+      auth: false,
+      attest: true,
+    });
+  });
+
+  it('resetPassword sends the token and password with attestation', async () => {
+    const m = load();
+    m.api.post.mockResolvedValue({ success: true });
+    await m.auth.resetPassword('tok', 'NewPassword123');
+    expect(m.api.post).toHaveBeenCalledWith(
+      '/v1/portal/auth/reset-password',
+      { token: 'tok', password: 'NewPassword123' },
+      { auth: false, attest: true },
+    );
+  });
+
+  it('resetPassword passes an API error to the screen', async () => {
+    const m = load();
+    const err = new Error('Device attestation failed');
+    m.api.post.mockRejectedValue(err);
+    await expect(m.auth.resetPassword('tok', 'NewPassword123')).rejects.toBe(err);
+  });
+});
+
 describe('verifyMfa', () => {
   it('starts a session and clears the pending challenge', async () => {
     const m = load();

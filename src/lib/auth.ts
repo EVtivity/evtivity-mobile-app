@@ -162,3 +162,14 @@ export const useAuth = create<AuthState>((set) => ({
 
   setMfaPending: (pending) => set({ mfaPending: pending }),
 }));
+
+// Sets a new password with the token from the reset email. Pre-auth like login
+// and register: the API checks the device attestation on it when attestation is
+// enabled, and answers 403 ATTESTATION_FAILED without it.
+export async function resetPassword(token: string, password: string): Promise<void> {
+  await api.post(
+    '/v1/portal/auth/reset-password',
+    { token, password },
+    { auth: false, attest: true },
+  );
+}

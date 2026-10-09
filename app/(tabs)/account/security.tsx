@@ -18,9 +18,11 @@ import {
   useToast,
   useApiErrorToast,
 } from '@/components/ui';
+import { PasswordRules } from '@/components/PasswordRules';
 import { hsl } from '@/lib/theme';
 import { useAuth } from '@/lib/auth';
 import { ApiError, getApiErrorFieldDetails } from '@/lib/api';
+import { validatePassword } from '@/lib/validation';
 import {
   useChangePassword,
   useMfaStatus,
@@ -58,6 +60,11 @@ export default function SecurityScreen(): React.JSX.Element {
   const [fieldErrors, setFieldErrors] = React.useState<Record<string, string>>({});
 
   const onChangePassword = async (): Promise<void> => {
+    const passwordError = validatePassword(newPassword, t);
+    if (passwordError != null) {
+      setFieldErrors({ newPassword: passwordError });
+      return;
+    }
     setFieldErrors({});
     try {
       await changePassword.mutateAsync({ currentPassword, newPassword });
@@ -167,6 +174,7 @@ export default function SecurityScreen(): React.JSX.Element {
           autoComplete="new-password"
           error={fieldErrors.newPassword}
         />
+        <PasswordRules password={newPassword} testID="security-password-rules" />
         <Button
           testID="security-change-password"
           title={t('account.changePassword')}

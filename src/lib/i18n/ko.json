@@ -59,7 +59,16 @@
     "invalidResetLink": "이 재설정 링크는 유효하지 않거나 만료되었습니다.",
     "newPassword": "새 비밀번호",
     "confirmPassword": "비밀번호 확인",
-    "passwordTooShort": "비밀번호는 최소 {{min}}자 이상이어야 합니다.",
+    "passwordNeeds": "비밀번호 요구 사항:",
+    "passwordMissing": "비밀번호가 요구 사항을 충족하지 않습니다: {{rules}}",
+    "passwordRule": {
+      "minLength": "{{min}}자 이상",
+      "uppercase": "영문 대문자 1개 이상",
+      "lowercase": "영문 소문자 1개 이상",
+      "number": "숫자 1개 이상"
+    },
+    "passwordRuleMet": "충족",
+    "passwordRuleNotMet": "미충족",
     "passwordsMustMatch": "비밀번호가 일치해야 합니다",
     "passwordWeak": "비밀번호가 너무 약합니다. 더 강력한 비밀번호를 선택하세요.",
     "codeRequired": "6자리 코드를 입력하세요.",
@@ -510,7 +519,9 @@
     "PAYMENT_METHOD_IN_USE": "결제 수단이 활성 충전 세션에서 사용 중입니다",
     "DRIVER_NOT_FOUND": "드라이버를 찾을 수 없습니다",
     "FORBIDDEN": "접근이 금지되었습니다",
-    "VALIDATION_ERROR": "유효성 검사 오류입니다"
+    "VALIDATION_ERROR": "유효성 검사 오류입니다",
+    "WEAK_PASSWORD": "비밀번호가 복잡성 요구 사항을 충족하지 않습니다",
+    "ATTESTATION_FAILED": "기기 인증에 실패했습니다. 앱을 업데이트한 후 다시 시도하세요."
   },
   "fleetBilling": {
     "billedTo": "{{fleet}}(으)로 청구",

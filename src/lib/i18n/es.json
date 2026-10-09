@@ -59,7 +59,16 @@
     "invalidResetLink": "Este enlace de restablecimiento es inválido o ha expirado.",
     "newPassword": "Nueva contraseña",
     "confirmPassword": "Confirmar contraseña",
-    "passwordTooShort": "La contraseña debe tener al menos {{min}} caracteres.",
+    "passwordNeeds": "La contraseña necesita:",
+    "passwordMissing": "La contraseña necesita {{rules}}.",
+    "passwordRule": {
+      "minLength": "al menos {{min}} caracteres",
+      "uppercase": "una letra mayúscula",
+      "lowercase": "una letra minúscula",
+      "number": "un número"
+    },
+    "passwordRuleMet": "cumplido",
+    "passwordRuleNotMet": "no cumplido",
     "passwordsMustMatch": "Las contraseñas deben coincidir",
     "passwordWeak": "Esa contraseña es muy débil. Elija una más segura.",
     "codeRequired": "Ingrese el código de 6 dígitos.",
@@ -510,7 +519,9 @@
     "PAYMENT_METHOD_IN_USE": "El método de pago está en uso por una sesión de carga activa",
     "DRIVER_NOT_FOUND": "Conductor no encontrado",
     "FORBIDDEN": "Prohibido",
-    "VALIDATION_ERROR": "Error de validación"
+    "VALIDATION_ERROR": "Error de validación",
+    "WEAK_PASSWORD": "La contraseña no cumple con los requisitos de complejidad",
+    "ATTESTATION_FAILED": "La verificación del dispositivo falló. Actualice la aplicación e inténtelo de nuevo."
   },
   "fleetBilling": {
     "billedTo": "Facturado a {{fleet}}",

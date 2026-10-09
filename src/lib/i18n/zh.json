@@ -59,7 +59,16 @@
     "invalidResetLink": "此重置链接无效或已过期。",
     "newPassword": "新密码",
     "confirmPassword": "确认密码",
-    "passwordTooShort": "密码至少需要{{min}}个字符。",
+    "passwordNeeds": "密码要求：",
+    "passwordMissing": "密码不符合以下要求：{{rules}}",
+    "passwordRule": {
+      "minLength": "至少 {{min}} 个字符",
+      "uppercase": "至少一个大写字母",
+      "lowercase": "至少一个小写字母",
+      "number": "至少一个数字"
+    },
+    "passwordRuleMet": "已满足",
+    "passwordRuleNotMet": "未满足",
     "passwordsMustMatch": "两次输入的密码必须一致",
     "passwordWeak": "密码强度太弱，请设置更强的密码。",
     "codeRequired": "请输入6位验证码。",
@@ -510,7 +519,9 @@
     "PAYMENT_METHOD_IN_USE": "支付方式正被活跃充电会话使用",
     "DRIVER_NOT_FOUND": "未找到驾驶员",
     "FORBIDDEN": "禁止访问",
-    "VALIDATION_ERROR": "验证错误"
+    "VALIDATION_ERROR": "验证错误",
+    "WEAK_PASSWORD": "密码不符合复杂度要求",
+    "ATTESTATION_FAILED": "设备证明失败。请更新应用后重试。"
   },
   "fleetBilling": {
     "billedTo": "记账到 {{fleet}}",

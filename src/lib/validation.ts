@@ -4,8 +4,11 @@
 // Shared form validation for the auth screens. Each validator returns a
 // translated error message, or undefined when the value is valid.
 
+import { PASSWORD_MIN_LENGTH, missingPasswordRules } from './password-policy';
+
 export const EMAIL_REGEX = /^\S+@\S+\.\S+$/;
-export const MIN_PASSWORD_LENGTH = 12;
+
+type Translate = (key: string, options?: Record<string, unknown>) => string;
 
 export function validateEmail(value: string, t: (key: string) => string): string | undefined {
   const trimmed = value.trim();
@@ -14,13 +17,14 @@ export function validateEmail(value: string, t: (key: string) => string): string
   return undefined;
 }
 
-export function validatePassword(
-  value: string,
-  t: (key: string, options?: { min: number }) => string,
-): string | undefined {
+// Names every rule the password misses ("Password needs at least 12
+// characters, a number."), the same message the portal shows.
+export function validatePassword(value: string, t: Translate): string | undefined {
   if (value.length === 0) return t('auth.passwordRequired');
-  if (value.length < MIN_PASSWORD_LENGTH) {
-    return t('auth.passwordTooShort', { min: MIN_PASSWORD_LENGTH });
-  }
-  return undefined;
+  const missing = missingPasswordRules(value);
+  if (missing.length === 0) return undefined;
+  const rules = missing
+    .map((rule) => t(`auth.passwordRule.${rule}`, { min: PASSWORD_MIN_LENGTH }))
+    .join(', ');
+  return t('auth.passwordMissing', { rules });
 }

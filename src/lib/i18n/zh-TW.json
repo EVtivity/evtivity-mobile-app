@@ -59,7 +59,16 @@
     "invalidResetLink": "此重設連結無效或已過期。",
     "newPassword": "新密碼",
     "confirmPassword": "確認密碼",
-    "passwordTooShort": "密碼長度至少需 {{min}} 個字元。",
+    "passwordNeeds": "密碼要求：",
+    "passwordMissing": "密碼不符合以下要求：{{rules}}",
+    "passwordRule": {
+      "minLength": "至少 {{min}} 個字元",
+      "uppercase": "至少一個大寫字母",
+      "lowercase": "至少一個小寫字母",
+      "number": "至少一個數字"
+    },
+    "passwordRuleMet": "已符合",
+    "passwordRuleNotMet": "未符合",
     "passwordsMustMatch": "兩次輸入的密碼必須相同",
     "passwordWeak": "密碼強度不足，請設定更強的密碼。",
     "codeRequired": "請輸入 6 位數驗證碼。",
@@ -510,7 +519,9 @@
     "PAYMENT_METHOD_IN_USE": "此付款方式正由進行中的充電工作階段使用",
     "DRIVER_NOT_FOUND": "找不到駕駛員",
     "FORBIDDEN": "禁止存取",
-    "VALIDATION_ERROR": "驗證錯誤"
+    "VALIDATION_ERROR": "驗證錯誤",
+    "WEAK_PASSWORD": "密碼不符合複雜度要求",
+    "ATTESTATION_FAILED": "裝置證明失敗。請更新應用程式後再試一次。"
   },
   "fleetBilling": {
     "billedTo": "記帳到 {{fleet}}",

@@ -1,15 +1,11 @@
 // Copyright (c) 2024-2026 EVtivity. All rights reserved.
 // SPDX-License-Identifier: BUSL-1.1
 
-import {
-  EMAIL_REGEX,
-  MIN_PASSWORD_LENGTH,
-  validateEmail,
-  validatePassword,
-} from '@/lib/validation';
+import { EMAIL_REGEX, validateEmail, validatePassword } from '@/lib/validation';
 
-const t = (key: string, options?: { min: number }): string =>
-  options != null ? `${key}:${String(options.min)}` : key;
+// Echoes the key and its options so the assertions see what was translated.
+const t = (key: string, options?: Record<string, unknown>): string =>
+  options != null ? `${key}${JSON.stringify(options)}` : key;
 
 describe('validateEmail', () => {
   it('requires a value', () => {
@@ -27,19 +23,34 @@ describe('validatePassword', () => {
   it('requires a value', () => {
     expect(validatePassword('', t)).toBe('auth.passwordRequired');
   });
-  it('rejects a too-short password with the minimum length', () => {
+
+  it('names every missing rule, the length with its minimum', () => {
     expect(validatePassword('short', t)).toBe(
-      `auth.passwordTooShort:${String(MIN_PASSWORD_LENGTH)}`,
+      'auth.passwordMissing{"rules":"auth.passwordRule.minLength{\\"min\\":12}, ' +
+        'auth.passwordRule.uppercase{\\"min\\":12}, auth.passwordRule.number{\\"min\\":12}"}',
     );
   });
-  it('accepts a long-enough password', () => {
-    expect(validatePassword('a'.repeat(MIN_PASSWORD_LENGTH), t)).toBeUndefined();
+
+  it('rejects a long password without an uppercase letter or a number', () => {
+    expect(validatePassword('a'.repeat(12), t)).toBe(
+      'auth.passwordMissing{"rules":"auth.passwordRule.uppercase{\\"min\\":12}, ' +
+        'auth.passwordRule.number{\\"min\\":12}"}',
+    );
+  });
+
+  it('rejects a password without a lowercase letter', () => {
+    expect(validatePassword('ABCDEFGHIJK1', t)).toBe(
+      'auth.passwordMissing{"rules":"auth.passwordRule.lowercase{\\"min\\":12}"}',
+    );
+  });
+
+  it('accepts a password that meets every rule', () => {
+    expect(validatePassword('Abcdefghijk1', t)).toBeUndefined();
   });
 });
 
 describe('constants', () => {
-  it('exposes the email pattern and minimum length', () => {
+  it('exposes the email pattern', () => {
     expect(EMAIL_REGEX.test('a@b.co')).toBe(true);
-    expect(MIN_PASSWORD_LENGTH).toBe(12);
   });
 });

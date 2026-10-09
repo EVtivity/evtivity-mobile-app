@@ -59,7 +59,16 @@
     "invalidResetLink": "This reset link is invalid or has expired.",
     "newPassword": "New password",
     "confirmPassword": "Confirm password",
-    "passwordTooShort": "Password must be at least {{min}} characters.",
+    "passwordNeeds": "Password needs:",
+    "passwordMissing": "Password needs {{rules}}.",
+    "passwordRule": {
+      "minLength": "at least {{min}} characters",
+      "uppercase": "an uppercase letter",
+      "lowercase": "a lowercase letter",
+      "number": "a number"
+    },
+    "passwordRuleMet": "met",
+    "passwordRuleNotMet": "not met",
     "passwordsMustMatch": "Passwords must match",
     "passwordWeak": "That password is too weak. Choose a stronger one.",
     "codeRequired": "Enter the 6-digit code.",
@@ -510,7 +519,9 @@
     "PAYMENT_METHOD_IN_USE": "Payment method is in use by an active charging session",
     "DRIVER_NOT_FOUND": "Driver not found",
     "FORBIDDEN": "Forbidden",
-    "VALIDATION_ERROR": "Validation error"
+    "VALIDATION_ERROR": "Validation error",
+    "WEAK_PASSWORD": "Password does not meet complexity requirements",
+    "ATTESTATION_FAILED": "Device attestation failed. Update the app and try again."
   },
   "fleetBilling": {
     "billedTo": "Billed to {{fleet}}",

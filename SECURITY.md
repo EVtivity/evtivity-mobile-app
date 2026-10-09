@@ -61,8 +61,9 @@ portal's access-log sanitization.
 The web portal uses reCAPTCHA v3, which is web-only. On mobile, device
 attestation replaces it: a native module produces an Apple App Attest assertion
 on iOS and a Google Play Integrity token on Android, which the app attaches as
-`X-Attest-*` headers on sensitive pre-auth requests (login, register, password
-reset) for the backend to verify server-side.
+`X-Attest-*` headers on sensitive pre-auth requests (login, register, forgot
+password, and setting the new password with the reset link) for the backend to
+verify server-side.
 
 ## Roadmap
 

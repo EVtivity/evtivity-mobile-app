@@ -59,7 +59,16 @@
     "invalidResetLink": "Dieser Link zum Zurücksetzen ist ungültig oder abgelaufen.",
     "newPassword": "Neues Passwort",
     "confirmPassword": "Passwort bestätigen",
-    "passwordTooShort": "Das Passwort muss mindestens {{min}} Zeichen lang sein.",
+    "passwordNeeds": "Das Passwort braucht:",
+    "passwordMissing": "Das Passwort braucht {{rules}}.",
+    "passwordRule": {
+      "minLength": "mindestens {{min}} Zeichen",
+      "uppercase": "einen Großbuchstaben",
+      "lowercase": "einen Kleinbuchstaben",
+      "number": "eine Ziffer"
+    },
+    "passwordRuleMet": "erfüllt",
+    "passwordRuleNotMet": "nicht erfüllt",
     "passwordsMustMatch": "Passwörter müssen übereinstimmen",
     "passwordWeak": "Dieses Passwort ist zu schwach. Wähle ein stärkeres.",
     "codeRequired": "Gib den 6-stelligen Code ein.",
@@ -510,7 +519,9 @@
     "PAYMENT_METHOD_IN_USE": "Zahlungsmethode wird von einem aktiven Ladevorgang verwendet",
     "DRIVER_NOT_FOUND": "Fahrer nicht gefunden",
     "FORBIDDEN": "Zugriff verweigert",
-    "VALIDATION_ERROR": "Validierungsfehler"
+    "VALIDATION_ERROR": "Validierungsfehler",
+    "WEAK_PASSWORD": "Passwort erfüllt die Komplexitätsanforderungen nicht",
+    "ATTESTATION_FAILED": "Die Geräteattestierung ist fehlgeschlagen. Aktualisiere die App und versuche es erneut."
   },
   "fleetBilling": {
     "billedTo": "Abgerechnet über {{fleet}}",

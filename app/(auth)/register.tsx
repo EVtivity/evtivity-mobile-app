@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { Screen, Field, Button, Text } from '@/components/ui';
 import { AuthHeader } from '@/components/AuthHeader';
 import { AuthFooter } from '@/components/AuthFooter';
+import { PasswordRules } from '@/components/PasswordRules';
 import { useAuth } from '@/lib/auth';
 import { isMfaRequired } from '@/lib/types';
 import { ApiError, getApiErrorFieldDetails, apiErrorMessage } from '@/lib/api';
@@ -54,7 +55,9 @@ export default function RegisterScreen(): React.JSX.Element {
       }
     } catch (err) {
       const details = err instanceof ApiError ? getApiErrorFieldDetails(err) : {};
-      if (Object.keys(details).length > 0) {
+      if (err instanceof ApiError && err.code === 'WEAK_PASSWORD') {
+        setFieldErrors({ password: apiErrorMessage(err, t) });
+      } else if (Object.keys(details).length > 0) {
         setFieldErrors(details);
       } else {
         // Non-field errors map through apiErrorMessage so a network failure shows
@@ -109,6 +112,7 @@ export default function RegisterScreen(): React.JSX.Element {
           autoComplete="new-password"
           error={fieldErrors.password}
         />
+        <PasswordRules password={password} />
         <Button
           testID="register-submit"
           title={t('auth.createAccount')}

@@ -8,7 +8,9 @@ import { useTranslation } from 'react-i18next';
 import { Screen, Field, Button, Text, useToast } from '@/components/ui';
 import { AuthHeader } from '@/components/AuthHeader';
 import { AuthFooter } from '@/components/AuthFooter';
-import { api, ApiError, getApiErrorFieldDetails, apiErrorMessage } from '@/lib/api';
+import { PasswordRules } from '@/components/PasswordRules';
+import { ApiError, getApiErrorFieldDetails, apiErrorMessage } from '@/lib/api';
+import { resetPassword } from '@/lib/auth';
 import { validatePassword } from '@/lib/validation';
 
 export default function ResetPasswordScreen(): React.JSX.Element {
@@ -28,14 +30,14 @@ export default function ResetPasswordScreen(): React.JSX.Element {
     if (passwordError != null) errs.password = passwordError;
     if (password !== confirm) errs.confirmPassword = t('auth.passwordsMustMatch');
     if (token == null || token.length === 0) errs.password = t('auth.invalidResetLink');
-    if (Object.keys(errs).length > 0) {
+    if (Object.keys(errs).length > 0 || token == null) {
       setFieldErrors(errs);
       return;
     }
     setFieldErrors({});
     setLoading(true);
     try {
-      await api.post('/v1/portal/auth/reset-password', { token, password }, { auth: false });
+      await resetPassword(token, password);
       toast.show(t('auth.passwordResetSuccess'), 'success');
       router.replace('/(auth)/login');
     } catch (err) {
@@ -68,6 +70,7 @@ export default function ResetPasswordScreen(): React.JSX.Element {
           autoComplete="new-password"
           error={fieldErrors.password}
         />
+        <PasswordRules password={password} />
         <Field
           labelClassName="text-base"
           label={t('auth.confirmPassword')}
