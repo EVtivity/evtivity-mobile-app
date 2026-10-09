@@ -76,7 +76,8 @@ function call(method, path, token, body) {
   var parsed = null;
   try {
     parsed = res.body ? json(res.body) : null;
-  } catch (e) {
+  } catch (_e) {
+    // A body that is not JSON (an HTML error page) reads as no body.
     parsed = null;
   }
   return { status: res.status, body: parsed };
