@@ -33,7 +33,6 @@ import { openEmail, openPhone } from '@/lib/safe-link';
 import { hsl } from '@/lib/theme';
 import { cn } from '@/lib/cn';
 import { isStartable, isCableDetected, isEvseSelectable } from '@/lib/status';
-import { useAuth } from '@/lib/auth';
 import { PricingCard } from '@/components/PricingCard';
 import {
   useStation,
@@ -79,7 +78,6 @@ export default function StationDetailScreen(): React.JSX.Element {
   const paymentMethods = usePaymentMethods();
   const start = useStartCharging();
   const activeSessions = useActiveSessions();
-  const currentDriverId = useAuth((s) => s.driver?.id ?? null);
   const driverBilling = useDriverBilling();
   // Charge on account: the fleet pays, so no card is shown or sent.
   const fleetName = billedToFleet(pricing.data, driverBilling);
@@ -117,7 +115,6 @@ export default function StationDetailScreen(): React.JSX.Element {
     const opts = {
       isOnline: data.isOnline,
       maintenanceActive: data.maintenance?.active === true,
-      currentDriverId,
     };
     const startableOn = (evse: StationEvse): SelectedConnector | null => {
       if (!isEvseSelectable(evse, opts)) return null;
@@ -132,7 +129,7 @@ export default function StationDetailScreen(): React.JSX.Element {
     const startable = data.evses.map(startableOn).filter((c): c is SelectedConnector => c != null);
     const [only] = startable;
     return startable.length === 1 && only != null ? only : null;
-  }, [evseId, station.data, currentDriverId]);
+  }, [evseId, station.data]);
   // A manual tap always wins over the derived default.
   const selected = manualSelected ?? autoSelected;
 
@@ -398,7 +395,6 @@ export default function StationDetailScreen(): React.JSX.Element {
               const selectable = isEvseSelectable(evse, {
                 isOnline: data.isOnline,
                 maintenanceActive,
-                currentDriverId,
               });
               const isSelected =
                 selected?.evseId === evse.evseId &&

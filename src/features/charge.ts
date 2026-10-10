@@ -50,7 +50,10 @@ export interface StationEvse {
   evseId: number;
   connectors: StationConnector[];
   reservationExpiresAt: string | null;
-  reservationDriverId: string | null;
+  // An active reservation holds this EVSE.
+  reserved: boolean;
+  // The signed-in driver holds that reservation.
+  reservedByMe: boolean;
 }
 
 export interface StationDetail {

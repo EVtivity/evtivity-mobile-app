@@ -27,7 +27,11 @@ export function isStartable(status: ConnectorStatus): boolean {
 
 export interface SelectableEvse {
   connectors: { status: ConnectorStatus }[];
-  reservationDriverId: string | null;
+  // An active reservation holds the EVSE.
+  reserved: boolean;
+  // The signed-in driver holds that reservation. The API never returns the
+  // holder's driver id.
+  reservedByMe: boolean;
 }
 
 // Whether the driver can start on an EVSE. Online, a startable connector, and not
@@ -37,15 +41,12 @@ export interface SelectableEvse {
 // portal's isEvseSelectable so both clients gate selection the same way.
 export function isEvseSelectable(
   evse: SelectableEvse,
-  opts: { isOnline: boolean; maintenanceActive: boolean; currentDriverId: string | null },
+  opts: { isOnline: boolean; maintenanceActive: boolean },
 ): boolean {
   if (opts.maintenanceActive || !opts.isOnline) return false;
   const connectorStatus = evse.connectors[0]?.status ?? 'unavailable';
-  const reservedByOther =
-    evse.reservationDriverId != null && evse.reservationDriverId !== opts.currentDriverId;
-  const reservedForMe =
-    evse.reservationDriverId != null && evse.reservationDriverId === opts.currentDriverId;
-  return !reservedByOther && (isStartable(connectorStatus) || reservedForMe);
+  const reservedByOther = evse.reserved && !evse.reservedByMe;
+  return !reservedByOther && (isStartable(connectorStatus) || evse.reservedByMe);
 }
 
 // Statuses that mean a cable is physically connected. The pre-start flow uses

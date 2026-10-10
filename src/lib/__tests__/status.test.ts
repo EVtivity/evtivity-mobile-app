@@ -35,12 +35,13 @@ describe('isStartable', () => {
 describe('isEvseSelectable', () => {
   const evse = (
     status: ConnectorStatus,
-    reservationDriverId: string | null = null,
+    reservation: 'none' | 'other' | 'me' = 'none',
   ): SelectableEvse => ({
     connectors: [{ status }],
-    reservationDriverId,
+    reserved: reservation !== 'none',
+    reservedByMe: reservation === 'me',
   });
-  const online = { isOnline: true, maintenanceActive: false, currentDriverId: 'drv_self' };
+  const online = { isOnline: true, maintenanceActive: false };
 
   it('selects an available, unreserved connector', () => {
     expect(isEvseSelectable(evse('available'), online)).toBe(true);
@@ -49,7 +50,9 @@ describe('isEvseSelectable', () => {
     expect(isEvseSelectable(evse('faulted'), online)).toBe(false);
   });
   it('rejects an EVSE without connectors', () => {
-    expect(isEvseSelectable({ connectors: [], reservationDriverId: null }, online)).toBe(false);
+    expect(isEvseSelectable({ connectors: [], reserved: false, reservedByMe: false }, online)).toBe(
+      false,
+    );
   });
   it('rejects when offline', () => {
     expect(isEvseSelectable(evse('available'), { ...online, isOnline: false })).toBe(false);
@@ -58,11 +61,12 @@ describe('isEvseSelectable', () => {
     expect(isEvseSelectable(evse('available'), { ...online, maintenanceActive: true })).toBe(false);
   });
   it('rejects a connector reserved by another driver even when startable', () => {
-    expect(isEvseSelectable(evse('preparing', 'drv_other'), online)).toBe(false);
+    expect(isEvseSelectable(evse('preparing', 'other'), online)).toBe(false);
+    expect(isEvseSelectable(evse('available', 'other'), online)).toBe(false);
   });
   it('allows a connector reserved for the current driver', () => {
-    expect(isEvseSelectable(evse('preparing', 'drv_self'), online)).toBe(true);
-    expect(isEvseSelectable(evse('reserved', 'drv_self'), online)).toBe(true);
+    expect(isEvseSelectable(evse('preparing', 'me'), online)).toBe(true);
+    expect(isEvseSelectable(evse('reserved', 'me'), online)).toBe(true);
   });
 });
 
