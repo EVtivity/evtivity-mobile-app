@@ -536,5 +536,11 @@
     },
     "sessionLine": "{{fleet}}: {{state}}",
     "paymentMethodsNote": "Your charging is billed to {{fleet}}. You need no payment method to charge."
+  },
+  "ai": {
+    "dataNotice": {
+      "title": "What the AI provider receives",
+      "body": "The AI provider never receives stored credentials, such as passwords, API keys, secrets and station passwords. Card numbers and IBANs are cut to their last 4 characters. Support drafts, automatic insights, background workers and driver support also mask email addresses and phone numbers, and hash or shorten driver token ids. The assistant sends driver contact details as stored, only to users allowed to read them. Text you type and text files you attach are checked for keys and card numbers. Images and PDFs you attach are sent as they are."
+    }
   }
 }

@@ -536,5 +536,11 @@
     },
     "sessionLine": "{{fleet}}: {{state}}",
     "paymentMethodsNote": "Su carga se factura a {{fleet}}. No necesita un método de pago para cargar."
+  },
+  "ai": {
+    "dataNotice": {
+      "title": "Qué recibe el proveedor de IA",
+      "body": "El proveedor de IA nunca recibe credenciales almacenadas, como contraseñas, claves de API, secretos y contraseñas de estaciones. Los números de tarjeta y los IBAN se acortan a sus últimos 4 caracteres. Los borradores de soporte, los análisis automáticos, los procesos en segundo plano y el soporte a conductores también enmascaran las direcciones de correo electrónico y los números de teléfono, y aplican un hash a los identificadores de token de los conductores o los acortan. El asistente envía los datos de contacto de los conductores tal como están almacenados, solo para los usuarios autorizados a leerlos. El texto que escribe y los archivos de texto que adjunta se revisan en busca de claves y números de tarjeta. Las imágenes y los PDF que adjunta se envían tal cual."
+    }
   }
 }
