@@ -406,7 +406,8 @@
       "in_progress": "處理中",
       "waiting_on_driver": "等待您的回覆",
       "resolved": "已解決",
-      "closed": "已結案"
+      "closed": "已結案",
+      "ai_assist": "自動回覆"
     },
     "categories": {
       "billing_dispute": "帳單爭議",
@@ -416,6 +417,51 @@
       "payment_problem": "付款問題",
       "reservation_issue": "預約問題",
       "general_inquiry": "一般諮詢"
+    },
+    "ai": {
+      "choiceTitle": "我們應如何處理您的請求？",
+      "choiceAi": "先讓 AI 分析我的問題",
+      "choiceTeam": "傳送給客服團隊",
+      "changeChoice": "變更",
+      "yourChoice": "您的選擇",
+      "notice": {
+        "v1": {
+          "title": "關於 AI 分析",
+          "automated": "AI 會自動提供初步回覆。這不是承諾，例如退款承諾。",
+          "provider": "您的請求和下列資料會傳送給外部 AI 供應商。",
+          "person": "您仍可聯絡真人客服：選擇「否」或傳送訊息，客服團隊就會接手。",
+          "choice": "每個請求都由您決定。如果傳送給客服團隊，不會向 AI 傳送任何內容。",
+          "privacy": "隱私權政策",
+          "readsTitle": "AI 讀取的內容",
+          "reads": {
+            "case": "本次請求：類別、主旨、描述和關聯的充電工作階段",
+            "sessions": "您過去 30 天內最近 10 次充電工作階段：時間、狀態、電量、費用和付款狀態",
+            "tokens": "您的充電卡和 Token，僅顯示後 4 碼",
+            "payments": "您過去 30 天的付款：類型、金額、狀態和失敗原因",
+            "stations": "您使用過的充電站：名稱、站點、目前可用性和最近一次故障時間",
+            "reservations": "您過去 30 天的預約：狀態、時間、取消原因和費用"
+          }
+        }
+      },
+      "analyzing": "正在分析您的問題",
+      "answerTitle": "自動回覆",
+      "feedbackQuestion": "這解決了您的問題嗎？",
+      "feedbackYes": "是",
+      "feedbackNo": "否",
+      "feedbackNoHint": "如果您選擇「否」，我們會轉給客服團隊。",
+      "feedbackFailed": "無法傳送您的回答，請重試。",
+      "resolved": "已解決。傳送訊息給我們即可重新開啟。",
+      "escalated": "已傳送給客服團隊。",
+      "sentToTeam": "我們已將您的請求傳送給客服團隊。",
+      "driverAction": {
+        "try_other_connector": "嘗試其他充電槍",
+        "check_payment_method": "檢查支付方式",
+        "retry_start": "重新開始充電",
+        "check_vehicle_settings": "檢查車輛的充電設定",
+        "contact_operator": "聯絡客服團隊",
+        "wait_and_retry": "等待幾分鐘後重試",
+        "check_token_active": "檢查卡片或 Token 是否有效"
+      }
     }
   },
   "notifications": {
@@ -521,7 +567,9 @@
     "FORBIDDEN": "禁止存取",
     "VALIDATION_ERROR": "驗證錯誤",
     "WEAK_PASSWORD": "密碼不符合複雜度要求",
-    "ATTESTATION_FAILED": "裝置證明失敗。請更新應用程式後再試一次。"
+    "ATTESTATION_FAILED": "裝置證明失敗。請更新應用程式後再試一次。",
+    "DRIVER_AI_NOTICE_OUTDATED": "AI 說明已更新，請閱讀後重新選擇",
+    "SUPPORT_CASE_AI_NOT_AWAITING_FEEDBACK": "此客服案件未在等待對自動回覆的意見回饋"
   },
   "fleetBilling": {
     "billedTo": "記帳到 {{fleet}}",

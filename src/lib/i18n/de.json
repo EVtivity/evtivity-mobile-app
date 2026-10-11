@@ -406,7 +406,8 @@
       "in_progress": "In Bearbeitung",
       "waiting_on_driver": "Wartet auf deine Antwort",
       "resolved": "Gelöst",
-      "closed": "Geschlossen"
+      "closed": "Geschlossen",
+      "ai_assist": "Automatische Antwort"
     },
     "categories": {
       "billing_dispute": "Abrechnungsstreit",
@@ -416,6 +417,51 @@
       "payment_problem": "Zahlungsproblem",
       "reservation_issue": "Reservierungsproblem",
       "general_inquiry": "Allgemeine Anfrage"
+    },
+    "ai": {
+      "choiceTitle": "Wie sollen wir deine Anfrage bearbeiten?",
+      "choiceAi": "Mein Anliegen zuerst von einer KI analysieren lassen",
+      "choiceTeam": "An das Support-Team senden",
+      "changeChoice": "Ändern",
+      "yourChoice": "Ihre Auswahl",
+      "notice": {
+        "v1": {
+          "title": "Zur KI-Analyse",
+          "automated": "Eine KI gibt eine automatische erste Antwort. Sie ist keine Zusage, zum Beispiel einer Erstattung.",
+          "provider": "Deine Anfrage und die unten genannten Daten werden an einen externen KI-Anbieter gesendet.",
+          "person": "Du erreichst weiterhin einen Menschen: Antworte mit Nein oder schreibe eine Nachricht, dann übernimmt das Support-Team.",
+          "choice": "Du entscheidest bei jeder Anfrage. Wenn du sie an das Support-Team sendest, geht nichts an die KI.",
+          "privacy": "Datenschutzerklärung",
+          "readsTitle": "Was die KI liest",
+          "reads": {
+            "case": "Diese Anfrage: Kategorie, Betreff, Beschreibung und verknüpfte Ladevorgänge",
+            "sessions": "Deine letzten 10 Ladevorgänge der vergangenen 30 Tage: Zeiten, Status, Energie, Kosten und Zahlungsstatus",
+            "tokens": "Deine Ladekarten und Tokens, gekürzt auf die letzten 4 Zeichen",
+            "payments": "Deine Zahlungen der vergangenen 30 Tage: Art, Betrag, Status und Fehlergrund",
+            "stations": "Die von dir genutzten Stationen: Name, Standort, aktuelle Verfügbarkeit und Zeit der letzten Störung",
+            "reservations": "Deine Reservierungen der vergangenen 30 Tage: Status, Zeiten, Stornierungsgrund und Gebühr"
+          }
+        }
+      },
+      "analyzing": "Dein Anliegen wird analysiert",
+      "answerTitle": "Automatische Antwort",
+      "feedbackQuestion": "Hat das dein Problem gelöst?",
+      "feedbackYes": "Ja",
+      "feedbackNo": "Nein",
+      "feedbackNoHint": "Wenn du Nein wählst, geben wir das an das Support-Team weiter.",
+      "feedbackFailed": "Deine Antwort konnte nicht gesendet werden. Versuche es erneut.",
+      "resolved": "Gelöst. Du kannst die Anfrage wieder öffnen, indem du uns schreibst.",
+      "escalated": "An das Support-Team gesendet.",
+      "sentToTeam": "Wir haben deine Anfrage an das Support-Team gesendet.",
+      "driverAction": {
+        "try_other_connector": "Anderen Anschluss versuchen",
+        "check_payment_method": "Zahlungsmethode prüfen",
+        "retry_start": "Laden erneut starten",
+        "check_vehicle_settings": "Ladeeinstellungen des Fahrzeugs prüfen",
+        "contact_operator": "Support-Team kontaktieren",
+        "wait_and_retry": "Einige Minuten warten und erneut versuchen",
+        "check_token_active": "Prüfen, ob Karte oder Token aktiv ist"
+      }
     }
   },
   "notifications": {
@@ -521,7 +567,9 @@
     "FORBIDDEN": "Zugriff verweigert",
     "VALIDATION_ERROR": "Validierungsfehler",
     "WEAK_PASSWORD": "Passwort erfüllt die Komplexitätsanforderungen nicht",
-    "ATTESTATION_FAILED": "Die Geräteattestierung ist fehlgeschlagen. Aktualisiere die App und versuche es erneut."
+    "ATTESTATION_FAILED": "Die Geräteattestierung ist fehlgeschlagen. Aktualisiere die App und versuche es erneut.",
+    "DRIVER_AI_NOTICE_OUTDATED": "Der KI-Hinweis wurde geändert. Lesen Sie ihn und wählen Sie erneut",
+    "SUPPORT_CASE_AI_NOT_AWAITING_FEEDBACK": "Dieser Supportfall wartet nicht auf eine Rückmeldung zu einer automatischen Antwort"
   },
   "fleetBilling": {
     "billedTo": "Abgerechnet über {{fleet}}",

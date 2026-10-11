@@ -72,6 +72,8 @@ export function supportCaseStatusVariant(status: string): BadgeVariant {
       return 'info';
     case 'in_progress':
       return 'info';
+    case 'ai_assist':
+      return 'info';
     case 'waiting_on_driver':
       return 'warning';
     case 'resolved':

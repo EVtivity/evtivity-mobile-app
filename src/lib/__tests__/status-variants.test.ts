@@ -68,6 +68,7 @@ describe('supportCaseStatusVariant', () => {
   it.each([
     ['open', 'info'],
     ['in_progress', 'info'],
+    ['ai_assist', 'info'],
     ['waiting_on_driver', 'warning'],
     ['resolved', 'success'],
     ['closed', 'secondary'],

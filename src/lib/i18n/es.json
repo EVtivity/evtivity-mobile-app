@@ -406,7 +406,8 @@
       "in_progress": "En proceso",
       "waiting_on_driver": "Esperando su respuesta",
       "resolved": "Resuelto",
-      "closed": "Cerrado"
+      "closed": "Cerrado",
+      "ai_assist": "Respuesta automática"
     },
     "categories": {
       "billing_dispute": "Disputa de facturación",
@@ -416,6 +417,51 @@
       "payment_problem": "Problema de pago",
       "reservation_issue": "Problema de reserva",
       "general_inquiry": "Consulta general"
+    },
+    "ai": {
+      "choiceTitle": "¿Cómo debemos gestionar su solicitud?",
+      "choiceAi": "Que una IA analice primero mi problema",
+      "choiceTeam": "Enviar al equipo de soporte",
+      "changeChoice": "Cambiar",
+      "yourChoice": "Su elección",
+      "notice": {
+        "v1": {
+          "title": "Sobre el análisis con IA",
+          "automated": "Una IA da una primera respuesta automática. No es un compromiso, por ejemplo de un reembolso.",
+          "provider": "Su solicitud y los datos indicados abajo se envían a un proveedor de IA externo.",
+          "person": "Puede seguir contactando a una persona: responda No o escriba un mensaje y el equipo de soporte se hará cargo.",
+          "choice": "Usted decide en cada solicitud. Si la envía al equipo de soporte, no se envía nada a la IA.",
+          "privacy": "Política de privacidad",
+          "readsTitle": "Lo que lee la IA",
+          "reads": {
+            "case": "Esta solicitud: categoría, asunto, descripción y sesiones vinculadas",
+            "sessions": "Sus últimas 10 sesiones de carga de los últimos 30 días: horas, estado, energía, costo y estado del pago",
+            "tokens": "Sus tarjetas de carga y tokens, acortados a los últimos 4 caracteres",
+            "payments": "Sus pagos de los últimos 30 días: tipo, importe, estado y motivo del fallo",
+            "stations": "Las estaciones que usó: nombre, sitio, disponibilidad actual y hora de la última falla",
+            "reservations": "Sus reservas de los últimos 30 días: estado, horas, motivo de cancelación y tarifa"
+          }
+        }
+      },
+      "analyzing": "Analizando su problema",
+      "answerTitle": "Respuesta automática",
+      "feedbackQuestion": "¿Esto resolvió su problema?",
+      "feedbackYes": "Sí",
+      "feedbackNo": "No",
+      "feedbackNoHint": "Si elige No, lo pasaremos al equipo de soporte.",
+      "feedbackFailed": "No se pudo enviar su respuesta. Vuelva a intentarlo.",
+      "resolved": "Resuelto. Puede reabrirlo escribiéndonos.",
+      "escalated": "Enviado al equipo de soporte.",
+      "sentToTeam": "Enviamos su solicitud al equipo de soporte.",
+      "driverAction": {
+        "try_other_connector": "Probar otro conector",
+        "check_payment_method": "Revisar el método de pago",
+        "retry_start": "Volver a iniciar la carga",
+        "check_vehicle_settings": "Revisar la configuración de carga del vehículo",
+        "contact_operator": "Contactar al equipo de soporte",
+        "wait_and_retry": "Esperar unos minutos y volver a intentar",
+        "check_token_active": "Comprobar que la tarjeta o el token esté activo"
+      }
     }
   },
   "notifications": {
@@ -521,7 +567,9 @@
     "FORBIDDEN": "Prohibido",
     "VALIDATION_ERROR": "Error de validación",
     "WEAK_PASSWORD": "La contraseña no cumple con los requisitos de complejidad",
-    "ATTESTATION_FAILED": "La verificación del dispositivo falló. Actualice la aplicación e inténtelo de nuevo."
+    "ATTESTATION_FAILED": "La verificación del dispositivo falló. Actualice la aplicación e inténtelo de nuevo.",
+    "DRIVER_AI_NOTICE_OUTDATED": "El aviso sobre la IA ha cambiado. Léalo y vuelva a elegir",
+    "SUPPORT_CASE_AI_NOT_AWAITING_FEEDBACK": "Este caso de soporte no está esperando su valoración de una respuesta automática"
   },
   "fleetBilling": {
     "billedTo": "Facturado a {{fleet}}",
