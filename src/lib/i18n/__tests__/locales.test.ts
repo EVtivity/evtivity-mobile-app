@@ -47,6 +47,8 @@ const AI_KEYS = [
   'support.ai.notice.v1.reads.payments',
   'support.ai.notice.v1.reads.stations',
   'support.ai.notice.v1.reads.reservations',
+  'support.ai.dataNotice.title',
+  'support.ai.dataNotice.body',
   'support.ai.analyzing',
   'support.ai.answerTitle',
   'support.ai.feedbackQuestion',
@@ -89,20 +91,35 @@ describe('TC-AI-DR-UI-07 driver AI support locales', () => {
     }
   });
 
+  it('has the driver data note in English, as verified against the AI data handling rule', () => {
+    expect(value(en, 'support.ai.dataNotice.title')).toBe('What the AI receives');
+    expect(value(en, 'support.ai.dataNotice.body')).toBe(
+      'The AI reads your request and your own charging sessions, payments, reservations and the stations you used. Stored credentials, such as passwords, are never sent. Card numbers and IBANs are cut to their last 4 characters. Email addresses and phone numbers are masked. Charging card and token ids are shortened to their last 4 characters.',
+    );
+  });
+
+  it('uses the short consent button labels', () => {
+    expect(value(en, 'support.ai.choiceAi')).toBe('Ask AI first');
+    expect(value(en, 'support.ai.choiceTeam')).toBe('Send to the team');
+  });
+
   it('calls a driver 驾驶员 in Simplified Chinese, never 司机', () => {
     const texts = flatten(value(zh, 'support.ai'));
     expect(texts.filter(([, text]) => text.includes('司机'))).toEqual([]);
     expect(value(zh, 'ai.dataNotice.body')).toContain('驾驶员');
+    expect(value(zh, 'support.ai.dataNotice.body')).toContain('驾驶员');
     expect(flatten(zh).filter(([, text]) => text.includes('司机'))).toEqual([]);
   });
 
   it('calls a driver 駕駛員 in Traditional Chinese, never 司機', () => {
     expect(flatten(zhTW).filter(([, text]) => text.includes('司機'))).toEqual([]);
     expect(value(zhTW, 'ai.dataNotice.body')).toContain('駕駛員');
+    expect(value(zhTW, 'support.ai.dataNotice.body')).toContain('駕駛員');
   });
 
   it('calls a driver 운전자 in Korean, never 드라이버', () => {
     expect(flatten(ko).filter(([, text]) => text.includes('드라이버'))).toEqual([]);
     expect(value(ko, 'ai.dataNotice.body')).toContain('운전자');
+    expect(value(ko, 'support.ai.dataNotice.body')).toContain('운전자');
   });
 });

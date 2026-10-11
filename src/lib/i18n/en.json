@@ -420,8 +420,8 @@
     },
     "ai": {
       "choiceTitle": "How should we handle your request?",
-      "choiceAi": "Let an AI analyze my issue first",
-      "choiceTeam": "Send to the support team",
+      "choiceAi": "Ask AI first",
+      "choiceTeam": "Send to the team",
       "changeChoice": "Change",
       "yourChoice": "Your choice",
       "notice": {
@@ -442,6 +442,10 @@
             "reservations": "Your reservations of the past 30 days: status, times, cancel reason and fee"
           }
         }
+      },
+      "dataNotice": {
+        "title": "What the AI receives",
+        "body": "The AI reads your request and your own charging sessions, payments, reservations and the stations you used. Stored credentials, such as passwords, are never sent. Card numbers and IBANs are cut to their last 4 characters. Email addresses and phone numbers are masked. Charging card and token ids are shortened to their last 4 characters."
       },
       "analyzing": "Analyzing your issue",
       "answerTitle": "Automatic answer",

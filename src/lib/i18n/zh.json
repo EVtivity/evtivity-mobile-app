@@ -420,8 +420,8 @@
     },
     "ai": {
       "choiceTitle": "我们应如何处理您的请求？",
-      "choiceAi": "先让 AI 分析我的问题",
-      "choiceTeam": "发送给支持团队",
+      "choiceAi": "先问 AI",
+      "choiceTeam": "发送给团队",
       "changeChoice": "更改",
       "yourChoice": "您的选择",
       "notice": {
@@ -442,6 +442,10 @@
             "reservations": "您过去 30 天的预约：状态、时间、取消原因和费用"
           }
         }
+      },
+      "dataNotice": {
+        "title": "AI 会收到什么",
+        "body": "AI 会读取您的请求，以及您作为驾驶员本人的充电会话、支付、预约和您使用过的充电站。密码等已存储的凭据绝不会发送。卡号和 IBAN 仅保留后 4 位。电子邮件地址和电话号码会被遮盖。充电卡和 Token 的 ID 仅保留后 4 位。"
       },
       "analyzing": "正在分析您的问题",
       "answerTitle": "自动回答",

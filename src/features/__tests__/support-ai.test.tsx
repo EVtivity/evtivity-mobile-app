@@ -147,6 +147,7 @@ const AI_NONE: SupportCaseAi = {
   feedbackAt: null,
   resolutionSource: null,
   driverActions: [],
+  needsOperator: null,
 };
 
 function detail(ai: Partial<SupportCaseAi>, extra: Partial<SupportCaseDetail> = {}) {
@@ -236,7 +237,9 @@ describe('TC-AI-DR-UI-06 new case consent step', () => {
     expect(await screen.findByTestId('support-ai-consent')).toBeTruthy();
     expect(screen.getByText('How should we handle your request?')).toBeTruthy();
     expect(screen.getByText('About the AI analysis')).toBeTruthy();
-    expect(screen.getByText('What the AI provider receives')).toBeTruthy();
+    // The driver data note, not the operator one.
+    expect(screen.getByText('What the AI receives')).toBeTruthy();
+    expect(screen.queryByText('What the AI provider receives')).toBeNull();
     expect(screen.getByTestId('support-ai-choice-ai')).toBeTruthy();
     expect(screen.getByTestId('support-ai-choice-team')).toBeTruthy();
     // No form, and so no way to send, until the driver chooses.
@@ -272,7 +275,7 @@ describe('TC-AI-DR-UI-06 new case consent step', () => {
     mockPost.mockResolvedValue({ id: 'c1' });
     const screen = await renderWithQuery(<NewSupportCaseScreen />);
     await fireEvent.press(await screen.findByTestId('support-ai-choice-ai'));
-    expect(screen.getByText('Let an AI analyze my issue first')).toBeTruthy();
+    expect(screen.getByText('Ask AI first')).toBeTruthy();
     await fireEvent.press(screen.getByTestId('support-ai-change'));
     expect(screen.getByTestId('support-ai-consent')).toBeTruthy();
     await fireEvent.press(screen.getByTestId('support-ai-choice-team'));
@@ -371,9 +374,31 @@ describe('TC-AI-DR-UI-06 case screen AI step', () => {
     expect(screen.getByText('Check the payment method')).toBeTruthy();
     expect(screen.queryByTestId('support-ai-action-unknown_code')).toBeNull();
     expect(screen.getByText('Did this solve your issue?')).toBeTruthy();
+  });
+
+  it('shows the No hint when the answer says the support team is needed', async () => {
+    caseDetail = detail(
+      { state: 'awaiting_feedback', needsOperator: true },
+      { messages: [...detail({}).messages, ANSWER] },
+    );
+    const screen = await renderWithQuery(<SupportCaseDetailScreen />);
+    await screen.findByTestId('support-ai-feedback');
     expect(
       screen.getByText('We will pass this to the support team if you choose No.'),
     ).toBeTruthy();
+  });
+
+  it.each([false, null])('hides the No hint when needsOperator is %s', async (needsOperator) => {
+    caseDetail = detail(
+      { state: 'awaiting_feedback', needsOperator },
+      { messages: [...detail({}).messages, ANSWER] },
+    );
+    const screen = await renderWithQuery(<SupportCaseDetailScreen />);
+    await screen.findByTestId('support-ai-feedback');
+    expect(screen.queryByTestId('support-ai-feedback-hint')).toBeNull();
+    expect(
+      screen.queryByText('We will pass this to the support team if you choose No.'),
+    ).toBeNull();
   });
 
   it.each([

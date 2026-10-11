@@ -88,7 +88,11 @@ export function AiCaseStatus({ caseId, ai }: AiCaseStatusProps): React.JSX.Eleme
               className="flex-1"
             />
           </View>
-          <Text className="text-xs text-muted-foreground">{t('support.ai.feedbackNoHint')}</Text>
+          {ai.needsOperator === true ? (
+            <Text testID="support-ai-feedback-hint" className="text-xs text-muted-foreground">
+              {t('support.ai.feedbackNoHint')}
+            </Text>
+          ) : null}
           {feedback.isError ? (
             <Text accessibilityLiveRegion="polite" className="text-sm text-destructive">
               {t('support.ai.feedbackFailed')}

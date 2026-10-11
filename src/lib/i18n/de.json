@@ -420,8 +420,8 @@
     },
     "ai": {
       "choiceTitle": "Wie sollen wir deine Anfrage bearbeiten?",
-      "choiceAi": "Mein Anliegen zuerst von einer KI analysieren lassen",
-      "choiceTeam": "An das Support-Team senden",
+      "choiceAi": "Zuerst die KI fragen",
+      "choiceTeam": "An das Team senden",
       "changeChoice": "Ändern",
       "yourChoice": "Ihre Auswahl",
       "notice": {
@@ -442,6 +442,10 @@
             "reservations": "Deine Reservierungen der vergangenen 30 Tage: Status, Zeiten, Stornierungsgrund und Gebühr"
           }
         }
+      },
+      "dataNotice": {
+        "title": "Was die KI erhält",
+        "body": "Die KI liest deine Anfrage sowie deine eigenen Ladevorgänge, Zahlungen, Reservierungen und die Stationen, die du genutzt hast. Gespeicherte Zugangsdaten wie Passwörter werden nie gesendet. Kartennummern und IBANs werden auf die letzten 4 Zeichen gekürzt. E-Mail-Adressen und Telefonnummern werden maskiert. IDs von Ladekarten und Tokens werden auf die letzten 4 Zeichen gekürzt."
       },
       "analyzing": "Dein Anliegen wird analysiert",
       "answerTitle": "Automatische Antwort",

@@ -420,8 +420,8 @@
     },
     "ai": {
       "choiceTitle": "¿Cómo debemos gestionar su solicitud?",
-      "choiceAi": "Que una IA analice primero mi problema",
-      "choiceTeam": "Enviar al equipo de soporte",
+      "choiceAi": "Preguntar primero a la IA",
+      "choiceTeam": "Enviar al equipo",
       "changeChoice": "Cambiar",
       "yourChoice": "Su elección",
       "notice": {
@@ -442,6 +442,10 @@
             "reservations": "Sus reservas de los últimos 30 días: estado, horas, motivo de cancelación y tarifa"
           }
         }
+      },
+      "dataNotice": {
+        "title": "Qué recibe la IA",
+        "body": "La IA lee su solicitud y sus propias sesiones de carga, pagos, reservas y las estaciones que usó. Las credenciales almacenadas, como las contraseñas, nunca se envían. Los números de tarjeta y los IBAN se acortan a los últimos 4 caracteres. Las direcciones de correo electrónico y los números de teléfono se enmascaran. Los ID de tarjetas de carga y tokens se acortan a los últimos 4 caracteres."
       },
       "analyzing": "Analizando su problema",
       "answerTitle": "Respuesta automática",

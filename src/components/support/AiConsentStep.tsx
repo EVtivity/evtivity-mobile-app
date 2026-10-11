@@ -86,9 +86,9 @@ export function AiConsentStep({
 
         <View className="gap-1">
           <Text weight="semibold" className="text-sm">
-            {t('ai.dataNotice.title')}
+            {t('support.ai.dataNotice.title')}
           </Text>
-          <Text className="text-sm text-muted-foreground">{t('ai.dataNotice.body')}</Text>
+          <Text className="text-sm text-muted-foreground">{t('support.ai.dataNotice.body')}</Text>
         </View>
 
         {privacyUrl !== '' ? (

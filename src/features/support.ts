@@ -57,6 +57,9 @@ export interface SupportCaseAi {
   feedbackAt: string | null;
   resolutionSource: 'operator' | 'ai' | null;
   driverActions: string[];
+  // True when the automatic answer says the support team is needed; null
+  // before an answer (and absent on older servers).
+  needsOperator?: boolean | null;
 }
 
 export interface SupportCaseDetail extends SupportCase {
