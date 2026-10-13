@@ -93,6 +93,13 @@ async function baseHeaders(includeAuth: boolean): Promise<Record<string, string>
   return headers;
 }
 
+// Headers of an authenticated request made outside the JSON client (a file
+// download), after the same proactive refresh of a stale access token.
+export async function authorizedHeaders(): Promise<Record<string, string>> {
+  if (hasSession() && isAccessTokenStale()) await refreshSession();
+  return baseHeaders(true);
+}
+
 async function request<T>(path: string, opts: RequestOptions = {}): Promise<T> {
   const method = opts.method ?? 'GET';
   const needsAuth = opts.auth !== false;

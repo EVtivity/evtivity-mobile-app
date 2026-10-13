@@ -11,6 +11,7 @@ import {
   formatPowerKw,
   formatDateTime,
   formatDate,
+  formatDay,
   formatRelative,
   formatDuration,
   formatMiles,
@@ -121,6 +122,18 @@ describe('formatDate', () => {
   });
   it('returns n/a for an unparseable value', () => {
     expect(formatDate('nope')).toBe('n/a');
+  });
+});
+
+describe('formatDay', () => {
+  it('shows a calendar date as written, in any time zone', () => {
+    expect(formatDay('2026-09-01')).toBe('Sep 1, 2026');
+    expect(formatDay('2026-09-30')).toBe('Sep 30, 2026');
+  });
+  it('returns n/a for null and for a value that is not a calendar date', () => {
+    expect(formatDay(null)).toBe('n/a');
+    expect(formatDay('2026-09-01T00:00:00Z')).toBe('n/a');
+    expect(formatDay('nope')).toBe('n/a');
   });
 });
 

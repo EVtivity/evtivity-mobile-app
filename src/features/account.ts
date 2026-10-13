@@ -1,23 +1,90 @@
 // Copyright (c) 2024-2026 EVtivity. All rights reserved.
 // SPDX-License-Identifier: BUSL-1.1
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { useAuth } from '@/lib/auth';
 import type { PriceDisplay } from '@/lib/price-display';
 import type { Driver, Vehicle, RfidToken } from '@/lib/types';
 import type { DriverBilling } from '@/lib/fleet-billing';
+import type { PortalInvoice, PortalInvoiceDetail } from '@/lib/invoices';
+import type { DriverBillingAddress } from '@/lib/billing-address';
 
-// How the signed-in driver pays (GET /v1/portal/auth/me billing). A fleet
+/** The fields of GET /v1/portal/auth/me this app reads beyond the login driver. */
+interface DriverMe {
+  billing?: DriverBilling;
+  billingAddress?: DriverBillingAddress;
+}
+
+// One request serves the driver billing and the billing address. A fleet
 // change reaches the driver by push, so a minute of staleness is fine.
-export function useDriverBilling(enabled = true): DriverBilling | undefined {
-  const { data } = useQuery({
-    queryKey: ['driver-billing'],
-    queryFn: () => api.get<{ billing?: DriverBilling }>('/v1/portal/auth/me'),
+const DRIVER_ME_KEY = ['driver-billing'] as const;
+
+function useDriverMe(enabled = true) {
+  return useQuery({
+    queryKey: DRIVER_ME_KEY,
+    queryFn: () => api.get<DriverMe>('/v1/portal/auth/me'),
     enabled,
     staleTime: 60_000,
   });
-  return data?.billing;
+}
+
+// How the signed-in driver pays (GET /v1/portal/auth/me billing).
+export function useDriverBilling(enabled = true): DriverBilling | undefined {
+  return useDriverMe(enabled).data?.billing;
+}
+
+// The driver's billing address (GET /v1/portal/auth/me billingAddress) and
+// whether the driver's fleet invoices them (the address then prints on it).
+export function useDriverBillingAddress() {
+  const query = useDriverMe();
+  return {
+    address: query.data?.billingAddress,
+    billing: query.data?.billing,
+    isLoading: query.isLoading,
+    refetch: query.refetch,
+  };
+}
+
+// A null field clears it.
+export function useUpdateBillingAddress() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: DriverBillingAddress) =>
+      api.patch<unknown>('/v1/portal/driver/billing-address', input),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: DRIVER_ME_KEY });
+    },
+  });
+}
+
+export const INVOICE_PAGE_SIZE = 20;
+
+// The driver's invoices and credit notes, newest first, a page at a time.
+export function useInvoices() {
+  return useInfiniteQuery({
+    queryKey: ['invoices'],
+    queryFn: ({ pageParam }) =>
+      api.get<{ data: PortalInvoice[]; total: number }>(
+        `/v1/portal/invoices?page=${String(pageParam)}&limit=${String(INVOICE_PAGE_SIZE)}`,
+      ),
+    initialPageParam: 1,
+    getNextPageParam: (last, pages) => {
+      const loaded = pages.reduce((n, p) => n + p.data.length, 0);
+      return loaded < last.total && last.data.length > 0 ? pages.length + 1 : undefined;
+    },
+    staleTime: 60_000,
+  });
+}
+
+export function useInvoice(id: string | undefined) {
+  return useQuery({
+    queryKey: ['invoice', id],
+    queryFn: () =>
+      api.get<PortalInvoiceDetail>(`/v1/portal/invoices/${encodeURIComponent(id ?? '')}`),
+    enabled: id != null && id !== '',
+    staleTime: 60_000,
+  });
 }
 
 export interface NotificationPrefs {

@@ -11,6 +11,8 @@ import {
   BellRing,
   LayoutGrid,
   CreditCard,
+  FileText,
+  MapPin,
   Nfc,
   Car,
   Star,
@@ -54,6 +56,13 @@ export default function AccountScreen(): React.JSX.Element {
           onPress={() => router.push('/account/personal')}
         />
         <ListRow
+          testID="account-row-billing-address"
+          className="border-t border-muted-foreground/30"
+          title={t('account.billingAddress')}
+          left={<MapPin size={20} color={hsl('mutedForeground')} />}
+          onPress={() => router.push('/account/billing-address')}
+        />
+        <ListRow
           testID="account-row-security"
           className="border-t border-muted-foreground/30"
           title={t('account.security')}
@@ -82,6 +91,13 @@ export default function AccountScreen(): React.JSX.Element {
           title={t('account.paymentMethods')}
           left={<CreditCard size={20} color={hsl('mutedForeground')} />}
           onPress={() => router.push('/account/payment-methods')}
+        />
+        <ListRow
+          testID="account-row-invoices"
+          className="border-t border-muted-foreground/30"
+          title={t('account.invoices')}
+          left={<FileText size={20} color={hsl('mutedForeground')} />}
+          onPress={() => router.push('/account/invoices')}
         />
         <ListRow
           testID="account-row-rfid"

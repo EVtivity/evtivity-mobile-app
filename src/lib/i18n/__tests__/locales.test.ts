@@ -123,3 +123,58 @@ describe('TC-AI-DR-UI-07 driver AI support locales', () => {
     expect(value(ko, 'support.ai.dataNotice.body')).toContain('운전자');
   });
 });
+
+// The invoices, billing address and member billing keys (member invoices).
+const BILLING_SECTIONS = ['invoices', 'billingAddress', 'fleetBilling'];
+const BILLING_KEYS = [
+  'account.invoices',
+  'account.billingAddress',
+  ...BILLING_SECTIONS.flatMap((section) =>
+    flatten(value(en, section)).map(([k]) => `${section}.${k}`),
+  ),
+];
+
+describe('member invoice locales', () => {
+  it('has the member invoice keys in English', () => {
+    expect(BILLING_KEYS).toEqual(
+      expect.arrayContaining([
+        'invoices.title',
+        'invoices.downloadPdf',
+        'invoices.loadMore',
+        'billingAddress.nudge',
+        'fleetBilling.billedToYouVia',
+        'fleetBilling.stateMember.invoiced',
+        'fleetBilling.memberSessionLine',
+      ]),
+    );
+  });
+
+  it.each(Object.keys(LOCALES))('has every member invoice key filled in %s', (lang) => {
+    const missing = BILLING_KEYS.filter((key) => {
+      const text = value(LOCALES[lang], key);
+      return typeof text !== 'string' || text.trim() === '';
+    });
+    expect(missing).toEqual([]);
+  });
+
+  it('has no member invoice key in another language that English lacks', () => {
+    const enKeys = new Set(BILLING_KEYS);
+    for (const [lang, locale] of Object.entries(LOCALES)) {
+      const extra = BILLING_SECTIONS.flatMap((section) =>
+        flatten(value(locale, section)).map(([k]) => `${section}.${k}`),
+      ).filter((k) => !enKeys.has(k));
+      expect([lang, extra]).toEqual([lang, []]);
+    }
+  });
+
+  it('keeps the placeholders of every member invoice text', () => {
+    const placeholders = (text: unknown): string[] =>
+      typeof text === 'string' ? (text.match(/\{\{\w+\}\}/g) ?? []).sort() : [];
+    for (const [lang, locale] of Object.entries(LOCALES)) {
+      const wrong = BILLING_KEYS.filter(
+        (key) => placeholders(value(locale, key)).join() !== placeholders(value(en, key)).join(),
+      );
+      expect([lang, wrong]).toEqual([lang, []]);
+    }
+  });
+});

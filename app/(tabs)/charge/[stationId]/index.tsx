@@ -48,7 +48,7 @@ import { usePaymentMethods, type PaymentCard } from '@/features/payments';
 import { useActiveSessions } from '@/features/sessions';
 import { usePriceDisplay } from '@/features/price-display';
 import { useDriverBilling } from '@/features/account';
-import { billedToFleet } from '@/lib/fleet-billing';
+import { accountBillingAt } from '@/lib/fleet-billing';
 import { connectorTileTestId } from '@/lib/test-ids';
 import { ApiError, apiErrorMessage } from '@/lib/api';
 
@@ -80,7 +80,9 @@ export default function StationDetailScreen(): React.JSX.Element {
   const activeSessions = useActiveSessions();
   const driverBilling = useDriverBilling();
   // Charge on account: the fleet pays, so no card is shown or sent.
-  const fleetName = billedToFleet(pricing.data, driverBilling);
+  const accountBilling = accountBillingAt(pricing.data, driverBilling);
+  const fleetName = accountBilling?.fleetName ?? null;
+  const memberBilled = accountBilling?.invoicedTo === 'member';
 
   // The driver's explicit connector tap; null until they choose one.
   const [manualSelected, setSelected] = React.useState<SelectedConnector | null>(null);
@@ -343,9 +345,13 @@ export default function StationDetailScreen(): React.JSX.Element {
           <Building size={20} color={hsl('primary')} />
           <View className="flex-1 gap-0.5">
             <Text weight="semibold" className="text-sm text-foreground">
-              {t('fleetBilling.billedTo', { fleet: fleetName })}
+              {t(memberBilled ? 'fleetBilling.billedToYouVia' : 'fleetBilling.billedTo', {
+                fleet: fleetName,
+              })}
             </Text>
-            <Text className="text-xs text-muted-foreground">{t('fleetBilling.startHint')}</Text>
+            <Text className="text-xs text-muted-foreground">
+              {t(memberBilled ? 'fleetBilling.memberStartHint' : 'fleetBilling.startHint')}
+            </Text>
           </View>
         </Card>
       ) : null}

@@ -68,6 +68,27 @@ describe('SessionRow', () => {
     );
   });
 
+  it('says the fleet invoices the driver when it bills its members', async () => {
+    const { getByTestId } = await render(
+      <SessionRow
+        session={{
+          ...SESSION,
+          accountBilling: {
+            state: 'invoiced',
+            fleetName: 'Acme',
+            invoicedTo: 'member',
+            invoiceId: 'inv_1',
+            invoiceNumber: 'INV-1',
+          },
+        }}
+      />,
+    );
+    expect(getByTestId('session-row-fleet-ses_1')).toHaveTextContent(
+      'Billed to you via Acme: Invoiced to you',
+      { exact: true },
+    );
+  });
+
   it('shows no fleet line for a card session', async () => {
     const { queryByTestId } = await render(<SessionRow session={SESSION} />);
     expect(queryByTestId('session-row-fleet-ses_1')).toBeNull();

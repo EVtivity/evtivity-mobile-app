@@ -351,7 +351,9 @@
     "priceDisplayDefault": "Operator default ({{value}})",
     "priceDisplayGross": "Including tax (gross)",
     "priceDisplayNet": "Excluding tax (net)",
-    "priceDisplayHelper": "Including tax shows prices with tax added. Excluding tax shows prices before tax. You are charged the same amount either way, and until you choose, the operator default applies."
+    "priceDisplayHelper": "Including tax shows prices with tax added. Excluding tax shows prices before tax. You are charged the same amount either way, and until you choose, the operator default applies.",
+    "invoices": "Invoices",
+    "billingAddress": "Billing Address"
   },
   "payments": {
     "title": "Payment",
@@ -587,12 +589,66 @@
       "paid": "Paid by the fleet"
     },
     "sessionLine": "{{fleet}}: {{state}}",
-    "paymentMethodsNote": "Your charging is billed to {{fleet}}. You need no payment method to charge."
+    "paymentMethodsNote": "Your charging is billed to {{fleet}}. You need no payment method to charge.",
+    "billedToYouVia": "Billed to you via {{fleet}}",
+    "memberStartHint": "This session goes on your monthly invoice. You need no payment method.",
+    "stateMember": {
+      "unbilled": "Not invoiced yet",
+      "invoiced": "Invoiced to you",
+      "paid": "Paid"
+    },
+    "memberSessionLine": "Billed to you via {{fleet}}: {{state}}",
+    "invoice": "Invoice",
+    "memberPaymentMethodsNote": "Your charging is invoiced to you monthly via {{fleet}}. You need no payment method to charge."
   },
   "ai": {
     "dataNotice": {
       "title": "What the AI provider receives",
       "body": "The AI provider never receives stored credentials, such as passwords, API keys, secrets and station passwords. Card numbers and IBANs are cut to their last 4 characters. Support drafts, automatic insights, background workers and driver support also mask email addresses and phone numbers, and hash or shorten driver token ids. The assistant sends driver contact details as stored, only to users allowed to read them. Text you type and text files you attach are checked for keys and card numbers. Images and PDFs you attach are sent as they are."
     }
+  },
+  "invoices": {
+    "title": "Invoices",
+    "empty": "No invoices yet.",
+    "loadFailed": "Could not load your invoices. Please try again.",
+    "notFound": "Invoice not found.",
+    "invoice": "Invoice",
+    "creditNote": "Credit Note",
+    "viaFleet": "Via {{fleet}}",
+    "period": "Period",
+    "issued": "Issued",
+    "due": "Due",
+    "paidOn": "Paid",
+    "billTo": "Bill To",
+    "items": "Items",
+    "net": "Net",
+    "total": "Total",
+    "credits": "Credits invoice {{number}}",
+    "creditedBy": "Credited by credit note {{number}}",
+    "reason": "Reason",
+    "downloadPdf": "Download PDF",
+    "downloadFailed": "Could not download the PDF. Please try again.",
+    "status": {
+      "draft": "Draft",
+      "issued": "Issued",
+      "paid": "Paid",
+      "void": "Void",
+      "credited": "Credited"
+    },
+    "loadMore": "Load More"
+  },
+  "billingAddress": {
+    "title": "Billing Address",
+    "description": "Printed on the invoices your fleet addresses to you.",
+    "nudge": "Your fleet invoices your sessions to you. Add your billing address so it appears on your invoices.",
+    "name": "Name on Invoice",
+    "nameHelp": "Leave empty to use your first and last name.",
+    "street": "Street",
+    "city": "City",
+    "state": "State or Region",
+    "zip": "Postal Code",
+    "country": "Country",
+    "updated": "Billing address saved.",
+    "updateFailed": "Failed to save the billing address."
   }
 }

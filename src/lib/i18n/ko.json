@@ -351,7 +351,9 @@
     "priceDisplayDefault": "운영자 기본값 ({{value}})",
     "priceDisplayGross": "세금 포함 (총액)",
     "priceDisplayNet": "세금 별도 (순액)",
-    "priceDisplayHelper": "세금 포함은 세금이 더해진 가격을 표시합니다. 세금 별도는 세전 가격을 표시합니다. 청구 금액은 어느 쪽이든 같으며, 직접 선택하기 전에는 운영자 기본값이 적용됩니다."
+    "priceDisplayHelper": "세금 포함은 세금이 더해진 가격을 표시합니다. 세금 별도는 세전 가격을 표시합니다. 청구 금액은 어느 쪽이든 같으며, 직접 선택하기 전에는 운영자 기본값이 적용됩니다.",
+    "invoices": "청구서",
+    "billingAddress": "청구지 주소"
   },
   "payments": {
     "title": "결제",
@@ -587,12 +589,66 @@
       "paid": "차량대가 결제함"
     },
     "sessionLine": "{{fleet}}: {{state}}",
-    "paymentMethodsNote": "충전 요금은 {{fleet}}(으)로 청구됩니다. 충전에 결제 수단이 필요하지 않습니다."
+    "paymentMethodsNote": "충전 요금은 {{fleet}}(으)로 청구됩니다. 충전에 결제 수단이 필요하지 않습니다.",
+    "billedToYouVia": "{{fleet}}을(를) 통해 본인에게 청구",
+    "memberStartHint": "이 충전 세션은 월별 청구서에 포함됩니다. 결제 수단이 필요하지 않습니다.",
+    "stateMember": {
+      "unbilled": "아직 청구되지 않음",
+      "invoiced": "본인에게 청구됨",
+      "paid": "결제됨"
+    },
+    "memberSessionLine": "{{fleet}}을(를) 통해 본인에게 청구: {{state}}",
+    "invoice": "청구서",
+    "memberPaymentMethodsNote": "충전 요금은 {{fleet}}을(를) 통해 매월 본인에게 청구됩니다. 충전에 결제 수단이 필요하지 않습니다."
   },
   "ai": {
     "dataNotice": {
       "title": "AI 공급자가 받는 정보",
       "body": "AI 공급자는 비밀번호, API 키, 비밀 값, 충전소 비밀번호 같은 저장된 자격 증명을 절대 받지 않습니다. 카드 번호와 IBAN은 마지막 4자로 줄여 보냅니다. 지원 초안, 자동 인사이트, 백그라운드 작업자, 운전자 지원은 이메일 주소와 전화번호도 마스킹하고, 운전자 토큰 ID는 해시하거나 줄입니다. 어시스턴트는 운전자 연락처를 열람할 권한이 있는 사용자에게만, 저장된 그대로 보냅니다. 입력한 텍스트와 첨부한 텍스트 파일은 키와 카드 번호가 있는지 검사합니다. 첨부한 이미지와 PDF는 그대로 전송됩니다."
     }
+  },
+  "invoices": {
+    "title": "청구서",
+    "empty": "아직 청구서가 없습니다.",
+    "loadFailed": "청구서를 불러오지 못했습니다. 다시 시도해 주세요.",
+    "notFound": "청구서를 찾을 수 없습니다.",
+    "invoice": "청구서",
+    "creditNote": "크레딧 노트",
+    "viaFleet": "{{fleet}} 경유",
+    "period": "기간",
+    "issued": "발행일",
+    "due": "납부 기한",
+    "paidOn": "결제일",
+    "billTo": "청구 대상",
+    "items": "항목",
+    "net": "순액",
+    "total": "합계",
+    "credits": "청구서 {{number}}에 대한 크레딧",
+    "creditedBy": "크레딧 노트 {{number}}(으)로 크레딧 처리됨",
+    "reason": "사유",
+    "downloadPdf": "PDF 다운로드",
+    "downloadFailed": "PDF를 다운로드하지 못했습니다. 다시 시도해 주세요.",
+    "status": {
+      "draft": "초안",
+      "issued": "발행됨",
+      "paid": "결제됨",
+      "void": "무효",
+      "credited": "크레딧 처리됨"
+    },
+    "loadMore": "더 보기"
+  },
+  "billingAddress": {
+    "title": "청구지 주소",
+    "description": "차량대가 발행하는 청구서에 표시됩니다.",
+    "nudge": "차량대가 충전 세션을 직접 청구합니다. 청구서에 표시되도록 청구지 주소를 입력하십시오.",
+    "name": "청구서 이름",
+    "nameHelp": "비워 두면 이름과 성을 사용합니다.",
+    "street": "도로명 주소",
+    "city": "도시",
+    "state": "주 또는 지역",
+    "zip": "우편번호",
+    "country": "국가",
+    "updated": "청구지 주소가 저장되었습니다.",
+    "updateFailed": "청구지 주소를 저장하지 못했습니다."
   }
 }

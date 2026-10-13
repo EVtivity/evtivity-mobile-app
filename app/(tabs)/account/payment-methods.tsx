@@ -231,7 +231,12 @@ export default function PaymentMethodsScreen(): React.JSX.Element {
       {billing?.mode === 'account' && billing.fleetName != null ? (
         <Card testID="fleet-billing-note" flat className="mb-4">
           <Text className="text-sm text-muted-foreground">
-            {t('fleetBilling.paymentMethodsNote', { fleet: billing.fleetName })}
+            {t(
+              billing.invoicedTo === 'member'
+                ? 'fleetBilling.memberPaymentMethodsNote'
+                : 'fleetBilling.paymentMethodsNote',
+              { fleet: billing.fleetName },
+            )}
           </Text>
         </Card>
       ) : null}

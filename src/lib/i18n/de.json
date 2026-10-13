@@ -351,7 +351,9 @@
     "priceDisplayDefault": "Vorgabe des Betreibers ({{value}})",
     "priceDisplayGross": "Inklusive Steuer (brutto)",
     "priceDisplayNet": "Exklusive Steuer (netto)",
-    "priceDisplayHelper": "Inklusive Steuer zeigt Preise mit Steuer. Exklusive Steuer zeigt Preise vor Steuer. Der abgerechnete Betrag ist in beiden Fällen gleich, und solange du nichts wählst, gilt die Vorgabe des Betreibers."
+    "priceDisplayHelper": "Inklusive Steuer zeigt Preise mit Steuer. Exklusive Steuer zeigt Preise vor Steuer. Der abgerechnete Betrag ist in beiden Fällen gleich, und solange du nichts wählst, gilt die Vorgabe des Betreibers.",
+    "invoices": "Rechnungen",
+    "billingAddress": "Rechnungsadresse"
   },
   "payments": {
     "title": "Zahlung",
@@ -587,12 +589,66 @@
       "paid": "Von der Flotte bezahlt"
     },
     "sessionLine": "{{fleet}}: {{state}}",
-    "paymentMethodsNote": "Dein Laden wird über {{fleet}} abgerechnet. Zum Laden brauchst du keine Zahlungsmethode."
+    "paymentMethodsNote": "Dein Laden wird über {{fleet}} abgerechnet. Zum Laden brauchst du keine Zahlungsmethode.",
+    "billedToYouVia": "Dir in Rechnung gestellt über {{fleet}}",
+    "memberStartHint": "Dieser Ladevorgang kommt auf deine Monatsrechnung. Du brauchst keine Zahlungsmethode.",
+    "stateMember": {
+      "unbilled": "Noch nicht abgerechnet",
+      "invoiced": "Dir in Rechnung gestellt",
+      "paid": "Bezahlt"
+    },
+    "memberSessionLine": "Dir in Rechnung gestellt über {{fleet}}: {{state}}",
+    "invoice": "Rechnung",
+    "memberPaymentMethodsNote": "Dein Laden wird dir monatlich über {{fleet}} in Rechnung gestellt. Zum Laden brauchst du keine Zahlungsmethode."
   },
   "ai": {
     "dataNotice": {
       "title": "Was der KI-Anbieter erhält",
       "body": "Der KI-Anbieter erhält nie gespeicherte Zugangsdaten wie Passwörter, API-Schlüssel, Geheimnisse und Stationspasswörter. Kartennummern und IBANs werden auf ihre letzten 4 Zeichen gekürzt. Support-Entwürfe, automatische Analysen, Hintergrund-Worker und der Fahrer-Support maskieren außerdem E-Mail-Adressen und Telefonnummern und hashen oder kürzen die Token-IDs von Fahrern. Der Assistent sendet Kontaktdaten von Fahrern so, wie sie gespeichert sind, und nur für Benutzer, die sie lesen dürfen. Von dir eingegebener Text und angehängte Textdateien werden auf Schlüssel und Kartennummern geprüft. Von dir angehängte Bilder und PDFs werden unverändert gesendet."
     }
+  },
+  "invoices": {
+    "title": "Rechnungen",
+    "empty": "Noch keine Rechnungen.",
+    "loadFailed": "Deine Rechnungen konnten nicht geladen werden. Bitte versuche es erneut.",
+    "notFound": "Rechnung nicht gefunden.",
+    "invoice": "Rechnung",
+    "creditNote": "Stornorechnung",
+    "viaFleet": "Über {{fleet}}",
+    "period": "Zeitraum",
+    "issued": "Ausgestellt",
+    "due": "Fällig",
+    "paidOn": "Bezahlt",
+    "billTo": "Rechnungsempfänger",
+    "items": "Positionen",
+    "net": "Netto",
+    "total": "Gesamt",
+    "credits": "Storniert Rechnung {{number}}",
+    "creditedBy": "Storniert durch Stornorechnung {{number}}",
+    "reason": "Grund",
+    "downloadPdf": "PDF herunterladen",
+    "downloadFailed": "Das PDF konnte nicht heruntergeladen werden. Bitte versuche es erneut.",
+    "status": {
+      "draft": "Entwurf",
+      "issued": "Ausgestellt",
+      "paid": "Bezahlt",
+      "void": "Storniert",
+      "credited": "Storniert (Stornorechnung)"
+    },
+    "loadMore": "Mehr laden"
+  },
+  "billingAddress": {
+    "title": "Rechnungsadresse",
+    "description": "Steht auf den Rechnungen, die deine Flotte an dich richtet.",
+    "nudge": "Deine Flotte stellt dir deine Ladevorgänge in Rechnung. Gib deine Rechnungsadresse ein, damit sie auf deinen Rechnungen steht.",
+    "name": "Name auf der Rechnung",
+    "nameHelp": "Leer lassen, um deinen Vor- und Nachnamen zu verwenden.",
+    "street": "Straße",
+    "city": "Ort",
+    "state": "Bundesland oder Region",
+    "zip": "Postleitzahl",
+    "country": "Land",
+    "updated": "Rechnungsadresse gespeichert.",
+    "updateFailed": "Die Rechnungsadresse konnte nicht gespeichert werden."
   }
 }

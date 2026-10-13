@@ -351,7 +351,9 @@
     "priceDisplayDefault": "Predeterminado del operador ({{value}})",
     "priceDisplayGross": "Impuestos incluidos (bruto)",
     "priceDisplayNet": "Sin impuestos (neto)",
-    "priceDisplayHelper": "Con impuestos muestra los precios con los impuestos sumados. Sin impuestos muestra los precios antes de impuestos. El importe cobrado es el mismo en ambos casos, y mientras no elija, se aplica la opción del operador."
+    "priceDisplayHelper": "Con impuestos muestra los precios con los impuestos sumados. Sin impuestos muestra los precios antes de impuestos. El importe cobrado es el mismo en ambos casos, y mientras no elija, se aplica la opción del operador.",
+    "invoices": "Facturas",
+    "billingAddress": "Dirección de Facturación"
   },
   "payments": {
     "title": "Pago",
@@ -587,12 +589,66 @@
       "paid": "Pagada por la flota"
     },
     "sessionLine": "{{fleet}}: {{state}}",
-    "paymentMethodsNote": "Su carga se factura a {{fleet}}. No necesita un método de pago para cargar."
+    "paymentMethodsNote": "Su carga se factura a {{fleet}}. No necesita un método de pago para cargar.",
+    "billedToYouVia": "Facturado a usted a través de {{fleet}}",
+    "memberStartHint": "Esta sesión se incluye en su factura mensual. No necesita un método de pago.",
+    "stateMember": {
+      "unbilled": "Aún no facturada",
+      "invoiced": "Facturada a usted",
+      "paid": "Pagada"
+    },
+    "memberSessionLine": "Facturado a usted a través de {{fleet}}: {{state}}",
+    "invoice": "Factura",
+    "memberPaymentMethodsNote": "Su carga se le factura mensualmente a través de {{fleet}}. No necesita un método de pago para cargar."
   },
   "ai": {
     "dataNotice": {
       "title": "Qué recibe el proveedor de IA",
       "body": "El proveedor de IA nunca recibe credenciales almacenadas, como contraseñas, claves de API, secretos y contraseñas de estaciones. Los números de tarjeta y los IBAN se acortan a sus últimos 4 caracteres. Los borradores de soporte, los análisis automáticos, los procesos en segundo plano y el soporte a conductores también enmascaran las direcciones de correo electrónico y los números de teléfono, y aplican un hash a los identificadores de token de los conductores o los acortan. El asistente envía los datos de contacto de los conductores tal como están almacenados, solo para los usuarios autorizados a leerlos. El texto que escribe y los archivos de texto que adjunta se revisan en busca de claves y números de tarjeta. Las imágenes y los PDF que adjunta se envían tal cual."
     }
+  },
+  "invoices": {
+    "title": "Facturas",
+    "empty": "Aún no hay facturas.",
+    "loadFailed": "No se pudieron cargar sus facturas. Intente nuevamente.",
+    "notFound": "Factura no encontrada.",
+    "invoice": "Factura",
+    "creditNote": "Nota de Crédito",
+    "viaFleet": "A través de {{fleet}}",
+    "period": "Periodo",
+    "issued": "Emitida",
+    "due": "Vencimiento",
+    "paidOn": "Pagada",
+    "billTo": "Facturar a",
+    "items": "Conceptos",
+    "net": "Neto",
+    "total": "Total",
+    "credits": "Acredita la factura {{number}}",
+    "creditedBy": "Acreditada por la nota de crédito {{number}}",
+    "reason": "Motivo",
+    "downloadPdf": "Descargar PDF",
+    "downloadFailed": "No se pudo descargar el PDF. Intente nuevamente.",
+    "status": {
+      "draft": "Borrador",
+      "issued": "Emitida",
+      "paid": "Pagada",
+      "void": "Anulada",
+      "credited": "Acreditada"
+    },
+    "loadMore": "Cargar más"
+  },
+  "billingAddress": {
+    "title": "Dirección de Facturación",
+    "description": "Aparece en las facturas que tu flota te emite.",
+    "nudge": "Tu flota te factura tus sesiones a ti. Añade tu dirección de facturación para que aparezca en tus facturas.",
+    "name": "Nombre en la Factura",
+    "nameHelp": "Déjalo vacío para usar tu nombre y apellidos.",
+    "street": "Calle",
+    "city": "Ciudad",
+    "state": "Estado o Región",
+    "zip": "Código Postal",
+    "country": "País",
+    "updated": "Dirección de facturación guardada.",
+    "updateFailed": "No se pudo guardar la dirección de facturación."
   }
 }

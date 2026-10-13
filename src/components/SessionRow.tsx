@@ -60,10 +60,20 @@ export const SessionRow = React.memo(function SessionRow({
       </View>
       {session.accountBilling != null ? (
         <Text testID={`session-row-fleet-${session.id}`} variant="muted" numberOfLines={1}>
-          {t('fleetBilling.sessionLine', {
-            fleet: session.accountBilling.fleetName,
-            state: t(accountBillingStateKey(session.accountBilling.state)),
-          })}
+          {t(
+            session.accountBilling.invoicedTo === 'member'
+              ? 'fleetBilling.memberSessionLine'
+              : 'fleetBilling.sessionLine',
+            {
+              fleet: session.accountBilling.fleetName,
+              state: t(
+                accountBillingStateKey(
+                  session.accountBilling.state,
+                  session.accountBilling.invoicedTo,
+                ),
+              ),
+            },
+          )}
         </Text>
       ) : null}
     </Pressable>

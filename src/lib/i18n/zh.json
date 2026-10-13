@@ -351,7 +351,9 @@
     "priceDisplayDefault": "运营商默认（{{value}}）",
     "priceDisplayGross": "含税（总价）",
     "priceDisplayNet": "不含税（净价）",
-    "priceDisplayHelper": "含税显示加上税费后的价格。不含税显示税前价格。两种方式下实际扣款金额相同，未选择时使用运营商的默认设置。"
+    "priceDisplayHelper": "含税显示加上税费后的价格。不含税显示税前价格。两种方式下实际扣款金额相同，未选择时使用运营商的默认设置。",
+    "invoices": "发票",
+    "billingAddress": "账单地址"
   },
   "payments": {
     "title": "支付",
@@ -587,12 +589,66 @@
       "paid": "车队已支付"
     },
     "sessionLine": "{{fleet}}：{{state}}",
-    "paymentMethodsNote": "您的充电费用记账到 {{fleet}}，充电无需支付方式。"
+    "paymentMethodsNote": "您的充电费用记账到 {{fleet}}，充电无需支付方式。",
+    "billedToYouVia": "经由 {{fleet}} 向您开票",
+    "memberStartHint": "此充电会话将计入您的月度发票，无需支付方式。",
+    "stateMember": {
+      "unbilled": "尚未开票",
+      "invoiced": "已向您开票",
+      "paid": "已支付"
+    },
+    "memberSessionLine": "经由 {{fleet}} 向您开票：{{state}}",
+    "invoice": "发票",
+    "memberPaymentMethodsNote": "您的充电费用每月经由 {{fleet}} 向您开票，充电无需支付方式。"
   },
   "ai": {
     "dataNotice": {
       "title": "AI 提供商收到的内容",
       "body": "AI 提供商绝不会收到已存储的凭据，例如密码、API 密钥、机密信息和充电站密码。卡号和 IBAN 会截短为最后 4 个字符。支持草稿、自动洞察、后台任务和驾驶员支持还会遮盖电子邮件地址和电话号码，并对驾驶员的 Token ID 进行哈希或截短。助手仅为有权查看驾驶员联系方式的用户，按存储原样发送这些信息。您输入的文本和附加的文本文件会检查是否包含密钥和卡号。您附加的图片和 PDF 会按原样发送。"
     }
+  },
+  "invoices": {
+    "title": "发票",
+    "empty": "暂无发票。",
+    "loadFailed": "无法加载您的发票，请重试。",
+    "notFound": "未找到发票。",
+    "invoice": "发票",
+    "creditNote": "贷项通知单",
+    "viaFleet": "经由 {{fleet}}",
+    "period": "账期",
+    "issued": "开具日期",
+    "due": "到期日",
+    "paidOn": "支付日期",
+    "billTo": "账单抬头",
+    "items": "明细",
+    "net": "净额",
+    "total": "合计",
+    "credits": "贷记发票 {{number}}",
+    "creditedBy": "已由贷项通知单 {{number}} 贷记",
+    "reason": "原因",
+    "downloadPdf": "下载 PDF",
+    "downloadFailed": "无法下载 PDF，请重试。",
+    "status": {
+      "draft": "草稿",
+      "issued": "已开具",
+      "paid": "已支付",
+      "void": "已作废",
+      "credited": "已贷记"
+    },
+    "loadMore": "加载更多"
+  },
+  "billingAddress": {
+    "title": "账单地址",
+    "description": "显示在车队开具给您的发票上。",
+    "nudge": "您的车队将充电会话直接开票给您。请添加账单地址，以便显示在发票上。",
+    "name": "发票姓名",
+    "nameHelp": "留空则使用您的姓名。",
+    "street": "街道",
+    "city": "城市",
+    "state": "州或地区",
+    "zip": "邮政编码",
+    "country": "国家",
+    "updated": "账单地址已保存。",
+    "updateFailed": "无法保存账单地址。"
   }
 }

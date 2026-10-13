@@ -30,6 +30,26 @@ describe('pushTarget', () => {
     );
   });
 
+  it('opens the invoice a member invoice notice names', () => {
+    for (const eventType of [
+      'invoice.MemberInvoice',
+      'invoice.MemberCreditNote',
+      'invoice.MemberOverdue',
+    ]) {
+      expect(pushTarget({ eventType, invoiceId: 'inv_1' })).toEqual({
+        pathname: '/account/invoices/[id]',
+        params: { id: 'inv_1' },
+      });
+    }
+  });
+
+  it('opens the invoice list for an invoice notice without an id', () => {
+    expect(pushTarget({ eventType: 'invoice.MemberInvoice' })).toBe('/account/invoices');
+    expect(pushTarget({ eventType: 'invoice.MemberOverdue', invoiceId: '' })).toBe(
+      '/account/invoices',
+    );
+  });
+
   it('opens the account for anything else', () => {
     expect(pushTarget({ eventType: 'payment.Failed' })).toBe('/(tabs)/account');
     expect(pushTarget(null)).toBe('/(tabs)/account');

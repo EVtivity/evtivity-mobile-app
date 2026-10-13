@@ -97,6 +97,22 @@ export function formatDate(value: string | null | undefined): string {
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
+// A calendar date without a time (YYYY-MM-DD, such as an invoice period) shows
+// as written in every time zone, in the formatDate style.
+export function formatDay(value: string | null | undefined): string {
+  if (value == null) return NA;
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (match == null) return NA;
+  const d = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3])));
+  if (Number.isNaN(d.getTime())) return NA;
+  return d.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
+}
+
 export function formatRelative(value: string | null | undefined): string {
   if (value == null) return NA;
   const d = new Date(value);

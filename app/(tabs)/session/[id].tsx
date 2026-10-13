@@ -23,6 +23,7 @@ import {
   Check,
   AlertTriangle,
   CalendarClock,
+  FileText,
   LifeBuoy,
 } from '@/components/icons';
 import {
@@ -426,12 +427,40 @@ export default function SessionScreen(): React.JSX.Element {
           <Text weight="semibold" className="text-sm text-muted-foreground">
             {t('fleetBilling.title')}
           </Text>
-          <Row label={t('fleetBilling.fleet')} value={data.accountBilling.fleetName} />
+          <Row
+            label={t('fleetBilling.fleet')}
+            value={
+              data.accountBilling.invoicedTo === 'member'
+                ? t('fleetBilling.billedToYouVia', { fleet: data.accountBilling.fleetName })
+                : data.accountBilling.fleetName
+            }
+          />
           <Row
             testID={fleetBillingStateTestId(data.accountBilling.state)}
             label={t('fleetBilling.status')}
-            value={t(accountBillingStateKey(data.accountBilling.state))}
+            value={t(
+              accountBillingStateKey(data.accountBilling.state, data.accountBilling.invoicedTo),
+            )}
           />
+          {data.accountBilling.invoiceId != null && data.accountBilling.invoiceId !== '' ? (
+            <ListRow
+              testID="session-member-invoice"
+              className="border-t border-muted-foreground/30"
+              title={t('fleetBilling.invoice')}
+              subtitle={data.accountBilling.invoiceNumber ?? undefined}
+              left={
+                <View className="h-9 w-9 items-center justify-center rounded-xl bg-muted">
+                  <FileText size={18} color={hsl('mutedForeground')} />
+                </View>
+              }
+              onPress={() =>
+                router.push({
+                  pathname: '/account/invoices/[id]',
+                  params: { id: data.accountBilling?.invoiceId ?? '' },
+                })
+              }
+            />
+          ) : null}
         </Card>
       ) : null}
 
