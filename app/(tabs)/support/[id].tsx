@@ -6,8 +6,6 @@ import { View, Pressable, ScrollView, KeyboardAvoidingView, Platform } from 'rea
 import { useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Send } from '@/components/icons';
-import { AiCaseStatus } from '@/components/support/AiCaseStatus';
-import { AssistantMessage } from '@/components/support/AssistantMessage';
 import {
   Text,
   Badge,
@@ -72,12 +70,6 @@ export default function SupportCaseDetailScreen(): React.JSX.Element {
   const scrollRef = React.useRef<ScrollView>(null);
 
   const messages = detail.data?.messages ?? [];
-  const ai = detail.data?.ai;
-  // The suggested driver actions belong to the latest automatic answer.
-  const lastAssistantId = messages.reduce<number | undefined>(
-    (last, m) => (m.senderType === 'assistant' ? m.id : last),
-    undefined,
-  );
 
   React.useEffect(() => {
     if (messages.length > 0) {
@@ -157,27 +149,15 @@ export default function SupportCaseDetailScreen(): React.JSX.Element {
             contentContainerClassName="px-4 py-4 gap-3"
             keyboardShouldPersistTaps="handled"
           >
-            {messages.map((m) =>
-              m.senderType === 'assistant' ? (
-                <AssistantMessage
-                  key={m.id}
-                  message={m}
-                  {...(m.id === lastAssistantId && ai != null
-                    ? { driverActions: ai.driverActions }
-                    : {})}
-                />
-              ) : (
-                <MessageBubble key={m.id} message={m} />
-              ),
-            )}
-            {ai != null ? <AiCaseStatus caseId={caseId} ai={ai} /> : null}
+            {messages.map((m) => (
+              <MessageBubble key={m.id} message={m} />
+            ))}
           </ScrollView>
         )}
 
-        {/* A case the automatic answer resolved can be reopened by writing to us. */}
         {detail.data != null &&
         detail.data.status !== 'closed' &&
-        (detail.data.status !== 'resolved' || ai?.resolutionSource === 'ai') ? (
+        detail.data.status !== 'resolved' ? (
           <View style={SURFACE_TEXT_VARS} className="border-t border-white/15 bg-card/[0.7]">
             <View className="flex-row items-end gap-2 px-4 py-2">
               <Input

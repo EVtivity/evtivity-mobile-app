@@ -40,10 +40,6 @@ export interface Features {
   reservationCancellationWindowMinutes?: number;
   // Company currency (ISO 4217) of every amount in this response.
   currency: string;
-  // New support cases offer the AI analysis with consent (absent on older
-  // servers), and the consent notice version to send back with the choice.
-  driverAiSupport?: boolean;
-  driverAiNoticeVersion?: number;
 }
 
 // Operator feature toggles from the CSMS. Gates the Reserve tab and other

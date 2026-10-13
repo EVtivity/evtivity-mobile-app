@@ -6,7 +6,6 @@ import { View, Pressable } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Check, ChevronDown } from '@/components/icons';
-import { AiConsentStep } from '@/components/support/AiConsentStep';
 import {
   Screen,
   Text,
@@ -14,50 +13,31 @@ import {
   Input,
   Button,
   Sheet,
-  Spinner,
-  Card,
   BackButton,
   useToast,
   useApiErrorToast,
 } from '@/components/ui';
 import { hsl, SURFACE_TEXT_VARS } from '@/lib/theme';
 import { cn } from '@/lib/cn';
-import { ApiError } from '@/lib/api';
-import { resolveLegalUrls } from '@/lib/config';
-import { useBranding } from '@/features/app-info';
 import {
   useCreateCase,
-  useDriverAiNoticeVersion,
-  consentLanguage,
   SUPPORT_CATEGORIES,
   type SupportCategory,
   type CreateCaseInput,
-  type DriverAiConsentDecision,
 } from '@/features/support';
 
 export default function NewSupportCaseScreen(): React.JSX.Element {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const router = useRouter();
   const toast = useToast();
   const showApiError = useApiErrorToast();
   const params = useLocalSearchParams<{ sessionId?: string; stationId?: string }>();
   const create = useCreateCase();
-  const driverAi = useDriverAiNoticeVersion();
-  const { data: branding } = useBranding();
 
   const [subject, setSubject] = React.useState('');
   const [description, setDescription] = React.useState('');
   const [category, setCategory] = React.useState<SupportCategory>('general_inquiry');
   const [pickerOpen, setPickerOpen] = React.useState(false);
-  // The driver's AI choice for this request: none until a press, never
-  // remembered across cases.
-  const [aiChoice, setAiChoice] = React.useState<{
-    decision: DriverAiConsentDecision;
-    noticeVersion: number;
-  } | null>(null);
-
-  const noticeVersion = driverAi.noticeVersion;
-  const aiOffered = noticeVersion != null;
 
   const onSubmit = async (): Promise<void> => {
     const trimmedSubject = subject.trim();
@@ -70,15 +50,6 @@ export default function NewSupportCaseScreen(): React.JSX.Element {
       category,
       ...(params.sessionId != null ? { sessionId: params.sessionId } : {}),
       ...(params.stationId != null ? { stationId: params.stationId } : {}),
-      ...(aiOffered && aiChoice != null
-        ? {
-            aiConsent: {
-              decision: aiChoice.decision,
-              noticeVersion: aiChoice.noticeVersion,
-              language: consentLanguage(i18n.language),
-            },
-          }
-        : {}),
     };
 
     try {
@@ -87,38 +58,8 @@ export default function NewSupportCaseScreen(): React.JSX.Element {
       router.replace({ pathname: '/support/[id]', params: { id: created.id } });
     } catch (err) {
       showApiError(err);
-      // The notice changed on the server: reload it and ask again.
-      if (err instanceof ApiError && err.code === 'DRIVER_AI_NOTICE_OUTDATED') {
-        setAiChoice(null);
-        driverAi.refetch();
-      }
     }
   };
-
-  if (driverAi.isLoading) {
-    return (
-      <Screen scroll>
-        <BackButton />
-        <Spinner />
-      </Screen>
-    );
-  }
-
-  if (noticeVersion != null && aiChoice == null) {
-    return (
-      <Screen scroll>
-        <BackButton />
-        <Text variant="h1" className="mb-4">
-          {t('support.newCase')}
-        </Text>
-        <AiConsentStep
-          noticeVersion={noticeVersion}
-          privacyUrl={resolveLegalUrls(branding?.portalUrl).privacy}
-          onChoose={(decision) => setAiChoice({ decision, noticeVersion })}
-        />
-      </Screen>
-    );
-  }
 
   return (
     <Screen scroll>
@@ -126,24 +67,6 @@ export default function NewSupportCaseScreen(): React.JSX.Element {
       <Text variant="h1" className="mb-4">
         {t('support.newCase')}
       </Text>
-
-      {aiOffered && aiChoice != null ? (
-        <Card flat testID="support-ai-choice" className="flex-row items-center gap-3">
-          <View className="flex-1 gap-0.5">
-            <Text className="text-xs text-muted-foreground">{t('support.ai.choiceTitle')}</Text>
-            <Text weight="semibold" className="text-sm">
-              {t(aiChoice.decision === 'granted' ? 'support.ai.choiceAi' : 'support.ai.choiceTeam')}
-            </Text>
-          </View>
-          <Button
-            testID="support-ai-change"
-            variant="ghost"
-            size="sm"
-            title={t('support.ai.changeChoice')}
-            onPress={() => setAiChoice(null)}
-          />
-        </Card>
-      ) : null}
 
       <Field
         testID="support-subject"

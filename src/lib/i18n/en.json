@@ -406,8 +406,7 @@
       "in_progress": "In Progress",
       "waiting_on_driver": "Awaiting Your Reply",
       "resolved": "Resolved",
-      "closed": "Closed",
-      "ai_assist": "Automatic answer"
+      "closed": "Closed"
     },
     "categories": {
       "billing_dispute": "Billing dispute",
@@ -417,55 +416,6 @@
       "payment_problem": "Payment problem",
       "reservation_issue": "Reservation issue",
       "general_inquiry": "General inquiry"
-    },
-    "ai": {
-      "choiceTitle": "How should we handle your request?",
-      "choiceAi": "Ask AI first",
-      "choiceTeam": "Send to the team",
-      "changeChoice": "Change",
-      "yourChoice": "Your choice",
-      "notice": {
-        "v1": {
-          "title": "About the AI analysis",
-          "automated": "An AI gives an automatic first answer. It is not a promise, for example of a refund.",
-          "provider": "Your request and the data listed below are sent to an external AI provider.",
-          "person": "You can still reach a person: answer No or write a message, and the support team takes over.",
-          "choice": "You decide for each request. If you send it to the support team, nothing is sent to the AI.",
-          "privacy": "Privacy policy",
-          "readsTitle": "What the AI reads",
-          "reads": {
-            "case": "This request: category, subject, description and linked sessions",
-            "sessions": "Your last 10 charging sessions of the past 30 days: times, status, energy, cost and payment status",
-            "tokens": "Your charging cards and tokens, shortened to the last 4 characters",
-            "payments": "Your payments of the past 30 days: type, amount, status and failure reason",
-            "stations": "The stations you used: name, site, current availability and last fault time",
-            "reservations": "Your reservations of the past 30 days: status, times, cancel reason and fee"
-          }
-        }
-      },
-      "dataNotice": {
-        "title": "What the AI receives",
-        "body": "The AI reads your request and your own charging sessions, payments, reservations and the stations you used. Stored credentials, such as passwords, are never sent. Card numbers and IBANs are cut to their last 4 characters. Email addresses and phone numbers are masked. Charging card and token ids are shortened to their last 4 characters."
-      },
-      "analyzing": "Analyzing your issue",
-      "answerTitle": "Automatic answer",
-      "feedbackQuestion": "Did this solve your issue?",
-      "feedbackYes": "Yes",
-      "feedbackNo": "No",
-      "feedbackNoHint": "We will pass this to the support team if you choose No.",
-      "feedbackFailed": "Your answer could not be sent. Try again.",
-      "resolved": "Resolved. You can reopen it by writing to us.",
-      "escalated": "Sent to the support team.",
-      "sentToTeam": "We sent your request to the support team.",
-      "driverAction": {
-        "try_other_connector": "Try another connector",
-        "check_payment_method": "Check the payment method",
-        "retry_start": "Start charging again",
-        "check_vehicle_settings": "Check the vehicle's charging settings",
-        "contact_operator": "Contact the support team",
-        "wait_and_retry": "Wait a few minutes and try again",
-        "check_token_active": "Check that the card or token is active"
-      }
     }
   },
   "notifications": {
@@ -571,9 +521,7 @@
     "FORBIDDEN": "Forbidden",
     "VALIDATION_ERROR": "Validation error",
     "WEAK_PASSWORD": "Password does not meet complexity requirements",
-    "ATTESTATION_FAILED": "Device attestation failed. Update the app and try again.",
-    "DRIVER_AI_NOTICE_OUTDATED": "The AI notice has changed. Read it and choose again",
-    "SUPPORT_CASE_AI_NOT_AWAITING_FEEDBACK": "This support case is not waiting for feedback on an automatic answer"
+    "ATTESTATION_FAILED": "Device attestation failed. Update the app and try again."
   },
   "fleetBilling": {
     "billedTo": "Billed to {{fleet}}",
@@ -588,11 +536,5 @@
     },
     "sessionLine": "{{fleet}}: {{state}}",
     "paymentMethodsNote": "Your charging is billed to {{fleet}}. You need no payment method to charge."
-  },
-  "ai": {
-    "dataNotice": {
-      "title": "What the AI provider receives",
-      "body": "The AI provider never receives stored credentials, such as passwords, API keys, secrets and station passwords. Card numbers and IBANs are cut to their last 4 characters. Support drafts, automatic insights, background workers and driver support also mask email addresses and phone numbers, and hash or shorten driver token ids. The assistant sends driver contact details as stored, only to users allowed to read them. Text you type and text files you attach are checked for keys and card numbers. Images and PDFs you attach are sent as they are."
-    }
   }
 }

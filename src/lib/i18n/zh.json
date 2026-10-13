@@ -406,8 +406,7 @@
       "in_progress": "处理中",
       "waiting_on_driver": "等待您回复",
       "resolved": "已解决",
-      "closed": "已关闭",
-      "ai_assist": "自动回答"
+      "closed": "已关闭"
     },
     "categories": {
       "billing_dispute": "账单纠纷",
@@ -417,55 +416,6 @@
       "payment_problem": "支付问题",
       "reservation_issue": "预约问题",
       "general_inquiry": "一般咨询"
-    },
-    "ai": {
-      "choiceTitle": "我们应如何处理您的请求？",
-      "choiceAi": "先问 AI",
-      "choiceTeam": "发送给团队",
-      "changeChoice": "更改",
-      "yourChoice": "您的选择",
-      "notice": {
-        "v1": {
-          "title": "关于 AI 分析",
-          "automated": "AI 会自动给出初步回答。这不是承诺，例如退款承诺。",
-          "provider": "您的请求和下列数据会发送给外部 AI 提供商。",
-          "person": "您仍可联系人工客服：选择“否”或发送消息，支持团队就会接手。",
-          "choice": "每个请求都由您决定。如果发送给支持团队，不会向 AI 发送任何内容。",
-          "privacy": "隐私政策",
-          "readsTitle": "AI 读取的内容",
-          "reads": {
-            "case": "本次请求：类别、主题、描述和关联的充电会话",
-            "sessions": "您过去 30 天内最近 10 次充电会话：时间、状态、电量、费用和支付状态",
-            "tokens": "您的充电卡和 Token，仅显示后 4 位",
-            "payments": "您过去 30 天的支付：类型、金额、状态和失败原因",
-            "stations": "您使用过的充电站：名称、站点、当前可用性和最近一次故障时间",
-            "reservations": "您过去 30 天的预约：状态、时间、取消原因和费用"
-          }
-        }
-      },
-      "dataNotice": {
-        "title": "AI 会收到什么",
-        "body": "AI 会读取您的请求，以及您作为驾驶员本人的充电会话、支付、预约和您使用过的充电站。密码等已存储的凭据绝不会发送。卡号和 IBAN 仅保留后 4 位。电子邮件地址和电话号码会被遮盖。充电卡和 Token 的 ID 仅保留后 4 位。"
-      },
-      "analyzing": "正在分析您的问题",
-      "answerTitle": "自动回答",
-      "feedbackQuestion": "这解决了您的问题吗？",
-      "feedbackYes": "是",
-      "feedbackNo": "否",
-      "feedbackNoHint": "如果您选择“否”，我们会转给支持团队。",
-      "feedbackFailed": "无法发送您的回答，请重试。",
-      "resolved": "已解决。给我们发消息即可重新打开。",
-      "escalated": "已发送给支持团队。",
-      "sentToTeam": "我们已将您的请求发送给支持团队。",
-      "driverAction": {
-        "try_other_connector": "尝试其他充电枪",
-        "check_payment_method": "检查支付方式",
-        "retry_start": "重新开始充电",
-        "check_vehicle_settings": "检查车辆的充电设置",
-        "contact_operator": "联系支持团队",
-        "wait_and_retry": "等待几分钟后重试",
-        "check_token_active": "检查卡或 Token 是否有效"
-      }
     }
   },
   "notifications": {
@@ -571,9 +521,7 @@
     "FORBIDDEN": "禁止访问",
     "VALIDATION_ERROR": "验证错误",
     "WEAK_PASSWORD": "密码不符合复杂度要求",
-    "ATTESTATION_FAILED": "设备证明失败。请更新应用后重试。",
-    "DRIVER_AI_NOTICE_OUTDATED": "AI 说明已更新，请阅读后重新选择",
-    "SUPPORT_CASE_AI_NOT_AWAITING_FEEDBACK": "此支持工单未在等待对自动回答的反馈"
+    "ATTESTATION_FAILED": "设备证明失败。请更新应用后重试。"
   },
   "fleetBilling": {
     "billedTo": "记账到 {{fleet}}",
@@ -588,11 +536,5 @@
     },
     "sessionLine": "{{fleet}}：{{state}}",
     "paymentMethodsNote": "您的充电费用记账到 {{fleet}}，充电无需支付方式。"
-  },
-  "ai": {
-    "dataNotice": {
-      "title": "AI 提供商收到的内容",
-      "body": "AI 提供商绝不会收到已存储的凭据，例如密码、API 密钥、机密信息和充电站密码。卡号和 IBAN 会截短为最后 4 个字符。支持草稿、自动洞察、后台任务和驾驶员支持还会遮盖电子邮件地址和电话号码，并对驾驶员的 Token ID 进行哈希或截短。助手仅为有权查看驾驶员联系方式的用户，按存储原样发送这些信息。您输入的文本和附加的文本文件会检查是否包含密钥和卡号。您附加的图片和 PDF 会按原样发送。"
-    }
   }
 }

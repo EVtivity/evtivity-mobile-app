@@ -106,8 +106,7 @@ export interface SupportCase {
 
 export interface SupportMessage {
   id: number;
-  // assistant: the automatic answer of the driver AI support.
-  senderType: 'driver' | 'operator' | 'system' | 'assistant';
+  senderType: 'driver' | 'operator' | 'system';
   body: string;
   createdAt: string;
 }
