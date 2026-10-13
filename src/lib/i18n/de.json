@@ -406,7 +406,8 @@
       "in_progress": "In Bearbeitung",
       "waiting_on_driver": "Wartet auf deine Antwort",
       "resolved": "Gelöst",
-      "closed": "Geschlossen"
+      "closed": "Geschlossen",
+      "ai_assist": "Automatische Antwort"
     },
     "categories": {
       "billing_dispute": "Abrechnungsstreit",
@@ -416,6 +417,55 @@
       "payment_problem": "Zahlungsproblem",
       "reservation_issue": "Reservierungsproblem",
       "general_inquiry": "Allgemeine Anfrage"
+    },
+    "ai": {
+      "choiceTitle": "Wie sollen wir deine Anfrage bearbeiten?",
+      "choiceAi": "Zuerst die KI fragen",
+      "choiceTeam": "An das Team senden",
+      "changeChoice": "Ändern",
+      "yourChoice": "Ihre Auswahl",
+      "notice": {
+        "v1": {
+          "title": "Zur KI-Analyse",
+          "automated": "Eine KI gibt eine automatische erste Antwort. Sie ist keine Zusage, zum Beispiel einer Erstattung.",
+          "provider": "Deine Anfrage und die unten genannten Daten werden an einen externen KI-Anbieter gesendet.",
+          "person": "Du erreichst weiterhin einen Menschen: Antworte mit Nein oder schreibe eine Nachricht, dann übernimmt das Support-Team.",
+          "choice": "Du entscheidest bei jeder Anfrage. Wenn du sie an das Support-Team sendest, geht nichts an die KI.",
+          "privacy": "Datenschutzerklärung",
+          "readsTitle": "Was die KI liest",
+          "reads": {
+            "case": "Diese Anfrage: Kategorie, Betreff, Beschreibung und verknüpfte Ladevorgänge",
+            "sessions": "Deine letzten 10 Ladevorgänge der vergangenen 30 Tage: Zeiten, Status, Energie, Kosten und Zahlungsstatus",
+            "tokens": "Deine Ladekarten und Tokens, gekürzt auf die letzten 4 Zeichen",
+            "payments": "Deine Zahlungen der vergangenen 30 Tage: Art, Betrag, Status und Fehlergrund",
+            "stations": "Die von dir genutzten Stationen: Name, Standort, aktuelle Verfügbarkeit und Zeit der letzten Störung",
+            "reservations": "Deine Reservierungen der vergangenen 30 Tage: Status, Zeiten, Stornierungsgrund und Gebühr"
+          }
+        }
+      },
+      "dataNotice": {
+        "title": "Was die KI erhält",
+        "body": "Die KI liest deine Anfrage sowie deine eigenen Ladevorgänge, Zahlungen, Reservierungen und die Stationen, die du genutzt hast. Gespeicherte Zugangsdaten wie Passwörter werden nie gesendet. Kartennummern und IBANs werden auf die letzten 4 Zeichen gekürzt. E-Mail-Adressen und Telefonnummern werden maskiert. IDs von Ladekarten und Tokens werden auf die letzten 4 Zeichen gekürzt."
+      },
+      "analyzing": "Dein Anliegen wird analysiert",
+      "answerTitle": "Automatische Antwort",
+      "feedbackQuestion": "Hat das dein Problem gelöst?",
+      "feedbackYes": "Ja",
+      "feedbackNo": "Nein",
+      "feedbackNoHint": "Wenn du Nein wählst, geben wir das an das Support-Team weiter.",
+      "feedbackFailed": "Deine Antwort konnte nicht gesendet werden. Versuche es erneut.",
+      "resolved": "Gelöst. Du kannst die Anfrage wieder öffnen, indem du uns schreibst.",
+      "escalated": "An das Support-Team gesendet.",
+      "sentToTeam": "Wir haben deine Anfrage an das Support-Team gesendet.",
+      "driverAction": {
+        "try_other_connector": "Anderen Anschluss versuchen",
+        "check_payment_method": "Zahlungsmethode prüfen",
+        "retry_start": "Laden erneut starten",
+        "check_vehicle_settings": "Ladeeinstellungen des Fahrzeugs prüfen",
+        "contact_operator": "Support-Team kontaktieren",
+        "wait_and_retry": "Einige Minuten warten und erneut versuchen",
+        "check_token_active": "Prüfen, ob Karte oder Token aktiv ist"
+      }
     }
   },
   "notifications": {
@@ -521,7 +571,9 @@
     "FORBIDDEN": "Zugriff verweigert",
     "VALIDATION_ERROR": "Validierungsfehler",
     "WEAK_PASSWORD": "Passwort erfüllt die Komplexitätsanforderungen nicht",
-    "ATTESTATION_FAILED": "Die Geräteattestierung ist fehlgeschlagen. Aktualisiere die App und versuche es erneut."
+    "ATTESTATION_FAILED": "Die Geräteattestierung ist fehlgeschlagen. Aktualisiere die App und versuche es erneut.",
+    "DRIVER_AI_NOTICE_OUTDATED": "Der KI-Hinweis wurde geändert. Lesen Sie ihn und wählen Sie erneut",
+    "SUPPORT_CASE_AI_NOT_AWAITING_FEEDBACK": "Dieser Supportfall wartet nicht auf eine Rückmeldung zu einer automatischen Antwort"
   },
   "fleetBilling": {
     "billedTo": "Abgerechnet über {{fleet}}",
@@ -536,5 +588,11 @@
     },
     "sessionLine": "{{fleet}}: {{state}}",
     "paymentMethodsNote": "Dein Laden wird über {{fleet}} abgerechnet. Zum Laden brauchst du keine Zahlungsmethode."
+  },
+  "ai": {
+    "dataNotice": {
+      "title": "Was der KI-Anbieter erhält",
+      "body": "Der KI-Anbieter erhält nie gespeicherte Zugangsdaten wie Passwörter, API-Schlüssel, Geheimnisse und Stationspasswörter. Kartennummern und IBANs werden auf ihre letzten 4 Zeichen gekürzt. Support-Entwürfe, automatische Analysen, Hintergrund-Worker und der Fahrer-Support maskieren außerdem E-Mail-Adressen und Telefonnummern und hashen oder kürzen die Token-IDs von Fahrern. Der Assistent sendet Kontaktdaten von Fahrern so, wie sie gespeichert sind, und nur für Benutzer, die sie lesen dürfen. Von dir eingegebener Text und angehängte Textdateien werden auf Schlüssel und Kartennummern geprüft. Von dir angehängte Bilder und PDFs werden unverändert gesendet."
+    }
   }
 }

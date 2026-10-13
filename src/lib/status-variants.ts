@@ -20,28 +20,20 @@ export function isPaymentStatus(status: string): status is PaymentStatus {
 }
 
 // Session payment status -> Badge variant. Values outside PaymentStatus (an API
-// newer than the app) fall back to secondary. The switch is exhaustive, so a new
+// newer than the app) fall back to secondary. The Record is exhaustive, so a new
 // PaymentStatus member fails the typecheck until it gets a variant.
+const PAYMENT_STATUS_VARIANTS: Record<PaymentStatus, BadgeVariant> = {
+  pending: 'info',
+  pre_authorized: 'info',
+  captured: 'success',
+  partially_refunded: 'warning',
+  refunded: 'warning',
+  failed: 'destructive',
+  cancelled: 'secondary',
+};
+
 export function paymentStatusVariant(status: string): BadgeVariant {
-  if (!isPaymentStatus(status)) return 'secondary';
-  switch (status) {
-    case 'pending':
-    case 'pre_authorized':
-      return 'info';
-    case 'captured':
-      return 'success';
-    case 'partially_refunded':
-    case 'refunded':
-      return 'warning';
-    case 'failed':
-      return 'destructive';
-    case 'cancelled':
-      return 'secondary';
-    default: {
-      const unhandled: never = status;
-      return unhandled;
-    }
-  }
+  return isPaymentStatus(status) ? PAYMENT_STATUS_VARIANTS[status] : 'secondary';
 }
 
 // Reservation status -> Badge variant. Shared by the reservation list and detail.
@@ -71,6 +63,8 @@ export function supportCaseStatusVariant(status: string): BadgeVariant {
     case 'open':
       return 'info';
     case 'in_progress':
+      return 'info';
+    case 'ai_assist':
       return 'info';
     case 'waiting_on_driver':
       return 'warning';

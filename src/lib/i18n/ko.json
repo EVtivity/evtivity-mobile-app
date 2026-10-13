@@ -406,7 +406,8 @@
       "in_progress": "처리 중",
       "waiting_on_driver": "답변 대기 중",
       "resolved": "해결됨",
-      "closed": "종료됨"
+      "closed": "종료됨",
+      "ai_assist": "자동 답변"
     },
     "categories": {
       "billing_dispute": "청구 이의",
@@ -416,6 +417,55 @@
       "payment_problem": "결제 문제",
       "reservation_issue": "예약 문제",
       "general_inquiry": "일반 문의"
+    },
+    "ai": {
+      "choiceTitle": "요청을 어떻게 처리할까요?",
+      "choiceAi": "먼저 AI에게 묻기",
+      "choiceTeam": "팀에 보내기",
+      "changeChoice": "변경",
+      "yourChoice": "선택한 방법",
+      "notice": {
+        "v1": {
+          "title": "AI 분석 안내",
+          "automated": "AI가 자동으로 첫 답변을 제공합니다. 환불 등의 약속이 아닙니다.",
+          "provider": "요청 내용과 아래 데이터가 외부 AI 공급자에게 전송됩니다.",
+          "person": "언제든 사람에게 연결할 수 있습니다. 아니요를 선택하거나 메시지를 작성하면 지원팀이 처리합니다.",
+          "choice": "요청마다 직접 선택합니다. 지원팀에 보내면 AI에는 아무것도 전송되지 않습니다.",
+          "privacy": "개인정보 처리방침",
+          "readsTitle": "AI가 읽는 정보",
+          "reads": {
+            "case": "이 요청: 분류, 제목, 설명, 연결된 세션",
+            "sessions": "최근 30일 동안의 최근 충전 세션 10건: 시간, 상태, 에너지, 비용, 결제 상태",
+            "tokens": "충전 카드와 토큰(마지막 4자만)",
+            "payments": "최근 30일 동안의 결제: 유형, 금액, 상태, 실패 사유",
+            "stations": "사용한 충전소: 이름, 사이트, 현재 이용 가능 여부, 마지막 고장 시각",
+            "reservations": "최근 30일 동안의 예약: 상태, 시간, 취소 사유, 요금"
+          }
+        }
+      },
+      "dataNotice": {
+        "title": "AI가 받는 정보",
+        "body": "AI는 요청 내용과 운전자 본인의 충전 세션, 결제, 예약, 이용한 충전소를 읽습니다. 비밀번호 같은 저장된 자격 증명은 절대 전송되지 않습니다. 카드 번호와 IBAN은 마지막 4자만 남깁니다. 이메일 주소와 전화번호는 가려집니다. 충전 카드와 토큰 ID는 마지막 4자로 줄입니다."
+      },
+      "analyzing": "문제를 분석하는 중",
+      "answerTitle": "자동 답변",
+      "feedbackQuestion": "문제가 해결되었나요?",
+      "feedbackYes": "예",
+      "feedbackNo": "아니요",
+      "feedbackNoHint": "아니요를 선택하면 지원팀에 전달합니다.",
+      "feedbackFailed": "응답을 보내지 못했습니다. 다시 시도하세요.",
+      "resolved": "해결되었습니다. 메시지를 보내면 다시 열 수 있습니다.",
+      "escalated": "지원팀에 전달되었습니다.",
+      "sentToTeam": "요청을 지원팀에 보냈습니다.",
+      "driverAction": {
+        "try_other_connector": "다른 커넥터 사용",
+        "check_payment_method": "결제 수단 확인",
+        "retry_start": "충전 다시 시작",
+        "check_vehicle_settings": "차량 충전 설정 확인",
+        "contact_operator": "지원팀에 문의",
+        "wait_and_retry": "몇 분 후 다시 시도",
+        "check_token_active": "카드 또는 토큰이 활성 상태인지 확인"
+      }
     }
   },
   "notifications": {
@@ -517,11 +567,13 @@
     "PAYMENT_METHOD_REQUIRED": "결제 수단이 필요합니다",
     "PAYMENT_METHOD_NOT_FOUND": "결제 수단을 찾을 수 없습니다",
     "PAYMENT_METHOD_IN_USE": "결제 수단이 활성 충전 세션에서 사용 중입니다",
-    "DRIVER_NOT_FOUND": "드라이버를 찾을 수 없습니다",
+    "DRIVER_NOT_FOUND": "운전자를 찾을 수 없습니다",
     "FORBIDDEN": "접근이 금지되었습니다",
     "VALIDATION_ERROR": "유효성 검사 오류입니다",
     "WEAK_PASSWORD": "비밀번호가 복잡성 요구 사항을 충족하지 않습니다",
-    "ATTESTATION_FAILED": "기기 인증에 실패했습니다. 앱을 업데이트한 후 다시 시도하세요."
+    "ATTESTATION_FAILED": "기기 인증에 실패했습니다. 앱을 업데이트한 후 다시 시도하세요.",
+    "DRIVER_AI_NOTICE_OUTDATED": "AI 안내가 변경되었습니다. 다시 읽고 선택하세요",
+    "SUPPORT_CASE_AI_NOT_AWAITING_FEEDBACK": "이 문의는 자동 답변에 대한 피드백을 기다리고 있지 않습니다"
   },
   "fleetBilling": {
     "billedTo": "{{fleet}}(으)로 청구",
@@ -536,5 +588,11 @@
     },
     "sessionLine": "{{fleet}}: {{state}}",
     "paymentMethodsNote": "충전 요금은 {{fleet}}(으)로 청구됩니다. 충전에 결제 수단이 필요하지 않습니다."
+  },
+  "ai": {
+    "dataNotice": {
+      "title": "AI 공급자가 받는 정보",
+      "body": "AI 공급자는 비밀번호, API 키, 비밀 값, 충전소 비밀번호 같은 저장된 자격 증명을 절대 받지 않습니다. 카드 번호와 IBAN은 마지막 4자로 줄여 보냅니다. 지원 초안, 자동 인사이트, 백그라운드 작업자, 운전자 지원은 이메일 주소와 전화번호도 마스킹하고, 운전자 토큰 ID는 해시하거나 줄입니다. 어시스턴트는 운전자 연락처를 열람할 권한이 있는 사용자에게만, 저장된 그대로 보냅니다. 입력한 텍스트와 첨부한 텍스트 파일은 키와 카드 번호가 있는지 검사합니다. 첨부한 이미지와 PDF는 그대로 전송됩니다."
+    }
   }
 }
