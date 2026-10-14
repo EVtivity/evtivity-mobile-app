@@ -43,6 +43,7 @@ import {
   useConfirm,
 } from '@/components/ui';
 import { SessionCharts } from '@/components/charts/SessionCharts';
+import { SessionVehicleIdCard } from '@/components/SessionVehicleIdCard';
 import { DetailRow as Row, SessionCostRows } from '@/components/SessionCostRows';
 import { usePriceDisplay } from '@/features/price-display';
 import { accountBillingStateKey } from '@/lib/fleet-billing';
@@ -360,6 +361,17 @@ export default function SessionScreen(): React.JSX.Element {
           variant="destructive"
           loading={stopping || stop.isPending}
           onPress={() => void onStop()}
+        />
+      ) : null}
+
+      {/* The vehicle id the charger sent (Autocharge) */}
+      {data.vehicleCapture != null ? (
+        <SessionVehicleIdCard
+          sessionId={sid}
+          capture={data.vehicleCapture}
+          autocharge={data.autocharge === true}
+          autochargeAvailable={data.autochargeAvailable === true}
+          vehicle={data.vehicle}
         />
       ) : null}
 

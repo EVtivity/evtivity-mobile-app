@@ -586,7 +586,11 @@
     "VEHICLE_NOT_FOUND": "Vehículo no encontrado",
     "MFA_ALREADY_ENABLED": "MFA ya está habilitada. Deshabilitala primero antes de configurar un nuevo método.",
     "ACCOUNT_DISABLED": "Cuenta deshabilitada",
-    "INVALID_PASSWORD": "La contraseña actual es incorrecta"
+    "INVALID_PASSWORD": "La contraseña actual es incorrecta",
+    "SESSION_NO_VEHICLE_ID": "El cargador no envió ningún identificador de vehículo para esta sesión.",
+    "VEHICLE_BLOCKED_BY_OPERATOR": "El operador bloqueó Autocharge para este vehículo. Contacte al operador para desbloquearlo.",
+    "VEHICLE_ID_IN_USE": "Otro vehículo ya usa este VIN o EVCCID para Autocharge.",
+    "VEHICLE_ID_REQUIRED": "Autocharge necesita un VIN o un EVCCID en el vehículo."
   },
   "fleetBilling": {
     "billedTo": "Facturado a {{fleet}}",
@@ -661,5 +665,29 @@
     "country": "País",
     "updated": "Dirección de facturación guardada.",
     "updateFailed": "No se pudo guardar la dirección de facturación."
+  },
+  "vehicles": {
+    "vehicle": "Vehículo",
+    "vehicleId": "ID del vehículo",
+    "vin": "VIN",
+    "evccid": "EVCCID",
+    "idTypes": {
+      "VIN": "VIN",
+      "EVCCID": "EVCCID",
+      "MacAddress": "Dirección MAC"
+    },
+    "capturedFromCharger": "Capturado del cargador",
+    "autocharge": "Autocharge",
+    "autochargeFor": "Autocharge para {{vehicle}}",
+    "autochargeHelp": "Cargar al conectar: cuando conecte este vehículo, la carga se inicia en su cuenta sin tarjeta ni aplicación. Recibirá un aviso cada vez.",
+    "autochargeBlocked": "El operador bloqueó Autocharge para este vehículo. Contacte al operador para desbloquearlo.",
+    "autochargeSaved": "Vehículo guardado para cargar al conectar",
+    "autochargeSaveFailed": "No se pudo guardar el vehículo.",
+    "useForPlugIn": "Usar este vehículo para cargar al conectar",
+    "useForPlugInDescription": "El cargador envió {{id}} para esta sesión. Guárdelo en su vehículo y active Autocharge, y la próxima vez que conecte, la carga se iniciará sin tarjeta ni aplicación.",
+    "newVehicle": "Vehículo nuevo",
+    "makeModelRequired": "Introduzca la marca y el modelo.",
+    "lastSeen": "Visto por última vez",
+    "lastSeenValue": "{{station}}, {{time}}"
   }
 }

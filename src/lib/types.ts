@@ -117,6 +117,16 @@ export interface Vehicle {
   make: string | null;
   model: string | null;
   year: string | null;
+  /** VIN (17 characters, uppercase). */
+  vin?: string | null;
+  /** EVCCID or MAC address of the EV charging controller (MAC as 12 hex digits). */
+  evccid?: string | null;
+  /** Autocharge (charge by plugging in) is on. */
+  autochargeEnabled?: boolean;
+  /** The operator blocked Autocharge: only the operator can unblock it. */
+  autochargeBlocked?: boolean;
+  /** The last session a charger sent this vehicle's id for. */
+  lastSeen?: { stationId: string; siteName: string | null; at: string } | null;
 }
 
 export interface RfidToken {

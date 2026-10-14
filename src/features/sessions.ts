@@ -7,6 +7,7 @@ import { api } from '@/lib/api';
 import { createSettleTracker, isSessionSettled, sessionListStateKey } from '@/lib/session-refresh';
 import type { ChargingSession } from '@/lib/types';
 import type { SessionAccountBilling } from '@/lib/fleet-billing';
+import type { VehicleCapture } from '@/lib/vehicle-id';
 
 interface ActiveSession {
   id: string;
@@ -108,6 +109,9 @@ export interface SessionVehicle {
   make: string | null;
   model: string | null;
   year: string | null;
+  vin?: string | null;
+  evccid?: string | null;
+  autochargeEnabled?: boolean;
   efficiencyMiPerKwh: number;
 }
 
@@ -146,6 +150,12 @@ export interface SessionDetail {
   accountBilling?: SessionAccountBilling | null;
   token: { idToken: string; tokenType: string } | null;
   vehicle: SessionVehicle | null;
+  /** The vehicle id the charger sent at the start (Autocharge). */
+  vehicleCapture?: VehicleCapture | null;
+  /** The session was started by an Autocharge vehicle. */
+  autocharge?: boolean;
+  /** Autocharge is on at the session's site. */
+  autochargeAvailable?: boolean;
 }
 
 const settleTracker = createSettleTracker();
@@ -188,6 +198,32 @@ export function useSetSessionVehicle(id: string) {
       api.patch(`/v1/portal/sessions/${encodeURIComponent(id)}/vehicle`, { vehicleId }),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ['session', id] });
+    },
+  });
+}
+
+/**
+ * "Use This Vehicle for Plug-In Charging": the vehicle id the charger sent for
+ * this session goes on an existing vehicle or a new one, with Autocharge on by
+ * default.
+ */
+export type SessionVehicleClaim = (
+  { vehicleId: string } | { vehicle: { make: string; model: string } }
+) & { enableAutocharge: boolean };
+
+export function useClaimSessionVehicle(id: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: SessionVehicleClaim) =>
+      api.post<{ vehicleId: string; created: boolean; autochargeEnabled: boolean }>(
+        `/v1/portal/sessions/${encodeURIComponent(id)}/vehicle-claim`,
+        input,
+      ),
+    // On error too: VEHICLE_ID_IN_USE or VEHICLE_BLOCKED_BY_OPERATOR mean the
+    // vehicles on screen are stale.
+    onSettled: () => {
+      void qc.invalidateQueries({ queryKey: ['session', id] });
+      void qc.invalidateQueries({ queryKey: ['vehicles'] });
     },
   });
 }

@@ -586,7 +586,11 @@
     "VEHICLE_NOT_FOUND": "Vehicle not found",
     "MFA_ALREADY_ENABLED": "MFA is already enabled. Disable it first before setting up a new method.",
     "ACCOUNT_DISABLED": "Account disabled",
-    "INVALID_PASSWORD": "Current password is incorrect"
+    "INVALID_PASSWORD": "Current password is incorrect",
+    "SESSION_NO_VEHICLE_ID": "The charger sent no vehicle id for this session.",
+    "VEHICLE_BLOCKED_BY_OPERATOR": "The operator blocked Autocharge for this vehicle. Contact the operator to unblock it.",
+    "VEHICLE_ID_IN_USE": "Another vehicle already uses this VIN or EVCCID for Autocharge.",
+    "VEHICLE_ID_REQUIRED": "Autocharge needs a VIN or an EVCCID on the vehicle."
   },
   "fleetBilling": {
     "billedTo": "Billed to {{fleet}}",
@@ -661,5 +665,29 @@
     "country": "Country",
     "updated": "Billing address saved.",
     "updateFailed": "Failed to save the billing address."
+  },
+  "vehicles": {
+    "vehicle": "Vehicle",
+    "vehicleId": "Vehicle ID",
+    "vin": "VIN",
+    "evccid": "EVCCID",
+    "idTypes": {
+      "VIN": "VIN",
+      "EVCCID": "EVCCID",
+      "MacAddress": "MAC Address"
+    },
+    "capturedFromCharger": "Captured from the charger",
+    "autocharge": "Autocharge",
+    "autochargeFor": "Autocharge for {{vehicle}}",
+    "autochargeHelp": "Charge by plugging in: when you plug this vehicle in, charging starts on your account without a card or the app. You get a notice each time.",
+    "autochargeBlocked": "The operator blocked Autocharge for this vehicle. Contact the operator to unblock it.",
+    "autochargeSaved": "Vehicle saved for plug-in charging",
+    "autochargeSaveFailed": "The vehicle could not be saved.",
+    "useForPlugIn": "Use This Vehicle for Plug-In Charging",
+    "useForPlugInDescription": "The charger sent {{id}} for this session. Save it on your vehicle and turn on Autocharge, and the next time you plug in, charging starts without a card or the app.",
+    "newVehicle": "New Vehicle",
+    "makeModelRequired": "Enter the make and model.",
+    "lastSeen": "Last Seen",
+    "lastSeenValue": "{{station}}, {{time}}"
   }
 }

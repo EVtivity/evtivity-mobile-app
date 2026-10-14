@@ -586,7 +586,11 @@
     "VEHICLE_NOT_FOUND": "找不到車輛",
     "MFA_ALREADY_ENABLED": "MFA 已啟用。請先停用，再設定新的方法。",
     "ACCOUNT_DISABLED": "帳號已停用",
-    "INVALID_PASSWORD": "目前密碼不正確"
+    "INVALID_PASSWORD": "目前密碼不正確",
+    "SESSION_NO_VEHICLE_ID": "充電站未為此工作階段傳送車輛識別碼。",
+    "VEHICLE_BLOCKED_BY_OPERATOR": "營運商已封鎖此車輛的 Autocharge。請聯絡營運商解除封鎖。",
+    "VEHICLE_ID_IN_USE": "另一輛車已將此 VIN 或 EVCCID 用於 Autocharge。",
+    "VEHICLE_ID_REQUIRED": "Autocharge 需要車輛的 VIN 或 EVCCID。"
   },
   "fleetBilling": {
     "billedTo": "記帳到 {{fleet}}",
@@ -661,5 +665,29 @@
     "country": "國家",
     "updated": "帳單地址已儲存。",
     "updateFailed": "無法儲存帳單地址。"
+  },
+  "vehicles": {
+    "vehicle": "車輛",
+    "vehicleId": "車輛識別碼",
+    "vin": "VIN",
+    "evccid": "EVCCID",
+    "idTypes": {
+      "VIN": "VIN",
+      "EVCCID": "EVCCID",
+      "MacAddress": "MAC 位址"
+    },
+    "capturedFromCharger": "從充電站取得",
+    "autocharge": "Autocharge",
+    "autochargeFor": "{{vehicle}} 的 Autocharge",
+    "autochargeHelp": "插槍即充：為此車輛插槍後，無需卡片或應用程式即可在您的帳戶上開始充電。每次都會收到通知。",
+    "autochargeBlocked": "營運商已封鎖此車輛的 Autocharge。請聯絡營運商解除封鎖。",
+    "autochargeSaved": "已儲存車輛用於插槍即充",
+    "autochargeSaveFailed": "無法儲存車輛。",
+    "useForPlugIn": "將此車輛用於插槍即充",
+    "useForPlugInDescription": "充電站為此工作階段傳送了 {{id}}。將其儲存到您的車輛並開啟 Autocharge，下次插槍時無需卡片或應用程式即可開始充電。",
+    "newVehicle": "新車輛",
+    "makeModelRequired": "請輸入品牌與型號。",
+    "lastSeen": "最近辨識",
+    "lastSeenValue": "{{station}}，{{time}}"
   }
 }

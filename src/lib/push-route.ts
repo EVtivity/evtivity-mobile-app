@@ -16,11 +16,14 @@ export type PushTarget =
   | '/(tabs)'
   | '/account/payment-methods'
   | '/account/invoices'
+  | '/account/vehicles'
   | '/(tabs)/account';
 
 // Fleet billing notices are about how the driver pays: the payment methods
 // screen shows the fleet the driver is billed to, or the cards to add.
 const PAYMENT_EVENTS = new Set(['fleet.AccountBillingChanged', 'payment.AccountCreditLimit']);
+
+export const AUTOCHARGE_STARTED = 'session.AutochargeStarted';
 
 // A member invoice, its credit note and the overdue reminder open the invoice
 // the push names, or the invoice list when the push carries no id.
@@ -44,6 +47,9 @@ export function pushTarget(data: PushData | null | undefined): PushTarget {
     return '/account/invoices';
   }
   if (evt.startsWith('support')) return '/support';
+  // An Autocharge start opens the Vehicles screen, where the driver turns
+  // Autocharge off if it was not them (the portal notice links there too).
+  if (evt === AUTOCHARGE_STARTED) return '/account/vehicles';
   if (evt.startsWith('session')) return '/(tabs)';
   if (PAYMENT_EVENTS.has(evt)) return '/account/payment-methods';
   return '/(tabs)/account';

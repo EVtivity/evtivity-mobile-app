@@ -586,7 +586,11 @@
     "VEHICLE_NOT_FOUND": "Fahrzeug nicht gefunden",
     "MFA_ALREADY_ENABLED": "MFA ist bereits aktiviert. Deaktiviere sie zuerst, bevor du eine neue Methode einrichtest.",
     "ACCOUNT_DISABLED": "Konto deaktiviert",
-    "INVALID_PASSWORD": "Aktuelles Passwort ist falsch"
+    "INVALID_PASSWORD": "Aktuelles Passwort ist falsch",
+    "SESSION_NO_VEHICLE_ID": "Die Ladestation hat für diesen Ladevorgang keine Fahrzeugkennung gesendet.",
+    "VEHICLE_BLOCKED_BY_OPERATOR": "Der Betreiber hat Autocharge für dieses Fahrzeug gesperrt. Wenden Sie sich an den Betreiber, um es zu entsperren.",
+    "VEHICLE_ID_IN_USE": "Ein anderes Fahrzeug verwendet diese FIN oder EVCCID bereits für Autocharge.",
+    "VEHICLE_ID_REQUIRED": "Autocharge benötigt eine FIN oder EVCCID am Fahrzeug."
   },
   "fleetBilling": {
     "billedTo": "Abgerechnet über {{fleet}}",
@@ -661,5 +665,29 @@
     "country": "Land",
     "updated": "Rechnungsadresse gespeichert.",
     "updateFailed": "Die Rechnungsadresse konnte nicht gespeichert werden."
+  },
+  "vehicles": {
+    "vehicle": "Fahrzeug",
+    "vehicleId": "Fahrzeugkennung",
+    "vin": "FIN",
+    "evccid": "EVCCID",
+    "idTypes": {
+      "VIN": "FIN",
+      "EVCCID": "EVCCID",
+      "MacAddress": "MAC-Adresse"
+    },
+    "capturedFromCharger": "Von der Ladestation erfasst",
+    "autocharge": "Autocharge",
+    "autochargeFor": "Autocharge für {{vehicle}}",
+    "autochargeHelp": "Laden durch Einstecken: Wenn du dieses Fahrzeug einsteckst, startet das Laden auf deinem Konto ohne Karte oder App. Du erhältst jedes Mal eine Benachrichtigung.",
+    "autochargeBlocked": "Der Betreiber hat Autocharge für dieses Fahrzeug gesperrt. Wende dich an den Betreiber, um es zu entsperren.",
+    "autochargeSaved": "Fahrzeug für das Laden durch Einstecken gespeichert",
+    "autochargeSaveFailed": "Das Fahrzeug konnte nicht gespeichert werden.",
+    "useForPlugIn": "Fahrzeug zum Laden durch Einstecken verwenden",
+    "useForPlugInDescription": "Die Ladestation hat für diesen Ladevorgang {{id}} gesendet. Speichere die Kennung an deinem Fahrzeug und schalte Autocharge ein, dann startet das Laden beim nächsten Einstecken ohne Karte oder App.",
+    "newVehicle": "Neues Fahrzeug",
+    "makeModelRequired": "Gib Marke und Modell ein.",
+    "lastSeen": "Zuletzt gesehen",
+    "lastSeenValue": "{{station}}, {{time}}"
   }
 }

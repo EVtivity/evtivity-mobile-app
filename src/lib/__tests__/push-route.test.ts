@@ -21,6 +21,12 @@ describe('pushTarget', () => {
     expect(pushTarget({ eventType: 'session.Completed' })).toBe('/(tabs)');
   });
 
+  it('opens the vehicles for an Autocharge start', () => {
+    expect(pushTarget({ eventType: 'session.AutochargeStarted', stationId: 'CS-1' })).toBe(
+      '/account/vehicles',
+    );
+  });
+
   it('opens the payment methods for the fleet billing notices', () => {
     expect(pushTarget({ eventType: 'fleet.AccountBillingChanged' })).toBe(
       '/account/payment-methods',

@@ -234,6 +234,31 @@ export function useDeleteVehicle() {
   });
 }
 
+// Autocharge on or off (PATCH /v1/portal/vehicles/:id).
+export function useSetVehicleAutocharge() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: { id: string; enabled: boolean }) =>
+      api.patch<Vehicle>(`/v1/portal/vehicles/${encodeURIComponent(input.id)}`, {
+        autochargeEnabled: input.enabled,
+      }),
+    onSuccess: (updated) => {
+      // Write the server's row straight into the cache so the switch settles on
+      // the new state without flipping back during a refetch.
+      qc.setQueryData<Vehicle[]>(
+        ['vehicles'],
+        (old) => old?.map((v) => (v.id === updated.id ? updated : v)) ?? old,
+      );
+    },
+    // 403 VEHICLE_BLOCKED_BY_OPERATOR (the operator blocked it since the list
+    // loaded) and 404 VEHICLE_NOT_FOUND mean the list is stale: it then shows
+    // the vehicle locked or gone.
+    onError: () => {
+      void qc.invalidateQueries({ queryKey: ['vehicles'] });
+    },
+  });
+}
+
 export function useRfidTokens() {
   return useQuery({
     queryKey: ['rfid-tokens'],

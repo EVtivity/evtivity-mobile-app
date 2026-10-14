@@ -586,7 +586,11 @@
     "VEHICLE_NOT_FOUND": "未找到车辆",
     "MFA_ALREADY_ENABLED": "MFA 已启用。请先停用，再设置新的方法。",
     "ACCOUNT_DISABLED": "账户已禁用",
-    "INVALID_PASSWORD": "当前密码不正确"
+    "INVALID_PASSWORD": "当前密码不正确",
+    "SESSION_NO_VEHICLE_ID": "充电站未为此会话发送车辆标识。",
+    "VEHICLE_BLOCKED_BY_OPERATOR": "运营商已阻止此车辆使用 Autocharge。请联系运营商解除阻止。",
+    "VEHICLE_ID_IN_USE": "另一辆车已将此 VIN 或 EVCCID 用于 Autocharge。",
+    "VEHICLE_ID_REQUIRED": "Autocharge 需要车辆的 VIN 或 EVCCID。"
   },
   "fleetBilling": {
     "billedTo": "记账到 {{fleet}}",
@@ -661,5 +665,29 @@
     "country": "国家",
     "updated": "账单地址已保存。",
     "updateFailed": "无法保存账单地址。"
+  },
+  "vehicles": {
+    "vehicle": "车辆",
+    "vehicleId": "车辆标识",
+    "vin": "VIN",
+    "evccid": "EVCCID",
+    "idTypes": {
+      "VIN": "VIN",
+      "EVCCID": "EVCCID",
+      "MacAddress": "MAC 地址"
+    },
+    "capturedFromCharger": "从充电站获取",
+    "autocharge": "Autocharge",
+    "autochargeFor": "{{vehicle}} 的 Autocharge",
+    "autochargeHelp": "插枪即充：为此车辆插枪后，无需卡片或应用即可在您的账户上开始充电。每次都会收到通知。",
+    "autochargeBlocked": "运营商已阻止此车辆使用 Autocharge。请联系运营商解除阻止。",
+    "autochargeSaved": "已保存车辆用于插枪即充",
+    "autochargeSaveFailed": "无法保存车辆。",
+    "useForPlugIn": "将此车辆用于插枪即充",
+    "useForPlugInDescription": "充电站为此会话发送了 {{id}}。将其保存到您的车辆并开启 Autocharge，下次插枪时无需卡片或应用即可开始充电。",
+    "newVehicle": "新车辆",
+    "makeModelRequired": "请输入品牌和型号。",
+    "lastSeen": "最近识别",
+    "lastSeenValue": "{{station}}，{{time}}"
   }
 }

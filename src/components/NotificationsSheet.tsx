@@ -9,18 +9,21 @@ import { Bell } from '@/components/icons';
 import { Sheet, Text, Spinner, EmptyState } from '@/components/ui';
 import { hsl } from '@/lib/theme';
 import { formatRelative } from '@/lib/format';
+import { AUTOCHARGE_STARTED } from '@/lib/push-route';
 import {
   useNotifications,
   useMarkAllRead,
   type PortalNotification,
 } from '@/features/notifications';
 
-type NotificationRoute = '/support' | '/reservations' | '/(tabs)/activity';
+type NotificationRoute = '/support' | '/reservations' | '/(tabs)/activity' | '/account/vehicles';
 
 function routeFor(eventType: string | null): NotificationRoute | null {
   const evt = eventType ?? '';
   if (evt.startsWith('support')) return '/support';
   if (evt.startsWith('reservation')) return '/reservations';
+  // Same target as the push: the driver turns Autocharge off there.
+  if (evt === AUTOCHARGE_STARTED) return '/account/vehicles';
   if (evt.startsWith('session') || evt.startsWith('payment')) return '/(tabs)/activity';
   return null;
 }

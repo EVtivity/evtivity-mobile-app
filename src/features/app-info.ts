@@ -44,6 +44,9 @@ export interface Features {
   // servers), and the consent notice version to send back with the choice.
   driverAiSupport?: boolean;
   driverAiNoticeVersion?: number;
+  // Autocharge (charge by plugging in) is offered: the setting or any site on
+  // (absent on older servers).
+  autochargeEnabled?: boolean;
 }
 
 // Operator feature toggles from the CSMS. Gates the Reserve tab and other
