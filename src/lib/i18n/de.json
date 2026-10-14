@@ -353,7 +353,9 @@
     "priceDisplayNet": "Exklusive Steuer (netto)",
     "priceDisplayHelper": "Inklusive Steuer zeigt Preise mit Steuer. Exklusive Steuer zeigt Preise vor Steuer. Der abgerechnete Betrag ist in beiden Fällen gleich, und solange du nichts wählst, gilt die Vorgabe des Betreibers.",
     "invoices": "Rechnungen",
-    "billingAddress": "Rechnungsadresse"
+    "billingAddress": "Rechnungsadresse",
+    "rfidBlockedByOperator": "Vom Betreiber deaktiviert",
+    "rfidExpired": "Abgelaufen"
   },
   "payments": {
     "title": "Zahlung",
@@ -575,7 +577,15 @@
     "WEAK_PASSWORD": "Passwort erfüllt die Komplexitätsanforderungen nicht",
     "ATTESTATION_FAILED": "Die Geräteattestierung ist fehlgeschlagen. Aktualisiere die App und versuche es erneut.",
     "DRIVER_AI_NOTICE_OUTDATED": "Der KI-Hinweis wurde geändert. Lesen Sie ihn und wählen Sie erneut",
-    "SUPPORT_CASE_AI_NOT_AWAITING_FEEDBACK": "Dieser Supportfall wartet nicht auf eine Rückmeldung zu einer automatischen Antwort"
+    "SUPPORT_CASE_AI_NOT_AWAITING_FEEDBACK": "Dieser Supportfall wartet nicht auf eine Rückmeldung zu einer automatischen Antwort",
+    "TOKEN_NOT_FOUND": "Token nicht gefunden",
+    "TOKEN_DUPLICATE": "Token bereits registriert",
+    "TOKEN_BLOCKED_BY_OPERATOR": "Der Betreiber hat diese Karte deaktiviert. Wenden Sie sich an den Betreiber, um sie wieder zu aktivieren.",
+    "VEHICLE_NOT_FOUND": "Fahrzeug nicht gefunden",
+    "MFA_ALREADY_ENABLED": "MFA ist bereits aktiviert. Deaktiviere sie zuerst, bevor du eine neue Methode einrichtest.",
+    "ACCOUNT_DISABLED": "Konto deaktiviert",
+    "INVALID_PASSWORD": "Aktuelles Passwort ist falsch",
+    "EMAIL_EXISTS": "E-Mail-Adresse bereits registriert"
   },
   "fleetBilling": {
     "billedTo": "Abgerechnet über {{fleet}}",

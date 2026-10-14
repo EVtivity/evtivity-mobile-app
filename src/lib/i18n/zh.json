@@ -353,7 +353,9 @@
     "priceDisplayNet": "不含税（净价）",
     "priceDisplayHelper": "含税显示加上税费后的价格。不含税显示税前价格。两种方式下实际扣款金额相同，未选择时使用运营商的默认设置。",
     "invoices": "发票",
-    "billingAddress": "账单地址"
+    "billingAddress": "账单地址",
+    "rfidBlockedByOperator": "已被运营商停用",
+    "rfidExpired": "已过期"
   },
   "payments": {
     "title": "支付",
@@ -575,7 +577,15 @@
     "WEAK_PASSWORD": "密码不符合复杂度要求",
     "ATTESTATION_FAILED": "设备证明失败。请更新应用后重试。",
     "DRIVER_AI_NOTICE_OUTDATED": "AI 说明已更新，请阅读后重新选择",
-    "SUPPORT_CASE_AI_NOT_AWAITING_FEEDBACK": "此支持工单未在等待对自动回答的反馈"
+    "SUPPORT_CASE_AI_NOT_AWAITING_FEEDBACK": "此支持工单未在等待对自动回答的反馈",
+    "TOKEN_NOT_FOUND": "未找到令牌",
+    "TOKEN_DUPLICATE": "令牌已注册",
+    "TOKEN_BLOCKED_BY_OPERATOR": "此卡已被运营商停用。请联系运营商重新启用。",
+    "VEHICLE_NOT_FOUND": "未找到车辆",
+    "MFA_ALREADY_ENABLED": "MFA 已启用。请先停用，再设置新的方法。",
+    "ACCOUNT_DISABLED": "账户已禁用",
+    "INVALID_PASSWORD": "当前密码不正确",
+    "EMAIL_EXISTS": "邮箱已注册"
   },
   "fleetBilling": {
     "billedTo": "记账到 {{fleet}}",

@@ -353,7 +353,9 @@
     "priceDisplayNet": "未稅（淨價）",
     "priceDisplayHelper": "含稅顯示加上稅額後的價格。未稅顯示稅前價格。兩種方式下實際扣款金額相同，未選擇時使用營運商的預設設定。",
     "invoices": "發票",
-    "billingAddress": "帳單地址"
+    "billingAddress": "帳單地址",
+    "rfidBlockedByOperator": "已被營運商停用",
+    "rfidExpired": "已過期"
   },
   "payments": {
     "title": "付款",
@@ -575,7 +577,15 @@
     "WEAK_PASSWORD": "密碼不符合複雜度要求",
     "ATTESTATION_FAILED": "裝置證明失敗。請更新應用程式後再試一次。",
     "DRIVER_AI_NOTICE_OUTDATED": "AI 說明已更新，請閱讀後重新選擇",
-    "SUPPORT_CASE_AI_NOT_AWAITING_FEEDBACK": "此客服案件未在等待對自動回覆的意見回饋"
+    "SUPPORT_CASE_AI_NOT_AWAITING_FEEDBACK": "此客服案件未在等待對自動回覆的意見回饋",
+    "TOKEN_NOT_FOUND": "找不到權杖",
+    "TOKEN_DUPLICATE": "權杖已註冊",
+    "TOKEN_BLOCKED_BY_OPERATOR": "此卡已被營運商停用。請聯絡營運商重新啟用。",
+    "VEHICLE_NOT_FOUND": "找不到車輛",
+    "MFA_ALREADY_ENABLED": "MFA 已啟用。請先停用，再設定新的方法。",
+    "ACCOUNT_DISABLED": "帳號已停用",
+    "INVALID_PASSWORD": "目前密碼不正確",
+    "EMAIL_EXISTS": "電子郵件已註冊"
   },
   "fleetBilling": {
     "billedTo": "記帳到 {{fleet}}",

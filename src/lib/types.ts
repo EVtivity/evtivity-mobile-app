@@ -124,6 +124,10 @@ export interface RfidToken {
   idToken: string;
   tokenType: string;
   isActive: boolean;
+  /** Expiry the operator set, null when the card does not expire. */
+  expiresAt?: string | null;
+  /** The operator deactivated the card: only the operator can reactivate it. */
+  blockedByOperator?: boolean;
 }
 
 export interface Paginated<T> {

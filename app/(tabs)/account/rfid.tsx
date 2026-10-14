@@ -5,7 +5,7 @@ import React from 'react';
 import { View, Switch } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { usePreventScreenCapture } from 'expo-screen-capture';
-import { Nfc } from '@/components/icons';
+import { Lock, Nfc } from '@/components/icons';
 import {
   Screen,
   Text,
@@ -23,6 +23,7 @@ import {
 } from '@/components/ui';
 import { hsl } from '@/lib/theme';
 import { useRfidTokens, useAddRfidToken, useToggleRfidToken } from '@/features/account';
+import { rfidTokenStatus } from '@/lib/rfid-tokens';
 
 function maskToken(value: string): string {
   if (value.length <= 4) return value;
@@ -129,21 +130,50 @@ export default function RfidScreen(): React.JSX.Element {
         />
       ) : (
         <View className="gap-3">
-          {items.map((tok) => (
-            <ListItemCard
-              key={tok.id}
-              title={maskToken(tok.idToken)}
-              subtitle={tok.tokenType}
-              right={
-                <Switch
-                  testID={`rfid-switch-${tok.idToken}`}
-                  value={pendingActive[tok.id] ?? tok.isActive}
-                  onValueChange={(v) => onToggle(tok.id, v)}
-                  trackColor={{ true: hsl('primary'), false: hsl('muted') }}
-                />
-              }
-            />
-          ))}
+          {items.map((tok) => {
+            const status = rfidTokenStatus(tok);
+            return (
+              <ListItemCard
+                key={tok.id}
+                title={maskToken(tok.idToken)}
+                subtitle={tok.tokenType}
+                footer={
+                  status === 'blocked' || status === 'expired' ? (
+                    <Text
+                      testID={`rfid-status-${tok.idToken}`}
+                      variant="small"
+                      className="text-destructive"
+                    >
+                      {t(
+                        status === 'blocked'
+                          ? 'account.rfidBlockedByOperator'
+                          : 'account.rfidExpired',
+                      )}
+                    </Text>
+                  ) : null
+                }
+                right={
+                  // Only the operator can reactivate a card the operator
+                  // deactivated: no switch, a lock instead.
+                  status === 'blocked' ? (
+                    <View
+                      testID={`rfid-locked-${tok.idToken}`}
+                      accessibilityLabel={t('account.rfidBlockedByOperator')}
+                    >
+                      <Lock size={20} color={hsl('mutedForeground')} />
+                    </View>
+                  ) : (
+                    <Switch
+                      testID={`rfid-switch-${tok.idToken}`}
+                      value={pendingActive[tok.id] ?? tok.isActive}
+                      onValueChange={(v) => onToggle(tok.id, v)}
+                      trackColor={{ true: hsl('primary'), false: hsl('muted') }}
+                    />
+                  )
+                }
+              />
+            );
+          })}
         </View>
       )}
 

@@ -227,7 +227,8 @@ export function useDeleteVehicle() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => api.del<void>(`/v1/portal/vehicles/${encodeURIComponent(id)}`),
-    onSuccess: () => {
+    // On error too: a 404 VEHICLE_NOT_FOUND means the list is stale.
+    onSettled: () => {
       void qc.invalidateQueries({ queryKey: ['vehicles'] });
     },
   });
@@ -245,7 +246,9 @@ export function useAddRfidToken() {
   return useMutation({
     mutationFn: (input: { idToken: string; tokenType?: string }) =>
       api.post<RfidToken>('/v1/portal/tokens', input),
-    onSuccess: () => {
+    // On error too: re-adding a card the operator blocked answers 403
+    // TOKEN_BLOCKED_BY_OPERATOR, and the list then shows it locked.
+    onSettled: () => {
       void qc.invalidateQueries({ queryKey: ['rfid-tokens'] });
     },
   });
@@ -265,6 +268,11 @@ export function useToggleRfidToken() {
         ['rfid-tokens'],
         (old) => old?.map((t) => (t.id === updated.id ? updated : t)) ?? old,
       );
+    },
+    // 404 TOKEN_NOT_FOUND (not the driver's card) and 403
+    // TOKEN_BLOCKED_BY_OPERATOR (the operator blocked it) mean the list is stale.
+    onError: () => {
+      void qc.invalidateQueries({ queryKey: ['rfid-tokens'] });
     },
   });
 }

@@ -353,7 +353,9 @@
     "priceDisplayNet": "Sin impuestos (neto)",
     "priceDisplayHelper": "Con impuestos muestra los precios con los impuestos sumados. Sin impuestos muestra los precios antes de impuestos. El importe cobrado es el mismo en ambos casos, y mientras no elija, se aplica la opción del operador.",
     "invoices": "Facturas",
-    "billingAddress": "Dirección de Facturación"
+    "billingAddress": "Dirección de Facturación",
+    "rfidBlockedByOperator": "Desactivada por el operador",
+    "rfidExpired": "Vencida"
   },
   "payments": {
     "title": "Pago",
@@ -575,7 +577,15 @@
     "WEAK_PASSWORD": "La contraseña no cumple con los requisitos de complejidad",
     "ATTESTATION_FAILED": "La verificación del dispositivo falló. Actualice la aplicación e inténtelo de nuevo.",
     "DRIVER_AI_NOTICE_OUTDATED": "El aviso sobre la IA ha cambiado. Léalo y vuelva a elegir",
-    "SUPPORT_CASE_AI_NOT_AWAITING_FEEDBACK": "Este caso de soporte no está esperando su valoración de una respuesta automática"
+    "SUPPORT_CASE_AI_NOT_AWAITING_FEEDBACK": "Este caso de soporte no está esperando su valoración de una respuesta automática",
+    "TOKEN_NOT_FOUND": "Token no encontrado",
+    "TOKEN_DUPLICATE": "Token ya registrado",
+    "TOKEN_BLOCKED_BY_OPERATOR": "El operador desactivó esta tarjeta. Contacte al operador para reactivarla.",
+    "VEHICLE_NOT_FOUND": "Vehículo no encontrado",
+    "MFA_ALREADY_ENABLED": "MFA ya está habilitada. Deshabilitala primero antes de configurar un nuevo método.",
+    "ACCOUNT_DISABLED": "Cuenta deshabilitada",
+    "INVALID_PASSWORD": "La contraseña actual es incorrecta",
+    "EMAIL_EXISTS": "El correo electrónico ya está registrado"
   },
   "fleetBilling": {
     "billedTo": "Facturado a {{fleet}}",

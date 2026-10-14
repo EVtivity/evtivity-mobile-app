@@ -353,7 +353,9 @@
     "priceDisplayNet": "Excluding tax (net)",
     "priceDisplayHelper": "Including tax shows prices with tax added. Excluding tax shows prices before tax. You are charged the same amount either way, and until you choose, the operator default applies.",
     "invoices": "Invoices",
-    "billingAddress": "Billing Address"
+    "billingAddress": "Billing Address",
+    "rfidBlockedByOperator": "Deactivated by the operator",
+    "rfidExpired": "Expired"
   },
   "payments": {
     "title": "Payment",
@@ -575,7 +577,15 @@
     "WEAK_PASSWORD": "Password does not meet complexity requirements",
     "ATTESTATION_FAILED": "Device attestation failed. Update the app and try again.",
     "DRIVER_AI_NOTICE_OUTDATED": "The AI notice has changed. Read it and choose again",
-    "SUPPORT_CASE_AI_NOT_AWAITING_FEEDBACK": "This support case is not waiting for feedback on an automatic answer"
+    "SUPPORT_CASE_AI_NOT_AWAITING_FEEDBACK": "This support case is not waiting for feedback on an automatic answer",
+    "TOKEN_NOT_FOUND": "Token not found",
+    "TOKEN_DUPLICATE": "Token already registered",
+    "TOKEN_BLOCKED_BY_OPERATOR": "This card was deactivated by the operator. Contact the operator to reactivate it.",
+    "VEHICLE_NOT_FOUND": "Vehicle not found",
+    "MFA_ALREADY_ENABLED": "MFA is already enabled. Disable it first before setting up a new method.",
+    "ACCOUNT_DISABLED": "Account disabled",
+    "INVALID_PASSWORD": "Current password is incorrect",
+    "EMAIL_EXISTS": "Email already registered"
   },
   "fleetBilling": {
     "billedTo": "Billed to {{fleet}}",
