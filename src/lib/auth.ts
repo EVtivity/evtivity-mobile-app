@@ -44,7 +44,7 @@ interface AuthState {
     lastName: string;
     email: string;
     password: string;
-  }) => Promise<LoginResult>;
+  }) => Promise<void>;
   verifyMfa: (mfaToken: string, code: string) => Promise<void>;
   logout: () => Promise<void>;
   setDriver: (driver: Driver) => void;
@@ -107,15 +107,13 @@ export const useAuth = create<AuthState>((set) => ({
     return result;
   },
 
+  // The API answers 202 { success: true } for a new and a known email alike
+  // and signs nobody in: the driver opens the emailed link, then signs in.
   register: async (input) => {
-    const result = await api.post<LoginResult>('/v1/portal/auth/register', input, {
+    await api.post<{ success: true }>('/v1/portal/auth/register', input, {
       auth: false,
       attest: true,
     });
-    if (isMfaRequired(result)) return result;
-    await applySession(result);
-    set({ status: 'authenticated', driver: result.driver, locked: false });
-    return result;
   },
 
   verifyMfa: async (mfaToken, code) => {

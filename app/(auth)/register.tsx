@@ -10,7 +10,6 @@ import { AuthHeader } from '@/components/AuthHeader';
 import { AuthFooter } from '@/components/AuthFooter';
 import { PasswordRules } from '@/components/PasswordRules';
 import { useAuth } from '@/lib/auth';
-import { isMfaRequired } from '@/lib/types';
 import { ApiError, getApiErrorFieldDetails, apiErrorMessage } from '@/lib/api';
 import { validateEmail, validatePassword } from '@/lib/validation';
 
@@ -18,7 +17,6 @@ export default function RegisterScreen(): React.JSX.Element {
   const { t } = useTranslation();
   const router = useRouter();
   const register = useAuth((s) => s.register);
-  const setMfaPending = useAuth((s) => s.setMfaPending);
 
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
@@ -26,6 +24,8 @@ export default function RegisterScreen(): React.JSX.Element {
   const [password, setPassword] = React.useState('');
   const [fieldErrors, setFieldErrors] = React.useState<Record<string, string>>({});
   const [loading, setLoading] = React.useState(false);
+  // Set once the API accepted the request: the screen then asks to check the inbox.
+  const [submittedEmail, setSubmittedEmail] = React.useState<string | null>(null);
 
   const onSubmit = async (): Promise<void> => {
     const trimmedEmail = email.trim();
@@ -43,16 +43,15 @@ export default function RegisterScreen(): React.JSX.Element {
     setFieldErrors({});
     setLoading(true);
     try {
-      const result = await register({
+      // Same answer for a new and a known email, and no sign-in: the driver
+      // opens the emailed link, then signs in.
+      await register({
         firstName: firstName.trim(),
         lastName: lastName.trim(),
         email: trimmedEmail,
         password,
       });
-      if (isMfaRequired(result)) {
-        setMfaPending({ mfaToken: result.mfaToken, method: result.mfaMethod });
-        router.push('/(auth)/mfa');
-      }
+      setSubmittedEmail(trimmedEmail);
     } catch (err) {
       const details = err instanceof ApiError ? getApiErrorFieldDetails(err) : {};
       if (err instanceof ApiError && err.code === 'WEAK_PASSWORD') {
@@ -68,6 +67,25 @@ export default function RegisterScreen(): React.JSX.Element {
       setLoading(false);
     }
   };
+
+  if (submittedEmail != null) {
+    return (
+      <Screen scroll>
+        <AuthHeader title={t('auth.registerCheckEmailTitle')} />
+        <View className="gap-4">
+          <Text testID="register-check-email" className="text-base text-muted-foreground">
+            {t('auth.registerCheckEmail', { email: submittedEmail })}
+          </Text>
+          <Button
+            testID="register-back-to-login"
+            title={t('auth.backToLogin')}
+            onPress={() => router.replace('/(auth)/login')}
+          />
+        </View>
+        <AuthFooter />
+      </Screen>
+    );
+  }
 
   return (
     <Screen scroll>

@@ -82,7 +82,9 @@
     "verifyEmailChecking": "Verifying your email...",
     "verifyEmailSuccess": "Email verified",
     "verifyEmailFailed": "This verification link is invalid or has expired.",
-    "verifyEmailCheckInbox": "Check your inbox for a verification link to confirm your email."
+    "verifyEmailCheckInbox": "Check your inbox for a verification link to confirm your email.",
+    "registerCheckEmailTitle": "Check Your Email",
+    "registerCheckEmail": "We sent an email to {{email}}. Open the link in it to continue, then sign in."
   },
   "tabs": {
     "home": "Home",
@@ -584,8 +586,7 @@
     "VEHICLE_NOT_FOUND": "Vehicle not found",
     "MFA_ALREADY_ENABLED": "MFA is already enabled. Disable it first before setting up a new method.",
     "ACCOUNT_DISABLED": "Account disabled",
-    "INVALID_PASSWORD": "Current password is incorrect",
-    "EMAIL_EXISTS": "Email already registered"
+    "INVALID_PASSWORD": "Current password is incorrect"
   },
   "fleetBilling": {
     "billedTo": "Billed to {{fleet}}",

@@ -82,7 +82,9 @@
     "verifyEmailChecking": "Verificando su correo...",
     "verifyEmailSuccess": "Correo verificado",
     "verifyEmailFailed": "Este enlace de verificación es inválido o ha expirado.",
-    "verifyEmailCheckInbox": "Revise su bandeja de entrada para encontrar un enlace que confirme su correo."
+    "verifyEmailCheckInbox": "Revise su bandeja de entrada para encontrar un enlace que confirme su correo.",
+    "registerCheckEmailTitle": "Revisa tu correo",
+    "registerCheckEmail": "Enviamos un correo a {{email}}. Abre el enlace que contiene para continuar y luego inicia sesión."
   },
   "tabs": {
     "home": "Inicio",
@@ -584,8 +586,7 @@
     "VEHICLE_NOT_FOUND": "Vehículo no encontrado",
     "MFA_ALREADY_ENABLED": "MFA ya está habilitada. Deshabilitala primero antes de configurar un nuevo método.",
     "ACCOUNT_DISABLED": "Cuenta deshabilitada",
-    "INVALID_PASSWORD": "La contraseña actual es incorrecta",
-    "EMAIL_EXISTS": "El correo electrónico ya está registrado"
+    "INVALID_PASSWORD": "La contraseña actual es incorrecta"
   },
   "fleetBilling": {
     "billedTo": "Facturado a {{fleet}}",

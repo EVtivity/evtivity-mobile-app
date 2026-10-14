@@ -141,30 +141,17 @@ describe('login', () => {
 });
 
 describe('register', () => {
-  it('returns the MFA challenge without starting a session', async () => {
+  it('signs nobody in: the driver verifies the email, then signs in', async () => {
     const m = load();
-    const challenge = { mfaRequired: true, mfaMethod: 'email', mfaToken: 'mt' };
-    m.api.post.mockResolvedValue(challenge);
-    const result = await m.auth.useAuth.getState().register({
-      firstName: 'A',
-      lastName: 'B',
-      email: 'a@b.com',
-      password: 'pw',
-    });
-    expect(result).toBe(challenge);
-    expect(m.auth.useAuth.getState().status).toBe('loading');
-  });
-
-  it('starts a session on a direct success', async () => {
-    const m = load();
-    m.api.post.mockResolvedValue(authSuccess);
+    m.api.post.mockResolvedValue({ success: true });
     await m.auth.useAuth.getState().register({
       firstName: 'A',
       lastName: 'B',
       email: 'a@b.com',
       password: 'pw',
     });
-    expect(m.auth.useAuth.getState().status).toBe('authenticated');
+    expect(m.auth.useAuth.getState().status).toBe('loading');
+    expect(m.session.setSession).not.toHaveBeenCalled();
   });
 });
 
@@ -184,7 +171,7 @@ describe('attested pre-auth calls', () => {
 
   it('register sends attestation without a session', async () => {
     const m = load();
-    m.api.post.mockResolvedValue(authSuccess);
+    m.api.post.mockResolvedValue({ success: true });
     const input = { firstName: 'A', lastName: 'B', email: 'a@b.com', password: 'pw' };
     await m.auth.useAuth.getState().register(input);
     expect(m.api.post).toHaveBeenCalledWith('/v1/portal/auth/register', input, {

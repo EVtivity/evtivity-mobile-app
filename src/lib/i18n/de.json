@@ -82,7 +82,9 @@
     "verifyEmailChecking": "E-Mail-Adresse wird bestätigt...",
     "verifyEmailSuccess": "E-Mail-Adresse bestätigt",
     "verifyEmailFailed": "Dieser Bestätigungslink ist ungültig oder abgelaufen.",
-    "verifyEmailCheckInbox": "Prüfe dein Postfach auf einen Bestätigungslink, um deine E-Mail-Adresse zu bestätigen."
+    "verifyEmailCheckInbox": "Prüfe dein Postfach auf einen Bestätigungslink, um deine E-Mail-Adresse zu bestätigen.",
+    "registerCheckEmailTitle": "Prüfe deine E-Mails",
+    "registerCheckEmail": "Wir haben eine E-Mail an {{email}} gesendet. Öffne den Link darin, um fortzufahren, und melde dich dann an."
   },
   "tabs": {
     "home": "Start",
@@ -584,8 +586,7 @@
     "VEHICLE_NOT_FOUND": "Fahrzeug nicht gefunden",
     "MFA_ALREADY_ENABLED": "MFA ist bereits aktiviert. Deaktiviere sie zuerst, bevor du eine neue Methode einrichtest.",
     "ACCOUNT_DISABLED": "Konto deaktiviert",
-    "INVALID_PASSWORD": "Aktuelles Passwort ist falsch",
-    "EMAIL_EXISTS": "E-Mail-Adresse bereits registriert"
+    "INVALID_PASSWORD": "Aktuelles Passwort ist falsch"
   },
   "fleetBilling": {
     "billedTo": "Abgerechnet über {{fleet}}",

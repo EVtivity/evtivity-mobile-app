@@ -82,7 +82,9 @@
     "verifyEmailChecking": "正在驗證您的電子郵件...",
     "verifyEmailSuccess": "電子郵件已驗證",
     "verifyEmailFailed": "此驗證連結無效或已過期。",
-    "verifyEmailCheckInbox": "請查看收件匣中的驗證連結，以確認您的電子郵件。"
+    "verifyEmailCheckInbox": "請查看收件匣中的驗證連結，以確認您的電子郵件。",
+    "registerCheckEmailTitle": "查看您的電子郵件",
+    "registerCheckEmail": "我們已寄送一封電子郵件至 {{email}}。開啟郵件中的連結以繼續，然後登入。"
   },
   "tabs": {
     "home": "首頁",
@@ -584,8 +586,7 @@
     "VEHICLE_NOT_FOUND": "找不到車輛",
     "MFA_ALREADY_ENABLED": "MFA 已啟用。請先停用，再設定新的方法。",
     "ACCOUNT_DISABLED": "帳號已停用",
-    "INVALID_PASSWORD": "目前密碼不正確",
-    "EMAIL_EXISTS": "電子郵件已註冊"
+    "INVALID_PASSWORD": "目前密碼不正確"
   },
   "fleetBilling": {
     "billedTo": "記帳到 {{fleet}}",

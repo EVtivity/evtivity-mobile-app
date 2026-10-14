@@ -82,7 +82,9 @@
     "verifyEmailChecking": "正在验证您的邮箱...",
     "verifyEmailSuccess": "邮箱已验证",
     "verifyEmailFailed": "此验证链接无效或已过期。",
-    "verifyEmailCheckInbox": "请查收邮件中的验证链接以确认您的邮箱。"
+    "verifyEmailCheckInbox": "请查收邮件中的验证链接以确认您的邮箱。",
+    "registerCheckEmailTitle": "查看你的邮箱",
+    "registerCheckEmail": "我们已向 {{email}} 发送了一封邮件。打开邮件中的链接继续，然后登录。"
   },
   "tabs": {
     "home": "首页",
@@ -584,8 +586,7 @@
     "VEHICLE_NOT_FOUND": "未找到车辆",
     "MFA_ALREADY_ENABLED": "MFA 已启用。请先停用，再设置新的方法。",
     "ACCOUNT_DISABLED": "账户已禁用",
-    "INVALID_PASSWORD": "当前密码不正确",
-    "EMAIL_EXISTS": "邮箱已注册"
+    "INVALID_PASSWORD": "当前密码不正确"
   },
   "fleetBilling": {
     "billedTo": "记账到 {{fleet}}",
