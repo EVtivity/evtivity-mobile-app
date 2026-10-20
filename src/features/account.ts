@@ -4,6 +4,7 @@
 import { useQuery, useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { useAuth } from '@/lib/auth';
+import { setSession } from '@/lib/session';
 import type { PriceDisplay } from '@/lib/price-display';
 import type { Driver, Vehicle, RfidToken } from '@/lib/types';
 import type { DriverBilling } from '@/lib/fleet-billing';
@@ -302,10 +303,32 @@ export function useToggleRfidToken() {
   });
 }
 
+/** A current server ends every session and returns a new one for this device. */
+interface ChangePasswordReply {
+  success: true;
+  token?: string;
+  refreshToken?: string;
+  expiresIn?: number;
+}
+
 export function useChangePassword() {
   return useMutation({
-    mutationFn: (input: { currentPassword: string; newPassword: string }) =>
-      api.patch<{ success: true }>('/v1/portal/driver/password', input),
+    mutationFn: async (input: { currentPassword: string; newPassword: string }) => {
+      const reply = await api.patch<ChangePasswordReply>('/v1/portal/driver/password', input);
+      // An older server answers { success } only and keeps the session.
+      if (
+        typeof reply.token === 'string' &&
+        typeof reply.refreshToken === 'string' &&
+        typeof reply.expiresIn === 'number'
+      ) {
+        await setSession({
+          token: reply.token,
+          refreshToken: reply.refreshToken,
+          expiresIn: reply.expiresIn,
+        });
+      }
+      return reply;
+    },
   });
 }
 
