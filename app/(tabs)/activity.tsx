@@ -10,7 +10,7 @@ import { ChevronLeft, ChevronRight, Leaf, Receipt } from '@/components/icons';
 import { ScreenBackground, Text, Card, Segmented, Spinner, EmptyState } from '@/components/ui';
 import { AppHeader } from '@/components/AppHeader';
 import { SessionRow } from '@/components/SessionRow';
-import { hsl, SURFACE_TEXT_VARS } from '@/lib/theme';
+import { hsl, useSurfaceTextVars } from '@/lib/theme';
 import { cn } from '@/lib/cn';
 import { formatCurrency, formatEnergyWh, formatMiles, formatMonth } from '@/lib/format';
 import {
@@ -46,6 +46,7 @@ function monthAbbrev(month: string): string {
 const CHART_HEIGHT = 110;
 
 export default function ActivityScreen(): React.JSX.Element {
+  const surfaceVars = useSurfaceTextVars();
   const { t } = useTranslation();
   const router = useRouter();
 
@@ -97,7 +98,7 @@ export default function ActivityScreen(): React.JSX.Element {
       const last = index === list.length - 1;
       return (
         <View
-          style={SURFACE_TEXT_VARS}
+          style={surfaceVars}
           className={cn(
             'border-x border-white/20 bg-card/[0.85] px-5',
             first && 'rounded-t-2xl border-t',

@@ -5,7 +5,7 @@ import React from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Text } from '@/components/ui';
-import { SURFACE_TEXT_VARS } from '@/lib/theme';
+import { useSurfaceTextVars } from '@/lib/theme';
 import { formatDateTime } from '@/lib/format';
 import { knownDriverActions } from '@/features/support';
 import type { SupportMessage } from '@/lib/types';
@@ -18,20 +18,24 @@ interface AssistantMessageProps {
 
 // The automatic answer of the driver AI support: labeled, styled apart from
 // operator messages, with the suggested driver actions as chips. No provider
-// or model name.
+// or model name. The bubble is an opaque card surface so its text keeps WCAG AA
+// contrast over the branded backdrop in both color schemes; the primary border
+// sets it apart from operator messages.
 export function AssistantMessage({
   message,
   driverActions,
 }: AssistantMessageProps): React.JSX.Element {
   const { t } = useTranslation();
+  const surfaceVars = useSurfaceTextVars();
   const actions = knownDriverActions(driverActions);
   return (
     <View testID="support-ai-answer" className="w-full items-start">
       <View
-        style={SURFACE_TEXT_VARS}
-        className="max-w-[90%] gap-2 rounded-2xl border border-primary/40 bg-primary/10 px-4 py-3"
+        testID="support-ai-answer-bubble"
+        style={surfaceVars}
+        className="max-w-[90%] gap-2 rounded-2xl border border-primary bg-card px-4 py-3"
       >
-        <Text weight="semibold" className="text-xs uppercase tracking-wide text-primary">
+        <Text weight="semibold" className="text-xs uppercase tracking-wide text-muted-foreground">
           {t('support.ai.answerTitle')}
         </Text>
         <Text className="text-base leading-relaxed text-foreground">{message.body}</Text>
@@ -41,7 +45,7 @@ export function AssistantMessage({
               <View
                 key={code}
                 testID={`support-ai-action-${code}`}
-                className="rounded-full border border-border bg-card px-3 py-1.5"
+                className="rounded-full border border-border bg-muted px-3 py-1.5"
               >
                 <Text className="text-xs text-foreground">
                   {t(`support.ai.driverAction.${code}`)}

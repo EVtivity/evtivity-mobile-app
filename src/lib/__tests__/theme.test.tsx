@@ -32,11 +32,24 @@ jest.mock('nativewind', () => ({
   vars: (obj: Record<string, string>) => obj,
   useColorScheme: jest.fn(() => ({ colorScheme: 'light' })),
 }));
+const mockDarkPalette = {
+  ...FULL_PALETTE,
+  card: '160 22% 11%',
+  cardForeground: '160 18% 96%',
+  mutedForeground: '156 12% 64%',
+};
+
 jest.mock('@/lib/config', () => ({
-  BRAND: { colors: { light: FULL_PALETTE, dark: FULL_PALETTE } },
+  BRAND: { colors: { light: FULL_PALETTE, dark: mockDarkPalette } },
 }));
 
-const { hsl, ThemeProvider, BACKDROP_TEXT_VARS, SURFACE_TEXT_VARS } = require('@/lib/theme');
+const {
+  hsl,
+  ThemeProvider,
+  BACKDROP_TEXT_VARS,
+  surfaceTextVars,
+  useSurfaceTextVars,
+} = require('@/lib/theme');
 const mockUseColorScheme = useColorScheme as jest.Mock;
 
 describe('hsl', () => {
@@ -53,9 +66,41 @@ describe('hsl', () => {
 });
 
 describe('text variable bundles', () => {
-  it('expose the backdrop and surface overrides', async () => {
+  it('expose the backdrop override', async () => {
     expect(BACKDROP_TEXT_VARS['--foreground']).toBe('0 0% 100%');
-    expect(SURFACE_TEXT_VARS['--card-foreground']).toBe(FULL_PALETTE.cardForeground);
+  });
+
+  it('take the surface text vars from the light palette in light mode', async () => {
+    const v = surfaceTextVars('light');
+    expect(v).toEqual({
+      '--foreground': FULL_PALETTE.cardForeground,
+      '--card-foreground': FULL_PALETTE.cardForeground,
+      '--muted-foreground': FULL_PALETTE.mutedForeground,
+    });
+    expect(surfaceTextVars(undefined)).toBe(v);
+  });
+
+  it('take the surface text vars from the dark palette in dark mode', async () => {
+    expect(surfaceTextVars('dark')).toEqual({
+      '--foreground': mockDarkPalette.cardForeground,
+      '--card-foreground': mockDarkPalette.cardForeground,
+      '--muted-foreground': mockDarkPalette.mutedForeground,
+    });
+    expect(surfaceTextVars('dark')).toBe(surfaceTextVars('dark'));
+  });
+
+  it('follow the current color scheme in useSurfaceTextVars', async () => {
+    let seen: Record<string, string> | undefined;
+    function Probe(): React.JSX.Element {
+      seen = useSurfaceTextVars();
+      return <Text>probe</Text>;
+    }
+    mockUseColorScheme.mockReturnValue({ colorScheme: 'dark' });
+    await render(<Probe />);
+    expect(seen?.['--foreground']).toBe(mockDarkPalette.cardForeground);
+    mockUseColorScheme.mockReturnValue({ colorScheme: 'light' });
+    await render(<Probe />);
+    expect(seen?.['--foreground']).toBe(FULL_PALETTE.cardForeground);
   });
 });
 

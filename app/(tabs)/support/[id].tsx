@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { Send } from '@/components/icons';
 import { AiCaseStatus } from '@/components/support/AiCaseStatus';
 import { AssistantMessage } from '@/components/support/AssistantMessage';
+import { MessageBubble } from '@/components/support/MessageBubble';
 import {
   Text,
   Badge,
@@ -19,47 +20,14 @@ import {
   BackButton,
   useApiErrorToast,
 } from '@/components/ui';
-import { hsl, SURFACE_TEXT_VARS } from '@/lib/theme';
+import { hsl, useSurfaceTextVars } from '@/lib/theme';
 import { cn } from '@/lib/cn';
-import { formatDate, formatDateTime } from '@/lib/format';
+import { formatDate } from '@/lib/format';
 import { useSupportCase, useReplyCase } from '@/features/support';
 import { supportCaseStatusVariant } from '@/lib/status-variants';
-import type { SupportMessage } from '@/lib/types';
-
-function MessageBubble({ message }: { message: SupportMessage }): React.JSX.Element {
-  if (message.senderType === 'system') {
-    return (
-      <View className="items-center py-1">
-        <View style={SURFACE_TEXT_VARS} className="rounded-full bg-muted px-3 py-1.5">
-          <Text className="text-xs text-muted-foreground">{message.body}</Text>
-        </View>
-      </View>
-    );
-  }
-  const isDriver = message.senderType === 'driver';
-  return (
-    <View className={cn('w-full', isDriver ? 'items-end' : 'items-start')}>
-      <View
-        style={isDriver ? undefined : SURFACE_TEXT_VARS}
-        className={cn('max-w-[80%] rounded-2xl px-4 py-2.5', isDriver ? 'bg-primary' : 'bg-muted')}
-      >
-        <Text
-          className={cn(
-            'text-base leading-relaxed',
-            isDriver ? 'text-primary-foreground' : 'text-foreground',
-          )}
-        >
-          {message.body}
-        </Text>
-      </View>
-      <Text className="mt-1 px-1 text-xs text-muted-foreground">
-        {formatDateTime(message.createdAt)}
-      </Text>
-    </View>
-  );
-}
 
 export default function SupportCaseDetailScreen(): React.JSX.Element {
+  const surfaceVars = useSurfaceTextVars();
   const { t } = useTranslation();
   const showApiError = useApiErrorToast();
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -178,7 +146,7 @@ export default function SupportCaseDetailScreen(): React.JSX.Element {
         {detail.data != null &&
         detail.data.status !== 'closed' &&
         (detail.data.status !== 'resolved' || ai?.resolutionSource === 'ai') ? (
-          <View style={SURFACE_TEXT_VARS} className="border-t border-white/15 bg-card/[0.7]">
+          <View style={surfaceVars} className="border-t border-white/15 bg-card/[0.7]">
             <View className="flex-row items-end gap-2 px-4 py-2">
               <Input
                 value={text}

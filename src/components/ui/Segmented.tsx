@@ -6,7 +6,7 @@ import { View, Pressable } from 'react-native';
 import { Text } from './Text';
 import { cn } from '@/lib/cn';
 import { shadow } from '@/lib/shadow';
-import { SURFACE_TEXT_VARS } from '@/lib/theme';
+import { useSurfaceTextVars } from '@/lib/theme';
 import { tapLight } from '@/lib/haptics';
 
 interface Segment<T extends string> {
@@ -23,8 +23,9 @@ export function Segmented<T extends string>({
   value: T;
   onChange: (value: T) => void;
 }): React.JSX.Element {
+  const surfaceVars = useSurfaceTextVars();
   return (
-    <View style={SURFACE_TEXT_VARS} className="flex-row rounded-xl bg-muted p-1">
+    <View style={surfaceVars} className="flex-row rounded-xl bg-muted p-1">
       {segments.map((s) => {
         const active = s.value === value;
         return (

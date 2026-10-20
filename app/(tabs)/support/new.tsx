@@ -20,7 +20,7 @@ import {
   useToast,
   useApiErrorToast,
 } from '@/components/ui';
-import { hsl, SURFACE_TEXT_VARS } from '@/lib/theme';
+import { hsl, useSurfaceTextVars } from '@/lib/theme';
 import { cn } from '@/lib/cn';
 import { ApiError } from '@/lib/api';
 import { resolveLegalUrls } from '@/lib/config';
@@ -36,6 +36,7 @@ import {
 } from '@/features/support';
 
 export default function NewSupportCaseScreen(): React.JSX.Element {
+  const surfaceVars = useSurfaceTextVars();
   const { t, i18n } = useTranslation();
   const router = useRouter();
   const toast = useToast();
@@ -157,7 +158,7 @@ export default function NewSupportCaseScreen(): React.JSX.Element {
         <Text variant="label">{t('support.category')}</Text>
         <Pressable
           onPress={() => setPickerOpen(true)}
-          style={SURFACE_TEXT_VARS}
+          style={surfaceVars}
           className="h-[52px] flex-row items-center justify-between rounded-xl border-2 border-border bg-muted px-4"
         >
           <Text variant="body">{t(`support.categories.${category}`)}</Text>

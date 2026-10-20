@@ -36,22 +36,40 @@ function toVars(c: BrandColors): Record<string, string> {
 }
 
 // Surface-scoped text variables. The branded green backdrop sets light text
-// vars; cards, inputs, sheets, and the tab bar set dark vars. Because these
-// override --foreground / --muted-foreground for their subtree, even screens
-// that hard-code `text-foreground` / `text-muted-foreground` read correctly
-// without per-screen edits.
-const L = BRAND.colors.light;
-
+// vars; cards, inputs, sheets, and the tab bar set the card text vars of the
+// current color scheme, matching the card background that ThemeProvider sets
+// for that scheme. Because these override --foreground / --muted-foreground for
+// their subtree, even screens that hard-code `text-foreground` /
+// `text-muted-foreground` read correctly without per-screen edits.
 export const BACKDROP_TEXT_VARS = vars({
   '--foreground': '0 0% 100%',
   '--muted-foreground': '150 20% 84%',
 });
 
-export const SURFACE_TEXT_VARS = vars({
-  '--foreground': L.cardForeground,
-  '--card-foreground': L.cardForeground,
-  '--muted-foreground': L.mutedForeground,
-});
+function surfaceVars(c: BrandColors): ReturnType<typeof vars> {
+  return vars({
+    '--foreground': c.cardForeground,
+    '--card-foreground': c.cardForeground,
+    '--muted-foreground': c.mutedForeground,
+  });
+}
+
+// Built once per scheme so every surface gets a stable style reference.
+const SURFACE_TEXT_VARS_BY_SCHEME = {
+  light: surfaceVars(BRAND.colors.light),
+  dark: surfaceVars(BRAND.colors.dark),
+};
+
+export function surfaceTextVars(scheme: string | undefined): ReturnType<typeof vars> {
+  return scheme === 'dark' ? SURFACE_TEXT_VARS_BY_SCHEME.dark : SURFACE_TEXT_VARS_BY_SCHEME.light;
+}
+
+// The surface text vars for the active color scheme, the same source the
+// ThemeProvider uses for the card background.
+export function useSurfaceTextVars(): ReturnType<typeof vars> {
+  const { colorScheme } = useColorScheme();
+  return surfaceTextVars(colorScheme);
+}
 
 export function ThemeProvider({ children }: { children: React.ReactNode }): React.JSX.Element {
   const { colorScheme } = useColorScheme();

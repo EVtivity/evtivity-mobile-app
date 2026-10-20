@@ -8,7 +8,7 @@ import { X } from '@/components/icons';
 import { Text } from './Text';
 import { CardSurface } from './surface';
 import { Portal } from './Portal';
-import { hsl, SURFACE_TEXT_VARS } from '@/lib/theme';
+import { hsl, useSurfaceTextVars } from '@/lib/theme';
 
 // Bottom sheet rendered through the root Portal (not react-native Modal, which
 // renders blank / freezes on the New Architecture on this RN version). Backdrop
@@ -24,6 +24,7 @@ export function Sheet({
   title?: string;
   children: React.ReactNode;
 }): React.JSX.Element | null {
+  const surfaceVars = useSurfaceTextVars();
   if (!visible) return null;
   return (
     <Portal>
@@ -34,7 +35,7 @@ export function Sheet({
         <Pressable className="flex-1 justify-end bg-black/50" onPress={onClose}>
           <Pressable
             onPress={(e) => e.stopPropagation()}
-            style={SURFACE_TEXT_VARS}
+            style={surfaceVars}
             className="max-h-[85%] rounded-t-2xl bg-card"
           >
             <SafeAreaView edges={['bottom']}>

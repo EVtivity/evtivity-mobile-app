@@ -5,7 +5,7 @@ import React from 'react';
 import { View, Pressable } from 'react-native';
 import { Text } from './Text';
 import { cn } from '@/lib/cn';
-import { SURFACE_TEXT_VARS } from '@/lib/theme';
+import { useSurfaceTextVars } from '@/lib/theme';
 
 // A single selectable pill.
 export function Chip({
@@ -17,10 +17,11 @@ export function Chip({
   active: boolean;
   onPress: () => void;
 }): React.JSX.Element {
+  const surfaceVars = useSurfaceTextVars();
   return (
     <Pressable
       onPress={onPress}
-      style={SURFACE_TEXT_VARS}
+      style={surfaceVars}
       className={cn(
         'rounded-xl border px-4 py-2.5',
         active ? 'border-primary bg-primary/12' : 'border-border bg-card',

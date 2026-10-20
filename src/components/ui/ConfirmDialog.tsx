@@ -7,7 +7,7 @@ import { Text } from './Text';
 import { Button } from './Button';
 import { CardSurface } from './surface';
 import { shadow } from '@/lib/shadow';
-import { SURFACE_TEXT_VARS } from '@/lib/theme';
+import { useSurfaceTextVars } from '@/lib/theme';
 
 interface ConfirmOptions {
   title: string;
@@ -34,6 +34,7 @@ interface PendingState {
 // and only proceeds when the user taps the confirm button. Renders a centered
 // glass card over a dim backdrop.
 export function ConfirmProvider({ children }: { children: React.ReactNode }): React.JSX.Element {
+  const surfaceVars = useSurfaceTextVars();
   const [pending, setPending] = React.useState<PendingState | null>(null);
 
   const confirm = React.useCallback<ConfirmFn>(
@@ -61,7 +62,7 @@ export function ConfirmProvider({ children }: { children: React.ReactNode }): Re
         <View className="absolute inset-0 z-50 items-center justify-center bg-black/60 px-8">
           <Pressable className="absolute inset-0" onPress={() => settle(false)} />
           <View
-            style={[shadow.xl, SURFACE_TEXT_VARS]}
+            style={[shadow.xl, surfaceVars]}
             className="w-full max-w-sm rounded-2xl border border-white/20 bg-card p-5"
           >
             <CardSurface>

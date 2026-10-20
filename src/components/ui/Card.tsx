@@ -6,7 +6,7 @@ import { View, Pressable, StyleSheet, type ViewProps } from 'react-native';
 import { CardSurface } from './surface';
 import { cn } from '@/lib/cn';
 import { shadow } from '@/lib/shadow';
-import { SURFACE_TEXT_VARS } from '@/lib/theme';
+import { useSurfaceTextVars } from '@/lib/theme';
 import { tapLight } from '@/lib/haptics';
 
 interface CardProps extends ViewProps {
@@ -39,10 +39,12 @@ export function Card({
   style,
   ...props
 }: CardProps): React.JSX.Element {
-  // Translucent "glass" surface: the white card token over the branded backdrop
-  // with a faint light rim so the green network shows through the edges. The
-  // SURFACE_TEXT_VARS make text inside render dark. A plain (non-reanimated)
-  // Pressable is used so those CSS vars propagate to the card's text.
+  const surfaceVars = useSurfaceTextVars();
+  // Translucent "glass" surface: the card token over the branded backdrop with
+  // a faint light rim so the green network shows through the edges. The surface
+  // text vars of the current color scheme color the text inside. A plain
+  // (non-reanimated) Pressable is used so those CSS vars propagate to the
+  // card's text.
   const classes = cn(
     'rounded-2xl border border-white/20 bg-card/[0.85] p-4',
     flat && 'bg-card/[0.7]',
@@ -56,7 +58,7 @@ export function Card({
         onPress={onPress}
         onPressIn={() => tapLight()}
         className={cn(classes, 'active:opacity-90')}
-        style={[elevation, SURFACE_TEXT_VARS, style]}
+        style={[elevation, surfaceVars, style]}
         {...props}
       >
         <CardSheen />
@@ -65,7 +67,7 @@ export function Card({
     );
   }
   return (
-    <View className={classes} style={[elevation, SURFACE_TEXT_VARS, style]} {...props}>
+    <View className={classes} style={[elevation, surfaceVars, style]} {...props}>
       <CardSheen />
       <CardSurface>{children}</CardSurface>
     </View>

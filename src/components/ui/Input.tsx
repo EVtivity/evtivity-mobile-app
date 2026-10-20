@@ -4,7 +4,7 @@
 import React from 'react';
 import { TextInput, type TextInputProps } from 'react-native';
 import { cn } from '@/lib/cn';
-import { hsl, SURFACE_TEXT_VARS } from '@/lib/theme';
+import { hsl, useSurfaceTextVars } from '@/lib/theme';
 
 interface InputProps extends TextInputProps {
   error?: boolean;
@@ -16,6 +16,7 @@ export const Input = React.forwardRef<TextInput, InputProps>(function Input(
   { error = false, className, onFocus, onBlur, ...props },
   ref,
 ): React.JSX.Element {
+  const surfaceVars = useSurfaceTextVars();
   const [focused, setFocused] = React.useState(false);
   const borderClass = error ? 'border-destructive' : focused ? 'border-primary' : 'border-border';
 
@@ -31,7 +32,7 @@ export const Input = React.forwardRef<TextInput, InputProps>(function Input(
         setFocused(false);
         onBlur?.(e);
       }}
-      style={[SURFACE_TEXT_VARS, { fontFamily: 'Inter_400Regular' }]}
+      style={[surfaceVars, { fontFamily: 'Inter_400Regular' }]}
       className={cn(
         'h-[52px] rounded-xl border-2 bg-muted px-4 text-base text-foreground',
         borderClass,

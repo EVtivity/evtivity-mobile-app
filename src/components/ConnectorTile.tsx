@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { Plug, Zap } from '@/components/icons';
 import { Text, StatusBadge } from '@/components/ui';
 import { cn } from '@/lib/cn';
-import { hsl, SURFACE_TEXT_VARS } from '@/lib/theme';
+import { hsl, useSurfaceTextVars } from '@/lib/theme';
 import { isStartable } from '@/lib/status';
 import { formatPowerKw, NA } from '@/lib/format';
 import type { ConnectorStatus } from '@/lib/types';
@@ -41,6 +41,7 @@ export function ConnectorTile({
   testID,
 }: ConnectorTileProps): React.JSX.Element {
   const { t } = useTranslation();
+  const surfaceVars = useSurfaceTextVars();
   const disabled = disabledProp ?? !isStartable(status);
   const isCharging = CHARGING.includes(status);
   const isIdle = IDLE.includes(status);
@@ -55,7 +56,7 @@ export function ConnectorTile({
       onPress={onPress}
       disabled={disabled}
       accessibilityRole="button"
-      style={SURFACE_TEXT_VARS}
+      style={surfaceVars}
       className={cn(
         'grow basis-[47%] gap-2 rounded-lg border-2 bg-card p-3',
         selected ? 'border-primary' : 'border-border',

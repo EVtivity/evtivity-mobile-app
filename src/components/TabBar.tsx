@@ -10,7 +10,7 @@ import type { BottomTabBarProps } from 'expo-router/js-tabs';
 import { Home, PlugZap, CalendarClock, Activity, User, type LucideIcon } from '@/components/icons';
 import { Text } from '@/components/ui';
 import { useFeatures } from '@/features/app-info';
-import { hsl, SURFACE_TEXT_VARS } from '@/lib/theme';
+import { hsl, useSurfaceTextVars } from '@/lib/theme';
 import { shadow } from '@/lib/shadow';
 import { tapLight } from '@/lib/haptics';
 
@@ -55,6 +55,7 @@ function TabBarGradient(): React.JSX.Element {
 // light haptic on switch.
 export function TabBar({ state, navigation }: BottomTabBarProps): React.JSX.Element {
   const insets = useSafeAreaInsets();
+  const surfaceVars = useSurfaceTextVars();
   const { t } = useTranslation();
   const { data: features } = useFeatures();
   const activeName = state.routes[state.index]?.name;
@@ -66,7 +67,7 @@ export function TabBar({ state, navigation }: BottomTabBarProps): React.JSX.Elem
 
   return (
     <View
-      style={[shadow.lg, SURFACE_TEXT_VARS, { paddingBottom: Math.max(insets.bottom, 8) }]}
+      style={[shadow.lg, surfaceVars, { paddingBottom: Math.max(insets.bottom, 8) }]}
       className="relative flex-row overflow-hidden border-t border-white/15 px-1 pt-2"
     >
       <TabBarGradient />
