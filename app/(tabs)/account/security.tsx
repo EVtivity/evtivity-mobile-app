@@ -23,6 +23,8 @@ import { hsl } from '@/lib/theme';
 import { useAuth } from '@/lib/auth';
 import { ApiError, getApiErrorFieldDetails } from '@/lib/api';
 import { validatePassword } from '@/lib/validation';
+import { usePasswordPolicy, useWeakPasswordReply } from '@/features/password-policy';
+import type { PasswordRule } from '@/lib/password-policy';
 import {
   useChangePassword,
   useMfaStatus,
@@ -57,10 +59,14 @@ export default function SecurityScreen(): React.JSX.Element {
 
   const [currentPassword, setCurrentPassword] = React.useState('');
   const [newPassword, setNewPassword] = React.useState('');
+  const policy = usePasswordPolicy();
+  const weakPasswordReply = useWeakPasswordReply();
+  // The rules a WEAK_PASSWORD reply named, cleared when the password changes.
+  const [serverMissing, setServerMissing] = React.useState<PasswordRule[] | null>(null);
   const [fieldErrors, setFieldErrors] = React.useState<Record<string, string>>({});
 
   const onChangePassword = async (): Promise<void> => {
-    const passwordError = validatePassword(newPassword, t);
+    const passwordError = validatePassword(newPassword, t, policy, serverMissing);
     if (passwordError != null) {
       setFieldErrors({ newPassword: passwordError });
       return;
@@ -72,7 +78,14 @@ export default function SecurityScreen(): React.JSX.Element {
       setNewPassword('');
       toast.show(t('account.passwordChanged'), 'success');
     } catch (err) {
-      if (err instanceof ApiError) {
+      const weakMissing = weakPasswordReply(err);
+      if (weakMissing != null) {
+        setServerMissing(weakMissing);
+        setFieldErrors({
+          newPassword:
+            validatePassword(newPassword, t, policy, weakMissing) ?? t('auth.passwordWeak'),
+        });
+      } else if (err instanceof ApiError) {
         setFieldErrors(getApiErrorFieldDetails(err));
         toast.show(err.serverMessage ?? t('common.somethingWrong'), 'error');
       } else {
@@ -169,12 +182,20 @@ export default function SecurityScreen(): React.JSX.Element {
           testID="security-new-password"
           label={t('account.newPassword')}
           value={newPassword}
-          onChangeText={setNewPassword}
+          onChangeText={(value) => {
+            setNewPassword(value);
+            setServerMissing(null);
+          }}
           secureTextEntry
           autoComplete="new-password"
           error={fieldErrors.newPassword}
         />
-        <PasswordRules password={newPassword} testID="security-password-rules" />
+        <PasswordRules
+          password={newPassword}
+          policy={policy}
+          serverMissing={serverMissing}
+          testID="security-password-rules"
+        />
         <Button
           testID="security-change-password"
           title={t('account.changePassword')}

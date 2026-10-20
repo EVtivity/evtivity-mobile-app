@@ -12,6 +12,8 @@ import { PasswordRules } from '@/components/PasswordRules';
 import { useAuth } from '@/lib/auth';
 import { ApiError, getApiErrorFieldDetails, apiErrorMessage } from '@/lib/api';
 import { validateEmail, validatePassword } from '@/lib/validation';
+import { usePasswordPolicy, useWeakPasswordReply } from '@/features/password-policy';
+import type { PasswordRule } from '@/lib/password-policy';
 
 export default function RegisterScreen(): React.JSX.Element {
   const { t } = useTranslation();
@@ -21,7 +23,11 @@ export default function RegisterScreen(): React.JSX.Element {
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
   const [email, setEmail] = React.useState('');
+  const policy = usePasswordPolicy();
+  const weakPasswordReply = useWeakPasswordReply();
   const [password, setPassword] = React.useState('');
+  // The rules a WEAK_PASSWORD reply named, cleared when the password changes.
+  const [serverMissing, setServerMissing] = React.useState<PasswordRule[] | null>(null);
   const [fieldErrors, setFieldErrors] = React.useState<Record<string, string>>({});
   const [loading, setLoading] = React.useState(false);
   // Set once the API accepted the request: the screen then asks to check the inbox.
@@ -34,7 +40,7 @@ export default function RegisterScreen(): React.JSX.Element {
     if (lastName.trim().length === 0) errs.lastName = t('auth.lastNameRequired');
     const emailError = validateEmail(email, t);
     if (emailError != null) errs.email = emailError;
-    const passwordError = validatePassword(password, t);
+    const passwordError = validatePassword(password, t, policy, serverMissing);
     if (passwordError != null) errs.password = passwordError;
     if (Object.keys(errs).length > 0) {
       setFieldErrors(errs);
@@ -54,8 +60,12 @@ export default function RegisterScreen(): React.JSX.Element {
       setSubmittedEmail(trimmedEmail);
     } catch (err) {
       const details = err instanceof ApiError ? getApiErrorFieldDetails(err) : {};
-      if (err instanceof ApiError && err.code === 'WEAK_PASSWORD') {
-        setFieldErrors({ password: apiErrorMessage(err, t) });
+      const weakMissing = weakPasswordReply(err);
+      if (weakMissing != null) {
+        setServerMissing(weakMissing);
+        setFieldErrors({
+          password: validatePassword(password, t, policy, weakMissing) ?? apiErrorMessage(err, t),
+        });
       } else if (Object.keys(details).length > 0) {
         setFieldErrors(details);
       } else {
@@ -125,12 +135,15 @@ export default function RegisterScreen(): React.JSX.Element {
           testID="register-password"
           label={t('auth.password')}
           value={password}
-          onChangeText={setPassword}
+          onChangeText={(value) => {
+            setPassword(value);
+            setServerMissing(null);
+          }}
           secureTextEntry
           autoComplete="new-password"
           error={fieldErrors.password}
         />
-        <PasswordRules password={password} />
+        <PasswordRules password={password} policy={policy} serverMissing={serverMissing} />
         <Button
           testID="register-submit"
           title={t('auth.createAccount')}

@@ -6,6 +6,13 @@
 
 const mockRegister = jest.fn();
 const mockReplace = jest.fn();
+const mockGet = jest.fn();
+
+// The screen loads the password policy from GET /v1/security/public.
+jest.mock('@/lib/api', () => {
+  const actual = jest.requireActual<typeof import('@/lib/api')>('@/lib/api');
+  return { ...actual, api: { get: (...args: unknown[]) => mockGet(...args) } };
+});
 
 jest.mock('@/lib/auth', () => ({
   useAuth: (select: (s: { register: typeof mockRegister }) => unknown) =>
@@ -75,17 +82,28 @@ jest.mock('@/components/ui', () => {
   };
 });
 
+import React from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { initTestI18n } from '@/test-utils/i18n';
 import { ApiError } from '@/lib/api';
 import RegisterScreen from '../../../app/(auth)/register';
 
+let client: QueryClient;
+
 async function fillAndSubmit(): Promise<void> {
-  await render(<RegisterScreen />);
+  client = new QueryClient({ defaultOptions: { queries: { gcTime: Infinity, retry: false } } });
+  await render(
+    <QueryClientProvider client={client}>
+      <RegisterScreen />
+    </QueryClientProvider>,
+  );
   await fireEvent.changeText(screen.getByTestId('register-firstName'), 'Jane');
   await fireEvent.changeText(screen.getByTestId('register-lastName'), 'Doe');
   await fireEvent.changeText(screen.getByTestId('register-email'), ' jane@example.com ');
   await fireEvent.changeText(screen.getByTestId('register-password'), 'Str0ng-Passw0rd!');
+  // Submit once the policy loaded, so the screen checks the live one.
+  await waitFor(() => expect(client.getQueryState(['security-public'])?.status).toBe('success'));
   await fireEvent.press(screen.getByTestId('register-submit'));
 }
 
@@ -95,6 +113,7 @@ beforeAll(async () => {
 
 beforeEach(() => {
   jest.clearAllMocks();
+  mockGet.mockResolvedValue({ recaptchaEnabled: false });
 });
 
 it('asks the driver to check the inbox, then goes back to sign in', async () => {
@@ -130,4 +149,30 @@ it('keeps the form and shows a refused registration', async () => {
   ).toBeTruthy();
   expect(screen.queryByText('Check Your Email')).toBeNull();
   expect(screen.getByTestId('register-submit')).toBeTruthy();
+});
+
+it('names the rules a WEAK_PASSWORD reply lists and reloads the policy', async () => {
+  mockRegister.mockRejectedValue(
+    new ApiError(400, { error: 'Weak password', code: 'WEAK_PASSWORD', missing: ['symbol'] }),
+  );
+  await fillAndSubmit();
+  await waitFor(() => expect(mockRegister).toHaveBeenCalled());
+  expect(await screen.findByText('Password needs a special character.')).toBeTruthy();
+  await waitFor(() => expect(mockGet).toHaveBeenCalledTimes(2));
+  expect(mockGet).toHaveBeenCalledWith('/v1/security/public');
+});
+
+it('checks the live policy before submitting', async () => {
+  mockGet.mockResolvedValue({
+    passwordPolicy: {
+      minLength: 20,
+      requireUppercase: true,
+      requireLowercase: true,
+      requireNumber: true,
+      requireSymbol: false,
+    },
+  });
+  await fillAndSubmit();
+  expect(await screen.findByText('Password needs at least 20 characters.')).toBeTruthy();
+  expect(mockRegister).not.toHaveBeenCalled();
 });

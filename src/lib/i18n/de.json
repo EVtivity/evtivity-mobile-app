@@ -65,7 +65,9 @@
       "minLength": "mindestens {{min}} Zeichen",
       "uppercase": "einen Großbuchstaben",
       "lowercase": "einen Kleinbuchstaben",
-      "number": "eine Ziffer"
+      "number": "eine Ziffer",
+      "symbol": "ein Sonderzeichen",
+      "maxLength": "höchstens {{max}} Zeichen"
     },
     "passwordRuleMet": "erfüllt",
     "passwordRuleNotMet": "nicht erfüllt",

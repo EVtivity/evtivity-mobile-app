@@ -65,7 +65,9 @@
       "minLength": "at least {{min}} characters",
       "uppercase": "an uppercase letter",
       "lowercase": "a lowercase letter",
-      "number": "a number"
+      "number": "a number",
+      "symbol": "a special character",
+      "maxLength": "at most {{max}} characters"
     },
     "passwordRuleMet": "met",
     "passwordRuleNotMet": "not met",

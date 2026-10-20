@@ -4,7 +4,13 @@
 // Shared form validation for the auth screens. Each validator returns a
 // translated error message, or undefined when the value is valid.
 
-import { PASSWORD_MIN_LENGTH, missingPasswordRules } from './password-policy';
+import {
+  PASSWORD_MAX_LENGTH,
+  inRuleOrder,
+  missingPasswordRules,
+  type PasswordPolicy,
+  type PasswordRule,
+} from './password-policy';
 
 export const EMAIL_REGEX = /^\S+@\S+\.\S+$/;
 
@@ -17,14 +23,27 @@ export function validateEmail(value: string, t: (key: string) => string): string
   return undefined;
 }
 
+export function passwordRuleLabel(
+  rule: PasswordRule,
+  policy: PasswordPolicy,
+  t: Translate,
+): string {
+  return t(`auth.passwordRule.${rule}`, { min: policy.minLength, max: PASSWORD_MAX_LENGTH });
+}
+
 // Names every rule the password misses ("Password needs at least 12
-// characters, a number."), the same message the portal shows.
-export function validatePassword(value: string, t: Translate): string | undefined {
+// characters, a number."), the same message the portal shows. `serverMissing`
+// adds the rules a WEAK_PASSWORD reply named; an empty reply list falls back to
+// the generic weak password text.
+export function validatePassword(
+  value: string,
+  t: Translate,
+  policy: PasswordPolicy,
+  serverMissing?: readonly PasswordRule[] | null,
+): string | undefined {
   if (value.length === 0) return t('auth.passwordRequired');
-  const missing = missingPasswordRules(value);
-  if (missing.length === 0) return undefined;
-  const rules = missing
-    .map((rule) => t(`auth.passwordRule.${rule}`, { min: PASSWORD_MIN_LENGTH }))
-    .join(', ');
+  const missing = inRuleOrder([...missingPasswordRules(value, policy), ...(serverMissing ?? [])]);
+  if (missing.length === 0) return serverMissing != null ? t('auth.passwordWeak') : undefined;
+  const rules = missing.map((rule) => passwordRuleLabel(rule, policy, t)).join(', ');
   return t('auth.passwordMissing', { rules });
 }

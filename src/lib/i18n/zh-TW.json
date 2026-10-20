@@ -65,7 +65,9 @@
       "minLength": "至少 {{min}} 個字元",
       "uppercase": "至少一個大寫字母",
       "lowercase": "至少一個小寫字母",
-      "number": "至少一個數字"
+      "number": "至少一個數字",
+      "symbol": "至少一個特殊字元",
+      "maxLength": "最多 {{max}} 個字元"
     },
     "passwordRuleMet": "已符合",
     "passwordRuleNotMet": "未符合",

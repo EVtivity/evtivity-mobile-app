@@ -7,23 +7,30 @@ import { useTranslation } from 'react-i18next';
 import { Text } from '@/components/ui';
 import { Check, X } from '@/components/icons';
 import { hsl } from '@/lib/theme';
-import { PASSWORD_MIN_LENGTH, passwordRuleResults } from '@/lib/password-policy';
+import { passwordChecklist, type PasswordPolicy, type PasswordRule } from '@/lib/password-policy';
+import { passwordRuleLabel } from '@/lib/validation';
 
 // Checklist of the password rules under a field that sets a password, ticked
-// off as the driver types.
+// off as the driver types. The rules come from the live policy
+// (usePasswordPolicy); the maximum length shows only once the password exceeds
+// it, and rules a WEAK_PASSWORD reply named stay unmet until the password changes.
 export function PasswordRules({
   password,
+  policy,
+  serverMissing,
   testID = 'password-rules',
 }: {
   password: string;
+  policy: PasswordPolicy;
+  serverMissing?: readonly PasswordRule[] | null;
   testID?: string;
 }): React.JSX.Element {
   const { t } = useTranslation();
   return (
     <View className="gap-1" testID={testID}>
       <Text className="text-[13px] text-muted-foreground">{t('auth.passwordNeeds')}</Text>
-      {passwordRuleResults(password).map(({ rule, met }) => {
-        const label = t(`auth.passwordRule.${rule}`, { min: PASSWORD_MIN_LENGTH });
+      {passwordChecklist(password, policy, serverMissing).map(({ rule, met }) => {
+        const label = passwordRuleLabel(rule, policy, t);
         const state = met ? t('auth.passwordRuleMet') : t('auth.passwordRuleNotMet');
         return (
           <View

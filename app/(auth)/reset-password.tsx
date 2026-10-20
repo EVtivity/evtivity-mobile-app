@@ -12,6 +12,8 @@ import { PasswordRules } from '@/components/PasswordRules';
 import { ApiError, getApiErrorFieldDetails, apiErrorMessage } from '@/lib/api';
 import { resetPassword } from '@/lib/auth';
 import { validatePassword } from '@/lib/validation';
+import { usePasswordPolicy, useWeakPasswordReply } from '@/features/password-policy';
+import type { PasswordRule } from '@/lib/password-policy';
 
 export default function ResetPasswordScreen(): React.JSX.Element {
   const { t } = useTranslation();
@@ -19,14 +21,19 @@ export default function ResetPasswordScreen(): React.JSX.Element {
   const toast = useToast();
   const { token } = useLocalSearchParams<{ token?: string }>();
 
+  const policy = usePasswordPolicy();
+  const weakPasswordReply = useWeakPasswordReply();
+
   const [password, setPassword] = React.useState('');
+  // The rules a WEAK_PASSWORD reply named, cleared when the password changes.
+  const [serverMissing, setServerMissing] = React.useState<PasswordRule[] | null>(null);
   const [confirm, setConfirm] = React.useState('');
   const [fieldErrors, setFieldErrors] = React.useState<Record<string, string>>({});
   const [loading, setLoading] = React.useState(false);
 
   const onSubmit = async (): Promise<void> => {
     const errs: Record<string, string> = {};
-    const passwordError = validatePassword(password, t);
+    const passwordError = validatePassword(password, t, policy, serverMissing);
     if (passwordError != null) errs.password = passwordError;
     if (password !== confirm) errs.confirmPassword = t('auth.passwordsMustMatch');
     if (token == null || token.length === 0) errs.password = t('auth.invalidResetLink');
@@ -42,8 +49,12 @@ export default function ResetPasswordScreen(): React.JSX.Element {
       router.replace('/(auth)/login');
     } catch (err) {
       const details = err instanceof ApiError ? getApiErrorFieldDetails(err) : {};
-      if (err instanceof ApiError && err.code === 'WEAK_PASSWORD') {
-        setFieldErrors({ password: t('auth.passwordWeak') });
+      const weakMissing = weakPasswordReply(err);
+      if (weakMissing != null) {
+        setServerMissing(weakMissing);
+        setFieldErrors({
+          password: validatePassword(password, t, policy, weakMissing) ?? t('auth.passwordWeak'),
+        });
       } else if (Object.keys(details).length > 0) {
         setFieldErrors(details);
       } else {
@@ -64,13 +75,16 @@ export default function ResetPasswordScreen(): React.JSX.Element {
           labelClassName="text-base"
           label={t('auth.newPassword')}
           value={password}
-          onChangeText={setPassword}
+          onChangeText={(value) => {
+            setPassword(value);
+            setServerMissing(null);
+          }}
           secureTextEntry
           autoCapitalize="none"
           autoComplete="new-password"
           error={fieldErrors.password}
         />
-        <PasswordRules password={password} />
+        <PasswordRules password={password} policy={policy} serverMissing={serverMissing} />
         <Field
           labelClassName="text-base"
           label={t('auth.confirmPassword')}
