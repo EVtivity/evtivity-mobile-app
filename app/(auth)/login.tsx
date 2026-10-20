@@ -40,7 +40,11 @@ export default function LoginScreen(): React.JSX.Element {
     try {
       const result = await login(trimmedEmail, password);
       if (isMfaRequired(result)) {
-        setMfaPending({ mfaToken: result.mfaToken, method: result.mfaMethod });
+        setMfaPending({
+          mfaToken: result.mfaToken,
+          method: result.mfaMethod,
+          ...(result.challengeId != null ? { challengeId: result.challengeId } : {}),
+        });
         router.push('/(auth)/mfa');
       }
       // On success the root navigator redirects into the tabs.

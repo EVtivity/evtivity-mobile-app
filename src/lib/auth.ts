@@ -24,9 +24,12 @@ type AuthStatus = 'loading' | 'authenticated' | 'unauthenticated';
 
 // Carries the short-lived MFA token between the login screen and the verify
 // screen in memory, so it never lands in navigation params or a deep link.
+// challengeId names the email or SMS code the API sent (TOTP has none); the API
+// checks an email or SMS code only with it, and a resend replaces it.
 interface MfaPending {
   mfaToken: string;
   method: string;
+  challengeId?: number;
 }
 
 interface AuthState {
@@ -45,7 +48,7 @@ interface AuthState {
     email: string;
     password: string;
   }) => Promise<void>;
-  verifyMfa: (mfaToken: string, code: string) => Promise<void>;
+  verifyMfa: (mfaToken: string, code: string, challengeId?: number) => Promise<void>;
   logout: () => Promise<void>;
   setDriver: (driver: Driver) => void;
   lock: () => void;
@@ -116,10 +119,10 @@ export const useAuth = create<AuthState>((set) => ({
     });
   },
 
-  verifyMfa: async (mfaToken, code) => {
+  verifyMfa: async (mfaToken, code, challengeId) => {
     const result = await api.post<AuthSuccess>(
       '/v1/portal/auth/mfa/verify',
-      { mfaToken, code },
+      challengeId != null ? { mfaToken, code, challengeId } : { mfaToken, code },
       { auth: false },
     );
     await applySession(result);

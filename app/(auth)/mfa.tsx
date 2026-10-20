@@ -18,6 +18,7 @@ export default function MfaScreen(): React.JSX.Element {
   const verifyMfa = useAuth((s) => s.verifyMfa);
   const pending = useAuth((s) => s.mfaPending);
   const status = useAuth((s) => s.status);
+  const setMfaPending = useAuth((s) => s.setMfaPending);
 
   // Keep the one-time code off screenshots and the app switcher snapshot.
   usePreventScreenCapture();
@@ -54,7 +55,7 @@ export default function MfaScreen(): React.JSX.Element {
     setError(null);
     setLoading(true);
     try {
-      await verifyMfa(mfaToken, code.trim());
+      await verifyMfa(mfaToken, code.trim(), pending?.challengeId);
       // Root navigator redirects on success.
     } catch (err) {
       setError(apiErrorMessage(err, t));
@@ -68,7 +69,13 @@ export default function MfaScreen(): React.JSX.Element {
     setResent(false);
     setError(null);
     try {
-      await api.post('/v1/portal/auth/mfa/resend', { mfaToken }, { auth: false });
+      const { challengeId } = await api.post<{ challengeId: number }>(
+        '/v1/portal/auth/mfa/resend',
+        { mfaToken },
+        { auth: false },
+      );
+      // The resent code belongs to a new challenge: verify against its id.
+      if (pending != null) setMfaPending({ ...pending, challengeId });
       setResent(true);
     } catch {
       setError(t('common.somethingWrong'));
@@ -86,6 +93,7 @@ export default function MfaScreen(): React.JSX.Element {
       <View className="gap-4">
         <Field
           labelClassName="text-base"
+          testID="mfa-code"
           label={t('auth.mfaPrompt')}
           value={code}
           onChangeText={setCode}
@@ -95,9 +103,15 @@ export default function MfaScreen(): React.JSX.Element {
           error={error ?? undefined}
         />
         {resent ? <FormSuccess message={t('auth.mfaResend')} /> : null}
-        <Button title={t('auth.mfaVerify')} loading={loading} onPress={() => void onVerify()} />
+        <Button
+          testID="mfa-verify"
+          title={t('auth.mfaVerify')}
+          loading={loading}
+          onPress={() => void onVerify()}
+        />
         {canResend ? (
           <Button
+            testID="mfa-resend"
             title={t('auth.mfaResend')}
             variant="ghost"
             loading={resending}

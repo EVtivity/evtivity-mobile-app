@@ -209,6 +209,28 @@ describe('verifyMfa', () => {
     expect(s.status).toBe('authenticated');
     expect(s.mfaPending).toBeNull();
   });
+
+  it('sends the challenge id of an email or SMS code', async () => {
+    const m = load();
+    m.api.post.mockResolvedValue(authSuccess);
+    await m.auth.useAuth.getState().verifyMfa('mt', '123456', 42);
+    expect(m.api.post).toHaveBeenCalledWith(
+      '/v1/portal/auth/mfa/verify',
+      { mfaToken: 'mt', code: '123456', challengeId: 42 },
+      { auth: false },
+    );
+  });
+
+  it('sends no challenge id for a TOTP code', async () => {
+    const m = load();
+    m.api.post.mockResolvedValue(authSuccess);
+    await m.auth.useAuth.getState().verifyMfa('mt', '123456');
+    expect(m.api.post).toHaveBeenCalledWith(
+      '/v1/portal/auth/mfa/verify',
+      { mfaToken: 'mt', code: '123456' },
+      { auth: false },
+    );
+  });
 });
 
 describe('logout', () => {

@@ -36,7 +36,7 @@ export interface MfaRequired {
   mfaRequired: true;
   mfaMethod: 'email' | 'sms' | 'totp';
   mfaToken: string;
-  challengeId?: string;
+  challengeId?: number;
 }
 
 export type LoginResult = AuthSuccess | MfaRequired;
