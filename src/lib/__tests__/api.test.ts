@@ -199,9 +199,7 @@ describe('apiErrorMessage', () => {
     expect(apiErrorMessage(sentence, localeT('en'), 'en-US')).toBe('Invalid IANA timezone');
     // German: the localized text, never the English sentence.
     expect(apiErrorMessage(sentence, localeT('de'), 'de')).toBe('Validierungsfehler');
-    expect(apiErrorMessage(withFields, localeT('de'), 'de')).toBe(
-      'Prüfen Sie die markierten Felder.',
-    );
+    expect(apiErrorMessage(withFields, localeT('de'), 'de')).toBe('Prüfe die markierten Felder.');
     expect(apiErrorMessage(withFields, localeT('en'), 'en')).toBe('Invalid phone number');
     // No sentence: the field text when fields are named, else "Validation error".
     expect(apiErrorMessage(v({ details: { phone: 'x' } }), localeT('en'), 'en')).toBe(

@@ -430,7 +430,7 @@ describe('Personal Info screen', () => {
       expect(screen.getByTestId('personal-timezone-error')).toHaveTextContent(
         'Dieser Wert ist ungültig.',
       );
-      expect(mockToast).toHaveBeenCalledWith('Prüfen Sie die markierten Felder.', 'error');
+      expect(mockToast).toHaveBeenCalledWith('Prüfe die markierten Felder.', 'error');
     } finally {
       await i18next.changeLanguage('en');
     }
