@@ -5,6 +5,7 @@ import React from 'react';
 import { View, Switch, Image } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { usePreventScreenCapture } from 'expo-screen-capture';
+import * as Clipboard from 'expo-clipboard';
 import {
   Screen,
   Text,
@@ -17,11 +18,15 @@ import {
   BackButton,
   useToast,
   useApiErrorToast,
+  useConfirm,
+  usePortalNotice,
 } from '@/components/ui';
 import { PasswordRules } from '@/components/PasswordRules';
 import { hsl } from '@/lib/theme';
 import { useAuth } from '@/lib/auth';
-import { ApiError, getApiErrorFieldDetails } from '@/lib/api';
+import { ApiError, getApiErrorFieldDetails, portalPageUrl } from '@/lib/api';
+import { driverHoldsFactor, PORTAL_SECURITY_PATH } from '@/lib/mfa';
+import { useBranding } from '@/features/app-info';
 import { validatePassword } from '@/lib/validation';
 import { usePasswordPolicy, useWeakPasswordReply } from '@/features/password-policy';
 import type { PasswordRule } from '@/lib/password-policy';
@@ -30,7 +35,6 @@ import {
   useMfaStatus,
   useMfaSetup,
   useMfaConfirm,
-  useMfaDisable,
   type MfaMethod,
 } from '@/features/account';
 
@@ -44,6 +48,8 @@ export default function SecurityScreen(): React.JSX.Element {
   const { t } = useTranslation();
   const toast = useToast();
   const showApiError = useApiErrorToast();
+  const portalNotice = usePortalNotice();
+  const confirm = useConfirm();
 
   // Password and MFA setup (including TOTP secrets) stay off screenshots.
   usePreventScreenCapture();
@@ -55,7 +61,10 @@ export default function SecurityScreen(): React.JSX.Element {
   const changePassword = useChangePassword();
   const mfaSetup = useMfaSetup();
   const mfaConfirm = useMfaConfirm();
-  const mfaDisable = useMfaDisable();
+  const branding = useBranding();
+  // The portal page for the MFA changes this app cannot make (they need a
+  // fresh proof of a factor the driver holds).
+  const portalSecurityUrl = portalPageUrl(branding.data?.portalUrl, PORTAL_SECURITY_PATH);
 
   const [currentPassword, setCurrentPassword] = React.useState('');
   const [newPassword, setNewPassword] = React.useState('');
@@ -95,6 +104,9 @@ export default function SecurityScreen(): React.JSX.Element {
   };
 
   const mfaEnabled = mfa.data?.mfaEnabled ?? false;
+  // A driver with a factor (an MFA method or a passkey) adds or removes one in
+  // the portal, which asks for that factor.
+  const holdsFactor = driverHoldsFactor(mfa.data);
   const availableMethods = (mfa.data?.availableMethods ?? []).filter(isMfaMethod);
 
   // Setup flow state.
@@ -105,9 +117,8 @@ export default function SecurityScreen(): React.JSX.Element {
   const [challengeId, setChallengeId] = React.useState<number | undefined>(undefined);
   const [code, setCode] = React.useState('');
 
-  // Disable flow state.
-  const [disableVisible, setDisableVisible] = React.useState(false);
-  const [disablePassword, setDisablePassword] = React.useState('');
+  // Recovery codes from the MFA confirm, shown this once.
+  const [recoveryCodes, setRecoveryCodes] = React.useState<string[] | null>(null);
 
   const effectiveMethod: MfaMethod = availableMethods.includes(selectedMethod)
     ? selectedMethod
@@ -121,6 +132,10 @@ export default function SecurityScreen(): React.JSX.Element {
   };
 
   const onStartSetup = async (): Promise<void> => {
+    if (holdsFactor) {
+      await portalNotice(t('account.mfaPortalSetup'), portalSecurityUrl);
+      return;
+    }
     setCode('');
     setQrDataUri(undefined);
     setSecret(undefined);
@@ -132,32 +147,49 @@ export default function SecurityScreen(): React.JSX.Element {
       setChallengeId(result.challengeId);
       setSetupVisible(true);
     } catch (err) {
-      showApiError(err);
+      showApiError(err, { portalPath: PORTAL_SECURITY_PATH });
     }
   };
 
   const onConfirmSetup = async (): Promise<void> => {
     try {
-      await mfaConfirm.mutateAsync({ method: effectiveMethod, code: code.trim(), challengeId });
+      const reply = await mfaConfirm.mutateAsync({
+        method: effectiveMethod,
+        code: code.trim(),
+        challengeId,
+      });
       setSetupVisible(false);
       setCode('');
+      if (reply.recoveryCodes != null && reply.recoveryCodes.length > 0) {
+        setRecoveryCodes(reply.recoveryCodes);
+      }
       await mfa.refetch();
       toast.show(t('account.mfaSetupSuccess'), 'success');
     } catch (err) {
-      showApiError(err);
+      showApiError(err, { portalPath: PORTAL_SECURITY_PATH });
     }
   };
 
-  const onDisable = async (): Promise<void> => {
-    try {
-      await mfaDisable.mutateAsync(disablePassword);
-      setDisableVisible(false);
-      setDisablePassword('');
-      await mfa.refetch();
-      toast.show(t('account.mfaDisabledSuccess'), 'success');
-    } catch (err) {
-      showApiError(err);
-    }
+  // Turning MFA off needs a fresh proof of a factor, which the portal asks for.
+  const onDisable = (): void => {
+    void portalNotice(t('account.mfaPortalDisable'), portalSecurityUrl);
+  };
+
+  const onCopyRecoveryCodes = async (): Promise<void> => {
+    if (recoveryCodes == null) return;
+    await Clipboard.setStringAsync(recoveryCodes.join('\n'));
+    toast.show(t('account.recoveryCodesCopied'), 'success');
+  };
+
+  // The codes are shown once: closing without "I Saved Them" asks first.
+  const onCloseRecoveryCodes = async (): Promise<void> => {
+    const ok = await confirm({
+      title: t('account.recoveryCodesCloseTitle'),
+      message: t('account.recoveryCodesCloseMessage'),
+      confirmText: t('common.close'),
+      destructive: true,
+    });
+    if (ok) setRecoveryCodes(null);
   };
 
   return (
@@ -223,12 +255,10 @@ export default function SecurityScreen(): React.JSX.Element {
               </View>
             ) : null}
             <Button
+              testID="security-mfa-disable"
               title={t('account.mfaDisable')}
               variant="destructive"
-              onPress={() => {
-                setDisablePassword('');
-                setDisableVisible(true);
-              }}
+              onPress={onDisable}
             />
           </>
         ) : (
@@ -242,6 +272,7 @@ export default function SecurityScreen(): React.JSX.Element {
               />
             ) : null}
             <Button
+              testID="security-mfa-setup"
               title={t('account.mfaSetup')}
               loading={mfaSetup.isPending}
               disabled={availableMethods.length === 0}
@@ -282,6 +313,7 @@ export default function SecurityScreen(): React.JSX.Element {
           <Text variant="muted">{t('account.mfaCodeSent')}</Text>
         )}
         <Field
+          testID="security-mfa-code"
           label={t('auth.mfaPrompt')}
           value={code}
           onChangeText={setCode}
@@ -297,24 +329,28 @@ export default function SecurityScreen(): React.JSX.Element {
       </Sheet>
 
       <Sheet
-        visible={disableVisible}
-        onClose={() => setDisableVisible(false)}
-        title={t('account.mfaDisable')}
+        visible={recoveryCodes != null}
+        onClose={() => void onCloseRecoveryCodes()}
+        title={t('account.recoveryCodesTitle')}
       >
-        <Text variant="muted">{t('account.mfaDisablePrompt')}</Text>
-        <Field
-          label={t('auth.password')}
-          value={disablePassword}
-          onChangeText={setDisablePassword}
-          secureTextEntry
-          autoComplete="current-password"
+        <Text variant="muted">{t('account.recoveryCodesPrompt')}</Text>
+        <View testID="security-recovery-codes" className="flex-row flex-wrap gap-2">
+          {(recoveryCodes ?? []).map((c) => (
+            <Text key={c} selectable variant="label" className="w-[47%]">
+              {c}
+            </Text>
+          ))}
+        </View>
+        <Button
+          testID="security-recovery-codes-copy"
+          title={t('account.recoveryCodesCopy')}
+          variant="outline"
+          onPress={() => void onCopyRecoveryCodes()}
         />
         <Button
-          title={t('account.mfaDisable')}
-          variant="destructive"
-          loading={mfaDisable.isPending}
-          disabled={disablePassword.length === 0}
-          onPress={() => void onDisable()}
+          testID="security-recovery-codes-saved"
+          title={t('account.recoveryCodesSaved')}
+          onPress={() => setRecoveryCodes(null)}
         />
       </Sheet>
     </Screen>

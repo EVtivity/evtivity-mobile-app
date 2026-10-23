@@ -14,10 +14,13 @@ import {
   Sheet,
   BackButton,
   useToast,
+  usePortalNotice,
 } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
-import { ApiError, getApiErrorFieldDetails } from '@/lib/api';
-import { useUpdateProfile } from '@/features/account';
+import { ApiError, apiErrorMessage, getApiErrorFieldDetails, portalPageUrl } from '@/lib/api';
+import { driverHoldsFactor, PORTAL_PERSONAL_PATH } from '@/lib/mfa';
+import { useMfaStatus, useUpdateProfile } from '@/features/account';
+import { useBranding } from '@/features/app-info';
 import { useCompanyPriceDisplay } from '@/features/price-display';
 import { enabledLanguageOptions, setAppLanguage, LANGUAGE_LABELS } from '@/lib/i18n';
 import type { LanguageCode } from '@/lib/config';
@@ -33,6 +36,11 @@ export default function PersonalInfoScreen(): React.JSX.Element {
   const toast = useToast();
   const driver = useAuth((s) => s.driver);
   const updateProfile = useUpdateProfile();
+  const portalNotice = usePortalNotice();
+  // A driver with a factor proves it to change the phone number (SMS codes go
+  // there), which this app does not do: the change is made in the portal.
+  const mfa = useMfaStatus();
+  const branding = useBranding();
 
   const [firstName, setFirstName] = React.useState(driver?.firstName ?? '');
   const [lastName, setLastName] = React.useState(driver?.lastName ?? '');
@@ -80,13 +88,27 @@ export default function PersonalInfoScreen(): React.JSX.Element {
     if (distanceUnit !== driver?.distanceUnit) input.distanceUnit = distanceUnit;
     if (priceDisplay !== (driver?.priceDisplay ?? null)) input.priceDisplay = priceDisplay;
 
+    if (input.phone !== undefined && driverHoldsFactor(mfa.data)) {
+      const message = t('account.phonePortalChange');
+      setFieldErrors({ phone: message });
+      await portalNotice(message, portalPageUrl(branding.data?.portalUrl, PORTAL_PERSONAL_PATH));
+      return;
+    }
+
     try {
       await updateProfile.mutateAsync(input);
       // Apply the new UI language only once the preference is saved.
       if (input.language != null) await setAppLanguage(language);
       toast.show(t('common.saved'), 'success');
     } catch (err) {
-      if (err instanceof ApiError) {
+      if (err instanceof ApiError && err.portalUrl != null) {
+        // A phone change the server sends to the portal: the message names it.
+        setFieldErrors(getApiErrorFieldDetails(err));
+        await portalNotice(
+          apiErrorMessage(err, t),
+          portalPageUrl(err.portalUrl, PORTAL_PERSONAL_PATH),
+        );
+      } else if (err instanceof ApiError) {
         setFieldErrors(getApiErrorFieldDetails(err));
         toast.show(err.serverMessage ?? t('common.somethingWrong'), 'error');
       } else {

@@ -31,6 +31,15 @@ export class ApiError extends Error {
     return undefined;
   }
 
+  // The driver portal, sent with a refusal the app cannot resolve itself (a
+  // change that needs a fresh factor proof, a sign-in only the portal can
+  // finish). Only an http(s) URL counts.
+  get portalUrl(): string | undefined {
+    if (this.body == null || typeof this.body !== 'object') return undefined;
+    const raw = (this.body as Record<string, unknown>).portalUrl;
+    return typeof raw === 'string' ? (webUrl(raw) ?? undefined) : undefined;
+  }
+
   // A coded 502/504 is a station failure from the API, not an unreachable server.
   get isServerDown(): boolean {
     if (this.status === 502 || this.status === 504) return this.code == null;
@@ -38,10 +47,54 @@ export class ApiError extends Error {
   }
 }
 
-// Maps any thrown error to a user-facing message: the translated errors.{code}
-// entry, then the server's message, otherwise the generic offline copy.
+/** The URL when it is an absolute http(s) URL, else null. */
+export function webUrl(raw: string): string | null {
+  let url: URL;
+  try {
+    url = new URL(raw.trim());
+  } catch {
+    return null;
+  }
+  return url.protocol === 'http:' || url.protocol === 'https:' ? url.href : null;
+}
+
+/**
+ * A page of the driver portal: the portal base URL (a refusal's portalUrl or
+ * the branding portalUrl) plus a portal route such as /account/security.
+ * Null when the base is not an http(s) URL.
+ */
+export function portalPageUrl(base: string | null | undefined, path: string): string | null {
+  const root = base != null ? webUrl(base) : null;
+  if (root == null) return null;
+  return `${root.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`;
+}
+
+// A VALIDATION_ERROR message written for people, not a schema validator dump
+// ("body/phone Invalid", JSON, several lines).
+const SCHEMA_MESSAGE_RE = /^(body|querystring|params|headers)[/.\s]/;
+function isPlainMessage(message: string): boolean {
+  const m = message.trim();
+  return (
+    m.length > 0 &&
+    m.length <= 300 &&
+    !m.includes('\n') &&
+    !/[{}[\]]/.test(m) &&
+    !SCHEMA_MESSAGE_RE.test(m)
+  );
+}
+
+// Maps any thrown error to a user-facing message. A refusal with a portalUrl
+// carries a server message that names the portal; a VALIDATION_ERROR shows the
+// server's plain message (the code alone says nothing). Otherwise the
+// translated errors.{code} entry, then the server's message, otherwise the
+// generic offline copy.
 export function apiErrorMessage(err: unknown, t: (key: string) => string): string {
   if (err instanceof ApiError) {
+    const message = err.serverMessage;
+    if (message != null && err.portalUrl != null) return message;
+    if (err.code === 'VALIDATION_ERROR' && message != null && isPlainMessage(message)) {
+      return message.trim();
+    }
     if (err.code != null) {
       const key = `errors.${err.code}`;
       const translated = t(key);

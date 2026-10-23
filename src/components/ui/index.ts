@@ -17,6 +17,7 @@ export { Segmented } from './Segmented';
 export { Sheet } from './Sheet';
 export { ToastProvider, useToast } from './Toast';
 export { useApiErrorToast } from './useApiErrorToast';
+export { usePortalNotice } from './usePortalNotice';
 export { ConfirmProvider, useConfirm } from './ConfirmDialog';
 export { Portal, PortalHost } from './Portal';
 export { BackButton } from './BackButton';

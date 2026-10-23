@@ -6,6 +6,7 @@ import { api } from '@/lib/api';
 import { useAuth } from '@/lib/auth';
 import { setSession } from '@/lib/session';
 import { registerPushToken } from '@/lib/push';
+import type { MfaFactorState } from '@/lib/mfa';
 import type { PriceDisplay } from '@/lib/price-display';
 import type { Driver, Vehicle, RfidToken } from '@/lib/types';
 import type { DriverBilling } from '@/lib/fleet-billing';
@@ -95,8 +96,7 @@ export interface NotificationPrefs {
   pushEnabled?: boolean;
 }
 
-export interface MfaStatus {
-  mfaEnabled: boolean;
+export interface MfaStatus extends MfaFactorState {
   mfaMethod: string | null;
   availableMethods: string[];
 }
@@ -146,24 +146,15 @@ export function useMfaConfirm() {
     // Turning MFA on ends every session of the driver and returns a new one
     // for this device.
     mutationFn: async (input: { method: MfaMethod; code: string; challengeId?: number }) => {
-      const reply = await api.post<{ success: true } & NewSessionReply>(
+      // recoveryCodes: ten single-use codes, shown this once (absent when the
+      // driver already holds codes).
+      const reply = await api.post<{ success: true; recoveryCodes?: string[] } & NewSessionReply>(
         '/v1/portal/driver/mfa/confirm',
         input,
       );
       await adoptNewSession(reply);
       return reply;
     },
-    onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: ['mfa-status'] });
-    },
-  });
-}
-
-export function useMfaDisable() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: (password: string) =>
-      api.del<{ success: true }>('/v1/portal/driver/mfa', { password }),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ['mfa-status'] });
     },

@@ -17,7 +17,15 @@ jest.mock('@/lib/session', () => ({
   hasSession: jest.fn(() => false),
 }));
 
-import { api, ApiError, apiErrorMessage, getApiErrorFieldDetails } from '@/lib/api';
+import {
+  api,
+  ApiError,
+  apiErrorMessage,
+  authorizedHeaders,
+  getApiErrorFieldDetails,
+  portalPageUrl,
+  webUrl,
+} from '@/lib/api';
 import * as session from '@/lib/session';
 import * as attestation from '@/lib/attestation';
 
@@ -41,6 +49,54 @@ beforeEach(() => {
   sess.refreshSession.mockResolvedValue(true);
   attest.getAttestationHeaders.mockResolvedValue({});
   (global as unknown as { fetch: jest.Mock }).fetch = jest.fn();
+});
+
+describe('authorizedHeaders', () => {
+  it('refreshes a stale access token first, then sends it', async () => {
+    sess.hasSession.mockReturnValue(true);
+    sess.isAccessTokenStale.mockReturnValue(true);
+    sess.getAccessToken.mockReturnValue('fresh');
+    const headers = await authorizedHeaders();
+    expect(sess.refreshSession).toHaveBeenCalledTimes(1);
+    expect(headers).toMatchObject({ 'X-Client': 'mobile', Authorization: 'Bearer fresh' });
+  });
+
+  it('skips the refresh for a current token and sends no token without one', async () => {
+    sess.hasSession.mockReturnValue(true);
+    const headers = await authorizedHeaders();
+    expect(sess.refreshSession).not.toHaveBeenCalled();
+    expect(headers.Authorization).toBeUndefined();
+  });
+});
+
+describe('portal links', () => {
+  it('reads an http(s) portalUrl from a refusal and nothing else', () => {
+    expect(new ApiError(400, { portalUrl: 'https://portal.test' }).portalUrl).toBe(
+      'https://portal.test/',
+    );
+    expect(new ApiError(400, { portalUrl: 'javascript:alert(1)' }).portalUrl).toBeUndefined();
+    expect(new ApiError(400, { portalUrl: 'not a url' }).portalUrl).toBeUndefined();
+    expect(new ApiError(400, { portalUrl: 1 }).portalUrl).toBeUndefined();
+    expect(new ApiError(400, null).portalUrl).toBeUndefined();
+  });
+
+  it('builds a portal page URL from the base and a route', () => {
+    expect(portalPageUrl('https://portal.test', '/account/security')).toBe(
+      'https://portal.test/account/security',
+    );
+    expect(portalPageUrl(' https://portal.test/ ', 'account/personal')).toBe(
+      'https://portal.test/account/personal',
+    );
+    expect(portalPageUrl('ftp://portal.test', '/x')).toBeNull();
+    expect(portalPageUrl('', '/x')).toBeNull();
+    expect(portalPageUrl(undefined, '/x')).toBeNull();
+    expect(portalPageUrl(null, '/x')).toBeNull();
+  });
+
+  it('accepts only absolute http(s) URLs', () => {
+    expect(webUrl('http://a.test/x')).toBe('http://a.test/x');
+    expect(webUrl('mailto:a@b.test')).toBeNull();
+  });
 });
 
 describe('ApiError', () => {
@@ -102,6 +158,41 @@ describe('apiErrorMessage', () => {
       expect(apiErrorMessage(err, tLocale)).toBe(expected);
     },
   );
+  it('shows the message of a refusal that names the portal', () => {
+    const tr = (k: string): string => (k === 'errors.VALIDATION_ERROR' ? 'Validation error' : k);
+    const err = new ApiError(400, {
+      error: 'Turn off two-factor authentication in the driver portal at https://portal.test',
+      code: 'VALIDATION_ERROR',
+      portalUrl: 'https://portal.test',
+    });
+    expect(apiErrorMessage(err, tr)).toBe(
+      'Turn off two-factor authentication in the driver portal at https://portal.test',
+    );
+    // A portal refusal under another code also keeps the server message.
+    const enroll = new ApiError(403, {
+      error: 'Set up two-factor authentication in the driver portal',
+      code: 'ONE_WITH_A_TRANSLATION',
+      portalUrl: 'https://portal.test',
+    });
+    expect(apiErrorMessage(enroll, () => 'translated')).toBe(
+      'Set up two-factor authentication in the driver portal',
+    );
+  });
+
+  it('shows a plain VALIDATION_ERROR message and the generic text otherwise', () => {
+    const tr = (k: string): string => (k === 'errors.VALIDATION_ERROR' ? 'Validation error' : k);
+    const v = (error?: unknown): ApiError =>
+      new ApiError(400, { code: 'VALIDATION_ERROR', ...(error !== undefined ? { error } : {}) });
+    expect(apiErrorMessage(v(' Invalid IANA timezone '), tr)).toBe('Invalid IANA timezone');
+    expect(apiErrorMessage(v(), tr)).toBe('Validation error');
+    expect(apiErrorMessage(v('  '), tr)).toBe('Validation error');
+    expect(apiErrorMessage(v('body/phone Invalid'), tr)).toBe('Validation error');
+    expect(apiErrorMessage(v('querystring.limit must be <= 100'), tr)).toBe('Validation error');
+    expect(apiErrorMessage(v('[{"path":["phone"]}]'), tr)).toBe('Validation error');
+    expect(apiErrorMessage(v('line one\nline two'), tr)).toBe('Validation error');
+    expect(apiErrorMessage(v('x'.repeat(301)), tr)).toBe('Validation error');
+  });
+
   it('falls back to the server message when the code has no translation', () => {
     expect(apiErrorMessage(new ApiError(400, { error: 'nope', code: 'UNKNOWN_CODE' }), tr)).toBe(
       'nope',
