@@ -150,7 +150,7 @@ jest.mock('@/components/ui', () => {
 import React from 'react';
 
 import i18next from 'i18next';
-import { fireEvent, render, waitFor } from '@testing-library/react-native';
+import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
 import deCatalogue from '@/lib/i18n/de.json';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { initTestI18n } from '@/test-utils/i18n';
@@ -172,7 +172,21 @@ async function renderScreen(ui: React.ReactElement) {
   });
   clients.push(client);
   const screen = await render(<QueryClientProvider client={client}>{ui}</QueryClientProvider>);
-  await waitFor(() => expect(client.isFetching()).toBe(0));
+  // Every query the screen made has answered, so a button that depends on the
+  // MFA status or the portal URL is pressed only once they are loaded. The
+  // mocked Button keeps its onPress prop while disabled, and fireEvent calls
+  // it: a press before the MFA status loaded ran the no-factor setup.
+  await waitFor(() => {
+    const queries = client.getQueryCache().getAll();
+    expect(queries.length).toBeGreaterThan(0);
+    expect(queries.filter((q) => q.state.status === 'pending')).toHaveLength(0);
+    expect(client.isFetching()).toBe(0);
+  });
+  // React Query tells its observers on the next tick: let the screen render
+  // the loaded data before the test presses anything.
+  await act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 0));
+  });
   return screen;
 }
 
@@ -388,6 +402,35 @@ describe('Personal Info screen', () => {
       await fireEvent.changeText(screen.getByTestId('personal-phone'), '+12015550177');
       await fireEvent.press(screen.getByText('Speichern'));
       await waitFor(() => expect(mockToast).toHaveBeenCalledWith('Validierungsfehler', 'error'));
+    } finally {
+      await i18next.changeLanguage('en');
+    }
+  });
+
+  it('shows the server field errors under the fields in the app language (German)', async () => {
+    await i18next.addResourceBundle('de', 'translation', deCatalogue, true, true);
+    await i18next.changeLanguage('de');
+    try {
+      mockPatch.mockRejectedValue(
+        new ApiError(400, {
+          error: 'body/firstName String must contain at most 100 character(s)',
+          code: 'VALIDATION_ERROR',
+          details: {
+            firstName: 'String must contain at most 100 character(s)',
+            timezone: 'Invalid IANA timezone',
+          },
+        }),
+      );
+      const screen = await renderScreen(<PersonalInfoScreen />);
+      await fireEvent.changeText(screen.getByTestId('personal-firstName'), 'A'.repeat(101));
+      await fireEvent.press(screen.getByText('Speichern'));
+      expect(await screen.findByTestId('personal-firstName-error')).toHaveTextContent(
+        'Gib höchstens 100 Zeichen ein.',
+      );
+      expect(screen.getByTestId('personal-timezone-error')).toHaveTextContent(
+        'Dieser Wert ist ungültig.',
+      );
+      expect(mockToast).toHaveBeenCalledWith('Prüfen Sie die markierten Felder.', 'error');
     } finally {
       await i18next.changeLanguage('en');
     }
