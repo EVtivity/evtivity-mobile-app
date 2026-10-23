@@ -103,8 +103,9 @@ export function formatDay(value: string | null | undefined): string {
   if (value == null) return NA;
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
   if (match == null) return NA;
+  // Four-digit years and two-digit months and days always make a valid date
+  // (Date.UTC rolls an out-of-range month or day over), so no NaN check.
   const d = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3])));
-  if (Number.isNaN(d.getTime())) return NA;
   return d.toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',

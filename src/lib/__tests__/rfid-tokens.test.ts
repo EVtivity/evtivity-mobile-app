@@ -38,6 +38,11 @@ describe('rfidTokenStatus', () => {
     ).toBe('inactive');
   });
 
+  it('compares the expiry with the current time by default', () => {
+    expect(rfidTokenStatus({ isActive: true, expiresAt: '2000-01-01T00:00:00Z' })).toBe('expired');
+    expect(rfidTokenStatus({ isActive: true, expiresAt: '2999-01-01T00:00:00Z' })).toBe('active');
+  });
+
   it('is blocked for a card the operator deactivated, before expiry', () => {
     expect(
       rfidTokenStatus(
