@@ -12,8 +12,9 @@ import {
   hasSession,
   getRefreshToken,
   setOnLogout,
+  setOnRenew,
 } from './session';
-import { unregisterPushToken } from './push';
+import { forgetPushRegistration, registerPushToken, unregisterPushToken } from './push';
 import { queryClient } from './query';
 import type { AuthSuccess, Driver, LoginResult } from './types';
 import { isMfaRequired } from './types';
@@ -57,12 +58,28 @@ interface AuthState {
   setMfaPending: (pending: MfaPending | null) => void;
 }
 
+// A new sign-in. The API deletes a driver's push tokens whenever it ends the
+// driver's sessions, so forget the registered token: the root layout registers
+// it again once the store is authenticated.
 async function applySession(success: AuthSuccess): Promise<void> {
   await setSession({
     token: success.token,
     refreshToken: success.refreshToken,
     expiresIn: success.expiresIn,
   });
+  try {
+    await forgetPushRegistration();
+  } catch {
+    // Fail-soft: the sign-in stands; the token is posted on the next renewal.
+  }
+}
+
+// Re-registers the push token after a session renewal, without a permission
+// prompt (the renewal runs in the middle of a request). The token may be gone
+// server-side while this session lives: the API drops a token Expo reports as
+// not registered. The API upserts the token, so the repeat is harmless.
+function reRegisterPushAfterRenewal(): void {
+  void registerPushToken({ force: true, askPermission: false }).catch(() => undefined);
 }
 
 export const useAuth = create<AuthState>((set) => ({
@@ -78,6 +95,7 @@ export const useAuth = create<AuthState>((set) => ({
       // The server ended the session: drop the cached driver queries too.
       queryClient.clear();
     });
+    setOnRenew(reRegisterPushAfterRenewal);
     const restored = await loadSession();
     const biometricEnabled = (await SecureStore.getItemAsync(BIOMETRIC_PREF_KEY)) === '1';
     if (!restored) {

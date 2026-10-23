@@ -5,6 +5,7 @@ import { useQuery, useInfiniteQuery, useMutation, useQueryClient } from '@tansta
 import { api } from '@/lib/api';
 import { useAuth } from '@/lib/auth';
 import { setSession } from '@/lib/session';
+import { registerPushToken } from '@/lib/push';
 import type { PriceDisplay } from '@/lib/price-display';
 import type { Driver, Vehicle, RfidToken } from '@/lib/types';
 import type { DriverBilling } from '@/lib/fleet-billing';
@@ -142,8 +143,16 @@ export function useMfaSetup() {
 export function useMfaConfirm() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (input: { method: MfaMethod; code: string; challengeId?: number }) =>
-      api.post<{ success: true }>('/v1/portal/driver/mfa/confirm', input),
+    // Turning MFA on ends every session of the driver and returns a new one
+    // for this device.
+    mutationFn: async (input: { method: MfaMethod; code: string; challengeId?: number }) => {
+      const reply = await api.post<{ success: true } & NewSessionReply>(
+        '/v1/portal/driver/mfa/confirm',
+        input,
+      );
+      await adoptNewSession(reply);
+      return reply;
+    },
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ['mfa-status'] });
     },
@@ -303,30 +312,44 @@ export function useToggleRfidToken() {
   });
 }
 
-/** A current server ends every session and returns a new one for this device. */
-interface ChangePasswordReply {
-  success: true;
+/** A reply of a change that ends every session and returns a new one for this device. */
+interface NewSessionReply {
   token?: string;
   refreshToken?: string;
   expiresIn?: number;
+}
+
+/**
+ * Keeps this device signed in after a change that ended every session of the
+ * driver (password change, MFA turned on): stores the new tokens, then
+ * registers the push token again, since ending the sessions deleted it. An
+ * older server answers without tokens and keeps the session.
+ */
+export async function adoptNewSession(reply: NewSessionReply): Promise<void> {
+  if (
+    typeof reply.token !== 'string' ||
+    typeof reply.refreshToken !== 'string' ||
+    typeof reply.expiresIn !== 'number'
+  ) {
+    return;
+  }
+  await setSession({
+    token: reply.token,
+    refreshToken: reply.refreshToken,
+    expiresIn: reply.expiresIn,
+  });
+  void registerPushToken({ force: true, askPermission: false }).catch(() => undefined);
+}
+
+interface ChangePasswordReply extends NewSessionReply {
+  success: true;
 }
 
 export function useChangePassword() {
   return useMutation({
     mutationFn: async (input: { currentPassword: string; newPassword: string }) => {
       const reply = await api.patch<ChangePasswordReply>('/v1/portal/driver/password', input);
-      // An older server answers { success } only and keeps the session.
-      if (
-        typeof reply.token === 'string' &&
-        typeof reply.refreshToken === 'string' &&
-        typeof reply.expiresIn === 'number'
-      ) {
-        await setSession({
-          token: reply.token,
-          refreshToken: reply.refreshToken,
-          expiresIn: reply.expiresIn,
-        });
-      }
+      await adoptNewSession(reply);
       return reply;
     },
   });

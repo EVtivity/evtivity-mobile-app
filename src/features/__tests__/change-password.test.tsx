@@ -22,6 +22,10 @@ jest.mock('@/lib/device', () => ({
 }));
 jest.mock('@/lib/attestation', () => ({ getAttestationHeaders: jest.fn(async () => ({})) }));
 jest.mock('@/lib/auth', () => ({ useAuth: () => null }));
+const mockRegisterPush = jest.fn(async () => undefined);
+jest.mock('@/lib/push', () => ({
+  registerPushToken: (...args: unknown[]) => mockRegisterPush(...(args as [])),
+}));
 
 import React from 'react';
 import * as SecureStore from 'expo-secure-store';
@@ -29,7 +33,7 @@ import { act, renderHook, waitFor } from '@testing-library/react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { clearSession, getAccessToken, getRefreshToken, setSession } from '@/lib/session';
-import { useChangePassword } from '@/features/account';
+import { useChangePassword, useMfaConfirm } from '@/features/account';
 
 const store = SecureStore as jest.Mocked<typeof SecureStore>;
 let fetchMock: jest.Mock;
@@ -92,6 +96,30 @@ it('stores the new session from the reply and uses it for the next request', asy
 
   await api.get('/v1/portal/auth/me');
   expect(authorizationOf(fetchMock.mock.calls[1] as unknown[])).toBe('Bearer new-access');
+  // Ending the sessions deleted this device's push token: post it again,
+  // without a permission prompt.
+  expect(mockRegisterPush).toHaveBeenCalledWith({ force: true, askPermission: false });
+});
+
+it('stores the new session after turning MFA on and registers the push token again', async () => {
+  fetchMock.mockResolvedValueOnce(
+    jsonResponse({
+      success: true,
+      recoveryCodes: ['a'],
+      token: 'mfa-access',
+      refreshToken: 'mfa-refresh',
+      expiresIn: 900,
+    }),
+  );
+  const { result } = await renderHook(() => useMfaConfirm(), { wrapper });
+  await act(async () => {
+    result.current.mutate({ method: 'totp', code: '123456' });
+  });
+  await waitFor(() => expect(result.current.isSuccess).toBe(true));
+  expect(fetchMock.mock.calls[0]?.[0]).toBe('http://api.test/v1/portal/driver/mfa/confirm');
+  expect(getAccessToken()).toBe('mfa-access');
+  expect(getRefreshToken()).toBe('mfa-refresh');
+  expect(mockRegisterPush).toHaveBeenCalledWith({ force: true, askPermission: false });
 });
 
 it('keeps the current session when an older server answers without tokens', async () => {
@@ -104,6 +132,7 @@ it('keeps the current session when an older server answers without tokens', asyn
   expect(getAccessToken()).toBe('old-access');
   expect(getRefreshToken()).toBe('old-refresh');
   expect(store.setItemAsync).not.toHaveBeenCalled();
+  expect(mockRegisterPush).not.toHaveBeenCalled();
 
   await api.get('/v1/portal/auth/me');
   expect(authorizationOf(fetchMock.mock.calls[1] as unknown[])).toBe('Bearer old-access');

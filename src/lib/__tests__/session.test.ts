@@ -122,10 +122,61 @@ describe('refreshSession', () => {
     const onLogout = jest.fn();
     session.setOnLogout(onLogout);
     await session.setSession({ token: 'a', refreshToken: 'r', expiresIn: 0 });
-    (global.fetch as jest.Mock).mockResolvedValue({ ok: false } as Response);
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: false, status: 401 } as Response);
     await expect(session.refreshSession()).resolves.toBe(false);
     expect(onLogout).toHaveBeenCalledTimes(1);
     expect(session.hasSession()).toBe(false);
+  });
+
+  it.each([
+    [401, 'INVALID_REFRESH_TOKEN'],
+    [401, 'MFA_ENROLLMENT_REQUIRED'],
+    [400, 'VALIDATION_ERROR'],
+  ])('signs out once on a refused renewal (%s %s)', async (status) => {
+    const { session } = load();
+    const onLogout = jest.fn();
+    const onRenew = jest.fn();
+    session.setOnLogout(onLogout);
+    session.setOnRenew(onRenew);
+    await session.setSession({ token: 'a', refreshToken: 'r', expiresIn: 0 });
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: false, status } as Response);
+    await expect(session.refreshSession()).resolves.toBe(false);
+    expect(onLogout).toHaveBeenCalledTimes(1);
+    expect(onRenew).not.toHaveBeenCalled();
+    expect(session.hasSession()).toBe(false);
+    // No session left: a later call never asks the server again.
+    await expect(session.refreshSession()).resolves.toBe(false);
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it.each([408, 429, 500, 503])('keeps the session on a transient %s', async (status) => {
+    const { session } = load();
+    const onLogout = jest.fn();
+    session.setOnLogout(onLogout);
+    await session.setSession({ token: 'a', refreshToken: 'r', expiresIn: 0 });
+    (global.fetch as jest.Mock).mockResolvedValue({ ok: false, status } as Response);
+    await expect(session.refreshSession()).resolves.toBe(false);
+    expect(onLogout).not.toHaveBeenCalled();
+    expect(session.hasSession()).toBe(true);
+  });
+
+  it('sends the refresh token with the device headers and reports the renewal', async () => {
+    const { session } = load();
+    const onRenew = jest.fn();
+    session.setOnRenew(onRenew);
+    await session.setSession({ token: 'a', refreshToken: 'r', expiresIn: 0 });
+    (global.fetch as jest.Mock).mockResolvedValue(
+      okJson({ token: 'a2', refreshToken: 'r2', expiresIn: 900 }),
+    );
+    await expect(session.refreshSession()).resolves.toBe(true);
+    const init = (global.fetch as jest.Mock).mock.calls[0]?.[1] as {
+      headers: Record<string, string>;
+      body: string;
+    };
+    expect(init.headers).toMatchObject({ 'X-Client': 'mobile', 'X-Device-Id': 'dev-1' });
+    expect(JSON.parse(init.body)).toEqual({ refreshToken: 'r' });
+    expect(session.getRefreshToken()).toBe('r2');
+    expect(onRenew).toHaveBeenCalledTimes(1);
   });
 
   it('keeps the session on a transport error', async () => {

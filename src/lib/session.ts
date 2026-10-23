@@ -27,9 +27,23 @@ let accessToken: string | null = null;
 let refreshToken: string | null = null;
 let expiresAt = 0;
 let onLogout: (() => void) | null = null;
+let onRenew: (() => void) | null = null;
 
 export function setOnLogout(cb: () => void): void {
   onLogout = cb;
+}
+
+// Runs after every successful renewal (auth.ts registers the push token again).
+export function setOnRenew(cb: () => void): void {
+  onRenew = cb;
+}
+
+// The server refused the refresh token (401 INVALID_REFRESH_TOKEN,
+// ACCOUNT_DISABLED, MFA_ENROLLMENT_REQUIRED, or another client error): the
+// session is over. 408, 429 and 5xx (503 MFA_POLICY_UNAVAILABLE keeps the
+// refresh token for the next try) are transient and keep it.
+function isRefusal(status: number): boolean {
+  return status >= 400 && status < 500 && status !== 408 && status !== 429;
 }
 
 export async function loadSession(): Promise<boolean> {
@@ -104,11 +118,12 @@ async function doRefresh(): Promise<boolean> {
       body: JSON.stringify({ refreshToken: current }),
     });
     if (!res.ok) {
-      await forceLogout();
+      if (isRefusal(res.status)) await forceLogout();
       return false;
     }
     const data = (await res.json()) as SessionTokens;
     await setSession(data);
+    onRenew?.();
     return true;
   } catch {
     // Network error: keep the session, the caller surfaces the failure. Only an

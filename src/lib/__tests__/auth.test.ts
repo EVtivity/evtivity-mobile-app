@@ -17,8 +17,13 @@ jest.mock('@/lib/session', () => ({
   hasSession: jest.fn(),
   getRefreshToken: jest.fn(),
   setOnLogout: jest.fn(),
+  setOnRenew: jest.fn(),
 }));
-jest.mock('@/lib/push', () => ({ unregisterPushToken: jest.fn(async () => undefined) }));
+jest.mock('@/lib/push', () => ({
+  unregisterPushToken: jest.fn(async () => undefined),
+  registerPushToken: jest.fn(async () => undefined),
+  forgetPushRegistration: jest.fn(async () => undefined),
+}));
 jest.mock('@/lib/query', () => ({ queryClient: { clear: jest.fn() } }));
 
 type AuthModule = typeof import('@/lib/auth');
@@ -30,9 +35,14 @@ type SessionMock = {
   hasSession: jest.Mock;
   getRefreshToken: jest.Mock;
   setOnLogout: jest.Mock;
+  setOnRenew: jest.Mock;
 };
 type StoreMock = { getItemAsync: jest.Mock; setItemAsync: jest.Mock };
-type PushMock = { unregisterPushToken: jest.Mock };
+type PushMock = {
+  unregisterPushToken: jest.Mock;
+  registerPushToken: jest.Mock;
+  forgetPushRegistration: jest.Mock;
+};
 type QueryMock = { queryClient: { clear: jest.Mock } };
 
 interface Loaded {
@@ -83,6 +93,17 @@ describe('hydrate', () => {
     onLogout();
     expect(m.auth.useAuth.getState().status).toBe('unauthenticated');
     expect(m.queryClient.clear).toHaveBeenCalled();
+  });
+
+  it('registers the push token again after every renewal, without a prompt', async () => {
+    const m = load();
+    m.session.loadSession.mockResolvedValue(false);
+    m.store.getItemAsync.mockResolvedValue('0');
+    await m.auth.useAuth.getState().hydrate();
+    const onRenew = m.session.setOnRenew.mock.calls[0][0] as () => void;
+    m.push.registerPushToken.mockRejectedValueOnce(new Error('push down'));
+    expect(() => onRenew()).not.toThrow();
+    expect(m.push.registerPushToken).toHaveBeenCalledWith({ force: true, askPermission: false });
   });
 
   it('stays unauthenticated when no session is restored', async () => {
@@ -136,6 +157,16 @@ describe('login', () => {
       refreshToken: 'r',
       expiresIn: 900,
     });
+    expect(m.auth.useAuth.getState().status).toBe('authenticated');
+    // The API deleted the push tokens when it ended the earlier sessions.
+    expect(m.push.forgetPushRegistration).toHaveBeenCalled();
+  });
+
+  it('still signs in when forgetting the push registration fails', async () => {
+    const m = load();
+    m.api.post.mockResolvedValue(authSuccess);
+    m.push.forgetPushRegistration.mockRejectedValueOnce(new Error('keychain'));
+    await m.auth.useAuth.getState().login('a@b.com', 'pw');
     expect(m.auth.useAuth.getState().status).toBe('authenticated');
   });
 });
@@ -208,6 +239,7 @@ describe('verifyMfa', () => {
     const s = m.auth.useAuth.getState();
     expect(s.status).toBe('authenticated');
     expect(s.mfaPending).toBeNull();
+    expect(m.push.forgetPushRegistration).toHaveBeenCalled();
   });
 
   it('sends the challenge id of an email or SMS code', async () => {

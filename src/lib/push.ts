@@ -24,13 +24,25 @@ function projectId(): string | undefined {
   return extra?.eas?.projectId;
 }
 
+export interface RegisterPushOptions {
+  /**
+   * Post the token even when it matches the last registered one. The API
+   * deletes a driver's push tokens whenever it ends the driver's sessions
+   * (password change or reset, MFA turned on, deactivation), so a new session
+   * registers again. The API upserts the token, so a repeat is harmless.
+   */
+  force?: boolean;
+  /** Ask for the notification permission when it is not granted yet (default true). */
+  askPermission?: boolean;
+}
+
 // Requests permission, obtains the Expo push token, and registers it with the
 // API. Idempotent and fail-soft: a denied permission or a missing EAS project
 // id (local dev) simply skips registration without throwing.
-export async function registerPushToken(): Promise<void> {
+export async function registerPushToken(opts: RegisterPushOptions = {}): Promise<void> {
   const settings = await Notifications.getPermissionsAsync();
   let granted = settings.granted;
-  if (!granted && settings.canAskAgain) {
+  if (!granted && settings.canAskAgain && opts.askPermission !== false) {
     const req = await Notifications.requestPermissionsAsync();
     granted = req.granted;
   }
@@ -51,8 +63,10 @@ export async function registerPushToken(): Promise<void> {
     const token = tokenResponse.data;
     // This runs again on every unlock/foreground. Skip the round-trip when the
     // token already matches the last successfully-registered one.
-    const lastToken = await SecureStore.getItemAsync(LAST_TOKEN_KEY);
-    if (token === lastToken) return;
+    if (opts.force !== true) {
+      const lastToken = await SecureStore.getItemAsync(LAST_TOKEN_KEY);
+      if (token === lastToken) return;
+    }
     await api.post('/v1/portal/notifications/push-token', {
       token,
       platform: Platform.OS === 'ios' ? 'ios' : 'android',
@@ -64,6 +78,14 @@ export async function registerPushToken(): Promise<void> {
     // No APNs/FCM device token on simulators/emulators (and none when offline).
     // Skip registration instead of crashing the app on launch.
   }
+}
+
+// Forgets which token was registered, so the next registerPushToken posts it.
+// Called on every sign-in: a session the API ended (password reset on another
+// device, deactivation) took the device's push token with it, while this
+// device still remembers it as registered.
+export async function forgetPushRegistration(): Promise<void> {
+  await SecureStore.deleteItemAsync(LAST_TOKEN_KEY);
 }
 
 // Removes the registered token server-side (called on logout). Reads the last

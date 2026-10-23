@@ -26,7 +26,7 @@ import { Platform } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import * as SecureStore from 'expo-secure-store';
-import { registerPushToken, unregisterPushToken } from '@/lib/push';
+import { forgetPushRegistration, registerPushToken, unregisterPushToken } from '@/lib/push';
 
 const notif = Notifications as jest.Mocked<typeof Notifications>;
 const store = SecureStore as jest.Mocked<typeof SecureStore>;
@@ -81,6 +81,23 @@ describe('registerPushToken', () => {
     expect(store.setItemAsync).not.toHaveBeenCalled();
   });
 
+  it('posts the token again when forced, as after a session the API ended', async () => {
+    store.getItemAsync.mockResolvedValue('ExpoToken[x]');
+    await registerPushToken({ force: true });
+    expect(store.getItemAsync).not.toHaveBeenCalled();
+    expect(apiMock.post).toHaveBeenCalledWith('/v1/portal/notifications/push-token', {
+      token: 'ExpoToken[x]',
+      platform: 'ios',
+    });
+  });
+
+  it('never prompts when asked not to, and skips without permission', async () => {
+    notif.getPermissionsAsync.mockResolvedValue({ granted: false, canAskAgain: true } as never);
+    await registerPushToken({ force: true, askPermission: false });
+    expect(notif.requestPermissionsAsync).not.toHaveBeenCalled();
+    expect(apiMock.post).not.toHaveBeenCalled();
+  });
+
   it('requests permission when it can ask again', async () => {
     notif.getPermissionsAsync.mockResolvedValue({ granted: false, canAskAgain: true } as never);
     notif.requestPermissionsAsync.mockResolvedValue({ granted: true } as never);
@@ -116,6 +133,14 @@ describe('registerPushToken', () => {
     notif.getExpoPushTokenAsync.mockRejectedValue(new Error('no APNs token'));
     await expect(registerPushToken()).resolves.toBeUndefined();
     expect(apiMock.post).not.toHaveBeenCalled();
+  });
+});
+
+describe('forgetPushRegistration', () => {
+  it('forgets the registered token, so the next registration posts it', async () => {
+    await forgetPushRegistration();
+    expect(store.deleteItemAsync).toHaveBeenCalledWith('ev_push_token');
+    expect(apiMock.del).not.toHaveBeenCalled();
   });
 });
 
