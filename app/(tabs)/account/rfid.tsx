@@ -22,6 +22,7 @@ import {
   useConfirm,
 } from '@/components/ui';
 import { hsl } from '@/lib/theme';
+import { ApiError } from '@/lib/api';
 import { useRfidTokens, useAddRfidToken, useToggleRfidToken } from '@/features/account';
 import { rfidTokenStatus } from '@/lib/rfid-tokens';
 
@@ -65,6 +66,12 @@ export default function RfidScreen(): React.JSX.Element {
       setOpen(false);
       toast.show(t('account.rfidAdded'), 'success');
     } catch (err) {
+      // 409 VEHICLE_ID_IN_USE: the number is another driver's vehicle id. The
+      // shared message speaks of Autocharge vehicles, so say it for a card.
+      if (err instanceof ApiError && err.code === 'VEHICLE_ID_IN_USE') {
+        toast.show(t('account.rfidVehicleIdInUse'), 'error');
+        return;
+      }
       showApiError(err);
     }
   };

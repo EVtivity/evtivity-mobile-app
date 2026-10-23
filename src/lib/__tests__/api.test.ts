@@ -83,15 +83,22 @@ describe('apiErrorMessage', () => {
     const err = new ApiError(504, { error: 'English text', code: 'STATUS_CHECK_TIMEOUT' });
     expect(apiErrorMessage(err, tr)).toBe('Zeitüberschreitung bei der Statusabfrage.');
   });
-  it.each(['en', 'es', 'zh', 'de', 'ko', 'zh-TW'])(
-    'translates FLEET_CREDIT_LIMIT_REACHED in %s',
-    (lang) => {
+  const LANGS = ['en', 'es', 'zh', 'de', 'ko', 'zh-TW'];
+  const CODES: [string, number][] = [
+    ['FLEET_CREDIT_LIMIT_REACHED', 402],
+    ['PAYMENT_METHOD_REQUIRED', 400],
+    ['AUTOCHARGE_CLAIM_REQUIRED', 409],
+    ['VEHICLE_ID_IN_USE', 409],
+  ];
+  it.each(LANGS.flatMap((lang) => CODES.map(([code, status]) => [code, lang, status] as const)))(
+    'translates %s in %s',
+    (code, lang, status) => {
       const locale = require(`../i18n/${lang}.json`) as { errors: Record<string, string> };
-      const expected = locale.errors['FLEET_CREDIT_LIMIT_REACHED'];
+      const expected = locale.errors[code];
       expect(typeof expected).toBe('string');
       const tLocale = (key: string): string =>
         key.startsWith('errors.') ? (locale.errors[key.slice(7)] ?? key) : key;
-      const err = new ApiError(402, { error: 'English text', code: 'FLEET_CREDIT_LIMIT_REACHED' });
+      const err = new ApiError(status, { error: 'English text', code });
       expect(apiErrorMessage(err, tLocale)).toBe(expected);
     },
   );

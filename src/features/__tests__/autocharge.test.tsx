@@ -227,6 +227,21 @@ describe('Vehicles screen', () => {
     );
   });
 
+  it('tells the driver to claim the vehicle from a session when the API asks for it', async () => {
+    mockPatch.mockRejectedValue(new ApiError(409, { code: 'AUTOCHARGE_CLAIM_REQUIRED' }));
+    const screen = await renderWithQuery(<VehiclesScreen />);
+    await fireEvent(await screen.findByTestId('vehicle-autocharge-veh_1'), 'valueChange', true);
+    await waitFor(() =>
+      expect(mockToast).toHaveBeenCalledWith(
+        'Autocharge turns on only for a vehicle id a charger sent in one of your own sessions. Open that session in Activity and tap Use This Vehicle for Plug-In Charging.',
+        'error',
+      ),
+    );
+    await waitFor(() =>
+      expect(screen.getByTestId('vehicle-autocharge-veh_1').props.value).toBe(false),
+    );
+  });
+
   it('hides the switch where Autocharge is not offered, unless it is on', async () => {
     features = { autochargeEnabled: false };
     vehicles = [WITH_IDS, { ...WITH_IDS, id: 'veh_3', autochargeEnabled: true }];
@@ -350,6 +365,11 @@ describe('Session Vehicle ID card', () => {
     ],
     ['SESSION_NO_VEHICLE_ID', 409, 'The charger sent no vehicle id for this session.'],
     ['VEHICLE_ID_REQUIRED', 400, 'Autocharge needs a VIN or an EVCCID on the vehicle.'],
+    [
+      'AUTOCHARGE_CLAIM_REQUIRED',
+      409,
+      'Autocharge turns on only for a vehicle id a charger sent in one of your own sessions. Open that session in Activity and tap Use This Vehicle for Plug-In Charging.',
+    ],
   ])('shows the portal text for %s', async (code, status, text) => {
     mockPost.mockRejectedValue(new ApiError(status, { code }));
     const screen = await renderWithQuery(

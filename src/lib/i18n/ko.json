@@ -185,6 +185,7 @@
     "cardDefault": "기본",
     "changeCard": "변경",
     "selectCard": "카드 선택",
+    "paymentMethodRequiredTitle": "결제 수단 추가",
     "tabLocal": "로컬",
     "tabRoaming": "로밍",
     "roamingSearchPlaceholder": "로밍 네트워크 검색",
@@ -316,6 +317,7 @@
     "addVehicle": "차량 추가",
     "addRfid": "RFID 카드 추가",
     "rfidAdded": "RFID 카드가 추가되었습니다",
+    "rfidVehicleIdInUse": "이 번호는 이미 차량 ID로 사용 중이므로 카드로 추가할 수 없습니다. 카드 번호를 확인하세요.",
     "noPaymentMethods": "결제 수단 없음",
     "noVehicles": "차량 없음",
     "noRfid": "RFID 카드 없음",
@@ -572,7 +574,7 @@
     "PAYMENT_PROVIDER_NOT_CONFIGURED": "결제 제공업체가 구성되지 않았습니다",
     "PAYMENT_PREAUTH_FAILED": "결제 승인이 거부되었습니다",
     "FLEET_CREDIT_LIMIT_REACHED": "충전 요금이 청구되는 차량대의 신용 한도에 도달했습니다. 차량대 관리자에게 문의하십시오.",
-    "PAYMENT_METHOD_REQUIRED": "결제 수단이 필요합니다",
+    "PAYMENT_METHOD_REQUIRED": "새 결제 수단을 추가한 후 다시 시도하세요.",
     "PAYMENT_METHOD_NOT_FOUND": "결제 수단을 찾을 수 없습니다",
     "PAYMENT_METHOD_IN_USE": "결제 수단이 활성 충전 세션에서 사용 중입니다",
     "DRIVER_NOT_FOUND": "운전자를 찾을 수 없습니다",
@@ -592,6 +594,7 @@
     "SESSION_NO_VEHICLE_ID": "충전기가 이 세션에 차량 ID를 보내지 않았습니다.",
     "VEHICLE_BLOCKED_BY_OPERATOR": "운영자가 이 차량의 Autocharge를 차단했습니다. 차단을 해제하려면 운영자에게 문의하세요.",
     "VEHICLE_ID_IN_USE": "다른 차량이 이미 이 VIN 또는 EVCCID를 Autocharge에 사용하고 있습니다.",
+    "AUTOCHARGE_CLAIM_REQUIRED": "Autocharge는 본인의 세션에서 충전기가 보낸 차량 ID에만 켤 수 있습니다. 활동에서 해당 세션을 열고 플러그 충전에 이 차량 사용을 누르세요.",
     "VEHICLE_ID_REQUIRED": "Autocharge를 사용하려면 차량에 VIN 또는 EVCCID가 있어야 합니다."
   },
   "fleetBilling": {

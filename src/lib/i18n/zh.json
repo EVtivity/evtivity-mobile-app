@@ -185,6 +185,7 @@
     "cardDefault": "默认",
     "changeCard": "更换",
     "selectCard": "选择一张卡",
+    "paymentMethodRequiredTitle": "添加支付方式",
     "tabLocal": "本地",
     "tabRoaming": "漫游",
     "roamingSearchPlaceholder": "搜索漫游网络",
@@ -316,6 +317,7 @@
     "addVehicle": "添加车辆",
     "addRfid": "添加 RFID 卡",
     "rfidAdded": "已添加 RFID 卡",
+    "rfidVehicleIdInUse": "此号码已用作车辆标识，无法添加为卡片。请检查卡号。",
     "noPaymentMethods": "暂无支付方式",
     "noVehicles": "暂无车辆",
     "noRfid": "暂无 RFID 卡",
@@ -572,7 +574,7 @@
     "PAYMENT_PROVIDER_NOT_CONFIGURED": "支付提供商未配置",
     "PAYMENT_PREAUTH_FAILED": "支付授权被拒绝",
     "FLEET_CREDIT_LIMIT_REACHED": "为您的充电付费的车队已达到信用额度。请联系您的车队管理员。",
-    "PAYMENT_METHOD_REQUIRED": "需要支付方式",
+    "PAYMENT_METHOD_REQUIRED": "请添加新的支付方式后重试。",
     "PAYMENT_METHOD_NOT_FOUND": "未找到支付方式",
     "PAYMENT_METHOD_IN_USE": "支付方式正被活跃充电会话使用",
     "DRIVER_NOT_FOUND": "未找到驾驶员",
@@ -592,6 +594,7 @@
     "SESSION_NO_VEHICLE_ID": "充电站未为此会话发送车辆标识。",
     "VEHICLE_BLOCKED_BY_OPERATOR": "运营商已阻止此车辆使用 Autocharge。请联系运营商解除阻止。",
     "VEHICLE_ID_IN_USE": "另一辆车已将此 VIN 或 EVCCID 用于 Autocharge。",
+    "AUTOCHARGE_CLAIM_REQUIRED": "仅当车辆标识由充电站在您本人的某个会话中发送时，才能开启 Autocharge。请在记录中打开该会话，然后点按“将此车辆用于插枪即充”。",
     "VEHICLE_ID_REQUIRED": "Autocharge 需要车辆的 VIN 或 EVCCID。"
   },
   "fleetBilling": {

@@ -185,6 +185,7 @@
     "cardDefault": "預設",
     "changeCard": "變更",
     "selectCard": "選擇卡片",
+    "paymentMethodRequiredTitle": "新增付款方式",
     "tabLocal": "本地",
     "tabRoaming": "漫遊",
     "roamingSearchPlaceholder": "搜尋漫遊網路",
@@ -316,6 +317,7 @@
     "addVehicle": "新增車輛",
     "addRfid": "新增 RFID 卡",
     "rfidAdded": "已新增 RFID 卡",
+    "rfidVehicleIdInUse": "此號碼已用作車輛識別碼，無法新增為卡片。請檢查卡號。",
     "noPaymentMethods": "沒有付款方式",
     "noVehicles": "沒有車輛",
     "noRfid": "沒有 RFID 卡",
@@ -572,7 +574,7 @@
     "PAYMENT_PROVIDER_NOT_CONFIGURED": "尚未設定付款服務商",
     "PAYMENT_PREAUTH_FAILED": "付款授權遭拒",
     "FLEET_CREDIT_LIMIT_REACHED": "為您的充電付費的車隊已達到信用額度。請聯絡您的車隊管理員。",
-    "PAYMENT_METHOD_REQUIRED": "需要付款方式",
+    "PAYMENT_METHOD_REQUIRED": "請新增付款方式後再試一次。",
     "PAYMENT_METHOD_NOT_FOUND": "找不到付款方式",
     "PAYMENT_METHOD_IN_USE": "此付款方式正由進行中的充電工作階段使用",
     "DRIVER_NOT_FOUND": "找不到駕駛員",
@@ -592,6 +594,7 @@
     "SESSION_NO_VEHICLE_ID": "充電站未為此工作階段傳送車輛識別碼。",
     "VEHICLE_BLOCKED_BY_OPERATOR": "營運商已封鎖此車輛的 Autocharge。請聯絡營運商解除封鎖。",
     "VEHICLE_ID_IN_USE": "另一輛車已將此 VIN 或 EVCCID 用於 Autocharge。",
+    "AUTOCHARGE_CLAIM_REQUIRED": "僅當車輛識別碼由充電站在您本人的某個工作階段中傳送時，才能開啟 Autocharge。請在紀錄中開啟該工作階段，然後點按「將此車輛用於插槍即充」。",
     "VEHICLE_ID_REQUIRED": "Autocharge 需要車輛的 VIN 或 EVCCID。"
   },
   "fleetBilling": {

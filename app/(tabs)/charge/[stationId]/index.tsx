@@ -76,6 +76,7 @@ export default function StationDetailScreen(): React.JSX.Element {
   const watch = useIsWatching(sid);
   const toggleWatch = useToggleWatch();
   const paymentMethods = usePaymentMethods();
+  const refetchCards = paymentMethods.refetch;
   const start = useStartCharging();
   const activeSessions = useActiveSessions();
   const driverBilling = useDriverBilling();
@@ -184,13 +185,26 @@ export default function StationDetailScreen(): React.JSX.Element {
             router.replace({ pathname: '/session/[id]', params: { id: sessionId } });
           },
           onError: (err) => {
+            // 400 PAYMENT_METHOD_REQUIRED: no card was sent, or the provider of
+            // the saved card is gone. Reload the cards and offer to add one.
+            if (err instanceof ApiError && err.code === 'PAYMENT_METHOD_REQUIRED') {
+              void refetchCards();
+              void confirm({
+                title: t('charge.paymentMethodRequiredTitle'),
+                message: apiErrorMessage(err, t),
+                confirmText: t('payments.addCard'),
+              }).then((ok) => {
+                if (ok) router.push('/account/payment-methods');
+              });
+              return;
+            }
             const msg = apiErrorMessage(err, t);
             toast.show(msg, 'error');
           },
         },
       );
     },
-    [router, start, sid, selectedCard, fleetName, t, toast],
+    [router, start, sid, selectedCard, fleetName, t, toast, confirm, refetchCards],
   );
 
   const onStart = React.useCallback(async () => {

@@ -185,6 +185,7 @@
     "cardDefault": "Default",
     "changeCard": "Change",
     "selectCard": "Select a card",
+    "paymentMethodRequiredTitle": "Add a Payment Method",
     "tabLocal": "Local",
     "tabRoaming": "Roaming",
     "roamingSearchPlaceholder": "Search roaming networks",
@@ -316,6 +317,7 @@
     "addVehicle": "Add Vehicle",
     "addRfid": "Add RFID Card",
     "rfidAdded": "RFID card added",
+    "rfidVehicleIdInUse": "This number is already in use as a vehicle id and cannot be added as a card. Check the card number.",
     "noPaymentMethods": "No payment methods",
     "noVehicles": "No vehicles",
     "noRfid": "No RFID cards",
@@ -572,7 +574,7 @@
     "PAYMENT_PROVIDER_NOT_CONFIGURED": "Payment provider is not configured",
     "PAYMENT_PREAUTH_FAILED": "Payment authorization declined",
     "FLEET_CREDIT_LIMIT_REACHED": "The credit limit of the fleet your charging is billed to is reached. Contact your fleet manager.",
-    "PAYMENT_METHOD_REQUIRED": "Payment method required",
+    "PAYMENT_METHOD_REQUIRED": "Add a new payment method and try again.",
     "PAYMENT_METHOD_NOT_FOUND": "Payment method not found",
     "PAYMENT_METHOD_IN_USE": "Payment method is in use by an active charging session",
     "DRIVER_NOT_FOUND": "Driver not found",
@@ -592,6 +594,7 @@
     "SESSION_NO_VEHICLE_ID": "The charger sent no vehicle id for this session.",
     "VEHICLE_BLOCKED_BY_OPERATOR": "The operator blocked Autocharge for this vehicle. Contact the operator to unblock it.",
     "VEHICLE_ID_IN_USE": "Another vehicle already uses this VIN or EVCCID for Autocharge.",
+    "AUTOCHARGE_CLAIM_REQUIRED": "Autocharge turns on only for a vehicle id a charger sent in one of your own sessions. Open that session in Activity and tap Use This Vehicle for Plug-In Charging.",
     "VEHICLE_ID_REQUIRED": "Autocharge needs a VIN or an EVCCID on the vehicle."
   },
   "fleetBilling": {

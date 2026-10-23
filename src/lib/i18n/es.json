@@ -185,6 +185,7 @@
     "cardDefault": "Predeterminada",
     "changeCard": "Cambiar",
     "selectCard": "Seleccione una tarjeta",
+    "paymentMethodRequiredTitle": "Agregar un método de pago",
     "tabLocal": "Local",
     "tabRoaming": "Itinerancia",
     "roamingSearchPlaceholder": "Buscar redes de itinerancia",
@@ -316,6 +317,7 @@
     "addVehicle": "Agregar vehículo",
     "addRfid": "Agregar tarjeta RFID",
     "rfidAdded": "Tarjeta RFID agregada",
+    "rfidVehicleIdInUse": "Este número ya se usa como ID de vehículo y no se puede agregar como tarjeta. Revise el número de tarjeta.",
     "noPaymentMethods": "Sin métodos de pago",
     "noVehicles": "Sin vehículos",
     "noRfid": "Sin tarjetas RFID",
@@ -572,7 +574,7 @@
     "PAYMENT_PROVIDER_NOT_CONFIGURED": "Proveedor de pago no configurado",
     "PAYMENT_PREAUTH_FAILED": "Autorización de pago rechazada",
     "FLEET_CREDIT_LIMIT_REACHED": "Se alcanzó el límite de crédito de la flota a la que se factura su carga. Contacte al responsable de su flota.",
-    "PAYMENT_METHOD_REQUIRED": "Se requiere un método de pago",
+    "PAYMENT_METHOD_REQUIRED": "Agregue un nuevo método de pago e inténtelo de nuevo.",
     "PAYMENT_METHOD_NOT_FOUND": "Método de pago no encontrado",
     "PAYMENT_METHOD_IN_USE": "El método de pago está en uso por una sesión de carga activa",
     "DRIVER_NOT_FOUND": "Conductor no encontrado",
@@ -592,6 +594,7 @@
     "SESSION_NO_VEHICLE_ID": "El cargador no envió ningún identificador de vehículo para esta sesión.",
     "VEHICLE_BLOCKED_BY_OPERATOR": "El operador bloqueó Autocharge para este vehículo. Contacte al operador para desbloquearlo.",
     "VEHICLE_ID_IN_USE": "Otro vehículo ya usa este VIN o EVCCID para Autocharge.",
+    "AUTOCHARGE_CLAIM_REQUIRED": "Autocharge solo se activa con un ID de vehículo que un cargador envió en una de sus propias sesiones. Abra esa sesión en Actividad y toque Usar este vehículo para cargar al conectar.",
     "VEHICLE_ID_REQUIRED": "Autocharge necesita un VIN o un EVCCID en el vehículo."
   },
   "fleetBilling": {

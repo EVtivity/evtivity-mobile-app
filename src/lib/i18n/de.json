@@ -185,6 +185,7 @@
     "cardDefault": "Standard",
     "changeCard": "Ändern",
     "selectCard": "Karte auswählen",
+    "paymentMethodRequiredTitle": "Zahlungsmethode hinzufügen",
     "tabLocal": "Lokal",
     "tabRoaming": "Roaming",
     "roamingSearchPlaceholder": "Roaming-Netze suchen",
@@ -316,6 +317,7 @@
     "addVehicle": "Fahrzeug hinzufügen",
     "addRfid": "RFID-Karte hinzufügen",
     "rfidAdded": "RFID-Karte hinzugefügt",
+    "rfidVehicleIdInUse": "Diese Nummer wird bereits als Fahrzeugkennung verwendet und kann nicht als Karte hinzugefügt werden. Prüfen Sie die Kartennummer.",
     "noPaymentMethods": "Keine Zahlungsmethoden",
     "noVehicles": "Keine Fahrzeuge",
     "noRfid": "Keine RFID-Karten",
@@ -572,7 +574,7 @@
     "PAYMENT_PROVIDER_NOT_CONFIGURED": "Zahlungsanbieter nicht konfiguriert",
     "PAYMENT_PREAUTH_FAILED": "Zahlungsautorisierung abgelehnt",
     "FLEET_CREDIT_LIMIT_REACHED": "Das Kreditlimit der Flotte, über die dein Laden abgerechnet wird, ist erreicht. Wende dich an deinen Flottenverwalter.",
-    "PAYMENT_METHOD_REQUIRED": "Zahlungsmethode erforderlich",
+    "PAYMENT_METHOD_REQUIRED": "Fügen Sie eine neue Zahlungsmethode hinzu und versuchen Sie es erneut.",
     "PAYMENT_METHOD_NOT_FOUND": "Zahlungsmethode nicht gefunden",
     "PAYMENT_METHOD_IN_USE": "Zahlungsmethode wird von einem aktiven Ladevorgang verwendet",
     "DRIVER_NOT_FOUND": "Fahrer nicht gefunden",
@@ -592,6 +594,7 @@
     "SESSION_NO_VEHICLE_ID": "Die Ladestation hat für diesen Ladevorgang keine Fahrzeugkennung gesendet.",
     "VEHICLE_BLOCKED_BY_OPERATOR": "Der Betreiber hat Autocharge für dieses Fahrzeug gesperrt. Wenden Sie sich an den Betreiber, um es zu entsperren.",
     "VEHICLE_ID_IN_USE": "Ein anderes Fahrzeug verwendet diese FIN oder EVCCID bereits für Autocharge.",
+    "AUTOCHARGE_CLAIM_REQUIRED": "Autocharge lässt sich nur für eine Fahrzeugkennung einschalten, die eine Ladestation in einem Ihrer eigenen Ladevorgänge gesendet hat. Öffnen Sie diesen Ladevorgang unter Aktivität und tippen Sie auf „Fahrzeug zum Laden durch Einstecken verwenden“.",
     "VEHICLE_ID_REQUIRED": "Autocharge benötigt eine FIN oder EVCCID am Fahrzeug."
   },
   "fleetBilling": {
