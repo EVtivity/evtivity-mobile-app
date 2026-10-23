@@ -108,7 +108,7 @@ export default function PersonalInfoScreen(): React.JSX.Element {
         setFieldErrors({ phone: message });
         await portalNotice(message, portalPageUrl(err.portalUrl, PORTAL_PERSONAL_PATH));
       } else if (err instanceof ApiError) {
-        setFieldErrors(getApiErrorFieldDetails(err));
+        setFieldErrors(getApiErrorFieldDetails(err, t, i18n.language));
         toast.show(apiErrorMessage(err, t, i18n.language), 'error');
       } else {
         toast.show(t('common.offline'), 'error');

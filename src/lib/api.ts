@@ -6,6 +6,7 @@ import { API_BASE_URL } from './config';
 import { deviceHeaders } from './device';
 import { getAttestationHeaders } from './attestation';
 import { getAccessToken, isAccessTokenStale, refreshSession, hasSession } from './session';
+import { isEnglishLanguage, localizeFieldError } from './field-errors';
 
 export class ApiError extends Error {
   constructor(
@@ -84,11 +85,6 @@ function isPlainMessage(message: string): boolean {
   );
 }
 
-// The server writes its messages in English: only an English UI shows them.
-function isEnglish(language: string | undefined): boolean {
-  return language == null || language === '' || language.split('-')[0] === 'en';
-}
-
 /**
  * Why a refusal with a portalUrl sends the driver to the portal, in the app
  * language (the server's message is English): a sign-in only the portal can
@@ -118,10 +114,10 @@ export function apiErrorMessage(
     if (err.portalUrl != null) return portalReasonMessage(err, t);
     if (err.code === 'VALIDATION_ERROR') {
       const message = err.serverMessage;
-      if (message != null && isPlainMessage(message) && isEnglish(language)) {
+      if (message != null && isPlainMessage(message) && isEnglishLanguage(language)) {
         return message.trim();
       }
-      if (Object.keys(getApiErrorFieldDetails(err)).length > 0) return t('common.checkFields');
+      if (Object.keys(fieldDetails(err)).length > 0) return t('common.checkFields');
     }
     if (err.code != null) {
       const key = `errors.${err.code}`;
@@ -136,10 +132,8 @@ export function apiErrorMessage(
   return t('common.offline');
 }
 
-// Field-level validation errors (VALIDATION_ERROR responses carry a details map)
-// so forms can show the server message next to the offending input.
-export function getApiErrorFieldDetails(err: unknown): Record<string, string> {
-  if (!(err instanceof ApiError)) return {};
+// The raw `details` map of a reply: field name to the server's message.
+function fieldDetails(err: ApiError): Record<string, string> {
   const body = err.body;
   if (body == null || typeof body !== 'object') return {};
   const details = (body as Record<string, unknown>).details;
@@ -147,6 +141,23 @@ export function getApiErrorFieldDetails(err: unknown): Record<string, string> {
   const out: Record<string, string> = {};
   for (const [k, v] of Object.entries(details as Record<string, unknown>)) {
     if (typeof v === 'string') out[k] = v;
+  }
+  return out;
+}
+
+// Field-level validation errors (VALIDATION_ERROR replies carry a details map)
+// so forms can show a message next to the offending input, in the app
+// language: the server's validator text maps to the app's own messages
+// (`localizeFieldError`).
+export function getApiErrorFieldDetails(
+  err: unknown,
+  t: (key: string, options?: Record<string, unknown>) => string,
+  language: string | undefined = i18next.language,
+): Record<string, string> {
+  if (!(err instanceof ApiError)) return {};
+  const out: Record<string, string> = {};
+  for (const [k, v] of Object.entries(fieldDetails(err))) {
+    out[k] = localizeFieldError(v, t, language);
   }
   return out;
 }

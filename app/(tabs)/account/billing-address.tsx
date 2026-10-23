@@ -38,7 +38,7 @@ function AddressForm({
       await update.mutateAsync(toBillingAddressBody(form));
       toast.show(t('billingAddress.updated'), 'success');
     } catch (err) {
-      if (err instanceof ApiError) setFieldErrors(getApiErrorFieldDetails(err));
+      if (err instanceof ApiError) setFieldErrors(getApiErrorFieldDetails(err, t));
       toast.show(
         err instanceof ApiError && !err.isServerDown
           ? t('billingAddress.updateFailed')

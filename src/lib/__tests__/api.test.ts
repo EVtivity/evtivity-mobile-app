@@ -249,17 +249,32 @@ describe('apiErrorMessage', () => {
 
 describe('getApiErrorFieldDetails', () => {
   it('returns empty for a non-ApiError', () => {
-    expect(getApiErrorFieldDetails(new Error('x'))).toEqual({});
+    expect(getApiErrorFieldDetails(new Error('x'), t)).toEqual({});
   });
   it('returns empty when the body has no usable details', () => {
-    expect(getApiErrorFieldDetails(new ApiError(400, null))).toEqual({});
-    expect(getApiErrorFieldDetails(new ApiError(400, 'str'))).toEqual({});
-    expect(getApiErrorFieldDetails(new ApiError(400, { details: null }))).toEqual({});
-    expect(getApiErrorFieldDetails(new ApiError(400, { details: 'x' }))).toEqual({});
+    expect(getApiErrorFieldDetails(new ApiError(400, null), t)).toEqual({});
+    expect(getApiErrorFieldDetails(new ApiError(400, 'str'), t)).toEqual({});
+    expect(getApiErrorFieldDetails(new ApiError(400, { details: null }), t)).toEqual({});
+    expect(getApiErrorFieldDetails(new ApiError(400, { details: 'x' }), t)).toEqual({});
   });
   it('keeps only string detail values', () => {
     const err = new ApiError(400, { details: { email: 'taken', count: 5 } });
-    expect(getApiErrorFieldDetails(err)).toEqual({ email: 'taken' });
+    expect(getApiErrorFieldDetails(err, t, 'en')).toEqual({ email: 'taken' });
+  });
+  it('maps validator messages to the app text in the app language', () => {
+    const err = new ApiError(400, {
+      code: 'VALIDATION_ERROR',
+      details: { email: 'Invalid email', 'address/line1': 'Required', note: 'taken' },
+    });
+    expect(getApiErrorFieldDetails(err, t, 'de')).toEqual({
+      email: 'fieldErrors.email',
+      'address/line1': 'fieldErrors.required',
+      note: 'fieldErrors.invalid',
+    });
+  });
+  it('uses the i18next language by default', () => {
+    const err = new ApiError(400, { details: { note: 'taken' } });
+    expect(getApiErrorFieldDetails(err, t)).toEqual({ note: 'taken' });
   });
 });
 

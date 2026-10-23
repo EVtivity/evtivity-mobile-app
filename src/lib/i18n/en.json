@@ -579,7 +579,7 @@
     "STATION_OFFLINE": "Station is offline",
     "STATION_NOT_FOUND": "Station not found",
     "CONNECTOR_NOT_FOUND": "Connector not found",
-    "RATE_LIMITED": "Too many status checks for this station",
+    "RATE_LIMITED": "Too many requests. Wait a moment and try again.",
     "STATION_TIMEOUT": "Station did not respond",
     "STATUS_CHECK_REJECTED": "Station rejected the status check",
     "STATUS_CHECK_TIMEOUT": "Status check timed out. Replug the connector and try again.",
@@ -608,7 +608,11 @@
     "VEHICLE_BLOCKED_BY_OPERATOR": "The operator blocked Autocharge for this vehicle. Contact the operator to unblock it.",
     "VEHICLE_ID_IN_USE": "Another vehicle already uses this VIN or EVCCID for Autocharge.",
     "AUTOCHARGE_CLAIM_REQUIRED": "Autocharge turns on only for a vehicle id a charger sent in one of your own sessions. Open that session in Activity and tap Use This Vehicle for Plug-In Charging.",
-    "VEHICLE_ID_REQUIRED": "Autocharge needs a VIN or an EVCCID on the vehicle."
+    "VEHICLE_ID_REQUIRED": "Autocharge needs a VIN or an EVCCID on the vehicle.",
+    "UNAUTHORIZED": "Unauthorized",
+    "NOT_FOUND": "Not found",
+    "PAYLOAD_TOO_LARGE": "The request is too large",
+    "UNSUPPORTED_MEDIA_TYPE": "Unsupported content type"
   },
   "fleetBilling": {
     "billedTo": "Billed to {{fleet}}",
@@ -707,5 +711,24 @@
     "makeModelRequired": "Enter the make and model.",
     "lastSeen": "Last Seen",
     "lastSeenValue": "{{station}}, {{time}}"
+  },
+  "fieldErrors": {
+    "required": "This field is required.",
+    "email": "Enter a valid email address.",
+    "url": "Enter a valid URL.",
+    "date": "Enter a valid date.",
+    "integer": "Enter a whole number.",
+    "type": "Enter a valid value.",
+    "option": "Choose one of the listed options.",
+    "tooShort": "Enter at least {{n}} characters.",
+    "exactLength": "Enter exactly {{n}} characters.",
+    "tooLong": "Enter at most {{n}} characters.",
+    "min": "Enter a value of at least {{n}}.",
+    "above": "Enter a value greater than {{n}}.",
+    "max": "Enter a value of at most {{n}}.",
+    "below": "Enter a value less than {{n}}.",
+    "tooFew": "Select at least {{n}}.",
+    "tooMany": "Select at most {{n}}.",
+    "invalid": "This value is not valid."
   }
 }

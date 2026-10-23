@@ -579,7 +579,7 @@
     "STATION_OFFLINE": "充电站离线",
     "STATION_NOT_FOUND": "未找到充电站",
     "CONNECTOR_NOT_FOUND": "未找到连接器",
-    "RATE_LIMITED": "该充电站状态检查次数过多",
+    "RATE_LIMITED": "请求过多。请稍候再试。",
     "STATION_TIMEOUT": "充电站未响应",
     "STATUS_CHECK_REJECTED": "充电站拒绝了状态检查",
     "STATUS_CHECK_TIMEOUT": "状态检查超时。请重新插入连接器后重试。",
@@ -608,7 +608,11 @@
     "VEHICLE_BLOCKED_BY_OPERATOR": "运营商已阻止此车辆使用 Autocharge。请联系运营商解除阻止。",
     "VEHICLE_ID_IN_USE": "另一辆车已将此 VIN 或 EVCCID 用于 Autocharge。",
     "AUTOCHARGE_CLAIM_REQUIRED": "仅当车辆标识由充电站在您本人的某个会话中发送时，才能开启 Autocharge。请在记录中打开该会话，然后点按“将此车辆用于插枪即充”。",
-    "VEHICLE_ID_REQUIRED": "Autocharge 需要车辆的 VIN 或 EVCCID。"
+    "VEHICLE_ID_REQUIRED": "Autocharge 需要车辆的 VIN 或 EVCCID。",
+    "UNAUTHORIZED": "未授权",
+    "NOT_FOUND": "未找到",
+    "PAYLOAD_TOO_LARGE": "请求过大",
+    "UNSUPPORTED_MEDIA_TYPE": "不支持的内容类型"
   },
   "fleetBilling": {
     "billedTo": "记账到 {{fleet}}",
@@ -707,5 +711,24 @@
     "makeModelRequired": "请输入品牌和型号。",
     "lastSeen": "最近识别",
     "lastSeenValue": "{{station}}，{{time}}"
+  },
+  "fieldErrors": {
+    "required": "此字段为必填项。",
+    "email": "请输入有效的邮箱地址。",
+    "url": "请输入有效的网址。",
+    "date": "请输入有效的日期。",
+    "integer": "请输入整数。",
+    "type": "请输入有效的值。",
+    "option": "请从列出的选项中选择一个。",
+    "tooShort": "请至少输入 {{n}} 个字符。",
+    "exactLength": "请输入正好 {{n}} 个字符。",
+    "tooLong": "最多输入 {{n}} 个字符。",
+    "min": "请输入不小于 {{n}} 的值。",
+    "above": "请输入大于 {{n}} 的值。",
+    "max": "请输入不大于 {{n}} 的值。",
+    "below": "请输入小于 {{n}} 的值。",
+    "tooFew": "请至少选择 {{n}} 项。",
+    "tooMany": "最多选择 {{n}} 项。",
+    "invalid": "此值无效。"
   }
 }

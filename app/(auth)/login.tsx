@@ -49,7 +49,7 @@ export default function LoginScreen(): React.JSX.Element {
       }
       // On success the root navigator redirects into the tabs.
     } catch (err) {
-      const details = err instanceof ApiError ? getApiErrorFieldDetails(err) : {};
+      const details = err instanceof ApiError ? getApiErrorFieldDetails(err, t) : {};
       if (Object.keys(details).length > 0) {
         setFieldErrors(details);
       } else if (err instanceof ApiError && err.status === 401) {

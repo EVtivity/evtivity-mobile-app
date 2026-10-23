@@ -579,7 +579,7 @@
     "STATION_OFFLINE": "Station ist offline",
     "STATION_NOT_FOUND": "Station nicht gefunden",
     "CONNECTOR_NOT_FOUND": "Anschluss nicht gefunden",
-    "RATE_LIMITED": "Zu viele Statusprüfungen für diese Station",
+    "RATE_LIMITED": "Zu viele Anfragen. Warte einen Moment und versuche es erneut.",
     "STATION_TIMEOUT": "Station hat nicht geantwortet",
     "STATUS_CHECK_REJECTED": "Station hat die Statusabfrage abgelehnt",
     "STATUS_CHECK_TIMEOUT": "Zeitüberschreitung bei der Statusabfrage. Stecke den Anschluss neu ein und versuche es erneut.",
@@ -608,7 +608,11 @@
     "VEHICLE_BLOCKED_BY_OPERATOR": "Der Betreiber hat Autocharge für dieses Fahrzeug gesperrt. Wenden Sie sich an den Betreiber, um es zu entsperren.",
     "VEHICLE_ID_IN_USE": "Ein anderes Fahrzeug verwendet diese FIN oder EVCCID bereits für Autocharge.",
     "AUTOCHARGE_CLAIM_REQUIRED": "Autocharge lässt sich nur für eine Fahrzeugkennung einschalten, die eine Ladestation in einem Ihrer eigenen Ladevorgänge gesendet hat. Öffnen Sie diesen Ladevorgang unter Aktivität und tippen Sie auf „Fahrzeug zum Laden durch Einstecken verwenden“.",
-    "VEHICLE_ID_REQUIRED": "Autocharge benötigt eine FIN oder EVCCID am Fahrzeug."
+    "VEHICLE_ID_REQUIRED": "Autocharge benötigt eine FIN oder EVCCID am Fahrzeug.",
+    "UNAUTHORIZED": "Nicht autorisiert",
+    "NOT_FOUND": "Nicht gefunden",
+    "PAYLOAD_TOO_LARGE": "Die Anfrage ist zu groß",
+    "UNSUPPORTED_MEDIA_TYPE": "Nicht unterstützter Inhaltstyp"
   },
   "fleetBilling": {
     "billedTo": "Abgerechnet über {{fleet}}",
@@ -707,5 +711,24 @@
     "makeModelRequired": "Gib Marke und Modell ein.",
     "lastSeen": "Zuletzt gesehen",
     "lastSeenValue": "{{station}}, {{time}}"
+  },
+  "fieldErrors": {
+    "required": "Dieses Feld ist erforderlich.",
+    "email": "Gib eine gültige E-Mail-Adresse ein.",
+    "url": "Gib eine gültige URL ein.",
+    "date": "Gib ein gültiges Datum ein.",
+    "integer": "Gib eine ganze Zahl ein.",
+    "type": "Gib einen gültigen Wert ein.",
+    "option": "Wähle eine der angebotenen Optionen.",
+    "tooShort": "Gib mindestens {{n}} Zeichen ein.",
+    "exactLength": "Gib genau {{n}} Zeichen ein.",
+    "tooLong": "Gib höchstens {{n}} Zeichen ein.",
+    "min": "Gib einen Wert von mindestens {{n}} ein.",
+    "above": "Gib einen Wert größer als {{n}} ein.",
+    "max": "Gib einen Wert von höchstens {{n}} ein.",
+    "below": "Gib einen Wert kleiner als {{n}} ein.",
+    "tooFew": "Wähle mindestens {{n}} aus.",
+    "tooMany": "Wähle höchstens {{n}} aus.",
+    "invalid": "Dieser Wert ist ungültig."
   }
 }

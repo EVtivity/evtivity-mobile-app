@@ -48,7 +48,7 @@ export default function ResetPasswordScreen(): React.JSX.Element {
       toast.show(t('auth.passwordResetSuccess'), 'success');
       router.replace('/(auth)/login');
     } catch (err) {
-      const details = err instanceof ApiError ? getApiErrorFieldDetails(err) : {};
+      const details = err instanceof ApiError ? getApiErrorFieldDetails(err, t) : {};
       const weakMissing = weakPasswordReply(err);
       if (weakMissing != null) {
         setServerMissing(weakMissing);

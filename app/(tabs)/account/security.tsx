@@ -95,7 +95,7 @@ export default function SecurityScreen(): React.JSX.Element {
             validatePassword(newPassword, t, policy, weakMissing) ?? t('auth.passwordWeak'),
         });
       } else if (err instanceof ApiError) {
-        setFieldErrors(getApiErrorFieldDetails(err));
+        setFieldErrors(getApiErrorFieldDetails(err, t, i18n.language));
         toast.show(apiErrorMessage(err, t, i18n.language), 'error');
       } else {
         toast.show(t('common.offline'), 'error');

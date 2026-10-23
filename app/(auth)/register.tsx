@@ -59,7 +59,7 @@ export default function RegisterScreen(): React.JSX.Element {
       });
       setSubmittedEmail(trimmedEmail);
     } catch (err) {
-      const details = err instanceof ApiError ? getApiErrorFieldDetails(err) : {};
+      const details = err instanceof ApiError ? getApiErrorFieldDetails(err, t) : {};
       const weakMissing = weakPasswordReply(err);
       if (weakMissing != null) {
         setServerMissing(weakMissing);

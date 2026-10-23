@@ -579,7 +579,7 @@
     "STATION_OFFLINE": "充電站已離線",
     "STATION_NOT_FOUND": "找不到充電站",
     "CONNECTOR_NOT_FOUND": "找不到連接器",
-    "RATE_LIMITED": "此充電站的狀態查詢次數過多",
+    "RATE_LIMITED": "請求過多。請稍候再試。",
     "STATION_TIMEOUT": "充電站未回應",
     "STATUS_CHECK_REJECTED": "充電站拒絕了狀態檢查",
     "STATUS_CHECK_TIMEOUT": "狀態檢查逾時。請重新插入連接器後再試一次。",
@@ -608,7 +608,11 @@
     "VEHICLE_BLOCKED_BY_OPERATOR": "營運商已封鎖此車輛的 Autocharge。請聯絡營運商解除封鎖。",
     "VEHICLE_ID_IN_USE": "另一輛車已將此 VIN 或 EVCCID 用於 Autocharge。",
     "AUTOCHARGE_CLAIM_REQUIRED": "僅當車輛識別碼由充電站在您本人的某個工作階段中傳送時，才能開啟 Autocharge。請在紀錄中開啟該工作階段，然後點按「將此車輛用於插槍即充」。",
-    "VEHICLE_ID_REQUIRED": "Autocharge 需要車輛的 VIN 或 EVCCID。"
+    "VEHICLE_ID_REQUIRED": "Autocharge 需要車輛的 VIN 或 EVCCID。",
+    "UNAUTHORIZED": "未授權",
+    "NOT_FOUND": "找不到",
+    "PAYLOAD_TOO_LARGE": "請求過大",
+    "UNSUPPORTED_MEDIA_TYPE": "不支援的內容類型"
   },
   "fleetBilling": {
     "billedTo": "記帳到 {{fleet}}",
@@ -707,5 +711,24 @@
     "makeModelRequired": "請輸入品牌與型號。",
     "lastSeen": "最近辨識",
     "lastSeenValue": "{{station}}，{{time}}"
+  },
+  "fieldErrors": {
+    "required": "此欄位為必填。",
+    "email": "請輸入有效的電子郵件地址。",
+    "url": "請輸入有效的網址。",
+    "date": "請輸入有效的日期。",
+    "integer": "請輸入整數。",
+    "type": "請輸入有效的值。",
+    "option": "請從列出的選項中選擇一個。",
+    "tooShort": "請至少輸入 {{n}} 個字元。",
+    "exactLength": "請輸入正好 {{n}} 個字元。",
+    "tooLong": "最多輸入 {{n}} 個字元。",
+    "min": "請輸入不小於 {{n}} 的值。",
+    "above": "請輸入大於 {{n}} 的值。",
+    "max": "請輸入不大於 {{n}} 的值。",
+    "below": "請輸入小於 {{n}} 的值。",
+    "tooFew": "請至少選擇 {{n}} 項。",
+    "tooMany": "最多選擇 {{n}} 項。",
+    "invalid": "此值無效。"
   }
 }
