@@ -24,7 +24,7 @@ import {
 import { PasswordRules } from '@/components/PasswordRules';
 import { hsl } from '@/lib/theme';
 import { useAuth } from '@/lib/auth';
-import { ApiError, getApiErrorFieldDetails, portalPageUrl } from '@/lib/api';
+import { ApiError, apiErrorMessage, getApiErrorFieldDetails, portalPageUrl } from '@/lib/api';
 import { driverHoldsFactor, PORTAL_SECURITY_PATH } from '@/lib/mfa';
 import { useBranding } from '@/features/app-info';
 import { validatePassword } from '@/lib/validation';
@@ -45,7 +45,7 @@ function isMfaMethod(value: string): value is MfaMethod {
 }
 
 export default function SecurityScreen(): React.JSX.Element {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const toast = useToast();
   const showApiError = useApiErrorToast();
   const portalNotice = usePortalNotice();
@@ -96,7 +96,7 @@ export default function SecurityScreen(): React.JSX.Element {
         });
       } else if (err instanceof ApiError) {
         setFieldErrors(getApiErrorFieldDetails(err));
-        toast.show(err.serverMessage ?? t('common.somethingWrong'), 'error');
+        toast.show(apiErrorMessage(err, t, i18n.language), 'error');
       } else {
         toast.show(t('common.offline'), 'error');
       }
@@ -147,7 +147,10 @@ export default function SecurityScreen(): React.JSX.Element {
       setChallengeId(result.challengeId);
       setSetupVisible(true);
     } catch (err) {
-      showApiError(err, { portalPath: PORTAL_SECURITY_PATH });
+      showApiError(err, {
+        portalPath: PORTAL_SECURITY_PATH,
+        portalMessage: t('account.mfaPortalSetup'),
+      });
     }
   };
 
@@ -166,7 +169,10 @@ export default function SecurityScreen(): React.JSX.Element {
       await mfa.refetch();
       toast.show(t('account.mfaSetupSuccess'), 'success');
     } catch (err) {
-      showApiError(err, { portalPath: PORTAL_SECURITY_PATH });
+      showApiError(err, {
+        portalPath: PORTAL_SECURITY_PATH,
+        portalMessage: t('account.mfaPortalSetup'),
+      });
     }
   };
 

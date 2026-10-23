@@ -18,6 +18,7 @@
     "done": "完成",
     "search": "搜尋",
     "somethingWrong": "發生錯誤",
+    "checkFields": "請檢查標示的欄位。",
     "offline": "無法連線至伺服器，請檢查您的網路連線。",
     "offlineTitle": "連線問題",
     "amountInclTax": "{{amount}}（含稅）"
@@ -351,6 +352,8 @@
     "mfaDisable": "停用",
     "portalTitle": "在駕駛員入口網站中繼續",
     "openPortal": "開啟入口網站",
+    "portalGeneric": "此變更需在駕駛員入口網站中進行。",
+    "portalMfaEnrollment": "此次登入需要本應用程式無法完成的步驟。請登入駕駛員入口網站，在其中設定或使用第二重驗證，然後在此重新登入。",
     "mfaPortalDisable": "請在駕駛員入口網站中關閉多重要素驗證。入口網站會要求您的第二重驗證，本應用程式無法進行此檢查。",
     "mfaPortalSetup": "您已使用第二重驗證登入。請在駕駛員入口網站中新增其他驗證方式，入口網站會要求驗證您現有的方式。",
     "phonePortalChange": "您的帳戶已啟用多重要素驗證。請在駕駛員入口網站中變更電話號碼，入口網站會要求您的第二重驗證。",

@@ -32,7 +32,7 @@ const LANGUAGE_OPTIONS = enabledLanguageOptions();
 type DistanceUnit = 'miles' | 'km';
 
 export default function PersonalInfoScreen(): React.JSX.Element {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const toast = useToast();
   const driver = useAuth((s) => s.driver);
   const updateProfile = useUpdateProfile();
@@ -102,15 +102,14 @@ export default function PersonalInfoScreen(): React.JSX.Element {
       toast.show(t('common.saved'), 'success');
     } catch (err) {
       if (err instanceof ApiError && err.portalUrl != null) {
-        // A phone change the server sends to the portal: the message names it.
-        setFieldErrors(getApiErrorFieldDetails(err));
-        await portalNotice(
-          apiErrorMessage(err, t),
-          portalPageUrl(err.portalUrl, PORTAL_PERSONAL_PATH),
-        );
+        // A phone change the server sends to the portal. Its message is
+        // English: say it in the app language, under the field too.
+        const message = t('account.phonePortalChange');
+        setFieldErrors({ phone: message });
+        await portalNotice(message, portalPageUrl(err.portalUrl, PORTAL_PERSONAL_PATH));
       } else if (err instanceof ApiError) {
         setFieldErrors(getApiErrorFieldDetails(err));
-        toast.show(err.serverMessage ?? t('common.somethingWrong'), 'error');
+        toast.show(apiErrorMessage(err, t, i18n.language), 'error');
       } else {
         toast.show(t('common.offline'), 'error');
       }

@@ -18,6 +18,7 @@
     "done": "Fertig",
     "search": "Suchen",
     "somethingWrong": "Etwas ist schiefgelaufen",
+    "checkFields": "Prüfen Sie die markierten Felder.",
     "offline": "Server nicht erreichbar. Prüfe deine Verbindung.",
     "offlineTitle": "Verbindungsproblem",
     "amountInclTax": "{{amount}} inkl. Steuer"
@@ -351,6 +352,8 @@
     "mfaDisable": "Deaktivieren",
     "portalTitle": "Im Fahrerportal fortfahren",
     "openPortal": "Portal öffnen",
+    "portalGeneric": "Diese Änderung nehmen Sie im Fahrerportal vor.",
+    "portalMfaEnrollment": "Für diese Anmeldung ist ein Schritt nötig, den die App nicht ausführen kann. Melden Sie sich im Fahrerportal an, richten Sie dort Ihren zweiten Faktor ein oder verwenden Sie ihn, und melden Sie sich dann hier erneut an.",
     "mfaPortalDisable": "Schalten Sie die Zwei-Faktor-Authentifizierung im Fahrerportal aus. Es fragt nach Ihrem zweiten Faktor, den diese App nicht prüfen kann.",
     "mfaPortalSetup": "Sie melden sich bereits mit einem zweiten Faktor an. Fügen Sie einen weiteren im Fahrerportal hinzu, das nach dem vorhandenen fragt.",
     "phonePortalChange": "Ihr Konto verwendet die Zwei-Faktor-Authentifizierung. Ändern Sie die Telefonnummer im Fahrerportal, das nach Ihrem zweiten Faktor fragt.",

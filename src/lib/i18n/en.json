@@ -18,6 +18,7 @@
     "done": "Done",
     "search": "Search",
     "somethingWrong": "Something went wrong",
+    "checkFields": "Check the highlighted fields.",
     "offline": "Cannot reach the server. Check your connection.",
     "offlineTitle": "Connection problem",
     "amountInclTax": "{{amount}} incl. tax"
@@ -351,6 +352,8 @@
     "mfaDisable": "Disable",
     "portalTitle": "Continue in the Driver Portal",
     "openPortal": "Open Portal",
+    "portalGeneric": "This change is made in the driver portal.",
+    "portalMfaEnrollment": "This sign-in needs a step the app cannot do. Sign in to the driver portal, set up or use your second factor there, then sign in here again.",
     "mfaPortalDisable": "Turn off two-factor authentication in the driver portal. It asks for your second factor, which this app cannot check.",
     "mfaPortalSetup": "You already sign in with a second factor. Add another one in the driver portal, which asks for the one you have.",
     "phonePortalChange": "Your account uses two-factor authentication. Change the phone number in the driver portal, which asks for your second factor.",

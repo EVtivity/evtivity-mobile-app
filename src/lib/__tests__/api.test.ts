@@ -24,6 +24,7 @@ import {
   authorizedHeaders,
   getApiErrorFieldDetails,
   portalPageUrl,
+  portalReasonMessage,
   webUrl,
 } from '@/lib/api';
 import * as session from '@/lib/session';
@@ -158,24 +159,56 @@ describe('apiErrorMessage', () => {
       expect(apiErrorMessage(err, tLocale)).toBe(expected);
     },
   );
-  it('shows the message of a refusal that names the portal', () => {
-    const tr = (k: string): string => (k === 'errors.VALIDATION_ERROR' ? 'Validation error' : k);
-    const err = new ApiError(400, {
-      error: 'Turn off two-factor authentication in the driver portal at https://portal.test',
-      code: 'VALIDATION_ERROR',
-      portalUrl: 'https://portal.test',
-    });
-    expect(apiErrorMessage(err, tr)).toBe(
-      'Turn off two-factor authentication in the driver portal at https://portal.test',
+  // A catalogue lookup like i18next's t for one locale file.
+  const localeT =
+    (lang: string) =>
+    (key: string): string => {
+      const catalogue = require(`../i18n/${lang}.json`) as Record<string, unknown>;
+      const value = key
+        .split('.')
+        .reduce<unknown>((o, k) => (o as Record<string, unknown> | undefined)?.[k], catalogue);
+      return typeof value === 'string' ? value : key;
+    };
+
+  it.each(['en', 'de', 'es', 'ko', 'zh', 'zh-TW'])(
+    'never shows the English server message of a portal refusal (%s)',
+    (lang) => {
+      const tl = localeT(lang);
+      const disable = new ApiError(400, {
+        error: 'Turn off two-factor authentication in the driver portal at https://portal.test',
+        code: 'VALIDATION_ERROR',
+        portalUrl: 'https://portal.test',
+      });
+      expect(apiErrorMessage(disable, tl, lang)).toBe(tl('account.portalGeneric'));
+      const enroll = new ApiError(403, {
+        error: 'Set up two-factor authentication in the driver portal at https://portal.test',
+        code: 'MFA_ENROLLMENT_REQUIRED',
+        portalUrl: 'https://portal.test',
+      });
+      expect(apiErrorMessage(enroll, tl, lang)).toBe(tl('account.portalMfaEnrollment'));
+      expect(portalReasonMessage(enroll, tl)).toBe(tl('account.portalMfaEnrollment'));
+      expect(tl('account.portalGeneric')).not.toBe('account.portalGeneric');
+    },
+  );
+
+  it('shows a plain VALIDATION_ERROR sentence in an English UI only', () => {
+    const v = (body: Record<string, unknown>): ApiError =>
+      new ApiError(400, { code: 'VALIDATION_ERROR', ...body });
+    const sentence = v({ error: 'Invalid IANA timezone' });
+    const withFields = v({ error: 'Invalid phone number', details: { phone: 'Invalid phone' } });
+    expect(apiErrorMessage(sentence, localeT('en'), 'en-US')).toBe('Invalid IANA timezone');
+    // German: the localized text, never the English sentence.
+    expect(apiErrorMessage(sentence, localeT('de'), 'de')).toBe('Validierungsfehler');
+    expect(apiErrorMessage(withFields, localeT('de'), 'de')).toBe(
+      'Prüfen Sie die markierten Felder.',
     );
-    // A portal refusal under another code also keeps the server message.
-    const enroll = new ApiError(403, {
-      error: 'Set up two-factor authentication in the driver portal',
-      code: 'ONE_WITH_A_TRANSLATION',
-      portalUrl: 'https://portal.test',
-    });
-    expect(apiErrorMessage(enroll, () => 'translated')).toBe(
-      'Set up two-factor authentication in the driver portal',
+    expect(apiErrorMessage(withFields, localeT('en'), 'en')).toBe('Invalid phone number');
+    // No sentence: the field text when fields are named, else "Validation error".
+    expect(apiErrorMessage(v({ details: { phone: 'x' } }), localeT('en'), 'en')).toBe(
+      'Check the highlighted fields.',
+    );
+    expect(apiErrorMessage(v({}), localeT('ko'), 'ko')).toBe(
+      localeT('ko')('errors.VALIDATION_ERROR'),
     );
   });
 
@@ -183,7 +216,9 @@ describe('apiErrorMessage', () => {
     const tr = (k: string): string => (k === 'errors.VALIDATION_ERROR' ? 'Validation error' : k);
     const v = (error?: unknown): ApiError =>
       new ApiError(400, { code: 'VALIDATION_ERROR', ...(error !== undefined ? { error } : {}) });
+    // The UI language defaults to i18next's (unset here: treated as English).
     expect(apiErrorMessage(v(' Invalid IANA timezone '), tr)).toBe('Invalid IANA timezone');
+    expect(apiErrorMessage(v('Invalid'), tr, '')).toBe('Invalid');
     expect(apiErrorMessage(v(), tr)).toBe('Validation error');
     expect(apiErrorMessage(v('  '), tr)).toBe('Validation error');
     expect(apiErrorMessage(v('body/phone Invalid'), tr)).toBe('Validation error');

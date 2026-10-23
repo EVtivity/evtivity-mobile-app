@@ -1,6 +1,7 @@
 // Copyright (c) 2024-2026 EVtivity. All rights reserved.
 // SPDX-License-Identifier: BUSL-1.1
 
+import i18next from 'i18next';
 import { API_BASE_URL } from './config';
 import { deviceHeaders } from './device';
 import { getAttestationHeaders } from './attestation';
@@ -83,17 +84,44 @@ function isPlainMessage(message: string): boolean {
   );
 }
 
-// Maps any thrown error to a user-facing message. A refusal with a portalUrl
-// carries a server message that names the portal; a VALIDATION_ERROR shows the
-// server's plain message (the code alone says nothing). Otherwise the
-// translated errors.{code} entry, then the server's message, otherwise the
-// generic offline copy.
-export function apiErrorMessage(err: unknown, t: (key: string) => string): string {
+// The server writes its messages in English: only an English UI shows them.
+function isEnglish(language: string | undefined): boolean {
+  return language == null || language === '' || language.split('-')[0] === 'en';
+}
+
+/**
+ * Why a refusal with a portalUrl sends the driver to the portal, in the app
+ * language (the server's message is English): a sign-in only the portal can
+ * finish, else the generic "this change is made in the driver portal". A
+ * screen that knows the change passes its own reason instead.
+ */
+export function portalReasonMessage(err: ApiError, t: (key: string) => string): string {
+  return t(
+    err.code === 'MFA_ENROLLMENT_REQUIRED'
+      ? 'account.portalMfaEnrollment'
+      : 'account.portalGeneric',
+  );
+}
+
+// Maps any thrown error to a user-facing message in the app language. A
+// refusal with a portalUrl gives the localized portal reason. A
+// VALIDATION_ERROR shows the server's plain sentence in an English UI only;
+// otherwise "check the highlighted fields" when it names fields, else the
+// translated "Validation error". Otherwise the translated errors.{code} entry,
+// then the server's message, otherwise the generic offline copy.
+export function apiErrorMessage(
+  err: unknown,
+  t: (key: string) => string,
+  language: string | undefined = i18next.language,
+): string {
   if (err instanceof ApiError) {
-    const message = err.serverMessage;
-    if (message != null && err.portalUrl != null) return message;
-    if (err.code === 'VALIDATION_ERROR' && message != null && isPlainMessage(message)) {
-      return message.trim();
+    if (err.portalUrl != null) return portalReasonMessage(err, t);
+    if (err.code === 'VALIDATION_ERROR') {
+      const message = err.serverMessage;
+      if (message != null && isPlainMessage(message) && isEnglish(language)) {
+        return message.trim();
+      }
+      if (Object.keys(getApiErrorFieldDetails(err)).length > 0) return t('common.checkFields');
     }
     if (err.code != null) {
       const key = `errors.${err.code}`;

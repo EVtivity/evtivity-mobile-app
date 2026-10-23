@@ -40,14 +40,23 @@ describe('useApiErrorToast', () => {
     await act(async () => {
       result.current(PORTAL_REFUSAL, { portalPath: '/account/security' });
     });
+    // The app's own text, never the server's English message.
     expect(mockConfirm).toHaveBeenCalledWith({
       title: 'Continue in the Driver Portal',
-      message: 'Turn off two-factor authentication in the driver portal at https://portal.test',
+      message: 'This change is made in the driver portal.',
       confirmText: 'Open Portal',
       cancelText: 'Close',
     });
     expect(mockOpen).toHaveBeenCalledWith('https://portal.test/account/security');
     expect(mockToast).not.toHaveBeenCalled();
+  });
+
+  it('uses the reason the screen passes', async () => {
+    const { result } = await renderHook(() => useApiErrorToast());
+    await act(async () => {
+      result.current(PORTAL_REFUSAL, { portalMessage: 'Screen reason' });
+    });
+    expect(mockConfirm).toHaveBeenCalledWith(expect.objectContaining({ message: 'Screen reason' }));
   });
 
   it('opens the portal home without a page', async () => {

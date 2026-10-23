@@ -18,6 +18,7 @@
     "done": "완료",
     "search": "검색",
     "somethingWrong": "문제가 발생했습니다",
+    "checkFields": "표시된 항목을 확인하세요.",
     "offline": "서버에 연결할 수 없습니다. 연결 상태를 확인하세요.",
     "offlineTitle": "연결 문제",
     "amountInclTax": "{{amount}} (세금 포함)"
@@ -351,6 +352,8 @@
     "mfaDisable": "사용 안 함",
     "portalTitle": "운전자 포털에서 계속",
     "openPortal": "포털 열기",
+    "portalGeneric": "이 변경은 운전자 포털에서 할 수 있습니다.",
+    "portalMfaEnrollment": "이 로그인에는 앱에서 할 수 없는 단계가 필요합니다. 운전자 포털에 로그인하여 두 번째 인증 수단을 설정하거나 사용한 후 여기에서 다시 로그인하세요.",
     "mfaPortalDisable": "운전자 포털에서 2단계 인증을 끄세요. 포털은 이 앱이 확인할 수 없는 두 번째 인증 수단을 요청합니다.",
     "mfaPortalSetup": "이미 두 번째 인증 수단으로 로그인하고 있습니다. 운전자 포털에서 기존 수단을 확인한 후 다른 수단을 추가하세요.",
     "phonePortalChange": "계정에서 2단계 인증을 사용하고 있습니다. 운전자 포털에서 두 번째 인증 수단을 확인한 후 전화번호를 변경하세요.",

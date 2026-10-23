@@ -133,10 +133,10 @@ jest.mock('@/components/ui', () => {
     usePortalNotice: () => mockPortalNotice,
     useApiErrorToast: () => {
       const { t } = useTranslation();
-      return (err: unknown, opts?: { portalPath?: string }) => {
+      return (err: unknown, opts?: { portalPath?: string; portalMessage?: string }) => {
         if (err instanceof ApiError && err.portalUrl != null) {
           void mockPortalNotice(
-            apiErrorMessage(err, t),
+            opts?.portalMessage ?? apiErrorMessage(err, t),
             portalPageUrl(err.portalUrl, opts?.portalPath ?? '/'),
           );
           return;
@@ -148,7 +148,10 @@ jest.mock('@/components/ui', () => {
 });
 
 import React from 'react';
+
+import i18next from 'i18next';
 import { fireEvent, render, waitFor } from '@testing-library/react-native';
+import deCatalogue from '@/lib/i18n/de.json';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { initTestI18n } from '@/test-utils/i18n';
 import { ApiError } from '@/lib/api';
@@ -306,7 +309,7 @@ describe('Security screen', () => {
     await fireEvent.press(screen.getByText('Verify'));
     await waitFor(() =>
       expect(mockPortalNotice).toHaveBeenCalledWith(
-        'Use the driver portal at https://portal.test',
+        'You already sign in with a second factor. Add another one in the driver portal, which asks for the one you have.',
         'https://portal.test/account/security',
       ),
     );
@@ -344,7 +347,7 @@ describe('Personal Info screen', () => {
     expect(mockPortalNotice).not.toHaveBeenCalled();
   });
 
-  it('shows a server refusal with a portalUrl under the field and offers the portal', async () => {
+  it('says a server refusal with a portalUrl in the app language, under the field too', async () => {
     const error =
       'Changing the phone number of an account with two-factor authentication needs a confirmation this app cannot give yet. Change it in the driver portal at https://portal.test.';
     mockPatch.mockRejectedValue(
@@ -358,10 +361,35 @@ describe('Personal Info screen', () => {
     const screen = await renderScreen(<PersonalInfoScreen />);
     await fireEvent.changeText(screen.getByTestId('personal-phone'), '+12015550177');
     await fireEvent.press(screen.getByText('Save'));
+    const localized =
+      'Your account uses two-factor authentication. Change the phone number in the driver portal, which asks for your second factor.';
     await waitFor(() =>
-      expect(mockPortalNotice).toHaveBeenCalledWith(error, 'https://portal.test/account/personal'),
+      expect(mockPortalNotice).toHaveBeenCalledWith(
+        localized,
+        'https://portal.test/account/personal',
+      ),
     );
-    expect(screen.getByTestId('personal-phone-error')).toHaveTextContent(error);
+    expect(screen.getByTestId('personal-phone-error')).toHaveTextContent(localized);
+    expect(screen.queryByText(error)).toBeNull();
     expect(mockToast).not.toHaveBeenCalled();
+  });
+
+  it('shows a refused save in the app language, not the server sentence (German)', async () => {
+    await i18next.addResourceBundle('de', 'translation', deCatalogue, true, true);
+    await i18next.changeLanguage('de');
+    try {
+      mockPatch.mockRejectedValue(
+        new ApiError(400, {
+          error: 'Invalid IANA timezone',
+          code: 'VALIDATION_ERROR',
+        }),
+      );
+      const screen = await renderScreen(<PersonalInfoScreen />);
+      await fireEvent.changeText(screen.getByTestId('personal-phone'), '+12015550177');
+      await fireEvent.press(screen.getByText('Speichern'));
+      await waitFor(() => expect(mockToast).toHaveBeenCalledWith('Validierungsfehler', 'error'));
+    } finally {
+      await i18next.changeLanguage('en');
+    }
   });
 });

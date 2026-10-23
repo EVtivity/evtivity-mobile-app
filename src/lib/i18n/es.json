@@ -18,6 +18,7 @@
     "done": "Listo",
     "search": "Buscar",
     "somethingWrong": "Algo salió mal",
+    "checkFields": "Revise los campos marcados.",
     "offline": "No se puede conectar con el servidor. Revise su conexión.",
     "offlineTitle": "Problema de conexión",
     "amountInclTax": "{{amount}} impuestos incluidos"
@@ -351,6 +352,8 @@
     "mfaDisable": "Desactivar",
     "portalTitle": "Continuar en el portal del conductor",
     "openPortal": "Abrir portal",
+    "portalGeneric": "Este cambio se hace en el portal del conductor.",
+    "portalMfaEnrollment": "Este inicio de sesión necesita un paso que la aplicación no puede hacer. Inicie sesión en el portal del conductor, configure o use allí su segundo factor y luego vuelva a iniciar sesión aquí.",
     "mfaPortalDisable": "Desactive la autenticación de dos factores en el portal del conductor. Le pedirá su segundo factor, que esta aplicación no puede comprobar.",
     "mfaPortalSetup": "Ya inicia sesión con un segundo factor. Agregue otro en el portal del conductor, que le pedirá el que ya tiene.",
     "phonePortalChange": "Su cuenta usa autenticación de dos factores. Cambie el número de teléfono en el portal del conductor, que le pedirá su segundo factor.",

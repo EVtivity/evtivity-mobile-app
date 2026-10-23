@@ -18,6 +18,7 @@
     "done": "完成",
     "search": "搜索",
     "somethingWrong": "出错了",
+    "checkFields": "请检查标出的字段。",
     "offline": "无法连接服务器，请检查网络。",
     "offlineTitle": "连接问题",
     "amountInclTax": "{{amount}}（含税）"
@@ -351,6 +352,8 @@
     "mfaDisable": "停用",
     "portalTitle": "在驾驶员门户中继续",
     "openPortal": "打开门户",
+    "portalGeneric": "此更改需在驾驶员门户中进行。",
+    "portalMfaEnrollment": "此次登录需要本应用无法完成的步骤。请登录驾驶员门户，在其中设置或使用第二重验证，然后在此重新登录。",
     "mfaPortalDisable": "请在驾驶员门户中关闭两步验证。门户会要求您的第二重验证，本应用无法进行此检查。",
     "mfaPortalSetup": "您已使用第二重验证登录。请在驾驶员门户中添加其他验证方式，门户会要求验证您现有的方式。",
     "phonePortalChange": "您的账户已启用两步验证。请在驾驶员门户中更改电话号码，门户会要求您的第二重验证。",
