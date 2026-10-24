@@ -6,7 +6,7 @@ import { API_BASE_URL } from './config';
 import { deviceHeaders } from './device';
 import { getAttestationHeaders } from './attestation';
 import { getAccessToken, isAccessTokenStale, refreshSession, hasSession } from './session';
-import { isEnglishLanguage, localizeFieldError } from './field-errors';
+import { isEnglishLanguage, localizeFieldErrors } from './field-errors';
 
 export class ApiError extends Error {
   constructor(
@@ -117,7 +117,9 @@ export function apiErrorMessage(
       if (message != null && isPlainMessage(message) && isEnglishLanguage(language)) {
         return message.trim();
       }
-      if (Object.keys(fieldDetails(err)).length > 0) return t('common.checkFields');
+      if (Object.keys(getApiErrorFieldDetails(err, t, language)).length > 0) {
+        return t('common.checkFields');
+      }
     }
     if (err.code != null) {
       const key = `errors.${err.code}`;
@@ -145,21 +147,18 @@ function fieldDetails(err: ApiError): Record<string, string> {
   return out;
 }
 
-// Field-level validation errors (VALIDATION_ERROR replies carry a details map)
-// so forms can show a message next to the offending input, in the app
-// language: the server's validator text maps to the app's own messages
-// (`localizeFieldError`).
+// Field-level validation errors (VALIDATION_ERROR replies carry a details map,
+// and name a missing top-level field in `error`) so forms can show a message
+// next to the offending input, in the app language: the server's validator
+// text maps to the app's own messages (`localizeFieldErrors`).
 export function getApiErrorFieldDetails(
   err: unknown,
   t: (key: string, options?: Record<string, unknown>) => string,
   language: string | undefined = i18next.language,
 ): Record<string, string> {
   if (!(err instanceof ApiError)) return {};
-  const out: Record<string, string> = {};
-  for (const [k, v] of Object.entries(fieldDetails(err))) {
-    out[k] = localizeFieldError(v, t, language);
-  }
-  return out;
+  const serverMessage = err.code === 'VALIDATION_ERROR' ? err.serverMessage : undefined;
+  return localizeFieldErrors(fieldDetails(err), serverMessage, t, language);
 }
 
 interface RequestOptions {

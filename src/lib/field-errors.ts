@@ -1,10 +1,20 @@
 // Copyright (c) 2024-2026 EVtivity. All rights reserved.
 // SPDX-License-Identifier: BUSL-1.1
 
-// The API answers a schema failure with `details: { field: message }`, the
-// message being the schema validator's English text (Zod's default messages,
-// such as "Required" or "String must contain at least 8 character(s)"). This
-// maps those messages to the app's own text in the app language.
+// The API validates requests with Fastify's Ajv against JSON Schemas made from
+// its Zod schemas, and answers a failure with VALIDATION_ERROR and
+// `details: { field: message }`: the field is Ajv's instance path without the
+// leading slash (`email`, `address/line1`), the message Ajv's English text
+// ("must NOT have fewer than 8 characters", "must match format \"email\"").
+// Ajv stops at the first error, so a reply names one field.
+//
+// A missing property is reported on its parent: the message names it
+// ("must have required property 'city'" under `address`). A missing top-level
+// property has an empty path, so it is not in `details` at all and only the
+// reply's `error` names it ("body must have required property 'email'").
+//
+// This maps those messages to the app's own text in the app language, under
+// the field the app shows.
 
 type Translate = (key: string, options?: Record<string, unknown>) => string;
 
@@ -15,26 +25,35 @@ interface FieldRule {
   count?: boolean;
 }
 
+const NUMBER = '-?\\d+(?:\\.\\d+)?(?:e[-+]?\\d+)?';
+const TYPES = 'string|number|integer|boolean|object|array|null';
+
 // Order matters: the first match wins.
 const RULES: readonly FieldRule[] = [
-  { re: /^Required$/, key: 'required' },
-  { re: /^Invalid email$/, key: 'email' },
-  { re: /^Invalid url$/, key: 'url' },
-  { re: /^Invalid (date|datetime)$/, key: 'date' },
-  { re: /^Expected integer, received /, key: 'integer' },
-  { re: /^Expected .+, received /, key: 'type' },
-  { re: /^Invalid enum value\./, key: 'option' },
-  { re: /^String must contain at least (?<n>\d+) character\(s\)$/, key: 'tooShort', count: true },
-  { re: /^String must contain exactly (?<n>\d+) character\(s\)$/, key: 'exactLength', count: true },
-  { re: /^String must contain at most (?<n>\d+) character\(s\)$/, key: 'tooLong', count: true },
-  { re: /^Number must be greater than or equal to (?<n>-?[\d.]+)$/, key: 'min', count: true },
-  { re: /^Number must be greater than (?<n>-?[\d.]+)$/, key: 'above', count: true },
-  { re: /^Number must be less than or equal to (?<n>-?[\d.]+)$/, key: 'max', count: true },
-  { re: /^Number must be less than (?<n>-?[\d.]+)$/, key: 'below', count: true },
-  { re: /^Array must contain at least (?<n>\d+) element\(s\)$/, key: 'tooFew', count: true },
-  { re: /^Array must contain at most (?<n>\d+) element\(s\)$/, key: 'tooMany', count: true },
-  { re: /^Invalid( input| uuid| cuid| regex)?$/, key: 'invalid' },
+  { re: /^must have required property '.+'$/, key: 'required' },
+  { re: /^must NOT have fewer than (?<n>\d+) characters$/, key: 'tooShort', count: true },
+  { re: /^must NOT have more than (?<n>\d+) characters$/, key: 'tooLong', count: true },
+  { re: /^must NOT have fewer than (?<n>\d+) items$/, key: 'tooFew', count: true },
+  { re: /^must NOT have more than (?<n>\d+) items$/, key: 'tooMany', count: true },
+  { re: new RegExp(`^must be >= (?<n>${NUMBER})$`), key: 'min', count: true },
+  { re: new RegExp(`^must be > (?<n>${NUMBER})$`), key: 'above', count: true },
+  { re: new RegExp(`^must be <= (?<n>${NUMBER})$`), key: 'max', count: true },
+  { re: new RegExp(`^must be < (?<n>${NUMBER})$`), key: 'below', count: true },
+  { re: /^must match format "email"$/, key: 'email' },
+  { re: /^must match format "(uri|url)"$/, key: 'url' },
+  { re: /^must match format "(date-time|date)"$/, key: 'date' },
+  { re: /^must be equal to one of the allowed values$/, key: 'option' },
+  { re: /^must be integer(,null)?$/, key: 'integer' },
+  { re: new RegExp(`^must be (${TYPES})(,(${TYPES}))*$`), key: 'type' },
+  { re: /^must match (format|pattern) ".*"$/, key: 'invalid' },
+  { re: /^must NOT have additional properties$/, key: 'invalid' },
 ];
+
+// Ajv's text for a missing property, which names the property.
+const REQUIRED_RE = /^must have required property '(?<name>.+)'$/;
+// The reply's `error` for a missing top-level body property: Fastify writes
+// `body` plus the (empty) instance path, then Ajv's message.
+const ROOT_REQUIRED_RE = /^body must have required property '(?<name>.+)'$/;
 
 // The server writes its messages in English: only an English UI shows them.
 export function isEnglishLanguage(language: string | undefined): boolean {
@@ -60,4 +79,28 @@ export function localizeFieldError(
   }
   if (m.length > 0 && isEnglishLanguage(language)) return m;
   return t('fieldErrors.invalid');
+}
+
+/**
+ * The field errors of a VALIDATION_ERROR reply in the app language, keyed by
+ * the field the app shows: a missing property moves from its parent's key to
+ * its own (`address` + 'city' is `address/city`), and a missing top-level
+ * property, named only in the reply's `error`, gets its own key.
+ */
+export function localizeFieldErrors(
+  details: Readonly<Record<string, string>>,
+  serverMessage: string | undefined,
+  t: Translate,
+  language: string | undefined,
+): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const [field, message] of Object.entries(details)) {
+    const missing = REQUIRED_RE.exec(message.trim())?.groups?.name;
+    out[missing != null ? `${field}/${missing}` : field] = localizeFieldError(message, t, language);
+  }
+  const rootMissing = ROOT_REQUIRED_RE.exec(serverMessage?.trim() ?? '')?.groups?.name;
+  if (rootMissing != null && !(rootMissing in out)) {
+    out[rootMissing] = t('fieldErrors.required');
+  }
+  return out;
 }

@@ -721,7 +721,6 @@
     "type": "Enter a valid value.",
     "option": "Choose one of the listed options.",
     "tooShort": "Enter at least {{n}} characters.",
-    "exactLength": "Enter exactly {{n}} characters.",
     "tooLong": "Enter at most {{n}} characters.",
     "min": "Enter a value of at least {{n}}.",
     "above": "Enter a value greater than {{n}}.",

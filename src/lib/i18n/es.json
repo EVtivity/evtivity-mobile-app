@@ -721,7 +721,6 @@
     "type": "Ingrese un valor válido.",
     "option": "Elija una de las opciones de la lista.",
     "tooShort": "Ingrese al menos {{n}} caracteres.",
-    "exactLength": "Ingrese exactamente {{n}} caracteres.",
     "tooLong": "Ingrese como máximo {{n}} caracteres.",
     "min": "Ingrese un valor de al menos {{n}}.",
     "above": "Ingrese un valor mayor que {{n}}.",

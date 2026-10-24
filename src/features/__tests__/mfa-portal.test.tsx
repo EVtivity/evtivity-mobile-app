@@ -413,12 +413,10 @@ describe('Personal Info screen', () => {
     try {
       mockPatch.mockRejectedValue(
         new ApiError(400, {
-          error: 'body/firstName String must contain at most 100 character(s)',
+          // Fastify's Ajv reply: the first failing field, Ajv's message.
+          error: 'body/firstName must NOT have more than 100 characters',
           code: 'VALIDATION_ERROR',
-          details: {
-            firstName: 'String must contain at most 100 character(s)',
-            timezone: 'Invalid IANA timezone',
-          },
+          details: { firstName: 'must NOT have more than 100 characters' },
         }),
       );
       const screen = await renderScreen(<PersonalInfoScreen />);
@@ -427,9 +425,7 @@ describe('Personal Info screen', () => {
       expect(await screen.findByTestId('personal-firstName-error')).toHaveTextContent(
         'Gib höchstens 100 Zeichen ein.',
       );
-      expect(screen.getByTestId('personal-timezone-error')).toHaveTextContent(
-        'Dieser Wert ist ungültig.',
-      );
+      expect(screen.queryByTestId('personal-timezone-error')).toBeNull();
       expect(mockToast).toHaveBeenCalledWith('Prüfe die markierten Felder.', 'error');
     } finally {
       await i18next.changeLanguage('en');

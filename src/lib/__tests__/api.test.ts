@@ -208,6 +208,11 @@ describe('apiErrorMessage', () => {
     expect(apiErrorMessage(v({}), localeT('ko'), 'ko')).toBe(
       localeT('ko')('errors.VALIDATION_ERROR'),
     );
+    // A missing top-level field: Ajv's empty path leaves `details` out, the
+    // error names the field.
+    const missing = v({ error: "body must have required property 'email'" });
+    expect(apiErrorMessage(missing, localeT('de'), 'de')).toBe('Prüfe die markierten Felder.');
+    expect(apiErrorMessage(missing, localeT('en'), 'en')).toBe('Check the highlighted fields.');
   });
 
   it('shows a plain VALIDATION_ERROR message and the generic text otherwise', () => {
@@ -260,15 +265,30 @@ describe('getApiErrorFieldDetails', () => {
     expect(getApiErrorFieldDetails(err, t, 'en')).toEqual({ email: 'taken' });
   });
   it('maps validator messages to the app text in the app language', () => {
+    // The API's framework error reply: Ajv's message per instance path.
     const err = new ApiError(400, {
+      error: 'body/email must match format "email"',
       code: 'VALIDATION_ERROR',
-      details: { email: 'Invalid email', 'address/line1': 'Required', note: 'taken' },
+      details: {
+        email: 'must match format "email"',
+        address: "must have required property 'line1'",
+        note: 'taken',
+      },
     });
     expect(getApiErrorFieldDetails(err, t, 'de')).toEqual({
       email: 'fieldErrors.email',
       'address/line1': 'fieldErrors.required',
       note: 'fieldErrors.invalid',
     });
+  });
+  it('names a missing top-level field from a VALIDATION_ERROR reply only', () => {
+    const error = "body must have required property 'password'";
+    expect(
+      getApiErrorFieldDetails(new ApiError(400, { error, code: 'VALIDATION_ERROR' }), t, 'ko'),
+    ).toEqual({ password: 'fieldErrors.required' });
+    expect(getApiErrorFieldDetails(new ApiError(400, { error, code: 'OTHER' }), t, 'ko')).toEqual(
+      {},
+    );
   });
   it('uses the i18next language by default', () => {
     const err = new ApiError(400, { details: { note: 'taken' } });

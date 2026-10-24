@@ -721,7 +721,6 @@
     "type": "Gib einen gültigen Wert ein.",
     "option": "Wähle eine der angebotenen Optionen.",
     "tooShort": "Gib mindestens {{n}} Zeichen ein.",
-    "exactLength": "Gib genau {{n}} Zeichen ein.",
     "tooLong": "Gib höchstens {{n}} Zeichen ein.",
     "min": "Gib einen Wert von mindestens {{n}} ein.",
     "above": "Gib einen Wert größer als {{n}} ein.",
