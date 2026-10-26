@@ -94,6 +94,15 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       // Props object is required: the Stripe config plugin destructures props
       // and crashes on a bare string. No wallet payments, so Google Pay stays off
       // and no Apple Pay merchant entitlement is added.
+      // Driver avatars: pick one photo from the library. No camera, no microphone.
+      [
+        'expo-image-picker',
+        {
+          photosPermission: `${brand.name} uses your photos only when you choose one as your avatar.`,
+          cameraPermission: false,
+          microphonePermission: false,
+        },
+      ],
       ['@stripe/stripe-react-native', { enableGooglePay: false }],
       // Adyen native SDK: patches AppDelegate (3DS redirect return through the
       // app scheme) and MainActivity (launcher activity, intent handling) and

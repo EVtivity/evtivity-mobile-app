@@ -11,6 +11,19 @@ tags:
 - runFlow: ../subflows/session.yaml
 - tapOn:
     id: 'tab-account'
+# The avatar opens its editor: Random, then Save stores a generated avatar.
+- tapOn:
+    id: 'account-avatar'
+- assertVisible: 'Avatar'
+- tapOn:
+    id: 'avatar-random'
+- tapOn:
+    id: 'avatar-save'
+- extendedWaitUntil:
+    visible: 'Avatar saved.'
+    timeout: 8000
+- tapOn:
+    id: 'back-button'
 - tapOn:
     id: 'account-row-personal'
 - assertVisible: 'Preferences'

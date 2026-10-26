@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 
 import React from 'react';
-import { View } from 'react-native';
+import { View, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import {
@@ -24,18 +24,35 @@ import { AppHeader } from '@/components/AppHeader';
 import { useAuth } from '@/lib/auth';
 import { hsl } from '@/lib/theme';
 import { formatDate } from '@/lib/format';
+import { DriverAvatar } from '@/components/DriverAvatar';
+import { useDriverAvatar } from '@/features/avatar';
 
 export default function AccountScreen(): React.JSX.Element {
   const { t } = useTranslation();
   const router = useRouter();
   const driver = useAuth((s) => s.driver);
   const logout = useAuth((s) => s.logout);
+  const avatar = useDriverAvatar();
 
   const fullName = driver != null ? `${driver.firstName} ${driver.lastName}`.trim() : '';
 
   return (
     <Screen scroll>
       <AppHeader />
+      <Pressable
+        testID="account-avatar"
+        accessibilityRole="button"
+        accessibilityLabel={t('account.editAvatar')}
+        onPress={() => router.push('/account/avatar')}
+        className="self-start active:opacity-70"
+      >
+        <DriverAvatar
+          avatar={avatar.data}
+          firstName={driver?.firstName}
+          lastName={driver?.lastName}
+          size={72}
+        />
+      </Pressable>
       <View>
         <Text variant="h1">{fullName.length > 0 ? fullName : t('account.title')}</Text>
         {driver?.email != null ? (

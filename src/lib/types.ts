@@ -6,6 +6,7 @@
 
 import type { PriceDisplay } from '@/lib/price-display';
 import type { SessionAccountBilling } from '@/lib/fleet-billing';
+import type { DriverAvatar } from './avatar';
 
 export interface Driver {
   id: string;
@@ -23,6 +24,8 @@ export interface Driver {
   emailVerified: boolean;
   mfaEnabled?: boolean;
   createdAt?: string;
+  // GET /v1/portal/auth/me only; the app reads it through useDriverAvatar.
+  avatar?: DriverAvatar | null;
 }
 
 export interface AuthSuccess {

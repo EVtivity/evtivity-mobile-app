@@ -47,6 +47,9 @@ export interface Features {
   // Autocharge (charge by plugging in) is offered: the setting or any site on
   // (absent on older servers).
   autochargeEnabled?: boolean;
+  // File storage is configured, so drivers can upload an avatar image (absent
+  // on older servers). The avatar generator works either way.
+  avatarUploadEnabled?: boolean;
 }
 
 // Operator feature toggles from the CSMS. Gates the Reserve tab and other
