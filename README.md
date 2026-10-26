@@ -106,6 +106,7 @@ GitHub release. Store submission stays a manual workflow run. See
 - [WHITELABEL.md](./WHITELABEL.md) - create and ship an operator brand
 - [SECURITY.md](./SECURITY.md) - security posture and roadmap
 - [LICENSE.md](./LICENSE.md) - Business Source License 1.1
+- [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md) - Attributions of third-party artwork (Avataaars avatars)
 
 ## License
 
