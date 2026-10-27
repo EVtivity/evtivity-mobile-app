@@ -401,9 +401,6 @@
       "facialHairVariant": "수염",
       "clothesVariant": "옷",
       "clothesGraphicVariant": "셔츠 그림",
-      "topProbability": "머리 또는 모자 표시",
-      "accessoriesProbability": "안경 표시",
-      "facialHairProbability": "수염 표시",
       "skinColor": "피부색",
       "hairColor": "머리 색",
       "facialHairColor": "수염 색",
@@ -412,6 +409,11 @@
       "accessoriesColor": "안경 색",
       "backgroundColor": "배경색",
       "flip": "방향"
+    },
+    "avatarNone": {
+      "topVariant": "머리 또는 모자 없음",
+      "accessoriesVariant": "안경 없음",
+      "facialHairVariant": "수염 없음"
     },
     "avatarValues": {
       "none": "기본",

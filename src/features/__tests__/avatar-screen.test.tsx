@@ -200,6 +200,30 @@ describe('Avatar screen', () => {
     expect(mockToast).toHaveBeenCalledWith('Avatar saved.', 'success');
   });
 
+  it('offers None as a chip instead of a switch and hides the colors it leaves out', async () => {
+    const screen = await renderScreen();
+    await screen.findByTestId('avatar-remove');
+    expect(screen.queryByTestId('avatar-toggle-accessoriesProbability')).toBeNull();
+    // The saved accessoriesProbability 0 shows as No Glasses, with no glasses color.
+    expect(screen.getByText('No Glasses')).toBeTruthy();
+    expect(screen.queryByText('Glasses Color')).toBeNull();
+    expect(screen.getByText('Hair Color')).toBeTruthy();
+    await fireEvent.press(screen.getByTestId('chip-round'));
+    expect(screen.getByText('Glasses Color')).toBeTruthy();
+    await fireEvent.press(screen.getByText('No Hair or Headwear'));
+    expect(screen.queryByText('Hair Color')).toBeNull();
+    expect(screen.queryByText('Headwear Color')).toBeNull();
+    await fireEvent.press(screen.getByTestId('avatar-save'));
+    await waitFor(() => expect(mockPut).toHaveBeenCalled());
+    expect((mockPut.mock.calls[0]?.[1] as { options: unknown }).options).toEqual({
+      topVariant: 'bob',
+      topProbability: 0,
+      skinColor: '614335',
+      accessoriesVariant: 'round',
+      accessoriesProbability: 100,
+    });
+  });
+
   it('Random changes the preview', async () => {
     const screen = await renderScreen();
     await screen.findByTestId('avatar-remove');

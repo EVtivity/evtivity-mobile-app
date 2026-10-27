@@ -3,8 +3,13 @@
 
 import {
   AVATAR_MAX_BYTES,
+  AVATAR_NONE_VALUE,
+  avatarColorShown,
   avatarFileProblem,
   avatarOptionChoices,
+  avatarVariantHasNone,
+  avatarVariantSelection,
+  withAvatarVariantSelection,
   checkedGeneratedAvatarSvg,
   enumValuesOf,
   generatedAvatarProblem,
@@ -150,5 +155,83 @@ describe('helpers', () => {
   it('picks a value, and nothing from no values', () => {
     expect(pickValue(['a', 'b'], () => 0.6)).toBe('b');
     expect(pickValue([], () => 0.5)).toBe('');
+  });
+});
+
+describe('None in the variant chips', () => {
+  it('offers None for hair or headwear, glasses and facial hair only', () => {
+    expect(avatarVariantHasNone('topVariant')).toBe(true);
+    expect(avatarVariantHasNone('accessoriesVariant')).toBe(true);
+    expect(avatarVariantHasNone('facialHairVariant')).toBe(true);
+    expect(avatarVariantHasNone('eyesVariant')).toBe(false);
+    expect(avatarVariantHasNone('flip')).toBe(false);
+  });
+
+  it('never collides with a variant name of an optional component', () => {
+    for (const choice of avatarOptionChoices()) {
+      if (avatarVariantHasNone(choice.key)) expect(choice.values).not.toContain(AVATAR_NONE_VALUE);
+    }
+  });
+
+  it('shows None while the probability is 0, else the stored variant', () => {
+    expect(avatarVariantSelection({ topVariant: 'bob', topProbability: 0 }, 'topVariant')).toBe(
+      AVATAR_NONE_VALUE,
+    );
+    expect(avatarVariantSelection({ topVariant: 'bob', topProbability: 100 }, 'topVariant')).toBe(
+      'bob',
+    );
+    expect(avatarVariantSelection({ topVariant: 'bob' }, 'topVariant')).toBe('bob');
+    expect(avatarVariantSelection({}, 'accessoriesVariant')).toBe('');
+    expect(avatarVariantSelection({ flip: 'none' }, 'flip')).toBe('none');
+  });
+
+  it('stores None as probability 0 and keeps the stored variant', () => {
+    expect(
+      withAvatarVariantSelection(
+        { facialHairVariant: 'beardLight', facialHairProbability: 100 },
+        'facialHairVariant',
+        AVATAR_NONE_VALUE,
+      ),
+    ).toEqual({ facialHairVariant: 'beardLight', facialHairProbability: 0 });
+  });
+
+  it('stores a picked variant with probability 100, other options as picked', () => {
+    expect(
+      withAvatarVariantSelection(
+        { accessoriesVariant: 'round', accessoriesProbability: 0 },
+        'accessoriesVariant',
+        'kurt',
+      ),
+    ).toEqual({ accessoriesVariant: 'kurt', accessoriesProbability: 100 });
+    expect(withAvatarVariantSelection({ flip: 'horizontal' }, 'flip', 'none')).toEqual({
+      flip: 'none',
+    });
+  });
+
+  it('keeps every pick on the allow-list', () => {
+    let options: Record<string, string | number> = { topVariant: 'bob', topProbability: 100 };
+    options = withAvatarVariantSelection(options, 'topVariant', AVATAR_NONE_VALUE);
+    expect(generatedAvatarProblem({ style: 'avataaars', seed: 'a', options })).toBeNull();
+    options = withAvatarVariantSelection(options, 'topVariant', 'hat');
+    expect(generatedAvatarProblem({ style: 'avataaars', seed: 'a', options })).toBeNull();
+  });
+
+  it('hides the colors of a component set to None', () => {
+    const none = { topProbability: 0, accessoriesProbability: 0, facialHairProbability: 0 };
+    for (const key of ['hairColor', 'hatColor', 'accessoriesColor', 'facialHairColor']) {
+      expect(avatarColorShown(none, key)).toBe(false);
+      expect(avatarColorShown({}, key)).toBe(true);
+    }
+    expect(avatarColorShown(none, 'skinColor')).toBe(true);
+    expect(avatarColorShown({ topProbability: 0 }, 'facialHairColor')).toBe(true);
+  });
+
+  it('lets Random pick None', () => {
+    const random = seeded(11);
+    const picks = Array.from({ length: 50 }, () =>
+      avatarVariantSelection(randomGeneratedAvatar(random).options, 'accessoriesVariant'),
+    );
+    expect(picks).toContain(AVATAR_NONE_VALUE);
+    expect(picks.some((p) => p !== AVATAR_NONE_VALUE)).toBe(true);
   });
 });

@@ -401,9 +401,6 @@
       "facialHairVariant": "Facial Hair",
       "clothesVariant": "Clothes",
       "clothesGraphicVariant": "Shirt Graphic",
-      "topProbability": "Show Hair or Headwear",
-      "accessoriesProbability": "Show Glasses",
-      "facialHairProbability": "Show Facial Hair",
       "skinColor": "Skin Color",
       "hairColor": "Hair Color",
       "facialHairColor": "Facial Hair Color",
@@ -412,6 +409,11 @@
       "accessoriesColor": "Glasses Color",
       "backgroundColor": "Background Color",
       "flip": "Direction"
+    },
+    "avatarNone": {
+      "topVariant": "No Hair or Headwear",
+      "accessoriesVariant": "No Glasses",
+      "facialHairVariant": "No Facial Hair"
     },
     "avatarValues": {
       "none": "Default",

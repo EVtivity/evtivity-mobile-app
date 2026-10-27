@@ -401,9 +401,6 @@
       "facialHairVariant": "Bart",
       "clothesVariant": "Kleidung",
       "clothesGraphicVariant": "Shirt-Motiv",
-      "topProbability": "Haare oder Kopfbedeckung anzeigen",
-      "accessoriesProbability": "Brille anzeigen",
-      "facialHairProbability": "Bart anzeigen",
       "skinColor": "Hautfarbe",
       "hairColor": "Haarfarbe",
       "facialHairColor": "Bartfarbe",
@@ -412,6 +409,11 @@
       "accessoriesColor": "Brillenfarbe",
       "backgroundColor": "Hintergrundfarbe",
       "flip": "Richtung"
+    },
+    "avatarNone": {
+      "topVariant": "Keine Haare oder Kopfbedeckung",
+      "accessoriesVariant": "Keine Brille",
+      "facialHairVariant": "Kein Bart"
     },
     "avatarValues": {
       "none": "Standard",

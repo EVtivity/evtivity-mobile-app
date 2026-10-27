@@ -220,6 +220,75 @@ export function avatarFileProblem(file: { size: number; mimeType: string | null 
   return null;
 }
 
+/**
+ * The chip value meaning "leave this component out" (No Hair or Headwear, No
+ * Glasses, No Facial Hair). It is never stored: it maps to the component's
+ * probability 0. No variant of an optional component has this name. Mirrors
+ * the CSMS shared rules.
+ */
+export const AVATAR_NONE_VALUE = 'none';
+
+/** Variant options whose chips offer None, and the probability each one maps to. */
+const OPTIONAL_VARIANTS: Readonly<Record<string, string>> = {
+  topVariant: 'topProbability',
+  accessoriesVariant: 'accessoriesProbability',
+  facialHairVariant: 'facialHairProbability',
+};
+
+/** Color options that apply only while their component is shown. */
+const COLOR_COMPONENT: Readonly<Record<string, string>> = {
+  hairColor: 'topVariant',
+  hatColor: 'topVariant',
+  accessoriesColor: 'accessoriesVariant',
+  facialHairColor: 'facialHairVariant',
+};
+
+/** True when the chips of `variantKey` offer None as their first option. */
+export function avatarVariantHasNone(variantKey: string): boolean {
+  return Object.prototype.hasOwnProperty.call(OPTIONAL_VARIANTS, variantKey);
+}
+
+/**
+ * The selected value of a variant option: `AVATAR_NONE_VALUE` while the
+ * component's probability is 0, else the stored variant ('' when unset).
+ */
+export function avatarVariantSelection(
+  options: Readonly<Record<string, string | number>>,
+  variantKey: string,
+): string {
+  const probabilityKey = OPTIONAL_VARIANTS[variantKey];
+  if (probabilityKey !== undefined && options[probabilityKey] === 0) return AVATAR_NONE_VALUE;
+  const value = options[variantKey];
+  return typeof value === 'string' ? value : '';
+}
+
+/**
+ * The options after a pick. None stores the probability 0 and keeps the
+ * stored variant; a variant of an optional component stores it with the
+ * probability 100; any other option stores the value as picked.
+ */
+export function withAvatarVariantSelection(
+  options: Readonly<Record<string, string | number>>,
+  variantKey: string,
+  value: string,
+): Record<string, string | number> {
+  const probabilityKey = OPTIONAL_VARIANTS[variantKey];
+  if (probabilityKey === undefined) return { ...options, [variantKey]: value };
+  if (value === AVATAR_NONE_VALUE) return { ...options, [probabilityKey]: 0 };
+  return { ...options, [variantKey]: value, [probabilityKey]: 100 };
+}
+
+/** False for a color whose component is set to None: its picker hides then. */
+export function avatarColorShown(
+  options: Readonly<Record<string, string | number>>,
+  colorKey: string,
+): boolean {
+  const variantKey = COLOR_COMPONENT[colorKey];
+  return (
+    variantKey === undefined || avatarVariantSelection(options, variantKey) !== AVATAR_NONE_VALUE
+  );
+}
+
 /** `shortFlat` -> `Short Flat`, `prescription01` -> `Prescription 01`. */
 export function humanizeAvatarValue(value: string): string {
   const spaced = value.replace(/([a-z])([A-Z0-9])/g, '$1 $2');

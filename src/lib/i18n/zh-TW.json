@@ -401,9 +401,6 @@
       "facialHairVariant": "鬍子",
       "clothesVariant": "衣服",
       "clothesGraphicVariant": "襯衫圖案",
-      "topProbability": "顯示頭髮或頭飾",
-      "accessoriesProbability": "顯示眼鏡",
-      "facialHairProbability": "顯示鬍子",
       "skinColor": "膚色",
       "hairColor": "髮色",
       "facialHairColor": "鬍子顏色",
@@ -412,6 +409,11 @@
       "accessoriesColor": "眼鏡顏色",
       "backgroundColor": "背景顏色",
       "flip": "方向"
+    },
+    "avatarNone": {
+      "topVariant": "無頭髮或頭飾",
+      "accessoriesVariant": "無眼鏡",
+      "facialHairVariant": "無鬍子"
     },
     "avatarValues": {
       "none": "預設",

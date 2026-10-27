@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 
 import React from 'react';
-import { View, Pressable, Switch } from 'react-native';
+import { View, Pressable } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import * as ImagePicker from 'expo-image-picker';
 import { File } from 'expo-file-system';
@@ -21,8 +21,13 @@ import { DriverAvatar } from '@/components/DriverAvatar';
 import { useAuth } from '@/lib/auth';
 import { cn } from '@/lib/cn';
 import {
+  AVATAR_NONE_VALUE,
+  avatarColorShown,
   avatarFileProblem,
   avatarOptionChoices,
+  avatarVariantHasNone,
+  avatarVariantSelection,
+  withAvatarVariantSelection,
   generatedAvatarProblem,
   humanizeAvatarValue,
   randomGeneratedAvatar,
@@ -77,6 +82,13 @@ export default function AvatarScreen(): React.JSX.Element {
 
   const setOption = (key: string, value: string | number): void => {
     if (draft != null) setEdited({ ...draft, options: { ...draft.options, [key]: value } });
+  };
+
+  // A chip pick: None stores the component's probability 0, a variant stores 100.
+  const selectVariant = (key: string, value: string): void => {
+    if (draft != null) {
+      setEdited({ ...draft, options: withAvatarVariantSelection(draft.options, key, value) });
+    }
   };
 
   const onSave = (): void => {
@@ -171,31 +183,24 @@ export default function AvatarScreen(): React.JSX.Element {
               <ChipGroup
                 key={choice.key}
                 label={t(`account.avatarOptions.${choice.key}`)}
-                options={choice.values.map((value) => ({
-                  value,
-                  label:
-                    choice.key === 'flip'
-                      ? t(`account.avatarValues.${value}`)
-                      : humanizeAvatarValue(value),
-                }))}
-                value={String(draft.options[choice.key] ?? '')}
-                onSelect={(value) => setOption(choice.key, value)}
+                options={[
+                  ...(avatarVariantHasNone(choice.key)
+                    ? [{ value: AVATAR_NONE_VALUE, label: t(`account.avatarNone.${choice.key}`) }]
+                    : []),
+                  ...choice.values.map((value) => ({
+                    value,
+                    label:
+                      choice.key === 'flip'
+                        ? t(`account.avatarValues.${value}`)
+                        : humanizeAvatarValue(value),
+                  })),
+                ]}
+                value={avatarVariantSelection(draft.options, choice.key)}
+                onSelect={(value) => selectVariant(choice.key, value)}
               />
             ))}
           {choices
-            .filter((c) => c.kind === 'toggle')
-            .map((choice) => (
-              <View key={choice.key} className="flex-row items-center justify-between">
-                <Text>{t(`account.avatarOptions.${choice.key}`)}</Text>
-                <Switch
-                  testID={`avatar-toggle-${choice.key}`}
-                  value={draft.options[choice.key] !== 0}
-                  onValueChange={(on) => setOption(choice.key, on ? 100 : 0)}
-                />
-              </View>
-            ))}
-          {choices
-            .filter((c) => c.kind === 'color')
+            .filter((c) => c.kind === 'color' && avatarColorShown(draft.options, c.key))
             .map((choice) => (
               <View key={choice.key} className="gap-2">
                 <Text variant="label">{t(`account.avatarOptions.${choice.key}`)}</Text>

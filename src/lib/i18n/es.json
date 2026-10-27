@@ -401,9 +401,6 @@
       "facialHairVariant": "Vello facial",
       "clothesVariant": "Ropa",
       "clothesGraphicVariant": "Estampado de la camiseta",
-      "topProbability": "Mostrar pelo o sombrero",
-      "accessoriesProbability": "Mostrar gafas",
-      "facialHairProbability": "Mostrar vello facial",
       "skinColor": "Color de piel",
       "hairColor": "Color de pelo",
       "facialHairColor": "Color del vello facial",
@@ -412,6 +409,11 @@
       "accessoriesColor": "Color de las gafas",
       "backgroundColor": "Color de fondo",
       "flip": "Orientación"
+    },
+    "avatarNone": {
+      "topVariant": "Sin pelo ni sombrero",
+      "accessoriesVariant": "Sin gafas",
+      "facialHairVariant": "Sin vello facial"
     },
     "avatarValues": {
       "none": "Predeterminada",
