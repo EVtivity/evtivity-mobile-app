@@ -384,6 +384,7 @@
     "avatarRemoveTitle": "移除头像",
     "avatarRemoveDescription": "将改为显示您的姓名首字母。已上传的图片会被删除。",
     "avatarTooLarge": "图片必须小于 1 MB。",
+    "avatarSizeUnreadable": "无法读取此图片的大小。请选择其他图片。",
     "avatarWrongType": "请选择 JPEG、PNG 或 WebP 图片。",
     "avatarUploadHint": "JPEG、PNG 或 WebP，小于 1 MB。图片会被裁剪为正方形。",
     "avatarChooseImage": "选择图片",

@@ -30,9 +30,15 @@ jest.mock('@/lib/auth', () => ({
 jest.mock('expo-image-picker', () => ({
   launchImageLibraryAsync: (...args: unknown[]) => mockPick(...args),
 }));
+// The size the file reports, or 'throw' for a file the app may not read.
+const mockFile: { size: number | null | 'throw' } = { size: null };
 jest.mock('expo-file-system', () => ({
   File: class {
-    size = null;
+    size: number | null;
+    constructor() {
+      if (mockFile.size === 'throw') throw new Error('permission denied');
+      this.size = mockFile.size;
+    }
   },
 }));
 jest.mock('expo-image', () => {
@@ -164,6 +170,7 @@ afterEach(() => {
 
 beforeEach(() => {
   jest.clearAllMocks();
+  mockFile.size = null;
   avatar = GENERATED;
   features = { avatarUploadEnabled: true };
   mockGet.mockImplementation((path: string) => {
@@ -215,6 +222,48 @@ describe('Avatar screen', () => {
       expect(mockToast).toHaveBeenCalledWith('The image must be smaller than 1 MB.', 'error'),
     );
     expect(mockPost).not.toHaveBeenCalled();
+  });
+
+  it('shows an error instead of crashing when the image size cannot be read (I5)', async () => {
+    const screen = await renderScreen();
+    await fireEvent.press(await screen.findByTestId('segment-upload'));
+    mockFile.size = 'throw';
+    mockPick.mockResolvedValue({
+      canceled: false,
+      assets: [{ uri: 'content://a.jpg', mimeType: 'image/jpeg' }],
+    });
+    await fireEvent.press(screen.getByTestId('avatar-choose-image'));
+    await waitFor(() =>
+      expect(mockToast).toHaveBeenCalledWith(
+        'Could not read the size of this image. Choose another image.',
+        'error',
+      ),
+    );
+    expect(mockPost).not.toHaveBeenCalled();
+  });
+
+  it('reads the size from the file when the picker gives none', async () => {
+    const screen = await renderScreen();
+    await fireEvent.press(await screen.findByTestId('segment-upload'));
+    mockFile.size = 2 * 1024 * 1024;
+    mockPick.mockResolvedValue({
+      canceled: false,
+      assets: [{ uri: 'file:///a.jpg', mimeType: 'image/jpeg' }],
+    });
+    await fireEvent.press(screen.getByTestId('avatar-choose-image'));
+    await waitFor(() =>
+      expect(mockToast).toHaveBeenCalledWith('The image must be smaller than 1 MB.', 'error'),
+    );
+    expect(mockPost).not.toHaveBeenCalled();
+  });
+
+  it('starts from a random avatar when the saved one is off the allow-list (I3)', async () => {
+    avatar = { ...GENERATED, options: { topVariant: 'not-a-variant' } };
+    const screen = await renderScreen();
+    await screen.findByTestId('avatar-remove');
+    await fireEvent.press(screen.getByTestId('avatar-save'));
+    await waitFor(() => expect(mockPut).toHaveBeenCalled());
+    expect(mockPut.mock.calls[0]?.[1]).not.toMatchObject({ seed: 'abc' });
   });
 
   it('hides the upload without file storage', async () => {

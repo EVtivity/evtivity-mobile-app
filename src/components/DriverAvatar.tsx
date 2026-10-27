@@ -7,7 +7,7 @@ import { Image } from 'expo-image';
 import { SvgXml } from 'react-native-svg';
 import { useTranslation } from 'react-i18next';
 import { Text } from '@/components/ui';
-import { initialsOf, renderGeneratedAvatarSvg, type DriverAvatar as Avatar } from '@/lib/avatar';
+import { checkedGeneratedAvatarSvg, initialsOf, type DriverAvatar as Avatar } from '@/lib/avatar';
 
 // The driver's avatar: a generated one rendered on the device from the stored
 // options (never SVG text from the server), the uploaded image, or initials.
@@ -29,10 +29,11 @@ export function DriverAvatar({
   const imageFailed = imageUrl != null && failedUrl === imageUrl;
 
   const generated = avatar?.kind === 'generated' ? avatar : null;
+  // Options off the allow-list render nothing: the avatar falls back to initials.
   const svg = React.useMemo(
     () =>
       generated != null
-        ? renderGeneratedAvatarSvg({
+        ? checkedGeneratedAvatarSvg({
             style: 'avataaars',
             seed: generated.seed,
             options: generated.options,
@@ -57,6 +58,8 @@ export function DriverAvatar({
       ) : imageUrl != null && !imageFailed ? (
         <Image
           source={{ uri: imageUrl }}
+          // No disk or memory cache: a removed or replaced photo never shows again.
+          cachePolicy="none"
           style={frame}
           contentFit="cover"
           onError={() => setFailedUrl(imageUrl)}

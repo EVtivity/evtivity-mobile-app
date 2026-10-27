@@ -5,7 +5,9 @@ import {
   AVATAR_MAX_BYTES,
   avatarFileProblem,
   avatarOptionChoices,
+  checkedGeneratedAvatarSvg,
   enumValuesOf,
+  generatedAvatarProblem,
   pickValue,
   humanizeAvatarValue,
   initialsOf,
@@ -55,6 +57,42 @@ describe('rendering on the device', () => {
     expect(svg.startsWith('<svg')).toBe(true);
     expect(svg).toContain('#d08b5b');
     expect(renderGeneratedAvatarSvg(avatar)).toBe(svg);
+  });
+});
+
+describe('allow-list (I3)', () => {
+  const valid = {
+    style: 'avataaars' as const,
+    seed: 'abc',
+    options: { topVariant: 'bob', skinColor: '614335', accessoriesProbability: 0 },
+  };
+
+  it('accepts allow-listed options and every random avatar', () => {
+    expect(generatedAvatarProblem(valid)).toBeNull();
+    expect(generatedAvatarProblem(randomGeneratedAvatar(seeded(7)))).toBeNull();
+    expect(checkedGeneratedAvatarSvg(valid)).toBe(renderGeneratedAvatarSvg(valid));
+  });
+
+  it('refuses what the API refuses, so the app shows initials', () => {
+    const bad: unknown[] = [
+      null,
+      [],
+      { ...valid, style: 'bottts' },
+      { ...valid, seed: '<script>' },
+      { ...valid, extra: 1 },
+      { ...valid, options: { size: 9 } },
+      { ...valid, options: { topVariant: 'nope' } },
+      { ...valid, options: { skinColor: '#614335' } },
+      { ...valid, options: { skinColor: '000001' } },
+      { ...valid, options: { backgroundColor: 'url(x)' } },
+      { ...valid, options: { topProbability: 50 } },
+      { ...valid, options: { flip: 'vertical' } },
+      { ...valid, seed: 'a'.repeat(64), options: { topVariant: 'x'.repeat(5000) } },
+    ];
+    for (const input of bad) {
+      expect(generatedAvatarProblem(input)).not.toBeNull();
+      expect(checkedGeneratedAvatarSvg(input)).toBeNull();
+    }
   });
 });
 

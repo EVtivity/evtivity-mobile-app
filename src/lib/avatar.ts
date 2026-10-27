@@ -112,6 +112,69 @@ export function renderGeneratedAvatarSvg(avatar: GeneratedAvatar): string {
   return new Avatar(avatarStyle(), options).toString();
 }
 
+const AVATAR_SEED_PATTERN = /^[A-Za-z0-9_-]{1,64}$/;
+const AVATAR_OPTIONS_MAX_JSON = 4096;
+const HEX_COLOR = /^[0-9a-f]{6}$/;
+
+/**
+ * Why `input` is not a generated avatar on the allow-list, or null when it is.
+ * The same rules as the API (`@evtivity/lib/driver-avatar`
+ * `generatedAvatarProblem`): known fields and options only, values from the
+ * style, colors as six lowercase hex digits, 0 or 100 toggles, at most 4096
+ * characters of JSON.
+ */
+export function generatedAvatarProblem(input: unknown): string | null {
+  if (input == null || typeof input !== 'object' || Array.isArray(input)) {
+    return 'The avatar must be an object';
+  }
+  const record = input as Record<string, unknown>;
+  for (const key of Object.keys(record)) {
+    if (key !== 'style' && key !== 'seed' && key !== 'options') {
+      return `Unknown avatar field ${key}`;
+    }
+  }
+  if (record['style'] !== 'avataaars') return 'The avatar style must be avataaars';
+  const seed = record['seed'];
+  if (typeof seed !== 'string' || !AVATAR_SEED_PATTERN.test(seed)) return 'Invalid seed';
+  const options = record['options'];
+  if (options == null || typeof options !== 'object' || Array.isArray(options)) {
+    return 'The avatar options must be an object';
+  }
+  if (JSON.stringify(input).length > AVATAR_OPTIONS_MAX_JSON) return 'The avatar is too large';
+  const choices = new Map(avatarOptionChoices().map((c) => [c.key, c]));
+  for (const [key, value] of Object.entries(options as Record<string, unknown>)) {
+    const choice = choices.get(key);
+    if (choice == null) return `Unknown avatar option ${key}`;
+    if (choice.kind === 'toggle') {
+      if (value !== 0 && value !== 100) return `${key} must be 0 or 100`;
+      continue;
+    }
+    if (typeof value !== 'string') return `${key} must be a string`;
+    if (choice.kind === 'color') {
+      if (!HEX_COLOR.test(value)) return `${key} must be six lowercase hex digits`;
+      if (key !== 'backgroundColor' && !choice.values.includes(value)) {
+        return `${key} is not one of the style colors`;
+      }
+      continue;
+    }
+    if (!choice.values.includes(value)) return `${key} has an unknown value`;
+  }
+  return null;
+}
+
+/**
+ * The SVG of a generated avatar the app received, or null when it is not on
+ * the allow-list or does not render: the app then shows initials.
+ */
+export function checkedGeneratedAvatarSvg(input: unknown): string | null {
+  if (generatedAvatarProblem(input) != null) return null;
+  try {
+    return renderGeneratedAvatarSvg(input as GeneratedAvatar);
+  } catch {
+    return null;
+  }
+}
+
 const SEED_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
 /** One of `values` by the random source; empty text for no values. */

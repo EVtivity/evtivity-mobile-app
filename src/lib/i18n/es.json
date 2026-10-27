@@ -384,6 +384,7 @@
     "avatarRemoveTitle": "Quitar avatar",
     "avatarRemoveDescription": "Se mostrarán tus iniciales. Una imagen subida se elimina.",
     "avatarTooLarge": "La imagen debe ocupar menos de 1 MB.",
+    "avatarSizeUnreadable": "No se pudo leer el tamaño de esta imagen. Elige otra imagen.",
     "avatarWrongType": "Elige una imagen JPEG, PNG o WebP.",
     "avatarUploadHint": "JPEG, PNG o WebP, de menos de 1 MB. La imagen se recorta en un cuadrado.",
     "avatarChooseImage": "Elegir imagen",

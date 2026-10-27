@@ -23,12 +23,26 @@ import { cn } from '@/lib/cn';
 import {
   avatarFileProblem,
   avatarOptionChoices,
+  generatedAvatarProblem,
   humanizeAvatarValue,
   randomGeneratedAvatar,
   type GeneratedAvatar,
 } from '@/lib/avatar';
 import { useDriverAvatar, useRemoveAvatar, useSetAvatar, useUploadAvatar } from '@/features/avatar';
 import { useFeatures } from '@/features/app-info';
+
+/**
+ * The size of a picked image: the picker's, else read from the file. Null when
+ * neither is known or reading the file fails (a file the app may not read).
+ */
+function pickedImageSize(asset: { fileSize?: number | null; uri: string }): number | null {
+  if (asset.fileSize != null) return asset.fileSize;
+  try {
+    return new File(asset.uri).size ?? null;
+  } catch {
+    return null;
+  }
+}
 
 // Build an avatar (pickers, Random, Save), upload one from the photo library
 // (smaller than 1 MB, cropped to a square), or remove it.
@@ -52,13 +66,14 @@ export default function AvatarScreen(): React.JSX.Element {
   const [fallback] = React.useState(() => randomGeneratedAvatar());
   const choices = React.useMemo(() => avatarOptionChoices(), []);
   const saved = current.data;
-  const draft: GeneratedAvatar | null =
-    edited ??
-    (saved?.kind === 'generated'
+  // A saved avatar off the allow-list is never edited further: start from a random one.
+  const savedGenerated: GeneratedAvatar | null =
+    saved?.kind === 'generated' &&
+    generatedAvatarProblem({ style: saved.style, seed: saved.seed, options: saved.options }) == null
       ? { style: 'avataaars', seed: saved.seed, options: saved.options }
-      : current.isLoading
-        ? null
-        : fallback);
+      : null;
+  const draft: GeneratedAvatar | null =
+    edited ?? (savedGenerated != null ? savedGenerated : current.isLoading ? null : fallback);
 
   const setOption = (key: string, value: string | number): void => {
     if (draft != null) setEdited({ ...draft, options: { ...draft.options, [key]: value } });
@@ -81,7 +96,11 @@ export default function AvatarScreen(): React.JSX.Element {
     });
     const asset = result.canceled ? undefined : result.assets[0];
     if (asset == null) return;
-    const size = asset.fileSize ?? new File(asset.uri).size ?? Number.MAX_SAFE_INTEGER;
+    const size = pickedImageSize(asset);
+    if (size == null) {
+      toast.show(t('account.avatarSizeUnreadable'), 'error');
+      return;
+    }
     const problem = avatarFileProblem({ size, mimeType: asset.mimeType });
     if (problem != null) {
       toast.show(t(problem), 'error');
