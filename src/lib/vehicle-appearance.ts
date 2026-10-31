@@ -20,7 +20,16 @@ export const VEHICLE_COLORS = [
 
 export type VehicleColor = (typeof VEHICLE_COLORS)[number];
 
-export const VEHICLE_BODY_TYPES = ['sedan', 'hatchback', 'suv', 'pickup_truck', 'van'] as const;
+export const VEHICLE_BODY_TYPES = [
+  'sedan',
+  'hatchback',
+  'suv',
+  'pickup_truck',
+  'van',
+  'box_truck',
+  'bus',
+  'semi_truck',
+] as const;
 
 export type VehicleBodyType = (typeof VEHICLE_BODY_TYPES)[number];
 

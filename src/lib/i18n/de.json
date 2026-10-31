@@ -777,7 +777,10 @@
       "hatchback": "Schrägheck",
       "suv": "SUV",
       "pickup_truck": "Pick-up",
-      "van": "Transporter"
+      "van": "Transporter",
+      "box_truck": "Koffer-Lkw",
+      "bus": "Bus",
+      "semi_truck": "Sattelzug"
     }
   },
   "fieldErrors": {

@@ -777,7 +777,10 @@
       "hatchback": "Hatchback",
       "suv": "SUV",
       "pickup_truck": "Camioneta Pickup",
-      "van": "Furgoneta"
+      "van": "Furgoneta",
+      "box_truck": "Camión de Caja",
+      "bus": "Autobús",
+      "semi_truck": "Tractocamión"
     }
   },
   "fieldErrors": {

@@ -777,7 +777,10 @@
       "hatchback": "해치백",
       "suv": "SUV",
       "pickup_truck": "픽업트럭",
-      "van": "밴"
+      "van": "밴",
+      "box_truck": "박스트럭",
+      "bus": "버스",
+      "semi_truck": "세미트럭"
     }
   },
   "fieldErrors": {

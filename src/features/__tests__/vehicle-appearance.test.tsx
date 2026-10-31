@@ -193,16 +193,18 @@ describe('Vehicles screen color and body type', () => {
   });
 
   it('saves a new color and body type from the edit sheet', async () => {
-    mockPatch.mockResolvedValue({ ...KIA, color: 'red', bodyType: 'van' });
+    mockPatch.mockResolvedValue({ ...KIA, color: 'red', bodyType: 'semi_truck' });
     const screen = await renderScreen();
     await fireEvent.press(await screen.findByTestId('vehicle-edit-veh_1'));
     await fireEvent.press(await screen.findByTestId('chip-red'));
-    await fireEvent.press(screen.getByTestId('chip-van'));
+    expect(screen.getByText('Box Truck')).toBeTruthy();
+    expect(screen.getByText('Bus')).toBeTruthy();
+    await fireEvent.press(screen.getByTestId('chip-semi_truck'));
     await fireEvent.press(screen.getByTestId('vehicle-appearance-save'));
     await waitFor(() =>
       expect(mockPatch).toHaveBeenCalledWith('/v1/portal/vehicles/veh_1', {
         color: 'red',
-        bodyType: 'van',
+        bodyType: 'semi_truck',
       }),
     );
     await waitFor(() => expect(mockToast).toHaveBeenCalledWith('Vehicle saved', 'success'));

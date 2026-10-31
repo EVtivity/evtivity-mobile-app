@@ -777,7 +777,10 @@
       "hatchback": "Hatchback",
       "suv": "SUV",
       "pickup_truck": "Pickup Truck",
-      "van": "Van"
+      "van": "Van",
+      "box_truck": "Box Truck",
+      "bus": "Bus",
+      "semi_truck": "Semi Truck"
     }
   },
   "fieldErrors": {

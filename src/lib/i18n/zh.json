@@ -777,7 +777,10 @@
       "hatchback": "两厢车",
       "suv": "SUV",
       "pickup_truck": "皮卡",
-      "van": "厢式车"
+      "van": "厢式车",
+      "box_truck": "厢式货车",
+      "bus": "巴士",
+      "semi_truck": "半挂卡车"
     }
   },
   "fieldErrors": {
