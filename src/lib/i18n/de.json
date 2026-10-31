@@ -418,7 +418,9 @@
     "avatarValues": {
       "none": "Standard",
       "horizontal": "Gespiegelt"
-    }
+    },
+    "editVehicle": "Fahrzeug bearbeiten",
+    "vehicleSaved": "Fahrzeug gespeichert"
   },
   "payments": {
     "title": "Zahlung",
@@ -754,7 +756,29 @@
     "newVehicle": "Neues Fahrzeug",
     "makeModelRequired": "Gib Marke und Modell ein.",
     "lastSeen": "Zuletzt gesehen",
-    "lastSeenValue": "{{station}}, {{time}}"
+    "lastSeenValue": "{{station}}, {{time}}",
+    "color": "Farbe",
+    "bodyType": "Karosserieform",
+    "notSet": "Nicht festgelegt",
+    "colors": {
+      "white": "Weiß",
+      "black": "Schwarz",
+      "silver": "Silber",
+      "grey": "Grau",
+      "blue": "Blau",
+      "red": "Rot",
+      "green": "Grün",
+      "brown_beige": "Braun oder Beige",
+      "yellow_orange": "Gelb oder Orange",
+      "other": "Andere"
+    },
+    "bodyTypes": {
+      "sedan": "Limousine",
+      "hatchback": "Schrägheck",
+      "suv": "SUV",
+      "pickup_truck": "Pick-up",
+      "van": "Transporter"
+    }
   },
   "fieldErrors": {
     "required": "Dieses Feld ist erforderlich.",

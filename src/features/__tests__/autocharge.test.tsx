@@ -26,6 +26,7 @@ jest.mock('@/components/icons', () => ({
   Car: (): null => null,
   Trash2: (): null => null,
   Lock: (): null => null,
+  Pencil: (): null => null,
   PlugZap: (): null => null,
 }));
 

@@ -418,7 +418,9 @@
     "avatarValues": {
       "none": "默认",
       "horizontal": "镜像"
-    }
+    },
+    "editVehicle": "编辑车辆",
+    "vehicleSaved": "车辆已保存"
   },
   "payments": {
     "title": "支付",
@@ -754,7 +756,29 @@
     "newVehicle": "新车辆",
     "makeModelRequired": "请输入品牌和型号。",
     "lastSeen": "最近识别",
-    "lastSeenValue": "{{station}}，{{time}}"
+    "lastSeenValue": "{{station}}，{{time}}",
+    "color": "颜色",
+    "bodyType": "车身类型",
+    "notSet": "未设置",
+    "colors": {
+      "white": "白色",
+      "black": "黑色",
+      "silver": "银色",
+      "grey": "灰色",
+      "blue": "蓝色",
+      "red": "红色",
+      "green": "绿色",
+      "brown_beige": "棕色或米色",
+      "yellow_orange": "黄色或橙色",
+      "other": "其他"
+    },
+    "bodyTypes": {
+      "sedan": "轿车",
+      "hatchback": "两厢车",
+      "suv": "SUV",
+      "pickup_truck": "皮卡",
+      "van": "厢式车"
+    }
   },
   "fieldErrors": {
     "required": "此字段为必填项。",

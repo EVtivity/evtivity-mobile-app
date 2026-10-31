@@ -418,7 +418,9 @@
     "avatarValues": {
       "none": "預設",
       "horizontal": "鏡像"
-    }
+    },
+    "editVehicle": "編輯車輛",
+    "vehicleSaved": "車輛已儲存"
   },
   "payments": {
     "title": "付款",
@@ -754,7 +756,29 @@
     "newVehicle": "新車輛",
     "makeModelRequired": "請輸入品牌與型號。",
     "lastSeen": "最近辨識",
-    "lastSeenValue": "{{station}}，{{time}}"
+    "lastSeenValue": "{{station}}，{{time}}",
+    "color": "顏色",
+    "bodyType": "車身類型",
+    "notSet": "未設定",
+    "colors": {
+      "white": "白色",
+      "black": "黑色",
+      "silver": "銀色",
+      "grey": "灰色",
+      "blue": "藍色",
+      "red": "紅色",
+      "green": "綠色",
+      "brown_beige": "棕色或米色",
+      "yellow_orange": "黃色或橙色",
+      "other": "其他"
+    },
+    "bodyTypes": {
+      "sedan": "轎車",
+      "hatchback": "掀背車",
+      "suv": "SUV",
+      "pickup_truck": "皮卡車",
+      "van": "廂型車"
+    }
   },
   "fieldErrors": {
     "required": "此欄位為必填。",

@@ -216,8 +216,13 @@ export function useVehicleLookup() {
 export function useAddVehicle() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (input: { make: string; model: string; year?: string }) =>
-      api.post<Vehicle>('/v1/portal/vehicles', input),
+    mutationFn: (input: {
+      make: string;
+      model: string;
+      year?: string;
+      color?: string;
+      bodyType?: string;
+    }) => api.post<Vehicle>('/v1/portal/vehicles', input),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ['vehicles'] });
     },
@@ -236,6 +241,28 @@ export function useDeleteVehicle() {
 }
 
 // Autocharge on or off (PATCH /v1/portal/vehicles/:id).
+/** Saves a vehicle's color and body type (null removes one). */
+export function useUpdateVehicleAppearance() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: { id: string; color: string | null; bodyType: string | null }) =>
+      api.patch<Vehicle>(`/v1/portal/vehicles/${encodeURIComponent(input.id)}`, {
+        color: input.color,
+        bodyType: input.bodyType,
+      }),
+    onSuccess: (updated) => {
+      qc.setQueryData<Vehicle[]>(
+        ['vehicles'],
+        (old) => old?.map((v) => (v.id === updated.id ? updated : v)) ?? old,
+      );
+    },
+    // A 404 VEHICLE_NOT_FOUND means the list is stale.
+    onError: () => {
+      void qc.invalidateQueries({ queryKey: ['vehicles'] });
+    },
+  });
+}
+
 export function useSetVehicleAutocharge() {
   const qc = useQueryClient();
   return useMutation({

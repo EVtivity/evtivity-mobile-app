@@ -4,7 +4,7 @@
 import React from 'react';
 import { View, Pressable, ScrollView, Switch } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Trash2, Car, Lock } from '@/components/icons';
+import { Trash2, Car, Lock, Pencil } from '@/components/icons';
 import {
   Screen,
   Text,
@@ -31,7 +31,14 @@ import {
   useDeleteVehicle,
   useVehicleLookup,
   useSetVehicleAutocharge,
+  useUpdateVehicleAppearance,
 } from '@/features/account';
+import {
+  VEHICLE_BODY_TYPES,
+  VEHICLE_COLORS,
+  isVehicleBodyType,
+  isVehicleColor,
+} from '@/lib/vehicle-appearance';
 import { useFeatures } from '@/features/app-info';
 
 function IdRow({ label, value }: { label: string; value: string }): React.JSX.Element {
@@ -129,6 +136,57 @@ function VehicleAutocharge({
   );
 }
 
+interface Appearance {
+  color: string;
+  bodyType: string;
+}
+
+// The color and body type as chips; the first chip of each is Not Set ('').
+function AppearanceChips({
+  value,
+  onChange,
+}: {
+  value: Appearance;
+  onChange: (next: Appearance) => void;
+}): React.JSX.Element {
+  const { t } = useTranslation();
+  const notSet = { value: '', label: t('vehicles.notSet') };
+  return (
+    <>
+      <ChipGroup
+        label={t('vehicles.color')}
+        options={[
+          notSet,
+          ...VEHICLE_COLORS.map((c) => ({ value: c, label: t(`vehicles.colors.${c}`) })),
+        ]}
+        value={value.color}
+        onSelect={(color) => onChange({ ...value, color })}
+      />
+      <ChipGroup
+        label={t('vehicles.bodyType')}
+        options={[
+          notSet,
+          ...VEHICLE_BODY_TYPES.map((b) => ({ value: b, label: t(`vehicles.bodyTypes.${b}`) })),
+        ]}
+        value={value.bodyType}
+        onSelect={(bodyType) => onChange({ ...value, bodyType })}
+      />
+    </>
+  );
+}
+
+/** The year, color and body type of a vehicle card, or undefined when none is set. */
+function vehicleSubtitle(v: Vehicle, t: (key: string) => string): string | undefined {
+  const parts = [
+    v.year ?? null,
+    isVehicleColor(v.color) ? t(`vehicles.colors.${v.color}`) : null,
+    isVehicleBodyType(v.bodyType) ? t(`vehicles.bodyTypes.${v.bodyType}`) : null,
+  ].filter((p): p is string => p != null && p !== '');
+  return parts.length > 0 ? parts.join(' · ') : undefined;
+}
+
+const NO_APPEARANCE: Appearance = { color: '', bodyType: '' };
+
 export default function VehiclesScreen(): React.JSX.Element {
   const { t } = useTranslation();
   const toast = useToast();
@@ -140,6 +198,7 @@ export default function VehiclesScreen(): React.JSX.Element {
   const addVehicle = useAddVehicle();
   const deleteVehicle = useDeleteVehicle();
   const setAutocharge = useSetVehicleAutocharge();
+  const updateAppearance = useUpdateVehicleAppearance();
   const features = useFeatures();
   const autochargeOffered = features.data?.autochargeEnabled === true;
   // Per-vehicle optimistic Autocharge state, so the controlled Switch shows the
@@ -150,6 +209,10 @@ export default function VehiclesScreen(): React.JSX.Element {
   const [make, setMake] = React.useState('');
   const [model, setModel] = React.useState('');
   const [year, setYear] = React.useState('');
+  const [appearance, setAppearance] = React.useState<Appearance>(NO_APPEARANCE);
+  // The vehicle whose color and body type are being edited.
+  const [editing, setEditing] = React.useState<{ id: string; label: string } | null>(null);
+  const [editAppearance, setEditAppearance] = React.useState<Appearance>(NO_APPEARANCE);
 
   const makes = lookup.data?.makes ?? [];
   const models = (lookup.data?.models ?? []).filter((m) => m.make === make).map((m) => m.model);
@@ -160,10 +223,13 @@ export default function VehiclesScreen(): React.JSX.Element {
         make: make.trim(),
         model: model.trim(),
         ...(year.trim().length > 0 ? { year: year.trim() } : {}),
+        ...(appearance.color !== '' ? { color: appearance.color } : {}),
+        ...(appearance.bodyType !== '' ? { bodyType: appearance.bodyType } : {}),
       });
       setMake('');
       setModel('');
       setYear('');
+      setAppearance(NO_APPEARANCE);
       setOpen(false);
       toast.show(t('account.vehicleAdded'), 'success');
     } catch (err) {
@@ -183,6 +249,29 @@ export default function VehiclesScreen(): React.JSX.Element {
       onSuccess: () => toast.show(t('account.vehicleRemoved'), 'success'),
       onError: (err) => showApiError(err),
     });
+  };
+
+  const onEdit = (v: Vehicle, label: string): void => {
+    setEditAppearance({
+      color: isVehicleColor(v.color) ? v.color : '',
+      bodyType: isVehicleBodyType(v.bodyType) ? v.bodyType : '',
+    });
+    setEditing({ id: v.id, label });
+  };
+
+  const onSaveAppearance = async (): Promise<void> => {
+    if (editing == null) return;
+    try {
+      await updateAppearance.mutateAsync({
+        id: editing.id,
+        color: editAppearance.color === '' ? null : editAppearance.color,
+        bodyType: editAppearance.bodyType === '' ? null : editAppearance.bodyType,
+      });
+      setEditing(null);
+      toast.show(t('account.vehicleSaved'), 'success');
+    } catch (err) {
+      showApiError(err);
+    }
   };
 
   const onToggleAutocharge = (id: string, enabled: boolean): void => {
@@ -236,7 +325,7 @@ export default function VehiclesScreen(): React.JSX.Element {
                 key={v.id}
                 testID={`vehicle-${v.id}`}
                 title={label}
-                subtitle={v.year ?? undefined}
+                subtitle={vehicleSubtitle(v, t)}
                 footer={
                   <VehicleAutocharge
                     vehicle={v}
@@ -248,14 +337,24 @@ export default function VehiclesScreen(): React.JSX.Element {
                   />
                 }
                 right={
-                  <Pressable
-                    testID={`vehicle-delete-${v.id}`}
-                    accessibilityLabel={t('common.remove')}
-                    hitSlop={8}
-                    onPress={() => void onDelete(v.id, label)}
-                  >
-                    <Trash2 size={20} color={hsl('destructive')} />
-                  </Pressable>
+                  <View className="flex-row items-center gap-4">
+                    <Pressable
+                      testID={`vehicle-edit-${v.id}`}
+                      accessibilityLabel={t('account.editVehicle')}
+                      hitSlop={8}
+                      onPress={() => onEdit(v, label)}
+                    >
+                      <Pencil size={20} color={hsl('mutedForeground')} />
+                    </Pressable>
+                    <Pressable
+                      testID={`vehicle-delete-${v.id}`}
+                      accessibilityLabel={t('common.remove')}
+                      hitSlop={8}
+                      onPress={() => void onDelete(v.id, label)}
+                    >
+                      <Trash2 size={20} color={hsl('destructive')} />
+                    </Pressable>
+                  </View>
                 }
               />
             );
@@ -292,12 +391,31 @@ export default function VehiclesScreen(): React.JSX.Element {
               keyboardType="number-pad"
               maxLength={4}
             />
+            <AppearanceChips value={appearance} onChange={setAppearance} />
             <Button
               testID="vehicle-submit"
               title={t('common.add')}
               loading={addVehicle.isPending}
               disabled={make.trim().length === 0 || model.trim().length === 0}
               onPress={() => void onAdd()}
+            />
+          </View>
+        </ScrollView>
+      </Sheet>
+
+      <Sheet
+        visible={editing != null}
+        onClose={() => setEditing(null)}
+        title={editing?.label ?? t('account.editVehicle')}
+      >
+        <ScrollView keyboardShouldPersistTaps="handled" className="max-h-[440px]">
+          <View className="gap-4">
+            <AppearanceChips value={editAppearance} onChange={setEditAppearance} />
+            <Button
+              testID="vehicle-appearance-save"
+              title={t('common.save')}
+              loading={updateAppearance.isPending}
+              onPress={() => void onSaveAppearance()}
             />
           </View>
         </ScrollView>

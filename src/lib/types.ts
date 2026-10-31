@@ -120,6 +120,10 @@ export interface Vehicle {
   make: string | null;
   model: string | null;
   year: string | null;
+  /** Color group (src/lib/vehicle-appearance.ts), null when not set. */
+  color?: string | null;
+  /** Body type (src/lib/vehicle-appearance.ts), null when not set. */
+  bodyType?: string | null;
   /** VIN (17 characters, uppercase). */
   vin?: string | null;
   /** EVCCID or MAC address of the EV charging controller (MAC as 12 hex digits). */

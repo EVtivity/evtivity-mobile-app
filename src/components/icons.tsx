@@ -57,6 +57,7 @@ import {
   Receipt as PReceipt,
   Eye as PEye,
   EyeSlash as PEyeSlash,
+  PencilSimple as PPencilSimple,
 } from 'phosphor-react-native';
 
 // App icon set, backed by Phosphor (SVG via react-native-svg). Components keep
@@ -131,3 +132,4 @@ export const ImageIcon = make(PImage);
 export const Receipt = make(PReceipt);
 export const Eye = make(PEye);
 export const EyeSlash = make(PEyeSlash);
+export const Pencil = make(PPencilSimple);

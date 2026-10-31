@@ -418,7 +418,9 @@
     "avatarValues": {
       "none": "Default",
       "horizontal": "Mirrored"
-    }
+    },
+    "editVehicle": "Edit Vehicle",
+    "vehicleSaved": "Vehicle saved"
   },
   "payments": {
     "title": "Payment",
@@ -754,7 +756,29 @@
     "newVehicle": "New Vehicle",
     "makeModelRequired": "Enter the make and model.",
     "lastSeen": "Last Seen",
-    "lastSeenValue": "{{station}}, {{time}}"
+    "lastSeenValue": "{{station}}, {{time}}",
+    "color": "Color",
+    "bodyType": "Body Type",
+    "notSet": "Not Set",
+    "colors": {
+      "white": "White",
+      "black": "Black",
+      "silver": "Silver",
+      "grey": "Grey",
+      "blue": "Blue",
+      "red": "Red",
+      "green": "Green",
+      "brown_beige": "Brown or Beige",
+      "yellow_orange": "Yellow or Orange",
+      "other": "Other"
+    },
+    "bodyTypes": {
+      "sedan": "Sedan",
+      "hatchback": "Hatchback",
+      "suv": "SUV",
+      "pickup_truck": "Pickup Truck",
+      "van": "Van"
+    }
   },
   "fieldErrors": {
     "required": "This field is required.",
