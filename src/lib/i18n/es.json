@@ -318,7 +318,7 @@
     "addVehicle": "Agregar vehículo",
     "addRfid": "Agregar tarjeta RFID",
     "rfidAdded": "Tarjeta RFID agregada",
-    "renameRfid": "Cambiar nombre de la tarjeta RFID",
+    "renameRfid": "Renombrar tarjeta RFID",
     "rfidLabel": "Etiqueta",
     "rfidLabelHint": "Un nombre que le ayuda a distinguir sus tarjetas RFID. Déjelo vacío para mostrar el número de tarjeta.",
     "rfidRenamed": "Tarjeta RFID renombrada",
