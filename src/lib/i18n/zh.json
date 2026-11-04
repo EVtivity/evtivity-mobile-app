@@ -123,7 +123,7 @@
   },
   "charge": {
     "title": "充电",
-    "searchPlaceholder": "按充电站或地址搜索",
+    "searchPlaceholder": "按充电桩或地址搜索",
     "scanQr": "扫描二维码",
     "scan": {
       "permissionTitle": "需要相机权限",
@@ -146,8 +146,8 @@
     "stopTimeout": "停止操作耗时超出预期，请检查会话后重试。",
     "checkStatus": "正在检查连接器...",
     "evNotDetectedTitle": "未检测到车辆",
-    "evNotDetectedDescription": "充电站未检测到此端口连接了车辆。请插好充电枪后重试。",
-    "simulatorPlugInHint": "模拟器：打开 CSMS 控制台，进入该充电站的“模拟”标签页，在开始充电前点击“插枪”。",
+    "evNotDetectedDescription": "充电桩未检测到此端口连接了车辆。请插好充电枪后重试。",
+    "simulatorPlugInHint": "模拟器：打开 CSMS 控制台，进入该充电桩的“模拟”标签页，在开始充电前点击“插枪”。",
     "statusCheckFailed": "无法检查连接器状态，请重试。",
     "addFavorite": "添加到收藏",
     "removeFavorite": "从收藏中移除",
@@ -157,10 +157,10 @@
     "available": "可用",
     "inUse": "使用中",
     "availableOfTotal": "{{total}} 个中 {{available}} 个可用",
-    "siteContact": "站点联系人",
+    "siteContact": "充电站联系人",
     "connectorPort": "端口 {{id}}",
     "reportIssue": "报告问题",
-    "maintenance": "该站点正在维护中。",
+    "maintenance": "该充电站正在维护中。",
     "activeSessionWarning": "您已有一个正在进行的充电会话，请先停止后再开始新会话。",
     "viewActiveSession": "查看进行中的会话",
     "live": {
@@ -216,8 +216,8 @@
       "totalCost": "总费用",
       "stopReason": "停止原因",
       "rfid": "RFID",
-      "station": "充电站",
-      "unknownStation": "未知充电站",
+      "station": "充电桩",
+      "unknownStation": "未知充电桩",
       "changeVehicle": "更换车辆",
       "selectVehicle": "选择车辆",
       "noVehicles": "添加车辆以估算您的里程。",
@@ -270,7 +270,7 @@
     "none": "暂无预约",
     "starts": "开始",
     "expires": "到期",
-    "station": "充电站",
+    "station": "充电桩",
     "online": "在线",
     "offline": "离线",
     "notFound": "未找到预约",
@@ -464,7 +464,7 @@
     "subject": "主题",
     "description": "描述",
     "category": "类别",
-    "station": "充电站",
+    "station": "充电桩",
     "message": "消息",
     "send": "发送",
     "reply": "回复",
@@ -507,14 +507,14 @@
             "sessions": "您过去 30 天内最近 10 次充电会话：时间、状态、电量、费用和支付状态",
             "tokens": "您的充电卡和 Token，仅显示后 4 位",
             "payments": "您过去 30 天的支付：类型、金额、状态和失败原因",
-            "stations": "您使用过的充电站：名称、站点、当前可用性和最近一次故障时间",
+            "stations": "您使用过的充电桩：名称、充电站、当前可用性和最近一次故障时间",
             "reservations": "您过去 30 天的预约：状态、时间、取消原因和费用"
           }
         }
       },
       "dataNotice": {
         "title": "AI 会收到什么",
-        "body": "AI 会读取您的请求，以及您作为驾驶员本人的充电会话、支付、预约和您使用过的充电站。密码等已存储的凭据绝不会发送。卡号和 IBAN 仅保留后 4 位。电子邮件地址和电话号码会被遮盖。充电卡和 Token 的 ID 仅保留后 4 位。"
+        "body": "AI 会读取您的请求，以及您作为驾驶员本人的充电会话、支付、预约和您使用过的充电桩。密码等已存储的凭据绝不会发送。卡号和 IBAN 仅保留后 4 位。电子邮件地址和电话号码会被遮盖。充电卡和 Token 的 ID 仅保留后 4 位。"
       },
       "analyzing": "正在分析您的问题",
       "answerTitle": "自动回答",
@@ -546,7 +546,7 @@
     "title": "收藏",
     "none": "暂无收藏",
     "removeTitle": "移除收藏？",
-    "removeMessage": "该充电站将从您的收藏中移除。",
+    "removeMessage": "该充电桩将从您的收藏中移除。",
     "removed": "已从收藏中移除"
   },
   "status": {
@@ -569,7 +569,7 @@
     "charging": "充电中",
     "preparing": "准备中",
     "suspended_ev": "已暂停（车辆）",
-    "suspended_evse": "已暂停（充电站）",
+    "suspended_evse": "已暂停（充电桩）",
     "finishing": "结束中",
     "idle": "空闲",
     "discharging": "放电中",
@@ -613,21 +613,21 @@
   "watch": {
     "notifyWhenFree": "空闲时通知我",
     "watching": "取消关注",
-    "added": "该充电站空闲时将通知您。",
+    "added": "该充电桩空闲时将通知您。",
     "removed": "已取消关注。",
-    "addFailed": "无法关注该充电站。",
+    "addFailed": "无法关注该充电桩。",
     "title": "关注",
-    "empty": "您还没有关注任何充电站。",
+    "empty": "您还没有关注任何充电桩。",
     "removeTitle": "取消关注",
-    "removeMessage": "该充电站空闲时，您将不再收到通知。"
+    "removeMessage": "该充电桩空闲时，您将不再收到通知。"
   },
   "errors": {
-    "STATION_OFFLINE": "充电站离线",
-    "STATION_NOT_FOUND": "未找到充电站",
+    "STATION_OFFLINE": "充电桩离线",
+    "STATION_NOT_FOUND": "未找到充电桩",
     "CONNECTOR_NOT_FOUND": "未找到连接器",
     "RATE_LIMITED": "请求过多。请稍候再试。",
-    "STATION_TIMEOUT": "充电站未响应",
-    "STATUS_CHECK_REJECTED": "充电站拒绝了状态检查",
+    "STATION_TIMEOUT": "充电桩未响应",
+    "STATUS_CHECK_REJECTED": "充电桩拒绝了状态检查",
     "STATUS_CHECK_TIMEOUT": "状态检查超时。请重新插入连接器后重试。",
     "PAYMENT_FAILED": "支付失败",
     "PAYMENT_PROVIDER_NOT_CONFIGURED": "支付提供商未配置",
@@ -650,10 +650,10 @@
     "MFA_ALREADY_ENABLED": "MFA 已启用。请先停用，再设置新的方法。",
     "ACCOUNT_DISABLED": "账户已禁用",
     "INVALID_PASSWORD": "当前密码不正确",
-    "SESSION_NO_VEHICLE_ID": "充电站未为此会话发送车辆标识。",
+    "SESSION_NO_VEHICLE_ID": "充电桩未为此会话发送车辆标识。",
     "VEHICLE_BLOCKED_BY_OPERATOR": "运营商已阻止此车辆使用 Autocharge。请联系运营商解除阻止。",
     "VEHICLE_ID_IN_USE": "另一辆车已将此 VIN 或 EVCCID 用于 Autocharge。",
-    "AUTOCHARGE_CLAIM_REQUIRED": "仅当车辆标识由充电站在您本人的某个会话中发送时，才能开启 Autocharge。请在记录中打开该会话，然后点按“将此车辆用于插枪即充”。",
+    "AUTOCHARGE_CLAIM_REQUIRED": "仅当车辆标识由充电桩在您本人的某个会话中发送时，才能开启 Autocharge。请在记录中打开该会话，然后点按“将此车辆用于插枪即充”。",
     "VEHICLE_ID_REQUIRED": "Autocharge 需要车辆的 VIN 或 EVCCID。",
     "UNAUTHORIZED": "未授权",
     "NOT_FOUND": "未找到",
@@ -687,7 +687,7 @@
   "ai": {
     "dataNotice": {
       "title": "AI 提供商收到的内容",
-      "body": "AI 提供商绝不会收到已存储的凭据，例如密码、API 密钥、机密信息和充电站密码。卡号和 IBAN 会截短为最后 4 个字符。支持草稿、自动洞察、后台任务和驾驶员支持还会遮盖电子邮件地址和电话号码，并对驾驶员的 Token ID 进行哈希或截短。助手仅为有权查看驾驶员联系方式的用户，按存储原样发送这些信息。您输入的文本和附加的文本文件会检查是否包含密钥和卡号。您附加的图片和 PDF 会按原样发送。"
+      "body": "AI 提供商绝不会收到已存储的凭据，例如密码、API 密钥、机密信息和充电桩密码。卡号和 IBAN 会截短为最后 4 个字符。支持草稿、自动洞察、后台任务和驾驶员支持还会遮盖电子邮件地址和电话号码，并对驾驶员的 Token ID 进行哈希或截短。助手仅为有权查看驾驶员联系方式的用户，按存储原样发送这些信息。您输入的文本和附加的文本文件会检查是否包含密钥和卡号。您附加的图片和 PDF 会按原样发送。"
     }
   },
   "invoices": {
@@ -744,7 +744,7 @@
       "EVCCID": "EVCCID",
       "MacAddress": "MAC 地址"
     },
-    "capturedFromCharger": "从充电站获取",
+    "capturedFromCharger": "从充电桩获取",
     "autocharge": "Autocharge",
     "autochargeFor": "{{vehicle}} 的 Autocharge",
     "autochargeHelp": "插枪即充：为此车辆插枪后，无需卡片或应用即可在您的账户上开始充电。每次都会收到通知。",
@@ -752,7 +752,7 @@
     "autochargeSaved": "已保存车辆用于插枪即充",
     "autochargeSaveFailed": "无法保存车辆。",
     "useForPlugIn": "将此车辆用于插枪即充",
-    "useForPlugInDescription": "充电站为此会话发送了 {{id}}。将其保存到您的车辆并开启 Autocharge，下次插枪时无需卡片或应用即可开始充电。",
+    "useForPlugInDescription": "充电桩为此会话发送了 {{id}}。将其保存到您的车辆并开启 Autocharge，下次插枪时无需卡片或应用即可开始充电。",
     "newVehicle": "新车辆",
     "makeModelRequired": "请输入品牌和型号。",
     "lastSeen": "最近识别",
