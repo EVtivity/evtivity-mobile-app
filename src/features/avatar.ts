@@ -3,6 +3,7 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, ApiError } from '@/lib/api';
+import { sendStorageUpload, type StorageUploadTicket } from '@/lib/storage-upload';
 import type { DriverAvatar, GeneratedAvatar } from '@/lib/avatar';
 
 // The driver's avatar (GET /v1/portal/driver/avatar). An image URL is valid for
@@ -55,15 +56,15 @@ export interface PickedImage {
   size: number;
 }
 
-interface UploadTicket {
-  uploadUrl: string;
-  fields: Record<string, string>;
+interface UploadTicket extends StorageUploadTicket {
   s3Key: string;
   s3Bucket: string;
 }
 
-// Uploads an image: an upload URL, the multipart POST of the policy fields and
-// the file to S3, then the confirm that crops it to a square and stores it.
+// Uploads an image: an upload URL, the file sent to storage as the reply says
+// (a multipart POST of the policy fields and the file, or on Cloudflare R2 a
+// PUT signed for its size), then the confirm that crops it to a square and
+// stores it.
 export function useUploadAvatar() {
   return useAvatarMutation(async (image: PickedImage) => {
     const ticket = await api.post<UploadTicket>('/v1/portal/driver/avatar/upload-url', {
@@ -71,18 +72,18 @@ export function useUploadAvatar() {
       contentType: image.mimeType,
       fileSize: image.size,
     });
-    const form = new FormData();
-    for (const [name, value] of Object.entries(ticket.fields)) form.append(name, value);
-    // React Native sends a { uri, name, type } part as the file.
-    form.append('file', { uri: image.uri, name: image.fileName, type: image.mimeType } as never);
     let uploaded: Response;
     try {
-      uploaded = await fetch(ticket.uploadUrl, { method: 'POST', body: form });
+      uploaded = await sendStorageUpload(ticket, {
+        uri: image.uri,
+        name: image.fileName,
+        type: image.mimeType,
+      });
     } catch {
       throw new ApiError(0, { error: 'Network request failed', code: 'NETWORK_ERROR' });
     }
     if (!uploaded.ok) {
-      // S3 refused the file against the policy (size or type).
+      // Storage refused the file against the policy or signature (size or type).
       throw new ApiError(400, { error: 'Upload refused', code: 'AI_ATTACHMENT_REJECTED' });
     }
     const reply = await api.post<AvatarReply>('/v1/portal/driver/avatar/image', {
