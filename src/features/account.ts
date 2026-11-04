@@ -330,6 +330,28 @@ export function useToggleRfidToken() {
   });
 }
 
+/** Renames a card: an empty label removes it, so the card number shows. */
+export function useRenameRfidToken() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: { id: string; label: string }) => {
+      const label = input.label.trim();
+      return api.patch<RfidToken>(`/v1/portal/tokens/${encodeURIComponent(input.id)}`, {
+        label: label === '' ? null : label,
+      });
+    },
+    onSuccess: (updated) => {
+      qc.setQueryData<RfidToken[]>(
+        ['rfid-tokens'],
+        (old) => old?.map((t) => (t.id === updated.id ? updated : t)) ?? old,
+      );
+    },
+    onError: () => {
+      void qc.invalidateQueries({ queryKey: ['rfid-tokens'] });
+    },
+  });
+}
+
 /** A reply of a change that ends every session and returns a new one for this device. */
 interface NewSessionReply {
   token?: string;

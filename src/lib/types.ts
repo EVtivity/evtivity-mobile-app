@@ -140,6 +140,8 @@ export interface RfidToken {
   id: string;
   idToken: string;
   tokenType: string;
+  /** Name the driver or the operator gave the card, null when none. */
+  label?: string | null;
   isActive: boolean;
   /** Expiry the operator set, null when the card does not expire. */
   expiresAt?: string | null;

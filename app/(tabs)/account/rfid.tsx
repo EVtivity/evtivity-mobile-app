@@ -23,7 +23,12 @@ import {
 } from '@/components/ui';
 import { hsl } from '@/lib/theme';
 import { ApiError } from '@/lib/api';
-import { useRfidTokens, useAddRfidToken, useToggleRfidToken } from '@/features/account';
+import {
+  useRfidTokens,
+  useAddRfidToken,
+  useToggleRfidToken,
+  useRenameRfidToken,
+} from '@/features/account';
 import { rfidTokenStatus } from '@/lib/rfid-tokens';
 
 function maskToken(value: string): string {
@@ -44,6 +49,10 @@ export default function RfidScreen(): React.JSX.Element {
   const tokens = useRfidTokens();
   const addToken = useAddRfidToken();
   const toggleToken = useToggleRfidToken();
+  const renameToken = useRenameRfidToken();
+
+  // The card being renamed and the label typed for it.
+  const [renaming, setRenaming] = React.useState<{ id: string; label: string } | null>(null);
 
   const [open, setOpen] = React.useState(false);
   const [idToken, setIdToken] = React.useState('');
@@ -72,6 +81,17 @@ export default function RfidScreen(): React.JSX.Element {
         toast.show(t('account.rfidVehicleIdInUse'), 'error');
         return;
       }
+      showApiError(err);
+    }
+  };
+
+  const onRename = async (): Promise<void> => {
+    if (renaming == null) return;
+    try {
+      await renameToken.mutateAsync(renaming);
+      setRenaming(null);
+      toast.show(t('account.rfidRenamed'), 'success');
+    } catch (err) {
       showApiError(err);
     }
   };
@@ -139,25 +159,39 @@ export default function RfidScreen(): React.JSX.Element {
         <View className="gap-3">
           {items.map((tok) => {
             const status = rfidTokenStatus(tok);
+            const label = tok.label != null && tok.label !== '' ? tok.label : null;
             return (
               <ListItemCard
                 key={tok.id}
-                title={maskToken(tok.idToken)}
-                subtitle={tok.tokenType}
+                // A labelled card leads with its label, the masked number below it.
+                title={label ?? maskToken(tok.idToken)}
+                subtitle={
+                  label != null ? `${maskToken(tok.idToken)} · ${tok.tokenType}` : tok.tokenType
+                }
                 footer={
-                  status === 'blocked' || status === 'expired' ? (
-                    <Text
-                      testID={`rfid-status-${tok.idToken}`}
-                      variant="small"
-                      className="text-destructive"
-                    >
-                      {t(
-                        status === 'blocked'
-                          ? 'account.rfidBlockedByOperator'
-                          : 'account.rfidExpired',
-                      )}
-                    </Text>
-                  ) : null
+                  <View className="items-start gap-1">
+                    {status === 'blocked' || status === 'expired' ? (
+                      <Text
+                        testID={`rfid-status-${tok.idToken}`}
+                        variant="small"
+                        className="text-destructive"
+                      >
+                        {t(
+                          status === 'blocked'
+                            ? 'account.rfidBlockedByOperator'
+                            : 'account.rfidExpired',
+                        )}
+                      </Text>
+                    ) : null}
+                    {/* A rename changes no status, so a blocked card can be renamed too. */}
+                    <Button
+                      testID={`rfid-rename-${tok.idToken}`}
+                      title={t('account.renameRfid')}
+                      variant="ghost"
+                      size="sm"
+                      onPress={() => setRenaming({ id: tok.id, label: label ?? '' })}
+                    />
+                  </View>
                 }
                 right={
                   // Only the operator can reactivate a card the operator
@@ -199,6 +233,27 @@ export default function RfidScreen(): React.JSX.Element {
           loading={addToken.isPending}
           disabled={idToken.trim().length < 4}
           onPress={() => void onAdd()}
+        />
+      </Sheet>
+
+      <Sheet
+        visible={renaming != null}
+        onClose={() => setRenaming(null)}
+        title={t('account.renameRfid')}
+      >
+        <Field
+          testID="rfid-label-input"
+          label={t('account.rfidLabel')}
+          helper={t('account.rfidLabelHint')}
+          value={renaming?.label ?? ''}
+          onChangeText={(v) => setRenaming((r) => (r == null ? r : { ...r, label: v }))}
+          maxLength={100}
+        />
+        <Button
+          testID="rfid-label-submit"
+          title={t('common.save')}
+          loading={renameToken.isPending}
+          onPress={() => void onRename()}
         />
       </Sheet>
     </Screen>
