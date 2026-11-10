@@ -174,7 +174,8 @@ it('keeps every control when the server does not send the flag', async () => {
   mockGets([card], {});
   const { screen } = await renderScreen();
   expect(await screen.findByTestId('rfid-add')).toBeTruthy();
-  expect(screen.getByTestId('rfid-rename-ABCD1234')).toBeTruthy();
+  // The add button shows before the card list has loaded: wait for the card.
+  expect(await screen.findByTestId('rfid-rename-ABCD1234')).toBeTruthy();
   expect(screen.getByTestId('rfid-switch-ABCD1234')).toBeTruthy();
   expect(screen.queryByTestId('rfid-managed-by-operator')).toBeNull();
 });
