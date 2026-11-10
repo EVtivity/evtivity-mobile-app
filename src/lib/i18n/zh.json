@@ -424,7 +424,10 @@
       "horizontal": "镜像"
     },
     "editVehicle": "编辑车辆",
-    "vehicleSaved": "车辆已保存"
+    "vehicleSaved": "车辆已保存",
+    "rfidManagedByOperator": "您的 RFID 卡由运营商管理。如需添加、更改或移除卡片，或停用丢失的卡，请联系运营商。",
+    "noRfidAssigned": "您没有分配的 RFID 卡",
+    "rfidInactive": "已停用"
   },
   "payments": {
     "title": "支付",
@@ -662,7 +665,8 @@
     "UNAUTHORIZED": "未授权",
     "NOT_FOUND": "未找到",
     "PAYLOAD_TOO_LARGE": "请求过大",
-    "UNSUPPORTED_MEDIA_TYPE": "不支持的内容类型"
+    "UNSUPPORTED_MEDIA_TYPE": "不支持的内容类型",
+    "RFID_SELF_SERVICE_DISABLED": "您的 RFID 卡由运营商管理。如需添加、更改、停用或移除卡片，请联系运营商。"
   },
   "fleetBilling": {
     "billedTo": "记账到 {{fleet}}",

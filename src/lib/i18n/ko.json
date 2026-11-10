@@ -424,7 +424,10 @@
       "horizontal": "좌우 반전"
     },
     "editVehicle": "차량 편집",
-    "vehicleSaved": "차량을 저장했습니다"
+    "vehicleSaved": "차량을 저장했습니다",
+    "rfidManagedByOperator": "운영자가 RFID 카드를 관리합니다. 카드를 추가, 변경, 삭제하거나 분실한 카드를 차단하려면 운영자에게 문의하세요.",
+    "noRfidAssigned": "할당된 RFID 카드가 없습니다",
+    "rfidInactive": "비활성"
   },
   "payments": {
     "title": "결제",
@@ -662,7 +665,8 @@
     "UNAUTHORIZED": "인증되지 않았습니다",
     "NOT_FOUND": "찾을 수 없습니다",
     "PAYLOAD_TOO_LARGE": "요청이 너무 큽니다",
-    "UNSUPPORTED_MEDIA_TYPE": "지원되지 않는 콘텐츠 유형입니다"
+    "UNSUPPORTED_MEDIA_TYPE": "지원되지 않는 콘텐츠 유형입니다",
+    "RFID_SELF_SERVICE_DISABLED": "운영자가 RFID 카드를 관리합니다. 카드를 추가, 변경, 비활성화 또는 삭제하려면 운영자에게 문의하세요."
   },
   "fleetBilling": {
     "billedTo": "{{fleet}}(으)로 청구",

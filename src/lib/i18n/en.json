@@ -424,7 +424,10 @@
       "horizontal": "Mirrored"
     },
     "editVehicle": "Edit Vehicle",
-    "vehicleSaved": "Vehicle saved"
+    "vehicleSaved": "Vehicle saved",
+    "rfidManagedByOperator": "Your operator manages your RFID cards. To add, change or remove a card, or to block a lost one, contact the operator.",
+    "noRfidAssigned": "No RFID cards are assigned to you",
+    "rfidInactive": "Inactive"
   },
   "payments": {
     "title": "Payment",
@@ -662,7 +665,8 @@
     "UNAUTHORIZED": "Unauthorized",
     "NOT_FOUND": "Not found",
     "PAYLOAD_TOO_LARGE": "The request is too large",
-    "UNSUPPORTED_MEDIA_TYPE": "Unsupported content type"
+    "UNSUPPORTED_MEDIA_TYPE": "Unsupported content type",
+    "RFID_SELF_SERVICE_DISABLED": "Your operator manages your RFID cards. Contact the operator to add, change, deactivate or remove a card."
   },
   "fleetBilling": {
     "billedTo": "Billed to {{fleet}}",

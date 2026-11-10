@@ -424,7 +424,10 @@
       "horizontal": "Reflejada"
     },
     "editVehicle": "Editar Vehículo",
-    "vehicleSaved": "Vehículo guardado"
+    "vehicleSaved": "Vehículo guardado",
+    "rfidManagedByOperator": "Su operador gestiona sus tarjetas RFID. Para añadir, cambiar o eliminar una tarjeta, o para bloquear una tarjeta perdida, contacte al operador.",
+    "noRfidAssigned": "No tiene tarjetas RFID asignadas",
+    "rfidInactive": "Inactiva"
   },
   "payments": {
     "title": "Pago",
@@ -662,7 +665,8 @@
     "UNAUTHORIZED": "No autorizado",
     "NOT_FOUND": "No encontrado",
     "PAYLOAD_TOO_LARGE": "La solicitud es demasiado grande",
-    "UNSUPPORTED_MEDIA_TYPE": "Tipo de contenido no admitido"
+    "UNSUPPORTED_MEDIA_TYPE": "Tipo de contenido no admitido",
+    "RFID_SELF_SERVICE_DISABLED": "Su operador gestiona sus tarjetas RFID. Contacte al operador para añadir, cambiar, desactivar o eliminar una tarjeta."
   },
   "fleetBilling": {
     "billedTo": "Facturado a {{fleet}}",

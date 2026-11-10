@@ -50,6 +50,10 @@ export interface Features {
   // File storage is configured, so drivers can upload an avatar image (absent
   // on older servers). The avatar generator works either way.
   avatarUploadEnabled?: boolean;
+  // Drivers manage their own RFID cards (absent on older servers, read as
+  // on). False: the operator manages them and the API refuses every driver
+  // change with 403 RFID_SELF_SERVICE_DISABLED.
+  rfidSelfServiceEnabled?: boolean;
 }
 
 // Operator feature toggles from the CSMS. Gates the Reserve tab and other

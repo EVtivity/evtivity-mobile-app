@@ -1,6 +1,10 @@
 # RFID screen: assert the list screen and that the Add control is tappable. The
 # add form lives in a Sheet (RN Modal) whose content Maestro cannot see, so the
 # in-sheet fields are a documented gap; tapping Add is exercised last.
+# Needs RFID self-service on (portal.rfidSelfServiceEnabled, the default): while
+# the operator manages the cards the screen is read-only, shows no Add control,
+# and this flow fails at the Add assertion. Maestro cannot set the setting; the
+# read-only screen is covered by src/features/__tests__/rfid-read-only.test.tsx.
 appId: com.evtivity.driver
 name: 13 - Account RFID
 tags:

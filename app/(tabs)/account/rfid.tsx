@@ -4,6 +4,7 @@
 import React from 'react';
 import { View, Switch } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { useQueryClient } from '@tanstack/react-query';
 import { usePreventScreenCapture } from 'expo-screen-capture';
 import { Lock, Nfc } from '@/components/icons';
 import {
@@ -29,7 +30,13 @@ import {
   useToggleRfidToken,
   useRenameRfidToken,
 } from '@/features/account';
+import { useFeatures } from '@/features/app-info';
 import { rfidTokenStatus } from '@/lib/rfid-tokens';
+
+/** The API refused a change because the operator manages the cards. */
+function isSelfServiceRefusal(err: unknown): boolean {
+  return err instanceof ApiError && err.code === 'RFID_SELF_SERVICE_DISABLED';
+}
 
 function maskToken(value: string): string {
   if (value.length <= 4) return value;
@@ -50,6 +57,10 @@ export default function RfidScreen(): React.JSX.Element {
   const addToken = useAddRfidToken();
   const toggleToken = useToggleRfidToken();
   const renameToken = useRenameRfidToken();
+  const queryClient = useQueryClient();
+  const features = useFeatures();
+  // Missing or still loading reads as on: an older server never refuses.
+  const selfService = features.data?.rfidSelfServiceEnabled !== false;
 
   // The card being renamed and the label typed for it.
   const [renaming, setRenaming] = React.useState<{ id: string; label: string } | null>(null);
@@ -59,6 +70,17 @@ export default function RfidScreen(): React.JSX.Element {
   // Per-token optimistic active state so the controlled Switch reflects the
   // user's toggle immediately instead of fighting the round-trip value.
   const [pendingActive, setPendingActive] = React.useState<Record<string, boolean>>({});
+
+  /** A screen opened before the operator turned self-service off: reload the flag. */
+  const onRefused = React.useCallback(
+    (err: unknown): void => {
+      if (!isSelfServiceRefusal(err)) return;
+      void queryClient.invalidateQueries({ queryKey: ['features'] });
+      setOpen(false);
+      setRenaming(null);
+    },
+    [queryClient],
+  );
 
   const clearPending = React.useCallback((id: string) => {
     setPendingActive((m) => {
@@ -82,6 +104,7 @@ export default function RfidScreen(): React.JSX.Element {
         return;
       }
       showApiError(err);
+      onRefused(err);
     }
   };
 
@@ -93,6 +116,7 @@ export default function RfidScreen(): React.JSX.Element {
       toast.show(t('account.rfidRenamed'), 'success');
     } catch (err) {
       showApiError(err);
+      onRefused(err);
     }
   };
 
@@ -116,12 +140,13 @@ export default function RfidScreen(): React.JSX.Element {
           onError: (err) => {
             clearPending(id);
             showApiError(err);
+            onRefused(err);
           },
           onSuccess: () => clearPending(id),
         },
       );
     },
-    [confirm, toggleToken, showApiError, t, clearPending],
+    [confirm, toggleToken, showApiError, t, clearPending, onRefused],
   );
 
   const onToggle = React.useCallback(
@@ -146,14 +171,21 @@ export default function RfidScreen(): React.JSX.Element {
         {t('account.rfid')}
       </Text>
 
-      <AddButton testID="rfid-add" title={t('account.addRfid')} onPress={() => setOpen(true)} />
+      {selfService ? (
+        <AddButton testID="rfid-add" title={t('account.addRfid')} onPress={() => setOpen(true)} />
+      ) : (
+        // Strictly read-only: the operator adds, changes, blocks and removes cards.
+        <Text testID="rfid-managed-by-operator" variant="muted" className="mb-4">
+          {t('account.rfidManagedByOperator')}
+        </Text>
+      )}
 
       {tokens.isLoading ? (
         <Spinner />
       ) : items.length === 0 ? (
         <EmptyState
           icon={<Nfc size={40} color={hsl('mutedForeground')} />}
-          title={t('account.noRfid')}
+          title={selfService ? t('account.noRfid') : t('account.noRfidAssigned')}
         />
       ) : (
         <View className="gap-3">
@@ -182,15 +214,25 @@ export default function RfidScreen(): React.JSX.Element {
                             : 'account.rfidExpired',
                         )}
                       </Text>
+                    ) : !selfService && status === 'inactive' ? (
+                      <Text
+                        testID={`rfid-status-${tok.idToken}`}
+                        variant="small"
+                        className="text-muted-foreground"
+                      >
+                        {t('account.rfidInactive')}
+                      </Text>
                     ) : null}
                     {/* A rename changes no status, so a blocked card can be renamed too. */}
-                    <Button
-                      testID={`rfid-rename-${tok.idToken}`}
-                      title={t('account.renameRfid')}
-                      variant="ghost"
-                      size="sm"
-                      onPress={() => setRenaming({ id: tok.id, label: label ?? '' })}
-                    />
+                    {selfService ? (
+                      <Button
+                        testID={`rfid-rename-${tok.idToken}`}
+                        title={t('account.renameRfid')}
+                        variant="ghost"
+                        size="sm"
+                        onPress={() => setRenaming({ id: tok.id, label: label ?? '' })}
+                      />
+                    ) : null}
                   </View>
                 }
                 right={
@@ -203,7 +245,7 @@ export default function RfidScreen(): React.JSX.Element {
                     >
                       <Lock size={20} color={hsl('mutedForeground')} />
                     </View>
-                  ) : (
+                  ) : !selfService ? undefined : (
                     <Switch
                       testID={`rfid-switch-${tok.idToken}`}
                       value={pendingActive[tok.id] ?? tok.isActive}
@@ -218,7 +260,11 @@ export default function RfidScreen(): React.JSX.Element {
         </View>
       )}
 
-      <Sheet visible={open} onClose={() => setOpen(false)} title={t('account.addRfid')}>
+      <Sheet
+        visible={selfService && open}
+        onClose={() => setOpen(false)}
+        title={t('account.addRfid')}
+      >
         <Field
           testID="rfid-card-input"
           label={t('account.cardNumber')}
@@ -237,7 +283,7 @@ export default function RfidScreen(): React.JSX.Element {
       </Sheet>
 
       <Sheet
-        visible={renaming != null}
+        visible={selfService && renaming != null}
         onClose={() => setRenaming(null)}
         title={t('account.renameRfid')}
       >

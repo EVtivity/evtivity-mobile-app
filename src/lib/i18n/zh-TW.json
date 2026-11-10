@@ -424,7 +424,10 @@
       "horizontal": "鏡像"
     },
     "editVehicle": "編輯車輛",
-    "vehicleSaved": "車輛已儲存"
+    "vehicleSaved": "車輛已儲存",
+    "rfidManagedByOperator": "您的 RFID 卡由營運商管理。如需新增、變更或移除卡片，或停用遺失的卡，請聯絡營運商。",
+    "noRfidAssigned": "您沒有分配的 RFID 卡",
+    "rfidInactive": "已停用"
   },
   "payments": {
     "title": "付款",
@@ -662,7 +665,8 @@
     "UNAUTHORIZED": "未授權",
     "NOT_FOUND": "找不到",
     "PAYLOAD_TOO_LARGE": "請求過大",
-    "UNSUPPORTED_MEDIA_TYPE": "不支援的內容類型"
+    "UNSUPPORTED_MEDIA_TYPE": "不支援的內容類型",
+    "RFID_SELF_SERVICE_DISABLED": "您的 RFID 卡由營運商管理。如需新增、變更、停用或移除卡片，請聯絡營運商。"
   },
   "fleetBilling": {
     "billedTo": "記帳到 {{fleet}}",
