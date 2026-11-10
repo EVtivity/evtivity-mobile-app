@@ -12,6 +12,13 @@ import type { Driver, Vehicle, RfidToken } from '@/lib/types';
 import type { DriverBilling } from '@/lib/fleet-billing';
 import type { PortalInvoice, PortalInvoiceDetail } from '@/lib/invoices';
 import type { DriverBillingAddress } from '@/lib/billing-address';
+import {
+  applyPrefsUpdate,
+  type NotificationPrefs,
+  type NotificationPrefsUpdate,
+} from '@/lib/notification-prefs';
+
+export type { NotificationPrefs, NotificationPrefsUpdate } from '@/lib/notification-prefs';
 
 /** The fields of GET /v1/portal/auth/me this app reads beyond the login driver. */
 interface DriverMe {
@@ -90,12 +97,6 @@ export function useInvoice(id: string | undefined) {
   });
 }
 
-export interface NotificationPrefs {
-  emailEnabled: boolean;
-  smsEnabled: boolean;
-  pushEnabled?: boolean;
-}
-
 export interface MfaStatus extends MfaFactorState {
   mfaMethod: string | null;
   availableMethods: string[];
@@ -171,7 +172,8 @@ export function useNotificationPrefs() {
 export function useUpdateNotificationPrefs() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (input: NotificationPrefs) =>
+    // Only the changed cells, or a channel switch from the All control.
+    mutationFn: (input: NotificationPrefsUpdate) =>
       api.put<NotificationPrefs>('/v1/portal/driver/notification-preferences', input),
     // Apply the toggle optimistically so the Switch moves on tap instead of
     // waiting for the round-trip, then reconcile with the server's response (or
@@ -179,7 +181,8 @@ export function useUpdateNotificationPrefs() {
     onMutate: async (input) => {
       await qc.cancelQueries({ queryKey: ['notification-prefs'] });
       const previous = qc.getQueryData<NotificationPrefs>(['notification-prefs']);
-      qc.setQueryData(['notification-prefs'], input);
+      if (previous != null)
+        qc.setQueryData(['notification-prefs'], applyPrefsUpdate(previous, input));
       return { previous };
     },
     onError: (_err, _input, context) => {
