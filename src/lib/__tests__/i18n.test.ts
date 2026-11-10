@@ -21,6 +21,7 @@ import i18n, {
   setAppLanguage,
   bootstrapLanguage,
   applyDriverLanguage,
+  currentAppLanguage,
 } from '@/lib/i18n';
 
 const store = AsyncStorage as unknown as { getItem: jest.Mock; setItem: jest.Mock };
@@ -69,6 +70,19 @@ describe('setAppLanguage', () => {
     store.setItem.mockRejectedValue(new Error('disk full'));
     await expect(setAppLanguage('de')).resolves.toBeUndefined();
     expect(i18n.language).toBe('de');
+  });
+});
+
+describe('currentAppLanguage', () => {
+  it('answers the language the app shows', async () => {
+    expect(currentAppLanguage()).toBe('en');
+    await setAppLanguage('de');
+    expect(currentAppLanguage()).toBe('de');
+  });
+
+  it('answers the default language for one the API does not offer', async () => {
+    await i18n.changeLanguage('fr');
+    expect(currentAppLanguage()).toBe('en');
   });
 });
 

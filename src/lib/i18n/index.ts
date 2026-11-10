@@ -95,6 +95,12 @@ export async function bootstrapLanguage(): Promise<void> {
   }
 }
 
+// The app language now, sent with a registration so the new account starts in
+// it (the server uses the company default only when none is sent).
+export function currentAppLanguage(): LanguageCode {
+  return isSupported(i18n.language) ? i18n.language : DEFAULT_LANGUAGE;
+}
+
 // Adopt the server-side driver preference, but only when the user has not made
 // an explicit local choice (a stored value always wins).
 export async function applyDriverLanguage(code: string | null | undefined): Promise<void> {

@@ -48,6 +48,8 @@ interface AuthState {
     lastName: string;
     email: string;
     password: string;
+    /** The app language the visitor registers in (the new account's language). */
+    language?: string;
   }) => Promise<void>;
   verifyMfa: (mfaToken: string, code: string, challengeId?: number) => Promise<void>;
   logout: () => Promise<void>;

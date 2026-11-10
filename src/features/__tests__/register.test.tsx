@@ -14,6 +14,9 @@ jest.mock('@/lib/api', () => {
   return { ...actual, api: { get: (...args: unknown[]) => mockGet(...args) } };
 });
 
+// The language the app shows when the visitor registers (lib/i18n, its own tests).
+let mockAppLanguage = 'en';
+jest.mock('@/lib/i18n', () => ({ currentAppLanguage: () => mockAppLanguage }));
 jest.mock('@/lib/auth', () => ({
   useAuth: (select: (s: { register: typeof mockRegister }) => unknown) =>
     select({ register: mockRegister }),
@@ -125,6 +128,7 @@ it('asks the driver to check the inbox, then goes back to sign in', async () => 
     lastName: 'Doe',
     email: 'jane@example.com',
     password: 'Str0ng-Passw0rd!',
+    language: 'en',
   });
   expect(
     screen.getByText(
@@ -133,6 +137,19 @@ it('asks the driver to check the inbox, then goes back to sign in', async () => 
   ).toBeTruthy();
   await fireEvent.press(screen.getByTestId('register-back-to-login'));
   expect(mockReplace).toHaveBeenCalledWith('/(auth)/login');
+});
+
+it('sends the language the app shows', async () => {
+  mockAppLanguage = 'ko';
+  mockRegister.mockResolvedValue(undefined);
+  try {
+    await fillAndSubmit();
+    await waitFor(() =>
+      expect(mockRegister).toHaveBeenCalledWith(expect.objectContaining({ language: 'ko' })),
+    );
+  } finally {
+    mockAppLanguage = 'en';
+  }
 });
 
 it('keeps the form and shows a refused registration', async () => {

@@ -10,6 +10,7 @@ import { AuthHeader } from '@/components/AuthHeader';
 import { AuthFooter } from '@/components/AuthFooter';
 import { PasswordRules } from '@/components/PasswordRules';
 import { useAuth } from '@/lib/auth';
+import { currentAppLanguage } from '@/lib/i18n';
 import { ApiError, getApiErrorFieldDetails, apiErrorMessage } from '@/lib/api';
 import { validateEmail, validatePassword } from '@/lib/validation';
 import { usePasswordPolicy, useWeakPasswordReply } from '@/features/password-policy';
@@ -56,6 +57,7 @@ export default function RegisterScreen(): React.JSX.Element {
         lastName: lastName.trim(),
         email: trimmedEmail,
         password,
+        language: currentAppLanguage(),
       });
       setSubmittedEmail(trimmedEmail);
     } catch (err) {
