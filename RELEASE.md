@@ -122,6 +122,12 @@ compares with the previous tag of any kind (semver order:
 
 Only `github-release` gets `contents: write`. Every other job reads.
 
+`build.yml` restores the Gradle (`gradle/actions/setup-gradle`, open source cache
+provider) and CocoaPods caches. A tag run can read only the caches of its own
+tag and of `main`, so `build.yml` also runs on every push to `main` and every 5
+days (GitHub drops a cache nobody read for 7 days), and only those `main` runs
+save the caches.
+
 The attached APK is a test build. It is not signed for store upload.
 
 ## Release notes: breaking changes first
