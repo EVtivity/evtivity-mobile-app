@@ -83,6 +83,13 @@ describe('currentAppLanguage', () => {
   it('answers the default language for one the API does not offer', async () => {
     await i18n.changeLanguage('fr');
     expect(currentAppLanguage()).toBe('en');
+    const shown = i18n.language;
+    (i18n as { language: string }).language = 'fr';
+    try {
+      expect(currentAppLanguage()).toBe('en');
+    } finally {
+      (i18n as { language: string }).language = shown;
+    }
   });
 });
 

@@ -59,4 +59,29 @@ describe('sendStorageUpload', () => {
       expect(form.get('policy')).toBe('p');
     },
   );
+
+  it('PUTs with no headers when the reply lists none', async () => {
+    const fetchImpl = fakeFetch(new Blob(['x']));
+    await sendStorageUpload(
+      { uploadUrl: 'https://r2.example/k', uploadMethod: 'PUT', fields: {} },
+      FILE,
+      fetchImpl as unknown as typeof fetch,
+    );
+    expect(fetchImpl.mock.calls[1]?.[1]?.headers).toEqual({});
+  });
+
+  it('uses the global fetch when none is given', async () => {
+    const original = global.fetch;
+    const fetchImpl = fakeFetch(new Blob());
+    global.fetch = fetchImpl as unknown as typeof fetch;
+    try {
+      await sendStorageUpload({ uploadUrl: 'https://s3.example/bucket', fields: {} }, FILE);
+      expect(fetchImpl).toHaveBeenCalledWith(
+        'https://s3.example/bucket',
+        expect.objectContaining({ method: 'POST' }),
+      );
+    } finally {
+      global.fetch = original;
+    }
+  });
 });

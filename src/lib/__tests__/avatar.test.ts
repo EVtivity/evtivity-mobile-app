@@ -1,6 +1,8 @@
 // Copyright (c) 2024-2026 EVtivity. All rights reserved.
 // SPDX-License-Identifier: BUSL-1.1
 
+import { Avatar } from '@dicebear/core';
+
 import {
   AVATAR_MAX_BYTES,
   AVATAR_NONE_VALUE,
@@ -85,6 +87,10 @@ describe('allow-list (I3)', () => {
       { ...valid, style: 'bottts' },
       { ...valid, seed: '<script>' },
       { ...valid, extra: 1 },
+      { ...valid, options: null },
+      { ...valid, options: [] },
+      { ...valid, options: 'x' },
+      { ...valid, options: { topVariant: 5 } },
       { ...valid, options: { size: 9 } },
       { ...valid, options: { topVariant: 'nope' } },
       { ...valid, options: { skinColor: '#614335' } },
@@ -233,5 +239,24 @@ describe('None in the variant chips', () => {
     );
     expect(picks).toContain(AVATAR_NONE_VALUE);
     expect(picks.some((p) => p !== AVATAR_NONE_VALUE)).toBe(true);
+  });
+});
+
+describe('checkedGeneratedAvatarSvg render failure', () => {
+  it('answers null when an allow-listed avatar does not render', () => {
+    const spy = jest.spyOn(Avatar.prototype, 'toString').mockImplementation(() => {
+      throw new Error('render failed');
+    });
+    try {
+      expect(
+        checkedGeneratedAvatarSvg({
+          style: 'avataaars',
+          seed: 'abc',
+          options: { topVariant: 'bob' },
+        }),
+      ).toBeNull();
+    } finally {
+      spy.mockRestore();
+    }
   });
 });
