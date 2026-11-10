@@ -12,10 +12,18 @@
 #   - workflow_dispatch: run on demand, choose the brand.
 #   - workflow_call: the tag workflow (tag.yml) builds a pushed v* tag after it
 #     validates the tag and the tests pass, then attaches the APK to the release.
+#   - push to main and every 5 days: keeps the Gradle and CocoaPods caches warm.
+#     A run can read only the caches of its own ref and of the default branch,
+#     so the tag runs read what the main runs saved, and GitHub drops a cache
+#     nobody read for 7 days. Only main runs save the caches.
 
 name: build
 
 on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '17 4 */5 * *'
   workflow_dispatch:
     inputs:
       brand:
@@ -57,6 +65,14 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
+
+      # Gradle User Home (dependencies, wrapper, build cache) through the open
+      # source Actions cache provider. Read on every run, written on main only
+      # (the action's default for cache-read-only).
+      - name: Setup Gradle cache
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-provider: basic
 
       - name: Install dependencies
         run: npm ci
@@ -113,10 +129,31 @@ jobs:
       - name: Prebuild iOS
         run: npx expo prebuild --platform ios --no-install
 
+      # The pod sources and specs pod install downloads (about 5 minutes cold).
+      - name: Restore the CocoaPods cache
+        id: pods-cache
+        uses: actions/cache/restore@v6
+        with:
+          path: |
+            ~/Library/Caches/CocoaPods
+            ~/.cocoapods/repos
+          key: cocoapods-${{ runner.os }}-xcode-26.6-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            cocoapods-${{ runner.os }}-xcode-26.6-
+
       # Creates the .xcworkspace the build step needs.
       - name: Install CocoaPods dependencies
         working-directory: ios
         run: pod install
+
+      - name: Save the CocoaPods cache
+        if: github.ref == 'refs/heads/main' && steps.pods-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v6
+        with:
+          path: |
+            ~/Library/Caches/CocoaPods
+            ~/.cocoapods/repos
+          key: cocoapods-${{ runner.os }}-xcode-26.6-${{ hashFiles('package-lock.json') }}
 
       # Unsigned archive: verifies the project compiles. A signed, uploadable
       # .ipa is produced separately via `eas build --local` with credentials.
