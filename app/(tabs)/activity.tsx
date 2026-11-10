@@ -114,7 +114,7 @@ export default function ActivityScreen(): React.JSX.Element {
         </View>
       );
     },
-    [router, list.length],
+    [router, list.length, surfaceVars],
   );
 
   // The header (filters, summary, trend, links) scrolls with the virtualized

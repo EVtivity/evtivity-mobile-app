@@ -149,7 +149,7 @@ jest.mock('@/components/ui', () => {
 
 import React from 'react';
 
-import i18next from 'i18next';
+import i18next, { changeLanguage } from 'i18next';
 import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
 import deCatalogue from '@/lib/i18n/de.json';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -390,7 +390,7 @@ describe('Personal Info screen', () => {
 
   it('shows a refused save in the app language, not the server sentence (German)', async () => {
     await i18next.addResourceBundle('de', 'translation', deCatalogue, true, true);
-    await i18next.changeLanguage('de');
+    await changeLanguage('de');
     try {
       mockPatch.mockRejectedValue(
         new ApiError(400, {
@@ -403,13 +403,13 @@ describe('Personal Info screen', () => {
       await fireEvent.press(screen.getByText('Speichern'));
       await waitFor(() => expect(mockToast).toHaveBeenCalledWith('Validierungsfehler', 'error'));
     } finally {
-      await i18next.changeLanguage('en');
+      await changeLanguage('en');
     }
   });
 
   it('shows the server field errors under the fields in the app language (German)', async () => {
     await i18next.addResourceBundle('de', 'translation', deCatalogue, true, true);
-    await i18next.changeLanguage('de');
+    await changeLanguage('de');
     try {
       mockPatch.mockRejectedValue(
         new ApiError(400, {
@@ -428,7 +428,7 @@ describe('Personal Info screen', () => {
       expect(screen.queryByTestId('personal-timezone-error')).toBeNull();
       expect(mockToast).toHaveBeenCalledWith('Prüfe die markierten Felder.', 'error');
     } finally {
-      await i18next.changeLanguage('en');
+      await changeLanguage('en');
     }
   });
 });
