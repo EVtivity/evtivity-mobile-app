@@ -64,7 +64,7 @@ export function AppHeader(): React.JSX.Element {
               <Text
                 weight="bold"
                 tabular
-                className="text-[11px] text-white"
+                className="text-[11px] text-primary-foreground"
                 style={{ lineHeight: 14, textAlign: 'center', includeFontPadding: false }}
               >
                 {watchCount > 99 ? '99+' : watchCount}

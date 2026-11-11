@@ -16,13 +16,13 @@
   --card-foreground: 158 30% 11%;
   --elevated: 0 0% 100%;
   --primary: 142 71% 45%;
-  --primary-foreground: 0 0% 100%;
-  --cta: 142 72% 33%;
+  --primary-foreground: 150 80% 8%;
+  --cta: 142 72% 31%;
   --cta-foreground: 0 0% 100%;
   --accent: 142 72% 40%;
   --accent-foreground: 150 80% 8%;
   --muted: 160 20% 95.5%;
-  --muted-foreground: 156 10% 42%;
+  --muted-foreground: 156 10% 41%;
   --border: 156 18% 90%;
   --ring: 142 71% 45%;
   --success: 142 71% 41%;
@@ -44,8 +44,8 @@
   --card-foreground: 160 18% 96%;
   --elevated: 160 20% 14%;
   --primary: 142 68% 49%;
-  --primary-foreground: 0 0% 100%;
-  --cta: 142 64% 38%;
+  --primary-foreground: 150 85% 7%;
+  --cta: 142 64% 32%;
   --cta-foreground: 0 0% 100%;
   --accent: 142 66% 54%;
   --accent-foreground: 150 85% 7%;

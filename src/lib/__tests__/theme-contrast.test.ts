@@ -3,7 +3,8 @@
 
 // WCAG 2.2 contrast (relative luminance) of the text and background token pairs
 // of every theme, color scheme and registered brand. AA (4.5:1) for every pair,
-// AAA (7:1) for body text in High Contrast.
+// AAA (7:1) for body text in High Contrast. Every theme passes, Default
+// included, with no allowlist (owner decision 2026-11-11).
 
 import { brands } from '@brands/index';
 import type { BrandColors } from '@brands/index';
@@ -32,21 +33,6 @@ const AAA_BODY_PAIRS: Pair[] = [
   ['mutedForeground', 'card'],
 ];
 
-// Default stays as it was (owner decision D2): the shipped brand palette keeps
-// these pairs below AA. Soft and High Contrast pass every pair.
-const DEFAULT_ALLOWLIST = new Set<string>([
-  // Default stays as it was (owner decision D2).
-  'default:light:primaryForeground/primary',
-  // Default stays as it was (owner decision D2).
-  'default:light:ctaForeground/cta',
-  // Default stays as it was (owner decision D2).
-  'default:light:mutedForeground/muted',
-  // Default stays as it was (owner decision D2).
-  'default:dark:primaryForeground/primary',
-  // Default stays as it was (owner decision D2).
-  'default:dark:ctaForeground/cta',
-]);
-
 const SCHEMES: Scheme[] = ['light', 'dark'];
 
 const cases = Object.values(brands).flatMap((brand) =>
@@ -60,16 +46,9 @@ const cases = Object.values(brands).flatMap((brand) =>
   ),
 );
 
-describe.each(cases)('$brand $theme $scheme', ({ brand, theme, scheme, palette }) => {
+describe.each(cases)('$brand $theme $scheme', ({ theme, palette }) => {
   it.each(AA_PAIRS)('%s on %s meets AA 4.5:1', (fg, bg) => {
-    const key = `${theme}:${scheme}:${fg}/${bg}`;
-    const ratio = contrastRatio(palette[fg], palette[bg]);
-    if (brand === 'default' && DEFAULT_ALLOWLIST.has(key)) {
-      // The allowlist names only pairs that really fail, so it never goes stale.
-      expect(ratio).toBeLessThan(WCAG_AA_BODY_TEXT);
-      return;
-    }
-    expect(ratio).toBeGreaterThanOrEqual(WCAG_AA_BODY_TEXT);
+    expect(contrastRatio(palette[fg], palette[bg])).toBeGreaterThanOrEqual(WCAG_AA_BODY_TEXT);
   });
 
   if (theme === 'high-contrast') {

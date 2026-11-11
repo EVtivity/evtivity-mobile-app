@@ -10,8 +10,10 @@
 /** @type {import('./index').BrandColors} */
 const lightColors = {
   primary: '142 71% 45%',
-  primaryForeground: '0 0% 100%',
-  cta: '142 72% 33%',
+  // Dark text on the bright green fill and a deeper cta under white text, so
+  // both reach WCAG AA (7.2:1 and 4.5:1).
+  primaryForeground: '150 80% 8%',
+  cta: '142 72% 31%',
   ctaForeground: '0 0% 100%',
   accent: '142 72% 40%',
   accentForeground: '150 80% 8%',
@@ -21,7 +23,8 @@ const lightColors = {
   cardForeground: '158 30% 11%',
   elevated: '0 0% 100%',
   muted: '160 20% 95.5%',
-  mutedForeground: '156 10% 42%',
+  // 4.6:1 on muted, 5.1:1 on card.
+  mutedForeground: '156 10% 41%',
   border: '156 18% 90%',
   ring: '142 71% 45%',
   success: '142 71% 41%',
@@ -33,8 +36,9 @@ const lightColors = {
 /** @type {import('./index').BrandColors} */
 const darkColors = {
   primary: '142 68% 49%',
-  primaryForeground: '0 0% 100%',
-  cta: '142 64% 38%',
+  // WCAG AA: dark text on primary 8.5:1, white text on cta 4.6:1.
+  primaryForeground: '150 85% 7%',
+  cta: '142 64% 32%',
   ctaForeground: '0 0% 100%',
   accent: '142 66% 54%',
   accentForeground: '150 85% 7%',
