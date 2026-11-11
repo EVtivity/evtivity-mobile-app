@@ -6,11 +6,14 @@ import { View } from 'react-native';
 import { vars, useColorScheme } from 'nativewind';
 import { BRAND } from './config';
 import type { BrandColors } from '@brands/index';
+import { activeUiTheme, useUiTheme, type UiTheme } from './ui-theme';
+import { BACKDROP_TEXT, radiusVars, themePalette, type Scheme } from './theme-tokens';
 
-// Applies the active brand's palette as CSS variables at the root so every
-// NativeWind `bg-primary` / `text-foreground` class resolves to the brand color
-// for the current light/dark scheme. White-label theming needs no CSS edits:
-// a brand only supplies HSL triplets in brands/<slug>.ts.
+// Applies the active brand's palette, in the driver's theme, as CSS variables at
+// the root so every NativeWind `bg-primary` / `text-foreground` class resolves
+// to the brand color for the current theme and light/dark scheme. White-label
+// theming needs no CSS edits: a brand only supplies HSL triplets in
+// brands/<slug>.ts, and the themes are built on them (src/lib/theme-tokens.ts).
 function toVars(c: BrandColors): Record<string, string> {
   return {
     '--background': c.background,
@@ -35,47 +38,76 @@ function toVars(c: BrandColors): Record<string, string> {
   };
 }
 
-// Surface-scoped text variables. The branded green backdrop sets light text
-// vars; cards, inputs, sheets, and the tab bar set the card text vars of the
-// current color scheme, matching the card background that ThemeProvider sets
-// for that scheme. Because these override --foreground / --muted-foreground for
-// their subtree, even screens that hard-code `text-foreground` /
-// `text-muted-foreground` read correctly without per-screen edits.
-export const BACKDROP_TEXT_VARS = vars({
-  '--foreground': '0 0% 100%',
-  '--muted-foreground': '150 20% 84%',
-});
+function schemeOf(colorScheme: string | undefined): Scheme {
+  return colorScheme === 'dark' ? 'dark' : 'light';
+}
 
-function surfaceVars(c: BrandColors): ReturnType<typeof vars> {
-  return vars({
+// The palette of a theme and scheme, built once per pair.
+const paletteCache = new Map<string, BrandColors>();
+
+export function activePalette(theme: UiTheme, scheme: Scheme): BrandColors {
+  const key = `${theme}:${scheme}`;
+  const cached = paletteCache.get(key);
+  if (cached != null) return cached;
+  const brand = scheme === 'dark' ? BRAND.colors.dark : BRAND.colors.light;
+  const palette = themePalette(theme, scheme, brand);
+  paletteCache.set(key, palette);
+  return palette;
+}
+
+// Text variables on the screen backdrop: light text on the branded picture
+// (Default, Soft) or on the plain black backdrop (High Contrast).
+export const BACKDROP_TEXT_VARS = vars(BACKDROP_TEXT.brand);
+const HIGH_CONTRAST_BACKDROP_TEXT_VARS = vars(BACKDROP_TEXT['high-contrast']);
+
+export function backdropTextVars(theme: UiTheme): ReturnType<typeof vars> {
+  return theme === 'high-contrast' ? HIGH_CONTRAST_BACKDROP_TEXT_VARS : BACKDROP_TEXT_VARS;
+}
+
+// Surface-scoped text variables. Cards, inputs, sheets, and the tab bar set the
+// card text vars of the current theme and color scheme, matching the card
+// background that ThemeProvider sets. Because these override --foreground /
+// --muted-foreground for their subtree, even screens that hard-code
+// `text-foreground` / `text-muted-foreground` read correctly without
+// per-screen edits. Built once per theme and scheme so every surface gets a
+// stable style reference.
+const surfaceVarsCache = new Map<string, ReturnType<typeof vars>>();
+
+export function surfaceTextVars(
+  scheme: string | undefined,
+  theme: UiTheme = activeUiTheme(),
+): ReturnType<typeof vars> {
+  const s = schemeOf(scheme);
+  const key = `${theme}:${s}`;
+  const cached = surfaceVarsCache.get(key);
+  if (cached != null) return cached;
+  const c = activePalette(theme, s);
+  const value = vars({
     '--foreground': c.cardForeground,
     '--card-foreground': c.cardForeground,
     '--muted-foreground': c.mutedForeground,
   });
+  surfaceVarsCache.set(key, value);
+  return value;
 }
 
-// Built once per scheme so every surface gets a stable style reference.
-const SURFACE_TEXT_VARS_BY_SCHEME = {
-  light: surfaceVars(BRAND.colors.light),
-  dark: surfaceVars(BRAND.colors.dark),
-};
-
-export function surfaceTextVars(scheme: string | undefined): ReturnType<typeof vars> {
-  return scheme === 'dark' ? SURFACE_TEXT_VARS_BY_SCHEME.dark : SURFACE_TEXT_VARS_BY_SCHEME.light;
-}
-
-// The surface text vars for the active color scheme, the same source the
-// ThemeProvider uses for the card background.
+// The surface text vars for the active theme and color scheme, the same source
+// the ThemeProvider uses for the card background.
 export function useSurfaceTextVars(): ReturnType<typeof vars> {
   const { colorScheme } = useColorScheme();
-  return surfaceTextVars(colorScheme);
+  const theme = useUiTheme((st) => st.theme);
+  return surfaceTextVars(colorScheme, theme);
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }): React.JSX.Element {
   const { colorScheme } = useColorScheme();
-  const palette = colorScheme === 'dark' ? BRAND.colors.dark : BRAND.colors.light;
+  const theme = useUiTheme((st) => st.theme);
+  const style = React.useMemo(
+    () => vars({ ...toVars(activePalette(theme, schemeOf(colorScheme))), ...radiusVars(theme) }),
+    [theme, colorScheme],
+  );
   return (
-    <View style={vars(toVars(palette))} className="flex-1 bg-background">
+    <View style={style} className="flex-1 bg-background">
       {children}
     </View>
   );
@@ -86,17 +118,17 @@ export function ThemeProvider({ children }: { children: React.ReactNode }): Reac
 // tokens are stored space-separated ("142 72% 33%"); React Native's core color
 // parser only accepts the comma form, so emit "hsl(142, 72%, 33%)". SVG and
 // reanimated accept both, so this is safe everywhere hsl() is used.
-// The palette is static, so each token resolves to a constant string. Cache it
-// so callers in render hot paths (headers, charts, spinners) get a stable
-// reference instead of re-parsing the token every render.
+// The value follows the active theme. Each theme, scheme and token resolves to
+// a constant string; it is cached so callers in render hot paths (headers,
+// charts, spinners) get a stable reference instead of re-parsing every render.
 const hslCache = new Map<string, string>();
 
 export function hsl(token: keyof BrandColors, scheme: 'light' | 'dark' = 'light'): string {
-  const key = `${scheme}:${token}`;
+  const theme = activeUiTheme();
+  const key = `${theme}:${scheme}:${token}`;
   const cached = hslCache.get(key);
   if (cached != null) return cached;
-  const palette = scheme === 'dark' ? BRAND.colors.dark : BRAND.colors.light;
-  const raw = palette[token];
+  const raw = activePalette(theme, scheme)[token];
   const value =
     raw == null || raw === '' ? 'transparent' : `hsl(${raw.trim().replace(/\s+/g, ', ')})`;
   hslCache.set(key, value);

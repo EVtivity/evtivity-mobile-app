@@ -29,6 +29,12 @@
   --warning: 32 95% 50%;
   --destructive: 0 75% 55%;
   --info: 199 89% 48%;
+  /* Corner radius tiers of the Default theme (src/lib/theme-tokens.ts). */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+  --radius-2xl: 24px;
 }
 
 .dark:root {

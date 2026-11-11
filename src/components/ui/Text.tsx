@@ -4,6 +4,7 @@
 import React from 'react';
 import { Text as RNText, type TextProps, type TextStyle } from 'react-native';
 import { cn } from '@/lib/cn';
+import { useUiTheme } from '@/lib/ui-theme';
 
 type Variant =
   | 'display'
@@ -52,6 +53,16 @@ const VARIANT: Record<Variant, { class: string; weight: Weight; tone: Tone }> = 
   overline: { class: 'text-[11px] uppercase tracking-widest', weight: 'semibold', tone: 'muted' },
 };
 
+// High Contrast sets every weight one step heavier for the clearest reading.
+const HEAVIER: Record<Weight, Weight> = {
+  regular: 'medium',
+  medium: 'semibold',
+  semibold: 'bold',
+  bold: 'extrabold',
+  extrabold: 'black',
+  black: 'black',
+};
+
 // text-foreground / text-muted-foreground resolve the surface-scoped vars, so
 // the same variant reads light on the backdrop and dark inside cards.
 function colorFor(tone: Tone): string {
@@ -72,8 +83,10 @@ export function Text({
   className?: string;
 }): React.JSX.Element {
   const v = VARIANT[variant];
+  const heavier = useUiTheme((st) => st.theme === 'high-contrast');
+  const base = weight ?? v.weight;
   const fontStyle: TextStyle = {
-    fontFamily: FAMILY[weight ?? v.weight],
+    fontFamily: FAMILY[heavier ? HEAVIER[base] : base],
     ...(tabular ? { fontVariant: ['tabular-nums'] } : {}),
   };
   return (

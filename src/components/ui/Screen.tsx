@@ -6,7 +6,9 @@ import { View, ScrollView, RefreshControl } from 'react-native';
 import { ImageBackground } from 'expo-image';
 import { SafeAreaView, type Edge } from 'react-native-safe-area-context';
 import { cn } from '@/lib/cn';
-import { BACKDROP_TEXT_VARS } from '@/lib/theme';
+import { backdropTextVars } from '@/lib/theme';
+import { HIGH_CONTRAST_BACKDROP } from '@/lib/theme-tokens';
+import { useUiTheme } from '@/lib/ui-theme';
 
 const appBg = require('../../../assets/app-bg.jpg') as number;
 
@@ -19,6 +21,18 @@ export function ScreenBackground({
   children: React.ReactNode;
   edges?: readonly Edge[];
 }): React.JSX.Element {
+  const theme = useUiTheme((st) => st.theme);
+  // High Contrast: a plain black backdrop instead of the picture, so the light
+  // backdrop text reads at full contrast.
+  if (theme === 'high-contrast') {
+    return (
+      <View style={[{ flex: 1, backgroundColor: HIGH_CONTRAST_BACKDROP }, backdropTextVars(theme)]}>
+        <SafeAreaView edges={edges} className="flex-1">
+          {children}
+        </SafeAreaView>
+      </View>
+    );
+  }
   return (
     // expo-image keeps the decoded bitmap in its memory-disk cache, so the
     // backdrop is decoded once instead of per screen mount. The brand-dark
@@ -30,7 +44,7 @@ export function ScreenBackground({
       cachePolicy="memory-disk"
       style={{ flex: 1, backgroundColor: '#0f172a' }}
     >
-      <View style={BACKDROP_TEXT_VARS} className="flex-1">
+      <View style={backdropTextVars(theme)} className="flex-1">
         <SafeAreaView edges={edges} className="flex-1">
           {children}
         </SafeAreaView>

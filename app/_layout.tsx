@@ -16,6 +16,7 @@ import * as SplashScreen from 'expo-splash-screen';
 
 import { queryClient } from '@/lib/query';
 import { ThemeProvider } from '@/lib/theme';
+import { applyDriverUiTheme, useUiTheme } from '@/lib/ui-theme';
 import { ToastProvider, ConfirmProvider, PortalHost, Spinner } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
 import { bootstrapLanguage, applyDriverLanguage } from '@/lib/i18n';
@@ -52,6 +53,7 @@ function RootNavigator(): React.JSX.Element {
   const biometricEnabled = useAuth((s) => s.biometricEnabled);
   const lock = useAuth((s) => s.lock);
   const driverLanguage = useAuth((s) => s.driver?.language);
+  const driverUiTheme = useAuth((s) => s.driver?.uiTheme);
   const router = useRouter();
 
   React.useEffect(() => {
@@ -78,6 +80,12 @@ function RootNavigator(): React.JSX.Element {
   React.useEffect(() => {
     void applyDriverLanguage(driverLanguage);
   }, [driverLanguage]);
+
+  // Adopt the account's theme once the profile loads (an older API without the
+  // field keeps the device's copy).
+  React.useEffect(() => {
+    applyDriverUiTheme(driverUiTheme);
+  }, [driverUiTheme]);
 
   // Route to the relevant area when the user taps a push notification.
   React.useEffect(() => {
@@ -116,6 +124,13 @@ export default function RootLayout(): React.JSX.Element {
   // Stable identity so AnimatedSplash's effect doesn't restart its animations on
   // every root re-render.
   const onSplashFinish = React.useCallback(() => setAnimDone(true), []);
+  // The device's copy of the theme is read before the splash goes, so the first
+  // screen already renders in the driver's theme (no flash of Default).
+  const themeLoaded = useUiTheme((s) => s.loaded);
+  const loadTheme = useUiTheme((s) => s.load);
+  React.useEffect(() => {
+    void loadTheme();
+  }, [loadTheme]);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -132,7 +147,7 @@ export default function RootLayout(): React.JSX.Element {
           </ThemeProvider>
         </QueryClientProvider>
       </SafeAreaProvider>
-      {animDone && fontsReady ? null : <AnimatedSplash onFinish={onSplashFinish} />}
+      {animDone && fontsReady && themeLoaded ? null : <AnimatedSplash onFinish={onSplashFinish} />}
     </GestureHandlerRootView>
   );
 }

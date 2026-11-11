@@ -29,12 +29,15 @@ module.exports = {
         destructive: 'hsl(var(--destructive) / <alpha-value>)',
         info: 'hsl(var(--info) / <alpha-value>)',
       },
+      // The radius tiers follow the driver's theme (Soft rounds them more). The
+      // ThemeProvider sets the variables (src/lib/theme-tokens.ts radiusVars);
+      // global.css holds the Default values.
       borderRadius: {
-        '2xl': '24px',
-        xl: '18px',
-        lg: '14px',
-        md: '10px',
-        sm: '6px',
+        '2xl': 'var(--radius-2xl)',
+        xl: 'var(--radius-xl)',
+        lg: 'var(--radius-lg)',
+        md: 'var(--radius-md)',
+        sm: 'var(--radius-sm)',
       },
       fontFamily: {
         sans: ['Inter_400Regular'],

@@ -16,7 +16,11 @@ export interface Driver {
   phone: string | null;
   language: string;
   timezone: string;
+  // The mode ('light' or 'dark'). The app follows the device's light or dark setting.
   themePreference: string;
+  // The theme: 'default', 'soft' or 'high-contrast' (CSMS v0.1.51). Missing on an
+  // older API, which reads as Default (parseUiTheme).
+  uiTheme?: string;
   distanceUnit: string;
   // Prices including ('gross') or excluding ('net') tax. Null follows the
   // company setting (see usePriceDisplay).

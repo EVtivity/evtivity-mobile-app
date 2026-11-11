@@ -8,6 +8,7 @@ import { setSession } from '@/lib/session';
 import { registerPushToken } from '@/lib/push';
 import type { MfaFactorState } from '@/lib/mfa';
 import type { PriceDisplay } from '@/lib/price-display';
+import type { UiTheme } from '@/lib/ui-theme';
 import type { Driver, Vehicle, RfidToken } from '@/lib/types';
 import type { DriverBilling } from '@/lib/fleet-billing';
 import type { PortalInvoice, PortalInvoiceDetail } from '@/lib/invoices';
@@ -109,6 +110,7 @@ interface UpdateProfileInput {
   language?: string;
   timezone?: string;
   themePreference?: 'light' | 'dark';
+  uiTheme?: UiTheme;
   distanceUnit?: 'miles' | 'km';
   // Null follows the company setting company.priceDisplay.
   priceDisplay?: PriceDisplay | null;

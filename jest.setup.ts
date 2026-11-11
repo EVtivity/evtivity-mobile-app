@@ -11,3 +11,10 @@ jest.mock('./modules/evtivity-attest', () => ({
   generateAssertion: jest.fn(async () => 'assertion-blob'),
   requestIntegrityToken: jest.fn(async () => 'integrity-token'),
 }));
+
+// The theme store (src/lib/ui-theme.ts) keeps a device copy in AsyncStorage and
+// is read by every Text, Card and Screen: give every test the library's
+// in-memory mock. A test that needs its own behavior still mocks the module.
+jest.mock('@react-native-async-storage/async-storage', () =>
+  jest.requireActual('@react-native-async-storage/async-storage/jest/async-storage-mock'),
+);

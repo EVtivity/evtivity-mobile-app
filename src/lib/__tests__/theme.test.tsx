@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 
 import React from 'react';
-import { render } from '@testing-library/react-native';
+import { act, render } from '@testing-library/react-native';
 import { Text } from 'react-native';
 import { useColorScheme } from 'nativewind';
 
@@ -47,9 +47,11 @@ const {
   hsl,
   ThemeProvider,
   BACKDROP_TEXT_VARS,
+  backdropTextVars,
   surfaceTextVars,
   useSurfaceTextVars,
 } = require('@/lib/theme');
+const { useUiTheme } = require('@/lib/ui-theme');
 const mockUseColorScheme = useColorScheme as jest.Mock;
 
 describe('hsl', () => {
@@ -122,5 +124,78 @@ describe('ThemeProvider', () => {
       </ThemeProvider>,
     );
     expect(getByText('dark-child')).toBeTruthy();
+  });
+
+  it('sets the palette and radius variables of the active theme', async () => {
+    mockUseColorScheme.mockReturnValue({ colorScheme: 'light' });
+    await act(async () => {
+      useUiTheme.setState({ theme: 'soft' });
+    });
+    const soft = await render(
+      <ThemeProvider>
+        <Text>soft</Text>
+      </ThemeProvider>,
+    );
+    const softStyle = soft.toJSON() as unknown as { props: { style: Record<string, string> } };
+    expect(softStyle.props.style['--radius-2xl']).toBe('32px');
+    await act(async () => {
+      useUiTheme.setState({ theme: 'high-contrast' });
+    });
+    const hc = await render(
+      <ThemeProvider>
+        <Text>hc</Text>
+      </ThemeProvider>,
+    );
+    const hcStyle = hc.toJSON() as unknown as { props: { style: Record<string, string> } };
+    expect(hcStyle.props.style['--background']).toBe('0 0% 100%');
+    expect(hcStyle.props.style['--radius-2xl']).toBe('24px');
+    await act(async () => {
+      useUiTheme.setState({ theme: 'default' });
+    });
+  });
+});
+
+describe('the active theme', () => {
+  afterEach(async () => {
+    await act(async () => {
+      useUiTheme.setState({ theme: 'default' });
+    });
+  });
+
+  it('hsl() follows the active theme, cached per theme', () => {
+    expect(hsl('background')).toBe('hsl(0, 0%, 100%)');
+    useUiTheme.setState({ theme: 'high-contrast' });
+    expect(hsl('foreground')).toBe('hsl(0, 0%, 0%)');
+    expect(hsl('foreground', 'dark')).toBe('hsl(0, 0%, 100%)');
+    expect(hsl('foreground')).toBe(hsl('foreground'));
+    useUiTheme.setState({ theme: 'default' });
+    expect(hsl('foreground')).toBe('hsl(222, 47%, 11%)');
+  });
+
+  it('surface text vars follow the theme', () => {
+    expect(surfaceTextVars('dark', 'high-contrast')['--foreground']).toBe('0 0% 100%');
+    useUiTheme.setState({ theme: 'high-contrast' });
+    expect(surfaceTextVars('light')['--muted-foreground']).toBe('0 0% 22%');
+  });
+
+  it('the backdrop text of High Contrast is brighter than the branded one', () => {
+    expect(backdropTextVars('default')).toBe(BACKDROP_TEXT_VARS);
+    expect(backdropTextVars('soft')).toBe(BACKDROP_TEXT_VARS);
+    expect(backdropTextVars('high-contrast')['--muted-foreground']).toBe('0 0% 85%');
+  });
+
+  it('useSurfaceTextVars re-renders with the theme', async () => {
+    let seen: Record<string, string> | undefined;
+    function Probe(): React.JSX.Element {
+      seen = useSurfaceTextVars();
+      return <Text>probe</Text>;
+    }
+    mockUseColorScheme.mockReturnValue({ colorScheme: 'light' });
+    await render(<Probe />);
+    expect(seen?.['--foreground']).toBe(FULL_PALETTE.cardForeground);
+    await act(async () => {
+      useUiTheme.setState({ theme: 'high-contrast' });
+    });
+    expect(seen?.['--foreground']).toBe('0 0% 0%');
   });
 });

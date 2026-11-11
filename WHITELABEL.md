@@ -80,6 +80,19 @@ variants).
 Provide both `light` and `dark`. The app follows the device appearance and
 switches palettes automatically.
 
+Drivers pick a theme under Account > Personal Info, and the app builds each
+theme from your palette (`src/lib/theme-tokens.ts`), so a brand supplies no
+extra colors:
+
+- Default: your palette as it is.
+- Soft: your palette with subtler borders, rounder corners and softer shadows.
+  Text pairs below WCAG AA (4.5:1) move to the nearest lightness that reaches it.
+- High Contrast: plain black and white surfaces, strong borders and heavier
+  text. Your primary and cta hue stays, at a lightness their text reads on.
+
+`src/lib/__tests__/theme-contrast.test.ts` checks the text pairs of every theme
+and scheme of every registered brand. Run it after you change a palette.
+
 ## Languages
 
 The app ships full translations for every language the CSMS supports: `en`

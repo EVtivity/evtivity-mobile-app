@@ -8,6 +8,7 @@ import { cn } from '@/lib/cn';
 import { shadow } from '@/lib/shadow';
 import { useSurfaceTextVars } from '@/lib/theme';
 import { tapLight } from '@/lib/haptics';
+import { useUiTheme } from '@/lib/ui-theme';
 
 interface CardProps extends ViewProps {
   className?: string;
@@ -45,9 +46,13 @@ export function Card({
   // text vars of the current color scheme color the text inside. A plain
   // (non-reanimated) Pressable is used so those CSS vars propagate to the
   // card's text.
+  // High Contrast: an opaque card with a strong border instead of the glass.
+  const highContrast = useUiTheme((st) => st.theme === 'high-contrast');
   const classes = cn(
-    'rounded-2xl border border-white/20 bg-card/[0.85] p-4',
-    flat && 'bg-card/[0.7]',
+    highContrast
+      ? 'rounded-2xl border-2 border-border bg-card p-4'
+      : 'rounded-2xl border border-white/20 bg-card/[0.85] p-4',
+    flat && !highContrast && 'bg-card/[0.7]',
     className,
   );
   const elevation = flat ? undefined : shadow.md;
@@ -61,14 +66,14 @@ export function Card({
         style={[elevation, surfaceVars, style]}
         {...props}
       >
-        <CardSheen />
+        {highContrast ? null : <CardSheen />}
         <CardSurface>{children}</CardSurface>
       </Pressable>
     );
   }
   return (
     <View className={classes} style={[elevation, surfaceVars, style]} {...props}>
-      <CardSheen />
+      {highContrast ? null : <CardSheen />}
       <CardSurface>{children}</CardSurface>
     </View>
   );

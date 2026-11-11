@@ -25,11 +25,21 @@ import { useCompanyPriceDisplay } from '@/features/price-display';
 import { enabledLanguageOptions, setAppLanguage, LANGUAGE_LABELS } from '@/lib/i18n';
 import type { LanguageCode } from '@/lib/config';
 import type { PriceDisplay } from '@/lib/price-display';
+import { parseUiTheme, UI_THEMES, useUiTheme, type UiTheme } from '@/lib/ui-theme';
 
 // Brand-configured languages, in display order.
 const LANGUAGE_OPTIONS = enabledLanguageOptions();
 
 type DistanceUnit = 'miles' | 'km';
+
+const UI_THEME_LABEL_KEYS: Record<UiTheme, { label: string; description: string }> = {
+  default: { label: 'account.uiThemeDefault', description: 'account.uiThemeDefaultDescription' },
+  soft: { label: 'account.uiThemeSoft', description: 'account.uiThemeSoftDescription' },
+  'high-contrast': {
+    label: 'account.uiThemeHighContrast',
+    description: 'account.uiThemeHighContrastDescription',
+  },
+};
 
 export default function PersonalInfoScreen(): React.JSX.Element {
   const { t, i18n } = useTranslation();
@@ -55,6 +65,13 @@ export default function PersonalInfoScreen(): React.JSX.Element {
     driver?.priceDisplay ?? null,
   );
   const companyPriceDisplay = useCompanyPriceDisplay();
+  // The theme in use: the account's, else the device's copy (an older API).
+  const appliedUiTheme = useUiTheme((s) => s.theme);
+  const setAppliedUiTheme = useUiTheme((s) => s.setTheme);
+  const accountHasUiTheme = driver?.uiTheme != null;
+  const savedUiTheme = accountHasUiTheme ? parseUiTheme(driver?.uiTheme) : appliedUiTheme;
+  const [uiTheme, setUiTheme] = React.useState<UiTheme>(savedUiTheme);
+  const [themePickerVisible, setThemePickerVisible] = React.useState(false);
   const [fieldErrors, setFieldErrors] = React.useState<Record<string, string>>({});
   const [langPickerVisible, setLangPickerVisible] = React.useState(false);
   const [pricePickerVisible, setPricePickerVisible] = React.useState(false);
@@ -87,6 +104,8 @@ export default function PersonalInfoScreen(): React.JSX.Element {
     if (timezone.trim() !== (driver?.timezone ?? '')) input.timezone = timezone.trim();
     if (distanceUnit !== driver?.distanceUnit) input.distanceUnit = distanceUnit;
     if (priceDisplay !== (driver?.priceDisplay ?? null)) input.priceDisplay = priceDisplay;
+    // An API before v0.1.51 has no theme field: the choice then stays on the device.
+    if (accountHasUiTheme && uiTheme !== savedUiTheme) input.uiTheme = uiTheme;
 
     if (input.phone !== undefined && driverHoldsFactor(mfa.data)) {
       const message = t('account.phonePortalChange');
@@ -97,8 +116,9 @@ export default function PersonalInfoScreen(): React.JSX.Element {
 
     try {
       await updateProfile.mutateAsync(input);
-      // Apply the new UI language only once the preference is saved.
+      // Apply the new UI language and theme only once the preference is saved.
       if (input.language != null) await setAppLanguage(language);
+      if (uiTheme !== appliedUiTheme) setAppliedUiTheme(uiTheme);
       toast.show(t('common.saved'), 'success');
     } catch (err) {
       if (err instanceof ApiError && err.portalUrl != null) {
@@ -169,6 +189,21 @@ export default function PersonalInfoScreen(): React.JSX.Element {
         </View>
 
         <View className="gap-2">
+          <Text variant="label">{t('account.uiTheme')}</Text>
+          <Pressable
+            testID="personal-ui-theme"
+            accessibilityRole="button"
+            onPress={() => setThemePickerVisible(true)}
+            className="rounded-xl border border-border bg-card px-4 py-3"
+          >
+            <Text variant="label">{t(UI_THEME_LABEL_KEYS[uiTheme].label)}</Text>
+          </Pressable>
+          <Text testID="personal-ui-theme-description" variant="muted" className="text-xs">
+            {t(UI_THEME_LABEL_KEYS[uiTheme].description)}
+          </Text>
+        </View>
+
+        <View className="gap-2">
           <Text variant="label">{t('account.distanceUnit')}</Text>
           <Segmented
             segments={[
@@ -230,6 +265,32 @@ export default function PersonalInfoScreen(): React.JSX.Element {
             className="py-2"
           >
             <Text variant={l.code === language ? 'label' : 'muted'}>{l.label}</Text>
+          </Pressable>
+        ))}
+      </Sheet>
+
+      <Sheet
+        visible={themePickerVisible}
+        onClose={() => setThemePickerVisible(false)}
+        title={t('account.uiTheme')}
+      >
+        {UI_THEMES.map((value) => (
+          <Pressable
+            key={value}
+            testID={`personal-ui-theme-${value}`}
+            onPress={() => {
+              // Remember the choice. It is saved with the profile on Save.
+              setUiTheme(value);
+              setThemePickerVisible(false);
+            }}
+            className="py-2"
+          >
+            <Text variant={value === uiTheme ? 'label' : 'muted'}>
+              {t(UI_THEME_LABEL_KEYS[value].label)}
+            </Text>
+            <Text variant="muted" className="text-xs">
+              {t(UI_THEME_LABEL_KEYS[value].description)}
+            </Text>
           </Pressable>
         ))}
       </Sheet>
