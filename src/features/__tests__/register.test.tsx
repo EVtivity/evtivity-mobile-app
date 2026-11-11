@@ -223,6 +223,13 @@ it('goes back to sign-in while registration is closed', async () => {
   expect(screen.queryByTestId('register-firstName')).toBeNull();
 });
 
+it('shows the form on a server that does not report the switch', async () => {
+  mockFeatures.mockResolvedValue({ reservationEnabled: true });
+  await renderScreen();
+  expect(await screen.findByTestId('register-firstName')).toBeTruthy();
+  expect(screen.queryByText('redirect /(auth)/login')).toBeNull();
+});
+
 it('shows no form while the features load', async () => {
   mockFeatures.mockReturnValue(new Promise(() => undefined));
   await renderScreen();

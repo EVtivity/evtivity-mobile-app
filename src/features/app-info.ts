@@ -55,7 +55,7 @@ export interface Features {
   // change with 403 RFID_SELF_SERVICE_DISABLED.
   rfidSelfServiceEnabled?: boolean;
   // Drivers create their own account (portal.registrationEnabled; absent on
-  // older servers). False: the API refuses registration with 403
+  // servers older than v0.1.51, read as on). False: the API refuses registration with 403
   // PORTAL_REGISTRATION_DISABLED and the operator invites drivers.
   registrationEnabled?: boolean;
 }
@@ -71,11 +71,12 @@ export function useFeatures() {
 }
 
 // Whether the app offers sign-up. Unlike the other toggles (on until loaded),
-// sign-up shows only once the features confirm it:
-// - open: the features say true, the only state that offers sign-up.
+// sign-up shows only once the features are read:
+// - open: the features say true, or carry no value (a server older than
+//   v0.1.51, which always allowed registration, as rfidSelfServiceEnabled).
 // - closed: the features say false; the register screen goes back to sign-in.
 // - loading: the features are still loading.
-// - error: the features could not be read, or carry no value (older server).
+// - error: the features could not be read.
 // The sign-in link and the register form show only while open, as in the portal.
 export type RegistrationState = 'open' | 'closed' | 'loading' | 'error';
 
@@ -84,8 +85,9 @@ export function useRegistrationStatus(): { state: RegistrationState; retry: () =
   const retry = (): void => {
     void refetch();
   };
-  if (data?.registrationEnabled === true) return { state: 'open', retry };
-  if (data?.registrationEnabled === false) return { state: 'closed', retry };
+  if (data !== undefined) {
+    return { state: data.registrationEnabled === false ? 'closed' : 'open', retry };
+  }
   if (isPending) return { state: 'loading', retry };
   return { state: 'error', retry };
 }

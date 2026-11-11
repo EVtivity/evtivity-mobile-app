@@ -1,8 +1,9 @@
 // Copyright (c) 2024-2026 EVtivity. All rights reserved.
 // SPDX-License-Identifier: BUSL-1.1
 
-// The sign-in screen offers sign-up only once GET /v1/portal/features says
-// registrationEnabled: true, as the portal does.
+// The sign-in screen offers sign-up only once GET /v1/portal/features is read
+// and does not say registrationEnabled: false (a server older than v0.1.51
+// sends no value and allows registration), as the portal does.
 
 const mockFeatures = jest.fn();
 
@@ -107,10 +108,8 @@ it('hides sign-up when the features cannot be read', async () => {
   expect(screen.queryByTestId('login-sign-up')).toBeNull();
 });
 
-it('hides sign-up on a server that does not report the switch', async () => {
+it('offers sign-up on a server that does not report the switch', async () => {
   mockFeatures.mockResolvedValue({ reservationEnabled: true });
   await renderLogin();
-  await new Promise((resolve) => setImmediate(resolve));
-  expect(mockFeatures).toHaveBeenCalled();
-  expect(screen.queryByTestId('login-sign-up')).toBeNull();
+  expect(await screen.findByTestId('login-sign-up')).toBeTruthy();
 });
