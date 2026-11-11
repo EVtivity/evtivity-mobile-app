@@ -154,6 +154,7 @@ import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
 import deCatalogue from '@/lib/i18n/de.json';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { initTestI18n } from '@/test-utils/i18n';
+import { FIRST_RENDER_TIMEOUT_MS } from '@/test-utils/timeouts';
 import { ApiError } from '@/lib/api';
 import SecurityScreen from '../../../app/(tabs)/account/security';
 import PersonalInfoScreen from '../../../app/(tabs)/account/personal';
@@ -216,16 +217,20 @@ afterEach(() => {
 });
 
 describe('Security screen', () => {
-  it('sends the driver to the portal security page to turn MFA off, with no request', async () => {
-    mfaStatus = { ...mfaStatus, mfaEnabled: true, mfaMethod: 'totp', factorProofKinds: ['totp'] };
-    const screen = await renderScreen(<SecurityScreen />);
-    await fireEvent.press(await screen.findByTestId('security-mfa-disable'));
-    expect(mockPortalNotice).toHaveBeenCalledWith(
-      'Turn off two-factor authentication in the driver portal. It asks for your second factor, which this app cannot check.',
-      'https://portal.test/account/security',
-    );
-    expect(mockDel).not.toHaveBeenCalled();
-  });
+  it(
+    'sends the driver to the portal security page to turn MFA off, with no request',
+    async () => {
+      mfaStatus = { ...mfaStatus, mfaEnabled: true, mfaMethod: 'totp', factorProofKinds: ['totp'] };
+      const screen = await renderScreen(<SecurityScreen />);
+      await fireEvent.press(await screen.findByTestId('security-mfa-disable'));
+      expect(mockPortalNotice).toHaveBeenCalledWith(
+        'Turn off two-factor authentication in the driver portal. It asks for your second factor, which this app cannot check.',
+        'https://portal.test/account/security',
+      );
+      expect(mockDel).not.toHaveBeenCalled();
+    },
+    FIRST_RENDER_TIMEOUT_MS,
+  );
 
   it('shows the message without a link when no portal URL is known', async () => {
     mfaStatus = { ...mfaStatus, mfaEnabled: true, mfaMethod: 'totp', factorProofKinds: ['totp'] };

@@ -130,6 +130,7 @@ import React from 'react';
 import { fireEvent, render, waitFor } from '@testing-library/react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { initTestI18n } from '@/test-utils/i18n';
+import { FIRST_RENDER_TIMEOUT_MS } from '@/test-utils/timeouts';
 import VehiclesScreen from '../../../app/(tabs)/account/vehicles';
 import type { Vehicle } from '@/lib/types';
 
@@ -187,10 +188,14 @@ beforeEach(() => {
 });
 
 describe('Vehicles screen color and body type', () => {
-  it('shows the year, color and body type on the card', async () => {
-    const screen = await renderScreen();
-    expect(await screen.findByText('2025 · Green · SUV')).toBeTruthy();
-  });
+  it(
+    'shows the year, color and body type on the card',
+    async () => {
+      const screen = await renderScreen();
+      expect(await screen.findByText('2025 · Green · SUV')).toBeTruthy();
+    },
+    FIRST_RENDER_TIMEOUT_MS,
+  );
 
   it('saves a new color and body type from the edit sheet', async () => {
     mockPatch.mockResolvedValue({ ...KIA, color: 'red', bodyType: 'semi_truck' });

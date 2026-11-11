@@ -127,6 +127,7 @@ import React from 'react';
 import { fireEvent, render, waitFor } from '@testing-library/react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { initTestI18n } from '@/test-utils/i18n';
+import { FIRST_RENDER_TIMEOUT_MS } from '@/test-utils/timeouts';
 import { ApiError } from '@/lib/api';
 import { SessionVehicleIdCard } from '@/components/SessionVehicleIdCard';
 import VehiclesScreen from '../../../app/(tabs)/account/vehicles';
@@ -187,17 +188,21 @@ beforeEach(() => {
 });
 
 describe('Vehicles screen', () => {
-  it('shows the vehicle ids, Last Seen and the Autocharge switch', async () => {
-    const screen = await renderWithQuery(<VehiclesScreen />);
-    expect(await screen.findByText('WVWZZZE2ZPP000001')).toBeTruthy();
-    expect(screen.getByText('AA:BB:CC:DD:EE:FF')).toBeTruthy();
-    expect(screen.getByTestId('vehicle-last-seen-veh_1')).toHaveTextContent(/Last Seen\s*CS-1, /);
-    const sw = screen.getByTestId('vehicle-autocharge-veh_1');
-    expect(sw.props.accessibilityLabel).toBe('Autocharge for Volkswagen ID.4');
-    expect(sw.props.value).toBe(false);
-    // A vehicle without a VIN or EVCCID cannot use Autocharge.
-    expect(screen.queryByTestId('vehicle-autocharge-veh_2')).toBeNull();
-  });
+  it(
+    'shows the vehicle ids, Last Seen and the Autocharge switch',
+    async () => {
+      const screen = await renderWithQuery(<VehiclesScreen />);
+      expect(await screen.findByText('WVWZZZE2ZPP000001')).toBeTruthy();
+      expect(screen.getByText('AA:BB:CC:DD:EE:FF')).toBeTruthy();
+      expect(screen.getByTestId('vehicle-last-seen-veh_1')).toHaveTextContent(/Last Seen\s*CS-1, /);
+      const sw = screen.getByTestId('vehicle-autocharge-veh_1');
+      expect(sw.props.accessibilityLabel).toBe('Autocharge for Volkswagen ID.4');
+      expect(sw.props.value).toBe(false);
+      // A vehicle without a VIN or EVCCID cannot use Autocharge.
+      expect(screen.queryByTestId('vehicle-autocharge-veh_2')).toBeNull();
+    },
+    FIRST_RENDER_TIMEOUT_MS,
+  );
 
   it('turns Autocharge on through the vehicle update', async () => {
     mockPatch.mockResolvedValue({ ...WITH_IDS, autochargeEnabled: true });

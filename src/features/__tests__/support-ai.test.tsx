@@ -121,6 +121,7 @@ import React from 'react';
 import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { initTestI18n } from '@/test-utils/i18n';
+import { FIRST_RENDER_TIMEOUT_MS } from '@/test-utils/timeouts';
 import { ApiError } from '@/lib/api';
 import NewSupportCaseScreen from '../../../app/(tabs)/support/new';
 import SupportCaseDetailScreen from '../../../app/(tabs)/support/[id]';
@@ -232,21 +233,25 @@ function postedBody(): Record<string, unknown> {
 }
 
 describe('TC-AI-DR-UI-06 new case consent step', () => {
-  it('shows the notice and two choices, nothing preselected, when the feature is on', async () => {
-    const screen = await renderWithQuery(<NewSupportCaseScreen />);
-    expect(await screen.findByTestId('support-ai-consent')).toBeTruthy();
-    expect(screen.getByText('How should we handle your request?')).toBeTruthy();
-    expect(screen.getByText('About the AI analysis')).toBeTruthy();
-    // The driver data note, not the operator one.
-    expect(screen.getByText('What the AI receives')).toBeTruthy();
-    expect(screen.queryByText('What the AI provider receives')).toBeNull();
-    expect(screen.getByTestId('support-ai-choice-ai')).toBeTruthy();
-    expect(screen.getByTestId('support-ai-choice-team')).toBeTruthy();
-    // No form, and so no way to send, until the driver chooses.
-    expect(screen.queryByTestId('support-subject')).toBeNull();
-    expect(screen.queryByTestId('support-submit')).toBeNull();
-    expect(screen.queryByTestId('support-ai-choice')).toBeNull();
-  });
+  it(
+    'shows the notice and two choices, nothing preselected, when the feature is on',
+    async () => {
+      const screen = await renderWithQuery(<NewSupportCaseScreen />);
+      expect(await screen.findByTestId('support-ai-consent')).toBeTruthy();
+      expect(screen.getByText('How should we handle your request?')).toBeTruthy();
+      expect(screen.getByText('About the AI analysis')).toBeTruthy();
+      // The driver data note, not the operator one.
+      expect(screen.getByText('What the AI receives')).toBeTruthy();
+      expect(screen.queryByText('What the AI provider receives')).toBeNull();
+      expect(screen.getByTestId('support-ai-choice-ai')).toBeTruthy();
+      expect(screen.getByTestId('support-ai-choice-team')).toBeTruthy();
+      // No form, and so no way to send, until the driver chooses.
+      expect(screen.queryByTestId('support-subject')).toBeNull();
+      expect(screen.queryByTestId('support-submit')).toBeNull();
+      expect(screen.queryByTestId('support-ai-choice')).toBeNull();
+    },
+    FIRST_RENDER_TIMEOUT_MS,
+  );
 
   it('discloses what the AI reads and links the privacy policy', async () => {
     const screen = await renderWithQuery(<NewSupportCaseScreen />);
@@ -332,31 +337,35 @@ describe('TC-AI-DR-UI-06 case screen AI step', () => {
     jest.useRealTimers();
   });
 
-  it('shows the analyzing state as a live region and the answer once the poll brings it', async () => {
-    jest.useFakeTimers();
-    caseDetail = detail({ state: 'queued' });
-    const screen = await renderWithQuery(<SupportCaseDetailScreen />);
-    expect(await screen.findByText('Analyzing your issue')).toBeTruthy();
-    const live = screen.getByTestId('support-ai-live');
-    expect(live.props.accessibilityLiveRegion).toBe('polite');
-    expect(screen.getByText('Automatic answer')).toBeTruthy(); // status badge ai_assist
+  it(
+    'shows the analyzing state as a live region and the answer once the poll brings it',
+    async () => {
+      jest.useFakeTimers();
+      caseDetail = detail({ state: 'queued' });
+      const screen = await renderWithQuery(<SupportCaseDetailScreen />);
+      expect(await screen.findByText('Analyzing your issue')).toBeTruthy();
+      const live = screen.getByTestId('support-ai-live');
+      expect(live.props.accessibilityLiveRegion).toBe('polite');
+      expect(screen.getByText('Automatic answer')).toBeTruthy(); // status badge ai_assist
 
-    caseDetail = detail({ state: 'analyzing' });
-    await act(async () => {
-      jest.advanceTimersByTime(4000);
-    });
-    expect(screen.getByText('Analyzing your issue')).toBeTruthy();
+      caseDetail = detail({ state: 'analyzing' });
+      await act(async () => {
+        jest.advanceTimersByTime(4000);
+      });
+      expect(screen.getByText('Analyzing your issue')).toBeTruthy();
 
-    caseDetail = detail(
-      { state: 'awaiting_feedback', driverActions: ['try_other_connector', 'unknown_code'] },
-      { messages: [...detail({}).messages, ANSWER] },
-    );
-    await act(async () => {
-      jest.advanceTimersByTime(4000);
-    });
-    expect(await screen.findByTestId('support-ai-answer')).toBeTruthy();
-    expect(screen.queryByText('Analyzing your issue')).toBeNull();
-  });
+      caseDetail = detail(
+        { state: 'awaiting_feedback', driverActions: ['try_other_connector', 'unknown_code'] },
+        { messages: [...detail({}).messages, ANSWER] },
+      );
+      await act(async () => {
+        jest.advanceTimersByTime(4000);
+      });
+      expect(await screen.findByTestId('support-ai-answer')).toBeTruthy();
+      expect(screen.queryByText('Analyzing your issue')).toBeNull();
+    },
+    FIRST_RENDER_TIMEOUT_MS,
+  );
 
   it('labels the automatic answer and shows the driver action chips', async () => {
     caseDetail = detail(

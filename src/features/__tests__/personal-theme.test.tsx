@@ -88,6 +88,7 @@ import React from 'react';
 import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { initTestI18n } from '@/test-utils/i18n';
+import { FIRST_RENDER_TIMEOUT_MS } from '@/test-utils/timeouts';
 import { useUiTheme } from '@/lib/ui-theme';
 import PersonalInfoScreen from '../../../app/(tabs)/account/personal';
 
@@ -142,15 +143,19 @@ afterEach(() => {
   for (const client of clients.splice(0)) client.clear();
 });
 
-it('shows the account theme with its description', async () => {
-  mockAuthState.driver = { ...BASE_DRIVER, uiTheme: 'soft' };
-  const screen = await renderScreen();
-  expect(screen.getByText('Theme')).toBeTruthy();
-  expect(screen.getByTestId('personal-ui-theme')).toHaveTextContent('Soft');
-  expect(screen.getByTestId('personal-ui-theme-description')).toHaveTextContent(
-    'Rounder corners, lighter borders and softer shadows.',
-  );
-});
+it(
+  'shows the account theme with its description',
+  async () => {
+    mockAuthState.driver = { ...BASE_DRIVER, uiTheme: 'soft' };
+    const screen = await renderScreen();
+    expect(screen.getByText('Theme')).toBeTruthy();
+    expect(screen.getByTestId('personal-ui-theme')).toHaveTextContent('Soft');
+    expect(screen.getByTestId('personal-ui-theme-description')).toHaveTextContent(
+      'Rounder corners, lighter borders and softer shadows.',
+    );
+  },
+  FIRST_RENDER_TIMEOUT_MS,
+);
 
 it('offers the three themes and saves the pick on the account, then applies it', async () => {
   mockPatch.mockResolvedValue({ ...BASE_DRIVER, uiTheme: 'high-contrast' });

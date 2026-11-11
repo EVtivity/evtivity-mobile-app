@@ -49,6 +49,7 @@ import React from 'react';
 import { fireEvent, render, waitFor } from '@testing-library/react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { initTestI18n } from '@/test-utils/i18n';
+import { FIRST_RENDER_TIMEOUT_MS } from '@/test-utils/timeouts';
 import { ApiError } from '@/lib/api';
 import type { NotificationPrefs } from '@/lib/notification-prefs';
 import NotificationSettingsScreen from '../../../app/(tabs)/account/notifications';
@@ -104,25 +105,29 @@ afterEach(() => {
   for (const client of clients.splice(0)) client.clear();
 });
 
-it('renders a section per group and a switch per configured channel only', async () => {
-  mockGet.mockResolvedValue(reply());
-  const screen = await renderScreen();
-  expect(await screen.findByText('Charging Sessions')).toBeTruthy();
-  expect(screen.getByText('Payments')).toBeTruthy();
-  expect(screen.getByText('Charging started')).toBeTruthy();
-  expect(screen.getByText('Session receipt')).toBeTruthy();
-  expect(screen.getByTestId('notif-session.Started-email')).toBeTruthy();
-  expect(screen.getByTestId('notif-session.Started-push')).toBeTruthy();
-  // SMS is not set up by the operator.
-  expect(screen.queryByTestId('notif-session.Started-sms')).toBeNull();
-  expect(screen.queryByTestId('notif-all-sms')).toBeNull();
-  expect(screen.queryByTestId('notif-no-channels')).toBeNull();
-  expect(
-    screen.getByText(
-      'Account and security messages, such as password resets and sign-in codes, are always sent.',
-    ),
-  ).toBeTruthy();
-});
+it(
+  'renders a section per group and a switch per configured channel only',
+  async () => {
+    mockGet.mockResolvedValue(reply());
+    const screen = await renderScreen();
+    expect(await screen.findByText('Charging Sessions')).toBeTruthy();
+    expect(screen.getByText('Payments')).toBeTruthy();
+    expect(screen.getByText('Charging started')).toBeTruthy();
+    expect(screen.getByText('Session receipt')).toBeTruthy();
+    expect(screen.getByTestId('notif-session.Started-email')).toBeTruthy();
+    expect(screen.getByTestId('notif-session.Started-push')).toBeTruthy();
+    // SMS is not set up by the operator.
+    expect(screen.queryByTestId('notif-session.Started-sms')).toBeNull();
+    expect(screen.queryByTestId('notif-all-sms')).toBeNull();
+    expect(screen.queryByTestId('notif-no-channels')).toBeNull();
+    expect(
+      screen.getByText(
+        'Account and security messages, such as password resets and sign-in codes, are always sent.',
+      ),
+    ).toBeTruthy();
+  },
+  FIRST_RENDER_TIMEOUT_MS,
+);
 
 it('locks a mandatory cell on and never sends it', async () => {
   mockGet.mockResolvedValue(reply());

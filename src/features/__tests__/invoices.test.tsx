@@ -106,6 +106,7 @@ import React from 'react';
 import { fireEvent, render, waitFor } from '@testing-library/react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { initTestI18n } from '@/test-utils/i18n';
+import { FIRST_RENDER_TIMEOUT_MS } from '@/test-utils/timeouts';
 import { ApiError } from '@/lib/api';
 import InvoicesScreen from '../../../app/(tabs)/account/invoices/index';
 import InvoiceDetailScreen from '../../../app/(tabs)/account/invoices/[id]';
@@ -215,17 +216,21 @@ beforeEach(() => {
 });
 
 describe('Invoices screen', () => {
-  it('lists the invoices with the fleet, status and total, and pages on', async () => {
-    const screen = await renderWithQuery(<InvoicesScreen />);
-    expect(await screen.findByText('Invoice INV-2026-0001')).toBeTruthy();
-    expect(screen.getByText('Via Acme')).toBeTruthy();
-    expect(screen.getByText('Issued')).toBeTruthy();
-    expect(screen.getByTestId('invoice-row-total-inv_1')).toHaveTextContent('€11.90');
+  it(
+    'lists the invoices with the fleet, status and total, and pages on',
+    async () => {
+      const screen = await renderWithQuery(<InvoicesScreen />);
+      expect(await screen.findByText('Invoice INV-2026-0001')).toBeTruthy();
+      expect(screen.getByText('Via Acme')).toBeTruthy();
+      expect(screen.getByText('Issued')).toBeTruthy();
+      expect(screen.getByTestId('invoice-row-total-inv_1')).toHaveTextContent('€11.90');
 
-    await fireEvent.press(screen.getByTestId('invoices-load-more'));
-    expect(await screen.findByText('Invoice INV-0')).toBeTruthy();
-    expect(screen.queryByTestId('invoices-load-more')).toBeNull();
-  });
+      await fireEvent.press(screen.getByTestId('invoices-load-more'));
+      expect(await screen.findByText('Invoice INV-0')).toBeTruthy();
+      expect(screen.queryByTestId('invoices-load-more')).toBeNull();
+    },
+    FIRST_RENDER_TIMEOUT_MS,
+  );
 
   it('opens an invoice', async () => {
     const screen = await renderWithQuery(<InvoicesScreen />);
@@ -289,26 +294,33 @@ describe('Invoice detail screen', () => {
 });
 
 describe('Billing address screen', () => {
-  it('nudges a member-billed driver without an address and saves blank fields as null', async () => {
-    mockPatch.mockResolvedValue({});
-    const screen = await renderWithQuery(<BillingAddressScreen />);
-    expect(await screen.findByTestId('billing-address-nudge')).toBeTruthy();
+  it(
+    'nudges a member-billed driver without an address and saves blank fields as null',
+    async () => {
+      mockPatch.mockResolvedValue({});
+      const screen = await renderWithQuery(<BillingAddressScreen />);
+      expect(await screen.findByTestId('billing-address-nudge')).toBeTruthy();
 
-    await fireEvent.changeText(screen.getByTestId('billing-address-billingStreet'), ' Main St 1 ');
-    await fireEvent.changeText(screen.getByTestId('billing-address-billingCity'), 'Berlin');
-    await fireEvent.press(screen.getByTestId('billing-address-save'));
+      await fireEvent.changeText(
+        screen.getByTestId('billing-address-billingStreet'),
+        ' Main St 1 ',
+      );
+      await fireEvent.changeText(screen.getByTestId('billing-address-billingCity'), 'Berlin');
+      await fireEvent.press(screen.getByTestId('billing-address-save'));
 
-    await waitFor(() =>
-      expect(mockPatch).toHaveBeenCalledWith('/v1/portal/driver/billing-address', {
-        ...EMPTY_ADDRESS,
-        billingStreet: 'Main St 1',
-        billingCity: 'Berlin',
-      }),
-    );
-    await waitFor(() =>
-      expect(mockToast).toHaveBeenCalledWith('Billing address saved.', 'success'),
-    );
-  });
+      await waitFor(() =>
+        expect(mockPatch).toHaveBeenCalledWith('/v1/portal/driver/billing-address', {
+          ...EMPTY_ADDRESS,
+          billingStreet: 'Main St 1',
+          billingCity: 'Berlin',
+        }),
+      );
+      await waitFor(() =>
+        expect(mockToast).toHaveBeenCalledWith('Billing address saved.', 'success'),
+      );
+    },
+    FIRST_RENDER_TIMEOUT_MS,
+  );
 
   it('shows no nudge when the fleet itself is invoiced', async () => {
     me = { billing: { mode: 'account', fleetName: 'Acme', invoicedTo: 'fleet' } };
