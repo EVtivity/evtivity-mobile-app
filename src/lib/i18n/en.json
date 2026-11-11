@@ -137,6 +137,7 @@
     "noResults": "No chargers found",
     "connectors": "Connectors",
     "selectConnector": "Select a connector",
+    "showAllConnectors": "Show All {{total}} Connectors",
     "start": "Start Charging",
     "starting": "Starting...",
     "stop": "Stop Charging",

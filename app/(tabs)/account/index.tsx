@@ -26,6 +26,7 @@ import { hsl } from '@/lib/theme';
 import { formatDate } from '@/lib/format';
 import { DriverAvatar } from '@/components/DriverAvatar';
 import { useDriverAvatar } from '@/features/avatar';
+import { useSupportEnabled } from '@/features/app-info';
 
 export default function AccountScreen(): React.JSX.Element {
   const { t } = useTranslation();
@@ -33,6 +34,7 @@ export default function AccountScreen(): React.JSX.Element {
   const driver = useAuth((s) => s.driver);
   const logout = useAuth((s) => s.logout);
   const avatar = useDriverAvatar();
+  const supportEnabled = useSupportEnabled();
 
   const fullName = driver != null ? `${driver.firstName} ${driver.lastName}`.trim() : '';
 
@@ -139,13 +141,15 @@ export default function AccountScreen(): React.JSX.Element {
           left={<Star size={20} color={hsl('mutedForeground')} />}
           onPress={() => router.push('/favorites')}
         />
-        <ListRow
-          testID="account-row-support"
-          className="border-t border-muted-foreground/30"
-          title={t('account.support')}
-          left={<LifeBuoy size={20} color={hsl('mutedForeground')} />}
-          onPress={() => router.push('/support')}
-        />
+        {supportEnabled ? (
+          <ListRow
+            testID="account-row-support"
+            className="border-t border-muted-foreground/30"
+            title={t('account.support')}
+            left={<LifeBuoy size={20} color={hsl('mutedForeground')} />}
+            onPress={() => router.push('/support')}
+          />
+        ) : null}
         <ListRow
           testID="account-row-about"
           className="border-t border-muted-foreground/30"

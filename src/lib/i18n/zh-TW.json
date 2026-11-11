@@ -137,6 +137,7 @@
     "noResults": "找不到充電樁",
     "connectors": "連接器",
     "selectConnector": "選擇連接器",
+    "showAllConnectors": "顯示全部 {{total}} 個連接器",
     "start": "開始充電",
     "starting": "啟動中...",
     "stop": "停止充電",

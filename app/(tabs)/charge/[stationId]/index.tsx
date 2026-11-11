@@ -50,6 +50,8 @@ import { usePriceDisplay } from '@/features/price-display';
 import { useDriverBilling } from '@/features/account';
 import { accountBillingAt } from '@/lib/fleet-billing';
 import { connectorTileTestId } from '@/lib/test-ids';
+import { scannedEvseId, visibleEvses } from '@/lib/connector-focus';
+import { useSupportEnabled } from '@/features/app-info';
 import { ApiError, apiErrorMessage } from '@/lib/api';
 
 interface SelectedConnector {
@@ -85,8 +87,15 @@ export default function StationDetailScreen(): React.JSX.Element {
   const fleetName = accountBilling?.fleetName ?? null;
   const memberBilled = accountBilling?.invoicedTo === 'member';
 
+  const supportEnabled = useSupportEnabled();
+
   // The driver's explicit connector tap; null until they choose one.
   const [manualSelected, setSelected] = React.useState<SelectedConnector | null>(null);
+  // A scanned QR code names one connector: list only that one until the driver
+  // asks for all of them (Show All Connectors), as the driver portal does. The
+  // choice holds for the scan it was made on, so a new scan focuses again.
+  const [showAllFor, setShowAllFor] = React.useState<string | null>(null);
+  const focusedEvseId = showAllFor === (evseId ?? '') ? null : scannedEvseId(evseId);
   const [warnVisible, setWarnVisible] = React.useState(false);
   const [checking, setChecking] = React.useState(false);
   const [cardSheetVisible, setCardSheetVisible] = React.useState(false);
@@ -111,7 +120,12 @@ export default function StationDetailScreen(): React.JSX.Element {
   // a connector: the one from a scanned QR code (the `evseId` param), else the
   // only startable connector at the station so the driver can start without a
   // tap. Only a connector that can actually start and is not reserved by another
-  // driver qualifies; otherwise nothing is highlighted.
+  // driver qualifies; otherwise nothing is highlighted. While the list shows only
+  // the scanned connector, only that one can be picked: never a hidden one.
+  const shownEvses = React.useMemo(
+    (): readonly StationEvse[] => visibleEvses(station.data?.evses ?? [], focusedEvseId),
+    [station.data, focusedEvseId],
+  );
   const autoSelected = React.useMemo((): SelectedConnector | null => {
     const data = station.data;
     if (data == null) return null;
@@ -125,16 +139,22 @@ export default function StationDetailScreen(): React.JSX.Element {
       return connector != null ? { evseId: evse.evseId, connector } : null;
     };
     if (evseId != null) {
-      const evse = data.evses.find((e) => e.evseId === Number(evseId));
+      const evse = shownEvses.find((e) => e.evseId === Number(evseId));
       const fromQr = evse != null ? startableOn(evse) : null;
       if (fromQr != null) return fromQr;
     }
-    const startable = data.evses.map(startableOn).filter((c): c is SelectedConnector => c != null);
+    const startable = shownEvses.map(startableOn).filter((c): c is SelectedConnector => c != null);
     const [only] = startable;
     return startable.length === 1 && only != null ? only : null;
-  }, [evseId, station.data]);
-  // A manual tap always wins over the derived default.
-  const selected = manualSelected ?? autoSelected;
+  }, [evseId, station.data, shownEvses]);
+  // A manual tap always wins over the derived default, unless its connector is
+  // no longer listed.
+  const manualShown =
+    manualSelected != null && shownEvses.some((e) => e.evseId === manualSelected.evseId)
+      ? manualSelected
+      : null;
+  const selected = manualShown ?? autoSelected;
+  const focused = shownEvses.length < (station.data?.evses.length ?? 0);
 
   const onToggleFavorite = React.useCallback(() => {
     toggleFavorite.mutate({
@@ -407,9 +427,11 @@ export default function StationDetailScreen(): React.JSX.Element {
         </Card>
       ) : (
         <>
-          <Text className="text-sm text-muted-foreground">{t('charge.selectConnector')}</Text>
+          {!focused || selected == null ? (
+            <Text className="text-sm text-muted-foreground">{t('charge.selectConnector')}</Text>
+          ) : null}
           <View className="flex-row flex-wrap gap-3">
-            {data.evses.map((evse) => {
+            {shownEvses.map((evse) => {
               const connector = firstStartableConnector(evse) ?? evse.connectors[0];
               if (connector == null) return null;
               const selectable = isEvseSelectable(evse, {
@@ -435,6 +457,15 @@ export default function StationDetailScreen(): React.JSX.Element {
               );
             })}
           </View>
+
+          {focused ? (
+            <Button
+              testID="station-show-all-connectors"
+              title={t('charge.showAllConnectors', { total: data.evses.length })}
+              variant="ghost"
+              onPress={() => setShowAllFor(evseId ?? '')}
+            />
+          ) : null}
 
           <Button
             testID="station-start"
@@ -462,13 +493,16 @@ export default function StationDetailScreen(): React.JSX.Element {
         />
       ) : null}
 
-      <Button
-        title={t('charge.reportIssue')}
-        variant="outline"
-        onPress={() =>
-          router.push({ pathname: '/support/new', params: { stationId: data.stationId } })
-        }
-      />
+      {supportEnabled ? (
+        <Button
+          testID="station-report-issue"
+          title={t('charge.reportIssue')}
+          variant="outline"
+          onPress={() =>
+            router.push({ pathname: '/support/new', params: { stationId: data.stationId } })
+          }
+        />
+      ) : null}
 
       <Sheet
         visible={warnVisible}

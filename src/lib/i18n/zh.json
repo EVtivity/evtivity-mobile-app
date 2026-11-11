@@ -137,6 +137,7 @@
     "noResults": "未找到充电桩",
     "connectors": "连接器",
     "selectConnector": "选择连接器",
+    "showAllConnectors": "显示全部 {{total}} 个连接器",
     "start": "开始充电",
     "starting": "启动中...",
     "stop": "停止充电",

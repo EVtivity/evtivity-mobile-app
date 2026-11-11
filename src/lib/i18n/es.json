@@ -137,6 +137,7 @@
     "noResults": "No se encontraron cargadores",
     "connectors": "Conectores",
     "selectConnector": "Seleccione un conector",
+    "showAllConnectors": "Mostrar los {{total}} conectores",
     "start": "Iniciar carga",
     "starting": "Iniciando...",
     "stop": "Detener carga",

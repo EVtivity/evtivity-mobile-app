@@ -33,7 +33,10 @@ export function useBranding() {
 
 export interface Features {
   reservationEnabled: boolean;
-  supportEnabled: boolean;
+  // Driver support cases (support.enabled). Absent counts as on; false hides
+  // Report Issue and the Support row, and the support screens go home, since
+  // the API refuses every support request with 403 SUPPORT_DISABLED.
+  supportEnabled?: boolean;
   roamingEnabled: boolean;
   reservationMaxHours?: number;
   reservationCancellationFeeCents?: number;
@@ -90,6 +93,18 @@ export function useRegistrationStatus(): { state: RegistrationState; retry: () =
   }
   if (isPending) return { state: 'loading', retry };
   return { state: 'error', retry };
+}
+
+// Whether driver support is on. Only an explicit false turns it off, so the
+// entry points stay while the features load, fail to load, or come from a
+// server without the field (the API still refuses when support is off).
+export function isSupportEnabled(features: Pick<Features, 'supportEnabled'> | undefined): boolean {
+  return features?.supportEnabled !== false;
+}
+
+export function useSupportEnabled(): boolean {
+  const { data } = useFeatures();
+  return isSupportEnabled(data);
 }
 
 export function useCsmsVersion() {

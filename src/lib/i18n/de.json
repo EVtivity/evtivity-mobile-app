@@ -137,6 +137,7 @@
     "noResults": "Keine Ladestationen gefunden",
     "connectors": "Anschlüsse",
     "selectConnector": "Anschluss auswählen",
+    "showAllConnectors": "Alle {{total}} Anschlüsse anzeigen",
     "start": "Ladevorgang starten",
     "starting": "Wird gestartet...",
     "stop": "Ladevorgang beenden",

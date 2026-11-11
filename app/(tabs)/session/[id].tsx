@@ -46,6 +46,7 @@ import { SessionCharts } from '@/components/charts/SessionCharts';
 import { SessionVehicleIdCard } from '@/components/SessionVehicleIdCard';
 import { DetailRow as Row, SessionCostRows } from '@/components/SessionCostRows';
 import { usePriceDisplay } from '@/features/price-display';
+import { useSupportEnabled } from '@/features/app-info';
 import { accountBillingStateKey } from '@/lib/fleet-billing';
 import { sessionStateTestId, paymentStatusTestId, fleetBillingStateTestId } from '@/lib/test-ids';
 import { hsl } from '@/lib/theme';
@@ -157,6 +158,7 @@ function LiveDuration({
 export default function SessionScreen(): React.JSX.Element {
   const { t } = useTranslation();
   const router = useRouter();
+  const supportEnabled = useSupportEnabled();
   const toast = useToast();
   const showApiError = useApiErrorToast();
   const confirm = useConfirm();
@@ -502,12 +504,15 @@ export default function SessionScreen(): React.JSX.Element {
         </Card>
       ) : null}
 
-      <Button
-        title={t('charge.detail.reportIssue')}
-        variant="outline"
-        leftIcon={<LifeBuoy size={18} />}
-        onPress={() => router.push({ pathname: '/support/new', params: { sessionId: sid } })}
-      />
+      {supportEnabled ? (
+        <Button
+          testID="session-report-issue"
+          title={t('charge.detail.reportIssue')}
+          variant="outline"
+          leftIcon={<LifeBuoy size={18} />}
+          onPress={() => router.push({ pathname: '/support/new', params: { sessionId: sid } })}
+        />
+      ) : null}
 
       <Sheet
         visible={vehicleSheet}
