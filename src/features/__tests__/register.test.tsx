@@ -7,11 +7,19 @@
 const mockRegister = jest.fn();
 const mockReplace = jest.fn();
 const mockGet = jest.fn();
+const mockFeatures = jest.fn();
 
-// The screen loads the password policy from GET /v1/security/public.
+// The screen loads the password policy from GET /v1/security/public and the
+// registration switch from GET /v1/portal/features.
 jest.mock('@/lib/api', () => {
   const actual = jest.requireActual<typeof import('@/lib/api')>('@/lib/api');
-  return { ...actual, api: { get: (...args: unknown[]) => mockGet(...args) } };
+  return {
+    ...actual,
+    api: {
+      get: (url: string, ...args: unknown[]) =>
+        url === '/v1/portal/features' ? mockFeatures() : mockGet(url, ...args),
+    },
+  };
 });
 
 // The language the app shows when the visitor registers (lib/i18n, its own tests).
@@ -28,6 +36,10 @@ jest.mock('expo-router', () => {
     useRouter: () => ({ replace: mockReplace, push: jest.fn() }),
     Link: ({ children }: { children?: React.ReactNode }) =>
       React.createElement(React.Fragment, null, children),
+    Redirect: ({ href }: { href: string }) => {
+      const { Text } = jest.requireActual<typeof import('react-native')>('react-native');
+      return React.createElement(Text, null, `redirect ${href}`);
+    },
   };
 });
 
@@ -51,6 +63,9 @@ jest.mock('@/components/ui', () => {
   return {
     Text,
     Screen: Box,
+    Spinner: () => React.createElement(RN.View, { testID: 'spinner' }),
+    EmptyState: ({ title, action }: { title: string; action?: React.ReactNode }) =>
+      React.createElement(RN.View, null, React.createElement(Text, null, title), action),
     Button: ({
       title,
       testID,
@@ -94,13 +109,19 @@ import RegisterScreen from '../../../app/(auth)/register';
 
 let client: QueryClient;
 
-async function fillAndSubmit(): Promise<void> {
+async function renderScreen(): Promise<void> {
   client = new QueryClient({ defaultOptions: { queries: { gcTime: Infinity, retry: false } } });
   await render(
     <QueryClientProvider client={client}>
       <RegisterScreen />
     </QueryClientProvider>,
   );
+}
+
+async function fillAndSubmit(): Promise<void> {
+  await renderScreen();
+  // The form shows once the features confirm registration is open.
+  await screen.findByTestId('register-firstName');
   await fireEvent.changeText(screen.getByTestId('register-firstName'), 'Jane');
   await fireEvent.changeText(screen.getByTestId('register-lastName'), 'Doe');
   await fireEvent.changeText(screen.getByTestId('register-email'), ' jane@example.com ');
@@ -117,6 +138,7 @@ beforeAll(async () => {
 beforeEach(() => {
   jest.clearAllMocks();
   mockGet.mockResolvedValue({ recaptchaEnabled: false });
+  mockFeatures.mockResolvedValue({ registrationEnabled: true });
 });
 
 it('asks the driver to check the inbox, then goes back to sign in', async () => {
@@ -192,4 +214,40 @@ it('checks the live policy before submitting', async () => {
   await fillAndSubmit();
   expect(await screen.findByText('Password needs at least 20 characters.')).toBeTruthy();
   expect(mockRegister).not.toHaveBeenCalled();
+});
+
+it('goes back to sign-in while registration is closed', async () => {
+  mockFeatures.mockResolvedValue({ registrationEnabled: false });
+  await renderScreen();
+  expect(await screen.findByText('redirect /(auth)/login')).toBeTruthy();
+  expect(screen.queryByTestId('register-firstName')).toBeNull();
+});
+
+it('shows no form while the features load', async () => {
+  mockFeatures.mockReturnValue(new Promise(() => undefined));
+  await renderScreen();
+  expect(screen.getByTestId('spinner')).toBeTruthy();
+  expect(screen.queryByTestId('register-firstName')).toBeNull();
+  expect(screen.queryByText('redirect /(auth)/login')).toBeNull();
+});
+
+it('shows no form and offers a retry when the features cannot be read', async () => {
+  mockFeatures.mockRejectedValue(new Error('network'));
+  await renderScreen();
+  expect(await screen.findByTestId('register-retry')).toBeTruthy();
+  expect(screen.queryByTestId('register-firstName')).toBeNull();
+  expect(screen.queryByText('redirect /(auth)/login')).toBeNull();
+  mockFeatures.mockResolvedValue({ registrationEnabled: true });
+  await fireEvent.press(screen.getByTestId('register-retry'));
+  expect(await screen.findByTestId('register-firstName')).toBeTruthy();
+});
+
+it('keeps the check-your-email card when registration closes after the request', async () => {
+  mockRegister.mockResolvedValue(undefined);
+  await fillAndSubmit();
+  await waitFor(() => expect(screen.getByText('Check Your Email')).toBeTruthy());
+  mockFeatures.mockResolvedValue({ registrationEnabled: false });
+  await client.refetchQueries({ queryKey: ['features'] });
+  expect(screen.getByText('Check Your Email')).toBeTruthy();
+  expect(screen.queryByText('redirect /(auth)/login')).toBeNull();
 });

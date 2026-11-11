@@ -12,6 +12,7 @@ import { useAuth } from '@/lib/auth';
 import { isMfaRequired } from '@/lib/types';
 import { ApiError, getApiErrorFieldDetails } from '@/lib/api';
 import { validateEmail } from '@/lib/validation';
+import { useRegistrationStatus } from '@/features/app-info';
 
 export default function LoginScreen(): React.JSX.Element {
   const { t } = useTranslation();
@@ -19,6 +20,8 @@ export default function LoginScreen(): React.JSX.Element {
   const showApiError = useApiErrorToast();
   const login = useAuth((s) => s.login);
   const setMfaPending = useAuth((s) => s.setMfaPending);
+  // Sign-up shows only once the features confirm registration is open.
+  const registrationOpen = useRegistrationStatus().state === 'open';
 
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -100,14 +103,16 @@ export default function LoginScreen(): React.JSX.Element {
           <Text className="text-base text-primary">{t('auth.forgotPassword')}</Text>
         </Link>
       </View>
-      <View className="mt-8 flex-row justify-center gap-1">
-        <Text className="text-base text-muted-foreground">{t('auth.noAccount')}</Text>
-        <Link href="/(auth)/register">
-          <Text weight="semibold" className="text-base text-primary">
-            {t('auth.createOne')}
-          </Text>
-        </Link>
-      </View>
+      {registrationOpen ? (
+        <View testID="login-sign-up" className="mt-8 flex-row justify-center gap-1">
+          <Text className="text-base text-muted-foreground">{t('auth.noAccount')}</Text>
+          <Link href="/(auth)/register">
+            <Text weight="semibold" className="text-base text-primary">
+              {t('auth.createOne')}
+            </Text>
+          </Link>
+        </View>
+      ) : null}
       <AuthFooter />
     </Screen>
   );

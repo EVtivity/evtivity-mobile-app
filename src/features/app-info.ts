@@ -54,6 +54,10 @@ export interface Features {
   // on). False: the operator manages them and the API refuses every driver
   // change with 403 RFID_SELF_SERVICE_DISABLED.
   rfidSelfServiceEnabled?: boolean;
+  // Drivers create their own account (portal.registrationEnabled; absent on
+  // older servers). False: the API refuses registration with 403
+  // PORTAL_REGISTRATION_DISABLED and the operator invites drivers.
+  registrationEnabled?: boolean;
 }
 
 // Operator feature toggles from the CSMS. Gates the Reserve tab and other
@@ -64,6 +68,26 @@ export function useFeatures() {
     queryFn: () => api.get<Features>('/v1/portal/features'),
     staleTime: 5 * 60 * 1000,
   });
+}
+
+// Whether the app offers sign-up. Unlike the other toggles (on until loaded),
+// sign-up shows only once the features confirm it:
+// - open: the features say true, the only state that offers sign-up.
+// - closed: the features say false; the register screen goes back to sign-in.
+// - loading: the features are still loading.
+// - error: the features could not be read, or carry no value (older server).
+// The sign-in link and the register form show only while open, as in the portal.
+export type RegistrationState = 'open' | 'closed' | 'loading' | 'error';
+
+export function useRegistrationStatus(): { state: RegistrationState; retry: () => void } {
+  const { data, isPending, refetch } = useFeatures();
+  const retry = (): void => {
+    void refetch();
+  };
+  if (data?.registrationEnabled === true) return { state: 'open', retry };
+  if (data?.registrationEnabled === false) return { state: 'closed', retry };
+  if (isPending) return { state: 'loading', retry };
+  return { state: 'error', retry };
 }
 
 export function useCsmsVersion() {

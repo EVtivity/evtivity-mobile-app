@@ -44,6 +44,11 @@ jest.mock('@/lib/api', () => {
 
 jest.mock('expo-screen-capture', () => ({ usePreventScreenCapture: () => undefined }));
 
+// The sign-up link reads the public features (login-sign-up.test.tsx).
+jest.mock('@/features/app-info', () => ({
+  useRegistrationStatus: () => ({ state: 'open', retry: () => undefined }),
+}));
+
 jest.mock('expo-router', () => {
   const React = jest.requireActual<typeof import('react')>('react');
   return {

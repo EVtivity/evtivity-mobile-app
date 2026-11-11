@@ -3,9 +3,9 @@
 
 import React from 'react';
 import { View } from 'react-native';
-import { Link, useRouter } from 'expo-router';
+import { Link, Redirect, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Screen, Field, Button, Text } from '@/components/ui';
+import { Screen, Field, Button, Text, Spinner, EmptyState } from '@/components/ui';
 import { AuthHeader } from '@/components/AuthHeader';
 import { AuthFooter } from '@/components/AuthFooter';
 import { PasswordRules } from '@/components/PasswordRules';
@@ -14,12 +14,14 @@ import { currentAppLanguage } from '@/lib/i18n';
 import { ApiError, getApiErrorFieldDetails, apiErrorMessage } from '@/lib/api';
 import { validateEmail, validatePassword } from '@/lib/validation';
 import { usePasswordPolicy, useWeakPasswordReply } from '@/features/password-policy';
+import { useRegistrationStatus } from '@/features/app-info';
 import type { PasswordRule } from '@/lib/password-policy';
 
 export default function RegisterScreen(): React.JSX.Element {
   const { t } = useTranslation();
   const router = useRouter();
   const register = useAuth((s) => s.register);
+  const registration = useRegistrationStatus();
 
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
@@ -93,6 +95,42 @@ export default function RegisterScreen(): React.JSX.Element {
             title={t('auth.backToLogin')}
             onPress={() => router.replace('/(auth)/login')}
           />
+        </View>
+        <AuthFooter />
+      </Screen>
+    );
+  }
+
+  // A closed portal sends the visit back to sign-in instead of a form the API
+  // refuses. Checked after the confirmation above, so a driver who already
+  // registered keeps it.
+  if (registration.state === 'closed') return <Redirect href="/(auth)/login" />;
+
+  // The form shows only once the features confirm registration is open.
+  if (registration.state !== 'open') {
+    return (
+      <Screen scroll>
+        <AuthHeader title={t('auth.createAccount')} />
+        {registration.state === 'loading' ? (
+          <Spinner />
+        ) : (
+          <EmptyState
+            title={t('common.somethingWrong')}
+            action={
+              <Button
+                testID="register-retry"
+                title={t('common.retry')}
+                onPress={registration.retry}
+              />
+            }
+          />
+        )}
+        <View className="mt-8 flex-row justify-center gap-1">
+          <Link href="/(auth)/login">
+            <Text weight="semibold" className="text-base text-primary">
+              {t('auth.backToLogin')}
+            </Text>
+          </Link>
         </View>
         <AuthFooter />
       </Screen>
