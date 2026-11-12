@@ -664,6 +664,7 @@
   },
   "location": {
     "chargerCount": "{{chargers}} 个充电桩，{{available}} 个可用",
+    "chargers": "充电桩",
     "getDirections": "获取路线",
     "photos": "照片",
     "popularTimes": "热门时段",

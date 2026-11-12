@@ -22,6 +22,15 @@ MAESTRO_DEVICE=<udid> .maestro/run.sh # a specific device
 maestro test .maestro/flows/01-login-success.yaml
 ```
 
+Flows 21 and 22 also check a station with units (charger boxes, each shown as
+its own charger) when you name one; without these values they check only that
+a station without units shows no unit title:
+
+```bash
+maestro test -e UNIT_STATION_ID=<station> -e UNIT_ID=<unit id> .maestro/flows/21-charge-station-detail.yaml
+maestro test -e UNIT_STATION_ID=<station> -e UNIT_EVSE_ID=<evse of a unit> .maestro/flows/22-charge-evse-detail.yaml
+```
+
 ## Charging journeys
 
 The flows in `.maestro/journeys/` charge for real against a local EVtivity

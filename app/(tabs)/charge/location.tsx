@@ -5,7 +5,7 @@ import React from 'react';
 import { View, ScrollView, Modal, Pressable, Linking } from 'react-native';
 import { Image } from 'expo-image';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { MapPin, Clock, Plug, Navigation, Mail, MessageSquare, User, X } from '@/components/icons';
 import {
@@ -22,6 +22,7 @@ import { LocationImageThumb } from '@/components/LocationImageThumb';
 import { PopularTimesChart } from '@/components/PopularTimesChart';
 import { openEmail, openPhone } from '@/lib/safe-link';
 import { hsl } from '@/lib/theme';
+import { chargerRouteParams, locationChargers } from '@/lib/station-units';
 import {
   useLocationDetail,
   useLocationImages,
@@ -38,6 +39,7 @@ function staticMapUrl(lat: number, lng: number, apiKey: string): string {
 
 export default function LocationDetailScreen(): React.JSX.Element {
   const { t } = useTranslation();
+  const router = useRouter();
   const { siteId } = useLocalSearchParams<{ siteId: string }>();
   const id = siteId ?? '';
 
@@ -82,6 +84,10 @@ export default function LocationDetailScreen(): React.JSX.Element {
   const apiKey = mapConfig.data?.apiKey;
   const showMap = apiKey != null && apiKey.length > 0 && hasCoords;
 
+  // A site with a station that has units lists its chargers (each unit, and a
+  // station's EVSEs without a unit, as its own charger). A site without units
+  // keeps the screen it had.
+  const chargerList = locationChargers(data.chargers ?? []);
   const imageList = images.data ?? [];
   const popularForDay = (popular.data ?? []).filter((p) => p.dow === Number(dow));
   const showPopular = (popular.data ?? []).length > 0;
@@ -127,6 +133,36 @@ export default function LocationDetailScreen(): React.JSX.Element {
           </Text>
         </View>
       </View>
+
+      {chargerList.length > 0 ? (
+        <View testID="location-chargers" className="gap-2">
+          <Text variant="h3">{t('location.chargers')}</Text>
+          {chargerList.map((charger) => (
+            <Card
+              key={charger.key}
+              testID={`location-charger-${charger.key}`}
+              className="gap-1"
+              onPress={() =>
+                router.push({
+                  pathname: '/charge/[stationId]',
+                  params: chargerRouteParams(charger, chargerList),
+                })
+              }
+            >
+              <Text variant="label">{charger.unitName ?? charger.stationName}</Text>
+              {charger.unitName != null ? (
+                <Text className="text-sm text-muted-foreground">{charger.stationName}</Text>
+              ) : null}
+              <Text className="text-sm text-muted-foreground">
+                {t('charge.availableOfTotal', {
+                  available: charger.availableCount,
+                  total: charger.evseCount,
+                })}
+              </Text>
+            </Card>
+          ))}
+        </View>
+      ) : null}
 
       {showMap ? (
         <Card className="gap-3">

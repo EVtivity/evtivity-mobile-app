@@ -664,6 +664,7 @@
   },
   "location": {
     "chargerCount": "{{chargers}} chargers, {{available}} available",
+    "chargers": "Chargers",
     "getDirections": "Get Directions",
     "photos": "Photos",
     "popularTimes": "Popular Times",

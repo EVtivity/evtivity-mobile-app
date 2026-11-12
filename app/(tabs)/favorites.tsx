@@ -20,6 +20,7 @@ import {
 } from '@/components/ui';
 import { hsl } from '@/lib/theme';
 import { useFavorites, useToggleFavorite } from '@/features/favorites';
+import { savedChargerParams } from '@/lib/station-units';
 
 export default function FavoritesScreen(): React.JSX.Element {
   const { t } = useTranslation();
@@ -73,7 +74,7 @@ export default function FavoritesScreen(): React.JSX.Element {
               onPress={() =>
                 router.push({
                   pathname: '/charge/[stationId]',
-                  params: { stationId: fav.stationId },
+                  params: savedChargerParams(fav),
                 })
               }
             >
@@ -82,6 +83,11 @@ export default function FavoritesScreen(): React.JSX.Element {
                   <StatusDot tone={fav.isOnline ? 'success' : 'muted'} />
                   <Text variant="label">{fav.siteName ?? fav.stationId}</Text>
                 </View>
+                {fav.unitName != null ? (
+                  <Text weight="medium" className="mt-1 text-sm text-foreground">
+                    {fav.unitName}
+                  </Text>
+                ) : null}
                 {fav.siteAddress != null ? (
                   <View className="mt-1 flex-row items-center gap-1">
                     <MapPin size={14} color={hsl('mutedForeground')} />

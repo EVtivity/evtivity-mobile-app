@@ -20,6 +20,7 @@ import {
 } from '@/components/ui';
 import { hsl } from '@/lib/theme';
 import { useWatches, useToggleWatch } from '@/features/station-watch';
+import { savedChargerParams } from '@/lib/station-units';
 
 export default function WatchingScreen(): React.JSX.Element {
   const { t } = useTranslation();
@@ -73,7 +74,7 @@ export default function WatchingScreen(): React.JSX.Element {
               onPress={() =>
                 router.push({
                   pathname: '/charge/[stationId]',
-                  params: { stationId: w.stationId },
+                  params: savedChargerParams(w),
                 })
               }
             >
@@ -82,6 +83,11 @@ export default function WatchingScreen(): React.JSX.Element {
                   <StatusDot tone={w.isOnline ? 'success' : 'muted'} />
                   <Text variant="label">{w.siteName ?? w.stationId}</Text>
                 </View>
+                {w.unitName != null ? (
+                  <Text weight="medium" className="mt-1 text-sm text-foreground">
+                    {w.unitName}
+                  </Text>
+                ) : null}
                 {w.siteAddress != null ? (
                   <View className="mt-1 flex-row items-center gap-1">
                     <MapPin size={14} color={hsl('mutedForeground')} />

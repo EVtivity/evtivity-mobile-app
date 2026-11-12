@@ -51,6 +51,7 @@ import { useDriverBilling } from '@/features/account';
 import { accountBillingAt } from '@/lib/fleet-billing';
 import { connectorTileTestId } from '@/lib/test-ids';
 import { scannedEvseId, visibleEvses } from '@/lib/connector-focus';
+import { chargerEvses, chargerGroups, chargerView, unitOfEvse } from '@/lib/station-units';
 import { useSupportEnabled } from '@/features/app-info';
 import { ApiError, apiErrorMessage } from '@/lib/api';
 
@@ -68,14 +69,18 @@ export default function StationDetailScreen(): React.JSX.Element {
   const router = useRouter();
   const toast = useToast();
   const confirm = useConfirm();
-  const { stationId, evseId } = useLocalSearchParams<{ stationId: string; evseId?: string }>();
+  // `unit` opens one unit (charger box) of a station with units, or its EVSEs
+  // without a unit (NO_UNIT_PARAM). A station without units ignores it.
+  const { stationId, evseId, unit } = useLocalSearchParams<{
+    stationId: string;
+    evseId?: string;
+    unit?: string;
+  }>();
   const sid = stationId ?? '';
   const station = useStation(sid);
   const pricing = usePricing(sid);
   const priceDisplay = usePriceDisplay();
-  const favorite = useIsFavorite(sid);
   const toggleFavorite = useToggleFavorite();
-  const watch = useIsWatching(sid);
   const toggleWatch = useToggleWatch();
   const paymentMethods = usePaymentMethods();
   const refetchCards = paymentMethods.refetch;
@@ -116,6 +121,16 @@ export default function StationDetailScreen(): React.JSX.Element {
       .filter(Boolean)
       .join(' · ');
 
+  // On a station with units the screen shows one charger (a unit, or the EVSEs
+  // without a unit) when the route names it; else the whole station. A station
+  // without units always shows the whole station, as before.
+  const units = station.data?.units;
+  const view = React.useMemo(() => chargerView(units, unit), [units, unit]);
+  const chargerEvseList = React.useMemo(
+    (): readonly StationEvse[] => chargerEvses(station.data?.evses ?? [], view),
+    [station.data, view],
+  );
+
   // Default selection, derived from station data and used until the driver taps
   // a connector: the one from a scanned QR code (the `evseId` param), else the
   // only startable connector at the station so the driver can start without a
@@ -123,8 +138,8 @@ export default function StationDetailScreen(): React.JSX.Element {
   // driver qualifies; otherwise nothing is highlighted. While the list shows only
   // the scanned connector, only that one can be picked: never a hidden one.
   const shownEvses = React.useMemo(
-    (): readonly StationEvse[] => visibleEvses(station.data?.evses ?? [], focusedEvseId),
-    [station.data, focusedEvseId],
+    (): readonly StationEvse[] => visibleEvses(chargerEvseList, focusedEvseId),
+    [chargerEvseList, focusedEvseId],
   );
   const autoSelected = React.useMemo((): SelectedConnector | null => {
     const data = station.data;
@@ -154,15 +169,28 @@ export default function StationDetailScreen(): React.JSX.Element {
       ? manualSelected
       : null;
   const selected = manualShown ?? autoSelected;
-  const focused = shownEvses.length < (station.data?.evses.length ?? 0);
+  const focused = shownEvses.length < chargerEvseList.length;
+  // The unit the driver sees: the one the route opened, or the unit of the
+  // scanned connector while the list shows only it. Its name is the title, and
+  // Favorites and Notify Me When Free work on it. Null keeps the station.
+  const shownUnit =
+    view.kind === 'unit'
+      ? view.unit
+      : focused
+        ? unitOfEvse(units, station.data?.evses ?? [], focusedEvseId)
+        : null;
+  const shownUnitId = shownUnit?.id ?? null;
+  const favorite = useIsFavorite(sid, shownUnitId);
+  const watch = useIsWatching(sid, shownUnitId);
 
   const onToggleFavorite = React.useCallback(() => {
     toggleFavorite.mutate({
       stationId: sid,
+      unitId: shownUnitId,
       favoriteId: favorite.data?.favoriteId ?? null,
       isFavorited: favorite.data?.isFavorite ?? false,
     });
-  }, [toggleFavorite, sid, favorite.data]);
+  }, [toggleFavorite, sid, shownUnitId, favorite.data]);
 
   const onToggleWatch = React.useCallback(async () => {
     const isWatching = watch.data?.isWatching === true;
@@ -180,6 +208,7 @@ export default function StationDetailScreen(): React.JSX.Element {
     toggleWatch.mutate(
       {
         stationId: sid,
+        unitId: shownUnitId,
         watchId: watch.data?.watchId ?? null,
         isWatching: watch.data?.isWatching ?? false,
       },
@@ -190,7 +219,7 @@ export default function StationDetailScreen(): React.JSX.Element {
         onError: () => toast.show(t('watch.addFailed'), 'error'),
       },
     );
-  }, [toggleWatch, sid, watch.data, toast, t, confirm]);
+  }, [toggleWatch, sid, shownUnitId, watch.data, toast, t, confirm]);
 
   const runStart = React.useCallback(
     (sel: SelectedConnector) => {
@@ -283,6 +312,41 @@ export default function StationDetailScreen(): React.JSX.Element {
   const otherActiveSession = sessions.find((s) => s.stationId !== sid);
   const hasActiveSession = sessions.length > 0 && sessions.every((s) => s.stationId !== sid);
 
+  // The whole view of a station with units lists its chargers one under the
+  // other, each titled by its unit name (the EVSEs without a unit by the
+  // station). Null keeps the single list of a station without units, a unit
+  // view and a scanned connector.
+  const groups = view.kind === 'station' && !focused ? chargerGroups(units, shownEvses) : null;
+  // Notify Me When Free watches the shown unit, else the whole station, so it
+  // is offered while none of those EVSEs is free.
+  const watchedEvses =
+    shownUnit != null ? data.evses.filter((e) => e.unitId === shownUnit.id) : data.evses;
+
+  const renderTile = (evse: StationEvse): React.JSX.Element | null => {
+    const connector = firstStartableConnector(evse) ?? evse.connectors[0];
+    if (connector == null) return null;
+    const selectable = isEvseSelectable(evse, {
+      isOnline: data.isOnline,
+      maintenanceActive,
+    });
+    const isSelected =
+      selected?.evseId === evse.evseId && selected.connector.connectorId === connector.connectorId;
+    return (
+      <ConnectorTile
+        key={evse.evseId}
+        testID={connectorTileTestId(evse.evseId)}
+        connectorType={connector.connectorType}
+        maxPowerKw={connector.maxPowerKw}
+        maxCurrentAmps={connector.maxCurrentAmps}
+        status={connector.status}
+        port={evse.evseId}
+        selected={isSelected}
+        disabled={!selectable}
+        onPress={() => setSelected({ evseId: evse.evseId, connector })}
+      />
+    );
+  };
+
   return (
     <Screen scroll edges={['top']}>
       <BackButton />
@@ -290,9 +354,14 @@ export default function StationDetailScreen(): React.JSX.Element {
       <View className="flex-row items-start justify-between gap-2">
         <View className="flex-1 gap-1">
           <View className="flex-row items-center gap-2">
-            <Text variant="h1">{data.stationId}</Text>
+            <Text variant="h1" testID={shownUnit != null ? 'station-unit-name' : undefined}>
+              {shownUnit?.name ?? data.stationId}
+            </Text>
             {isFavorited ? <Star size={20} weight="fill" color={hsl('warning')} /> : null}
           </View>
+          {shownUnit != null ? (
+            <Text className="text-base text-foreground">{data.stationId}</Text>
+          ) : null}
           {data.siteName != null ? (
             <Text className="text-base text-muted-foreground">{data.siteName}</Text>
           ) : null}
@@ -430,38 +499,23 @@ export default function StationDetailScreen(): React.JSX.Element {
           {!focused || selected == null ? (
             <Text className="text-sm text-muted-foreground">{t('charge.selectConnector')}</Text>
           ) : null}
-          <View className="flex-row flex-wrap gap-3">
-            {shownEvses.map((evse) => {
-              const connector = firstStartableConnector(evse) ?? evse.connectors[0];
-              if (connector == null) return null;
-              const selectable = isEvseSelectable(evse, {
-                isOnline: data.isOnline,
-                maintenanceActive,
-              });
-              const isSelected =
-                selected?.evseId === evse.evseId &&
-                selected.connector.connectorId === connector.connectorId;
-              return (
-                <ConnectorTile
-                  key={evse.evseId}
-                  testID={connectorTileTestId(evse.evseId)}
-                  connectorType={connector.connectorType}
-                  maxPowerKw={connector.maxPowerKw}
-                  maxCurrentAmps={connector.maxCurrentAmps}
-                  status={connector.status}
-                  port={evse.evseId}
-                  selected={isSelected}
-                  disabled={!selectable}
-                  onPress={() => setSelected({ evseId: evse.evseId, connector })}
-                />
-              );
-            })}
-          </View>
+          {groups == null ? (
+            <View className="flex-row flex-wrap gap-3">{shownEvses.map(renderTile)}</View>
+          ) : (
+            groups.map((group) => (
+              <View key={group.key} testID={`station-unit-group-${group.key}`} className="gap-2">
+                <Text weight="semibold" className="text-base text-foreground">
+                  {group.name ?? data.stationId}
+                </Text>
+                <View className="flex-row flex-wrap gap-3">{group.evses.map(renderTile)}</View>
+              </View>
+            ))
+          )}
 
           {focused ? (
             <Button
               testID="station-show-all-connectors"
-              title={t('charge.showAllConnectors', { total: data.evses.length })}
+              title={t('charge.showAllConnectors', { total: chargerEvseList.length })}
               variant="ghost"
               onPress={() => setShowAllFor(evseId ?? '')}
             />
@@ -484,7 +538,7 @@ export default function StationDetailScreen(): React.JSX.Element {
         onPress={onToggleFavorite}
       />
 
-      {!data.evses.some((e) => e.connectors.some((c) => c.status === 'available')) ? (
+      {!watchedEvses.some((e) => e.connectors.some((c) => c.status === 'available')) ? (
         <Button
           title={watch.data?.isWatching === true ? t('watch.watching') : t('watch.notifyWhenFree')}
           variant="outline"

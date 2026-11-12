@@ -5,9 +5,12 @@
 // ids instead of by translated text, so they pass in every language. Keep the
 // names in step with .maestro/subflows/charging-journey.yaml.
 
-/** Station search and nearby results: one card per station. */
-export function stationCardTestId(stationId: string): string {
-  return `station-card-${stationId}`;
+/**
+ * Station search and nearby results: one card per station, or per unit on a
+ * station with units (the unit id appended).
+ */
+export function stationCardTestId(stationId: string, unitId?: string | null): string {
+  return unitId != null ? `station-card-${stationId}-${unitId}` : `station-card-${stationId}`;
 }
 
 /** Connector tile on the station screen, keyed by EVSE. */

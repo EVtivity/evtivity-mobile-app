@@ -1,15 +1,23 @@
 # Station detail: deep-link to a seeded station, view-location navigation, and
 # favorite toggle (reversible). Starting a charge is a real OCPP side effect on a
 # live (chaos-mode) simulator, so Start is left as a documented gap.
+# A station without units shows no unit title or unit groups. With
+# UNIT_STATION_ID and UNIT_ID set (a station with units, one of its unit ids),
+# the flow also opens that unit and favorites it (reversible).
 appId: com.evtivity.driver
 name: 21 - Charge station detail
 tags:
   - charge
+env:
+  UNIT_STATION_ID: ${UNIT_STATION_ID || ''}
+  UNIT_ID: ${UNIT_ID || ''}
 ---
 - runFlow: ../subflows/session.yaml
 - openLink: com.evtivity.driver://charge/CS-0001
 - assertVisible: 'Select a connector'
 - assertVisible: 'CS-0001'
+- assertNotVisible:
+    id: 'station-unit-name'
 # view location (tap the address row) and return
 - tapOn:
     id: 'station-location'
@@ -34,3 +42,26 @@ tags:
 - extendedWaitUntil:
     visible: 'Add to Favorites'
     timeout: 10000
+# One unit of a station with units: the unit name is the title, the station id
+# shows under it, and the favorite is the unit's.
+- runFlow:
+    when:
+      true: ${UNIT_STATION_ID != '' && UNIT_ID != ''}
+    commands:
+      - openLink: com.evtivity.driver://charge/${UNIT_STATION_ID}?unit=${UNIT_ID}
+      - assertVisible:
+          id: 'station-unit-name'
+      - assertVisible: ${UNIT_STATION_ID}
+      - tapOn: 'Add to Favorites'
+      - assertVisible: 'Remove from Favorites'
+      - tapOn:
+          id: 'station-location'
+      - assertVisible:
+          id: 'back-button'
+      - tapOn:
+          id: 'back-button'
+      - assertVisible: 'Remove from Favorites'
+      - tapOn: 'Remove from Favorites'
+      - extendedWaitUntil:
+          visible: 'Add to Favorites'
+          timeout: 10000

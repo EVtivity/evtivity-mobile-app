@@ -31,6 +31,7 @@ import {
 import { useFeatures } from '@/features/app-info';
 import { useDebouncedValue } from '@/lib/use-debounced-value';
 import { stationCardTestId } from '@/lib/test-ids';
+import { chargerKey, chargerRouteParams } from '@/lib/station-units';
 
 type Mode = 'local' | 'roaming';
 
@@ -125,11 +126,12 @@ export default function ChargeScreen(): React.JSX.Element {
               ) : (search.data?.length ?? 0) === 0 ? (
                 <EmptyState title={t('charge.noResults')} />
               ) : (
-                search.data?.map((s) => (
+                search.data?.map((s, _i, rows) => (
                   <StationCard
-                    key={s.stationId}
-                    testID={stationCardTestId(s.stationId)}
+                    key={chargerKey(s.stationId, s.unitId)}
+                    testID={stationCardTestId(s.stationId, s.unitId)}
                     name={s.siteName ?? s.stationId}
+                    unitName={s.unitName}
                     address={[s.siteAddress, s.siteCity].filter(Boolean).join(', ') || null}
                     isOnline={s.isOnline}
                     availableCount={s.availableCount}
@@ -137,7 +139,7 @@ export default function ChargeScreen(): React.JSX.Element {
                     onPress={() =>
                       router.push({
                         pathname: '/charge/[stationId]',
-                        params: { stationId: s.stationId },
+                        params: chargerRouteParams(s, rows),
                       })
                     }
                   />
@@ -157,11 +159,12 @@ export default function ChargeScreen(): React.JSX.Element {
               ) : (nearby.data?.length ?? 0) === 0 ? (
                 <EmptyState title={t('charge.noResults')} />
               ) : (
-                nearby.data?.map((s) => (
+                nearby.data?.map((s, _i, rows) => (
                   <StationCard
-                    key={s.stationId}
-                    testID={stationCardTestId(s.stationId)}
+                    key={chargerKey(s.stationId, s.unitId)}
+                    testID={stationCardTestId(s.stationId, s.unitId)}
                     name={s.siteName ?? s.stationId}
+                    unitName={s.unitName}
                     address={s.siteAddress}
                     isOnline={s.isOnline}
                     availableCount={s.availableCount}
@@ -170,7 +173,7 @@ export default function ChargeScreen(): React.JSX.Element {
                     onPress={() =>
                       router.push({
                         pathname: '/charge/[stationId]',
-                        params: { stationId: s.stationId },
+                        params: chargerRouteParams(s, rows),
                       })
                     }
                   />

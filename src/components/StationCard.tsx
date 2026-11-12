@@ -10,6 +10,9 @@ import { hsl } from '@/lib/theme';
 
 interface StationCardProps {
   name: string;
+  // On a station with units, the unit (charger box) this card shows, under the
+  // station name. Null or absent for a station without units.
+  unitName?: string | null;
   address?: string | null;
   isOnline: boolean;
   availableCount: number;
@@ -21,6 +24,7 @@ interface StationCardProps {
 
 export const StationCard = React.memo(function StationCard({
   name,
+  unitName,
   address,
   isOnline,
   availableCount,
@@ -38,6 +42,16 @@ export const StationCard = React.memo(function StationCard({
           <Text variant="title" className="flex-1" numberOfLines={1}>
             {name}
           </Text>
+          {unitName != null && unitName.length > 0 ? (
+            <Text
+              testID={testID != null ? `${testID}-unit` : undefined}
+              weight="medium"
+              className="text-sm text-foreground"
+              numberOfLines={1}
+            >
+              {unitName}
+            </Text>
+          ) : null}
           {address != null && address.length > 0 ? (
             <View className="flex-row items-center gap-1.5">
               <MapPin size={13} color={hsl('mutedForeground')} />

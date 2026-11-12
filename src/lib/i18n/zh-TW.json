@@ -664,6 +664,7 @@
   },
   "location": {
     "chargerCount": "{{chargers}} 個充電樁，{{available}} 個可用",
+    "chargers": "充電樁",
     "getDirections": "取得路線",
     "photos": "照片",
     "popularTimes": "熱門時段",

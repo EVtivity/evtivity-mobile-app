@@ -12,6 +12,8 @@ import {
 describe('test ids', () => {
   it('keys station cards and connector tiles', () => {
     expect(stationCardTestId('CS-0001')).toBe('station-card-CS-0001');
+    expect(stationCardTestId('CS-0001', null)).toBe('station-card-CS-0001');
+    expect(stationCardTestId('CS-0001', 'unt_1')).toBe('station-card-CS-0001-unt_1');
     expect(connectorTileTestId(2)).toBe('station-connector-2');
   });
 

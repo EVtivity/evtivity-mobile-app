@@ -1,16 +1,24 @@
 # EVSE detail (deep-link to a specific connector): content, the Start button is
 # present, and View Location opens the location screen. Start is not pressed
 # (real OCPP side effect — documented gap).
+# A station without units shows no unit title. With UNIT_STATION_ID and
+# UNIT_EVSE_ID set (a station with units, an EVSE of one of its units), the
+# scanned connector of a unit also shows the unit name.
 appId: com.evtivity.driver
 name: 22 - Charge EVSE detail
 tags:
   - charge
+env:
+  UNIT_STATION_ID: ${UNIT_STATION_ID || ''}
+  UNIT_EVSE_ID: ${UNIT_EVSE_ID || ''}
 ---
 - runFlow: ../subflows/session.yaml
 # evseId is a query param on the station route, not a path segment.
 - openLink: com.evtivity.driver://charge/CS-0001?evseId=1
 - assertVisible: 'CS-0001'
 - assertVisible: 'Start Charging'
+- assertNotVisible:
+    id: 'station-unit-name'
 # view location (tap the address row) opens the location screen
 - tapOn:
     id: 'station-location'
@@ -19,3 +27,16 @@ tags:
 - tapOn:
     id: 'back-button'
 - assertVisible: 'Start Charging'
+# The scanned connector of a unit: the unit name is the title, the station id
+# shows under it, and only that connector is listed.
+- runFlow:
+    when:
+      true: ${UNIT_STATION_ID != '' && UNIT_EVSE_ID != ''}
+    commands:
+      - openLink: com.evtivity.driver://charge/${UNIT_STATION_ID}?evseId=${UNIT_EVSE_ID}
+      - assertVisible:
+          id: 'station-unit-name'
+      - assertVisible: ${UNIT_STATION_ID}
+      - assertVisible:
+          id: 'station-connector-${UNIT_EVSE_ID}'
+      - assertVisible: 'Start Charging'
