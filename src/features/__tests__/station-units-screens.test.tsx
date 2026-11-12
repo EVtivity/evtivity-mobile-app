@@ -274,7 +274,7 @@ describe('station screen', () => {
     mockStation.current = PLAIN_NEW;
     await render(<StationDetailScreen />);
     expect(shownPorts()).toEqual(['Port 2']);
-    expect(screen.getByText('Show All 2 Connectors')).toBeTruthy();
+    expect(screen.getByText('Show All 2 Ports')).toBeTruthy();
     expect(screen.queryByTestId('station-unit-name')).toBeNull();
   });
 
@@ -334,7 +334,7 @@ describe('station screen', () => {
     expect(screen.getByTestId('station-unit-name').props.children).toBe('Box 1');
     expect(shownPorts()).toEqual(['Port 1']);
     expect(mockIsFavorite).toHaveBeenLastCalledWith('CS-ABL', 'unt_1');
-    await fireEvent.press(screen.getByText('Show All 5 Connectors'));
+    await fireEvent.press(screen.getByText('Show All 5 Ports'));
     expect(screen.queryByTestId('station-unit-name')).toBeNull();
     expect(shownPorts()).toHaveLength(5);
   });

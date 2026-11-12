@@ -14,7 +14,7 @@ env:
 ---
 - runFlow: ../subflows/session.yaml
 - openLink: com.evtivity.driver://charge/CS-0001
-- assertVisible: 'Select a connector'
+- assertVisible: 'Select a port'
 - assertVisible: 'CS-0001'
 - assertNotVisible:
     id: 'station-unit-name'
@@ -25,7 +25,7 @@ env:
     id: 'back-button'
 - tapOn:
     id: 'back-button'
-- assertVisible: 'Select a connector'
+- assertVisible: 'Select a port'
 # favorite toggle, then revert. The favorite id loads asynchronously after
 # adding, so re-open the screen (location round-trip) before removing to ensure
 # the id is present for the delete.
