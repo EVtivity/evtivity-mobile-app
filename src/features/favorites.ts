@@ -7,6 +7,10 @@ import { api } from '@/lib/api';
 export interface FavoriteStation {
   id: number;
   stationId: string;
+  // The favorited unit (charger box) of a station with units; null for a
+  // favorite of the whole station. The counts are that unit's.
+  unitId?: string | null;
+  unitName?: string | null;
   siteName: string | null;
   siteAddress: string | null;
   siteCity: string | null;
@@ -22,6 +26,14 @@ interface CheckFavoriteResult {
   favoriteId: number | null;
 }
 
+// The check query key: the station key as before, with the unit added for a
+// unit favorite, so invalidating the station key covers its units too.
+function checkKey(stationId: string, unitId: string | null | undefined): readonly unknown[] {
+  return unitId != null
+    ? ['favorites', 'check', stationId, unitId]
+    : ['favorites', 'check', stationId];
+}
+
 export function useFavorites() {
   return useQuery({
     queryKey: ['favorites'],
@@ -29,22 +41,29 @@ export function useFavorites() {
   });
 }
 
-export function useIsFavorite(stationId: string) {
+// Whether the driver favorited the station, or one unit of it when unitId is set.
+export function useIsFavorite(stationId: string, unitId?: string | null) {
   return useQuery({
-    queryKey: ['favorites', 'check', stationId],
+    queryKey: checkKey(stationId, unitId),
     queryFn: () =>
-      api.get<CheckFavoriteResult>(`/v1/portal/favorites/check/${encodeURIComponent(stationId)}`),
+      api.get<CheckFavoriteResult>(
+        `/v1/portal/favorites/check/${encodeURIComponent(stationId)}${
+          unitId != null ? `?unitId=${encodeURIComponent(unitId)}` : ''
+        }`,
+      ),
     enabled: stationId.length > 0,
   });
 }
 
-// Add when not favorited (POST by OCPP stationId), remove when favorited
-// (DELETE by the favorite record id, which the caller already holds).
+// Add when not favorited (POST by OCPP stationId, and the unit when one is
+// shown), remove when favorited (DELETE by the favorite record id, which the
+// caller already holds).
 export function useToggleFavorite() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (input: {
       stationId: string;
+      unitId?: string | null;
       favoriteId: number | null;
       isFavorited: boolean;
     }): Promise<void> => {
@@ -53,7 +72,12 @@ export function useToggleFavorite() {
         await api.del(`/v1/portal/favorites/${String(input.favoriteId)}`);
         return;
       }
-      await api.post('/v1/portal/favorites', { stationId: input.stationId });
+      await api.post(
+        '/v1/portal/favorites',
+        input.unitId != null
+          ? { stationId: input.stationId, unitId: input.unitId }
+          : { stationId: input.stationId },
+      );
     },
     onSuccess: (_data, input) => {
       void qc.invalidateQueries({ queryKey: ['favorites'] });

@@ -3,6 +3,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
+import type { LocationChargerRow } from '@/lib/station-units';
 
 // Public site detail shown on the location screen (map, hours, contact, counts).
 export interface LocationDetail {
@@ -21,6 +22,10 @@ export interface LocationDetail {
   stationCount: number;
   evseCount: number;
   availableCount: number;
+  // One row per EVSE connector at the site, ordered by station and EVSE. The
+  // location screen lists them grouped by charger only when a station of the
+  // site has units (locationChargers, @/lib/station-units).
+  chargers?: LocationChargerRow[];
 }
 
 export interface LocationImage {

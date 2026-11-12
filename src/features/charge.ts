@@ -5,6 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import type { ConnectorStatus } from '@/lib/types';
 import type { DriverBilling } from '@/lib/fleet-billing';
+import type { StationUnit } from '@/lib/station-units';
 
 export interface ConnectorSummary {
   connectorType: string;
@@ -13,7 +14,17 @@ export interface ConnectorSummary {
   status: ConnectorStatus;
 }
 
-export interface NearbyStation {
+// A station with units (charger boxes) returns one search or nearby row per
+// unit, plus one row (unitId null) for its EVSEs without a unit; evseCount,
+// availableCount and connectors are that row's. A station without units
+// returns one row with both null. Rows can share a stationId, so lists key them
+// with chargerKey (@/lib/station-units).
+interface ChargerRowUnit {
+  unitId?: string | null;
+  unitName?: string | null;
+}
+
+export interface NearbyStation extends ChargerRowUnit {
   stationId: string;
   model: string | null;
   isOnline: boolean;
@@ -26,7 +37,7 @@ export interface NearbyStation {
   connectors: ConnectorSummary[];
 }
 
-export interface SearchStation {
+export interface SearchStation extends ChargerRowUnit {
   stationId: string;
   model: string | null;
   isOnline: boolean;
@@ -48,6 +59,9 @@ export interface StationConnector {
 
 export interface StationEvse {
   evseId: number;
+  // The unit (charger box) of this EVSE on a station with units; null for an
+  // EVSE without a unit and on a station without units.
+  unitId?: string | null;
   connectors: StationConnector[];
   reservationExpiresAt: string | null;
   // An active reservation holds this EVSE.
@@ -71,6 +85,9 @@ export interface StationDetail {
   siteContactPhone?: string | null;
   paymentEnabled: boolean;
   evses: StationEvse[];
+  // The units of a station with several charger boxes, each its own charger
+  // for drivers. Empty for a station without units.
+  units?: StationUnit[];
   maintenance: { active: boolean; plannedEndAt?: string | null; message?: string | null } | null;
 }
 
