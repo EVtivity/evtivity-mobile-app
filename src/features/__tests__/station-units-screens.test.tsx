@@ -296,7 +296,7 @@ describe('station screen', () => {
       isFavorited: false,
     });
     // Box 2 has no free EVSE (Box 1 has one): the watch button is offered.
-    await fireEvent.press(screen.getByText('Notify me when free'));
+    await fireEvent.press(screen.getByText('Notify Me When Free'));
     expect(mockWatchMutate).toHaveBeenCalledWith(
       { stationId: 'CS-ABL', unitId: 'unt_2', watchId: null, isWatching: false },
       expect.anything(),
@@ -324,7 +324,7 @@ describe('station screen', () => {
     expect(shownPorts()).toEqual(['Port 1', 'Port 2', 'Port 3', 'Port 4', 'Port 5']);
     expect(mockIsFavorite).toHaveBeenLastCalledWith('CS-ABL', null);
     // A free EVSE (Box 1) at the station: no station watch is offered.
-    expect(screen.queryByText('Notify me when free')).toBeNull();
+    expect(screen.queryByText('Notify Me When Free')).toBeNull();
   });
 
   it('names the unit of a scanned connector and starts at the station EVSE', async () => {
