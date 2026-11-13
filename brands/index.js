@@ -29,7 +29,7 @@ const lightColors = {
   ring: '142 71% 45%',
   success: '142 71% 41%',
   warning: '32 95% 50%',
-  // Warning text and icons: 5.5:1 on card, 5.1:1 on background, 4.6:1 on the
+  // Warning text and icons: 5.5:1 on card, 5.3:1 on background, 4.6:1 on the
   // 16 percent badge tint (the fill reads 2.3:1 on white).
   warningText: '26 90% 35%',
   destructive: '0 75% 55%',
@@ -56,7 +56,7 @@ const darkColors = {
   ring: '142 68% 50%',
   success: '142 64% 48%',
   warning: '35 92% 56%',
-  // The fill amber reads as text on the dark surfaces (8.6:1 on card).
+  // The fill amber reads as text on the dark surfaces (7.8:1 on card).
   warningText: '35 92% 56%',
   destructive: '0 72% 58%',
   info: '198 90% 56%',
