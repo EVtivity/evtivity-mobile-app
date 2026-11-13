@@ -29,9 +29,11 @@ const FULL_PALETTE = {
   info: '221 83% 53%',
 };
 
+const mockActiveScheme = { value: 'light' as 'light' | 'dark' };
 jest.mock('nativewind', () => ({
   vars: (obj: Record<string, string>) => obj,
   useColorScheme: jest.fn(() => ({ colorScheme: 'light' })),
+  colorScheme: { get: () => mockActiveScheme.value },
 }));
 const mockDarkPalette = {
   ...FULL_PALETTE,
@@ -171,6 +173,18 @@ describe('the active theme', () => {
     expect(hsl('foreground')).toBe(hsl('foreground'));
     useUiTheme.setState({ theme: 'default' });
     expect(hsl('foreground')).toBe('hsl(222, 47%, 11%)');
+  });
+
+  it('hsl() without a scheme follows the active color scheme (dark mode icons)', () => {
+    mockActiveScheme.value = 'dark';
+    try {
+      // The mock dark card differs from the light one, so the dark value shows.
+      expect(hsl('card')).toBe('hsl(160, 22%, 11%)');
+      expect(hsl('warningText')).toBe(hsl('warningText', 'dark'));
+    } finally {
+      mockActiveScheme.value = 'light';
+    }
+    expect(hsl('card')).toBe('hsl(0, 0%, 100%)');
   });
 
   it('surface text vars follow the theme', () => {

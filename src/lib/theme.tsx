@@ -3,7 +3,7 @@
 
 import React from 'react';
 import { View } from 'react-native';
-import { vars, useColorScheme } from 'nativewind';
+import { colorScheme as nativeColorScheme, vars, useColorScheme } from 'nativewind';
 import { BRAND } from './config';
 import type { BrandColors } from '@brands/index';
 import { activeUiTheme, useUiTheme, type UiTheme } from './ui-theme';
@@ -124,7 +124,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }): Reac
 // charts, spinners) get a stable reference instead of re-parsing every render.
 const hslCache = new Map<string, string>();
 
-export function hsl(token: keyof BrandColors, scheme: 'light' | 'dark' = 'light'): string {
+// The color scheme NativeWind renders the `dark:` classes and ThemeProvider's
+// palette with, read at call time.
+export function activeScheme(): Scheme {
+  return schemeOf(nativeColorScheme.get());
+}
+
+// Without `scheme`, the value follows the active color scheme too, so an icon
+// drawn in dark mode gets the dark palette (it read the light one before).
+export function hsl(token: keyof BrandColors, scheme: Scheme = activeScheme()): string {
   const theme = activeUiTheme();
   const key = `${theme}:${scheme}:${token}`;
   const cached = hslCache.get(key);
