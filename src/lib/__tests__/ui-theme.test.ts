@@ -77,6 +77,19 @@ describe('applyDriverUiTheme', () => {
     expect(storage.setItem).not.toHaveBeenCalled();
   });
 
+  it('uses the account theme on the next launch while the server is down', async () => {
+    const saved: Record<string, string> = {};
+    storage.setItem.mockImplementation(async (key: string, value: string) => {
+      saved[key] = value;
+    });
+    storage.getItem.mockImplementation(async (key: string) => saved[key] ?? null);
+    applyDriverUiTheme('high-contrast');
+    // Next launch: no profile reply, only the device copy.
+    useUiTheme.setState({ theme: 'default', loaded: false });
+    await useUiTheme.getState().load();
+    expect(useUiTheme.getState()).toMatchObject({ theme: 'high-contrast', loaded: true });
+  });
+
   it('keeps the device theme for an API without the field', () => {
     useUiTheme.setState({ theme: 'soft' });
     applyDriverUiTheme(undefined);
