@@ -8,6 +8,7 @@ const mockGet = jest.fn();
 const mockPost = jest.fn();
 const mockReplace = jest.fn();
 const mockShowApiError = jest.fn();
+const mockConfirm = jest.fn();
 const mockOpenBrowser = jest.fn();
 const mockParams: { current: Record<string, string> } = { current: {} };
 
@@ -114,6 +115,7 @@ jest.mock('@/components/ui', () => {
     }) => React.createElement(RN.TextInput, { testID, value, onChangeText, placeholder }),
     useToast: () => ({ show: jest.fn() }),
     useApiErrorToast: () => mockShowApiError,
+    useConfirm: () => mockConfirm,
   };
 });
 
@@ -487,4 +489,49 @@ describe('TC-AI-DR-UI-06 case screen AI step', () => {
     await screen.findByText('Charging stopped');
     expect(screen.queryByTestId('support-ai-status')).toBeNull();
   });
+});
+
+// Owner decision 2026-11-13: the driver closes the own case, and a message
+// reopens a resolved or closed case, so the composer stays.
+describe('Close Case on the case screen', () => {
+  beforeEach(() => {
+    mockParams.current = { id: 'c1' };
+  });
+
+  it('closes an open case after the driver confirms', async () => {
+    caseDetail = detail({ consent: 'declined', state: null }, { status: 'open' });
+    mockConfirm.mockResolvedValue(true);
+    mockPost.mockResolvedValue({ id: 'c1', status: 'resolved', resolutionSource: 'driver' });
+    const screen = await renderWithQuery(<SupportCaseDetailScreen />);
+    await fireEvent.press(await screen.findByTestId('support-close-case'));
+    expect(mockConfirm).toHaveBeenCalledWith(
+      expect.objectContaining({ title: 'Close This Case?', confirmText: 'Close Case' }),
+    );
+    await waitFor(() =>
+      expect(mockPost).toHaveBeenCalledWith('/v1/portal/support-cases/c1/close', {}),
+    );
+  });
+
+  it('sends nothing when the driver cancels', async () => {
+    caseDetail = detail({ consent: 'declined', state: null }, { status: 'in_progress' });
+    mockConfirm.mockResolvedValue(false);
+    const screen = await renderWithQuery(<SupportCaseDetailScreen />);
+    await fireEvent.press(await screen.findByTestId('support-close-case'));
+    await waitFor(() => expect(mockConfirm).toHaveBeenCalled());
+    expect(mockPost).not.toHaveBeenCalled();
+  });
+
+  it.each(['resolved', 'closed'])(
+    'keeps the composer on a %s case with the reopen note and no close',
+    async (status) => {
+      caseDetail = detail(
+        { consent: 'declined', state: null, resolutionSource: 'operator' },
+        { status },
+      );
+      const screen = await renderWithQuery(<SupportCaseDetailScreen />);
+      expect(await screen.findByText('Sending a message reopens this case.')).toBeTruthy();
+      expect(screen.getByPlaceholderText('Message')).toBeTruthy();
+      expect(screen.queryByTestId('support-close-case')).toBeNull();
+    },
+  );
 });

@@ -171,6 +171,31 @@ export function useReplyCase(id: string) {
   });
 }
 
+export interface CloseCaseResult {
+  id: string;
+  status: string;
+  resolutionSource: string | null;
+}
+
+// The driver closes the own case (resolved). A later message reopens it, so
+// the case screen keeps its reply box.
+export function useCloseCase(id: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: () =>
+      api.post<CloseCaseResult>(`/v1/portal/support-cases/${encodeURIComponent(id)}/close`, {}),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ['support-case', id] });
+      void qc.invalidateQueries({ queryKey: CASES_KEY });
+    },
+  });
+}
+
+/** True for a case the driver or the support team ended; a message reopens it. */
+export function isCaseEnded(status: string | undefined): boolean {
+  return status === 'resolved' || status === 'closed';
+}
+
 export interface AiFeedbackResult {
   id: string;
   status: string;

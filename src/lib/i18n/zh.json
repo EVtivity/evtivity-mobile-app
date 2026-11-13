@@ -549,6 +549,11 @@
     "reply": "回复",
     "none": "暂无工单",
     "submit": "提交",
+    "closeCase": "关闭工单",
+    "closeConfirmTitle": "关闭此工单？",
+    "closeConfirmDescription": "支持团队会看到您关闭了此工单。您可以随时发送消息重新打开。",
+    "closeFailed": "无法关闭工单，请重试。",
+    "reopenNote": "发送消息即可重新打开此工单。",
     "status": {
       "open": "待处理",
       "in_progress": "处理中",

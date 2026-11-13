@@ -549,6 +549,11 @@
     "reply": "回覆",
     "none": "沒有客服案件",
     "submit": "送出",
+    "closeCase": "關閉案件",
+    "closeConfirmTitle": "關閉此案件？",
+    "closeConfirmDescription": "客服團隊會看到您已關閉此案件。您隨時可以傳送訊息重新開啟。",
+    "closeFailed": "無法關閉案件，請再試一次。",
+    "reopenNote": "傳送訊息即可重新開啟此案件。",
     "status": {
       "open": "待處理",
       "in_progress": "處理中",

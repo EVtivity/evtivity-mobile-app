@@ -549,6 +549,11 @@
     "reply": "Reply",
     "none": "No support cases",
     "submit": "Submit",
+    "closeCase": "Close Case",
+    "closeConfirmTitle": "Close This Case?",
+    "closeConfirmDescription": "The support team sees that you closed it. Send a message any time to open it again.",
+    "closeFailed": "Failed to close the case. Please try again.",
+    "reopenNote": "Sending a message reopens this case.",
     "status": {
       "open": "Open",
       "in_progress": "In Progress",

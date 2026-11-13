@@ -549,6 +549,11 @@
     "reply": "Responder",
     "none": "Sin casos de soporte",
     "submit": "Enviar",
+    "closeCase": "Cerrar Caso",
+    "closeConfirmTitle": "¿Cerrar Este Caso?",
+    "closeConfirmDescription": "El equipo de soporte verá que lo cerró. Envíe un mensaje en cualquier momento para volver a abrirlo.",
+    "closeFailed": "No se pudo cerrar el caso. Inténtelo de nuevo.",
+    "reopenNote": "Si envía un mensaje, este caso se vuelve a abrir.",
     "status": {
       "open": "Abierto",
       "in_progress": "En proceso",

@@ -549,6 +549,11 @@
     "reply": "Antworten",
     "none": "Keine Supportfälle",
     "submit": "Absenden",
+    "closeCase": "Fall Schließen",
+    "closeConfirmTitle": "Diesen Fall Schließen?",
+    "closeConfirmDescription": "Das Support-Team sieht, dass Sie ihn geschlossen haben. Mit einer neuen Nachricht öffnen Sie ihn jederzeit wieder.",
+    "closeFailed": "Der Fall konnte nicht geschlossen werden. Bitte versuchen Sie es erneut.",
+    "reopenNote": "Eine neue Nachricht öffnet diesen Fall wieder.",
     "status": {
       "open": "Offen",
       "in_progress": "In Bearbeitung",

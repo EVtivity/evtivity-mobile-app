@@ -18,12 +18,14 @@ import {
   EmptyState,
   ScreenBackground,
   BackButton,
+  Button,
   useApiErrorToast,
+  useConfirm,
 } from '@/components/ui';
 import { hsl, useSurfaceTextVars } from '@/lib/theme';
 import { cn } from '@/lib/cn';
 import { formatDate } from '@/lib/format';
-import { useSupportCase, useReplyCase } from '@/features/support';
+import { isCaseEnded, useCloseCase, useSupportCase, useReplyCase } from '@/features/support';
 import { supportCaseStatusVariant } from '@/lib/status-variants';
 
 export default function SupportCaseDetailScreen(): React.JSX.Element {
@@ -35,6 +37,8 @@ export default function SupportCaseDetailScreen(): React.JSX.Element {
 
   const detail = useSupportCase(caseId);
   const reply = useReplyCase(caseId);
+  const closeCase = useCloseCase(caseId);
+  const confirm = useConfirm();
 
   const [text, setText] = React.useState('');
   const scrollRef = React.useRef<ScrollView>(null);
@@ -60,6 +64,22 @@ export default function SupportCaseDetailScreen(): React.JSX.Element {
       await reply.mutateAsync(body);
       setText('');
       // useReplyCase invalidates this case on success, which refetches it.
+    } catch (err) {
+      showApiError(err);
+    }
+  };
+
+  const ended = isCaseEnded(detail.data?.status);
+
+  const onClose = async (): Promise<void> => {
+    const ok = await confirm({
+      title: t('support.closeConfirmTitle'),
+      message: t('support.closeConfirmDescription'),
+      confirmText: t('support.closeCase'),
+    });
+    if (!ok) return;
+    try {
+      await closeCase.mutateAsync();
     } catch (err) {
       showApiError(err);
     }
@@ -112,6 +132,17 @@ export default function SupportCaseDetailScreen(): React.JSX.Element {
                 </Text>
               ) : null}
             </Card>
+            {!ended ? (
+              <Button
+                testID="support-close-case"
+                title={t('support.closeCase')}
+                variant="outline"
+                size="sm"
+                loading={closeCase.isPending}
+                onPress={() => void onClose()}
+                className="mt-2 self-start"
+              />
+            ) : null}
           </View>
         ) : null}
 
@@ -142,11 +173,17 @@ export default function SupportCaseDetailScreen(): React.JSX.Element {
           </ScrollView>
         )}
 
-        {/* A case the automatic answer resolved can be reopened by writing to us. */}
-        {detail.data != null &&
-        detail.data.status !== 'closed' &&
-        (detail.data.status !== 'resolved' || ai?.resolutionSource === 'ai') ? (
+        {/* A resolved or closed case keeps the reply box: a message reopens it. */}
+        {detail.data != null ? (
           <View style={surfaceVars} className="border-t border-white/15 bg-card/[0.7]">
+            {ended ? (
+              <Text
+                testID="support-reopen-note"
+                className="px-4 pt-2 text-xs text-muted-foreground"
+              >
+                {t('support.reopenNote')}
+              </Text>
+            ) : null}
             <View className="flex-row items-end gap-2 px-4 py-2">
               {/* The input starts at the 52px of the send button and grows;
                   items-end keeps the button on the input's bottom edge. */}

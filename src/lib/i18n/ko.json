@@ -549,6 +549,11 @@
     "reply": "답변",
     "none": "문의 없음",
     "submit": "제출",
+    "closeCase": "문의 종료",
+    "closeConfirmTitle": "이 문의를 종료할까요?",
+    "closeConfirmDescription": "지원팀에 문의를 종료했다고 표시됩니다. 언제든지 메시지를 보내면 다시 열립니다.",
+    "closeFailed": "문의를 종료하지 못했습니다. 다시 시도하세요.",
+    "reopenNote": "메시지를 보내면 이 문의가 다시 열립니다.",
     "status": {
       "open": "접수됨",
       "in_progress": "처리 중",
