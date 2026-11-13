@@ -3,7 +3,7 @@
     "na": "不适用",
     "cancel": "取消",
     "save": "保存",
-    "saved": "已保存",
+    "saved": "保存成功",
     "saving": "保存中...",
     "retry": "重试",
     "loading": "加载中...",
@@ -286,7 +286,8 @@
     "noSlots": "今天已无可用时段",
     "duration": "时长",
     "minutes": "{{count}} 分钟",
-    "today": "今天"
+    "today": "今天",
+    "createSuccess": "预约已创建。"
   },
   "account": {
     "title": "账户",
@@ -364,7 +365,7 @@
     "paymentMethods": "支付方式",
     "rfid": "RFID 卡",
     "vehicles": "车辆",
-    "support": "支持",
+    "support": "客服支持",
     "about": "关于",
     "appVersion": "应用版本",
     "csmsVersion": "CSMS 版本",
@@ -538,7 +539,7 @@
     }
   },
   "support": {
-    "title": "支持",
+    "title": "客服支持",
     "newCase": "新建工单",
     "subject": "主题",
     "description": "描述",
@@ -619,7 +620,8 @@
         "wait_and_retry": "等待几分钟后重试",
         "check_token_active": "检查卡或 Token 是否有效"
       }
-    }
+    },
+    "caseCreated": "工单创建成功"
   },
   "notifications": {
     "title": "通知",

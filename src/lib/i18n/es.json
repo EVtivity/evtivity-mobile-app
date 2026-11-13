@@ -3,7 +3,7 @@
     "na": "n/d",
     "cancel": "Cancelar",
     "save": "Guardar",
-    "saved": "Guardado",
+    "saved": "Guardado correctamente",
     "saving": "Guardando...",
     "retry": "Reintentar",
     "loading": "Cargando...",
@@ -286,7 +286,8 @@
     "noSlots": "No quedan horarios hoy",
     "duration": "Duración",
     "minutes": "{{count}} min",
-    "today": "Hoy"
+    "today": "Hoy",
+    "createSuccess": "Reserva creada."
   },
   "account": {
     "title": "Cuenta",
@@ -619,7 +620,8 @@
         "wait_and_retry": "Esperar unos minutos y volver a intentar",
         "check_token_active": "Comprobar que la tarjeta o el token esté activo"
       }
-    }
+    },
+    "caseCreated": "Caso creado con éxito"
   },
   "notifications": {
     "title": "Notificaciones",

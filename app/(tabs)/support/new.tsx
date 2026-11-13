@@ -84,7 +84,7 @@ export default function NewSupportCaseScreen(): React.JSX.Element {
 
     try {
       const created = await create.mutateAsync(input);
-      toast.show(t('support.submit'), 'success');
+      toast.show(t('support.caseCreated'), 'success');
       router.replace({ pathname: '/support/[id]', params: { id: created.id } });
     } catch (err) {
       showApiError(err);

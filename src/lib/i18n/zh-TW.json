@@ -3,7 +3,7 @@
     "na": "無",
     "cancel": "取消",
     "save": "儲存",
-    "saved": "已儲存",
+    "saved": "儲存成功",
     "saving": "儲存中...",
     "retry": "重試",
     "loading": "載入中...",
@@ -286,7 +286,8 @@
     "noSlots": "今日已無可預約時段",
     "duration": "時長",
     "minutes": "{{count}} 分鐘",
-    "today": "今天"
+    "today": "今天",
+    "createSuccess": "預約已建立。"
   },
   "account": {
     "title": "帳戶",
@@ -619,7 +620,8 @@
         "wait_and_retry": "等待幾分鐘後重試",
         "check_token_active": "檢查卡片或 Token 是否有效"
       }
-    }
+    },
+    "caseCreated": "客服案件建立成功"
   },
   "notifications": {
     "title": "通知",

@@ -110,7 +110,7 @@ export default function NewReservationScreen(): React.JSX.Element {
 
     try {
       await create.mutateAsync(input);
-      toast.show(t('reservations.new'), 'success');
+      toast.show(t('reservations.createSuccess'), 'success');
       router.back();
     } catch (err) {
       showApiError(err);

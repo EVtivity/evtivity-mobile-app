@@ -3,7 +3,7 @@
     "na": "n/a",
     "cancel": "Cancel",
     "save": "Save",
-    "saved": "Saved",
+    "saved": "Saved successfully",
     "saving": "Saving...",
     "retry": "Retry",
     "loading": "Loading...",
@@ -286,7 +286,8 @@
     "noSlots": "No times left today",
     "duration": "Duration",
     "minutes": "{{count}} min",
-    "today": "Today"
+    "today": "Today",
+    "createSuccess": "Reservation created."
   },
   "account": {
     "title": "Account",
@@ -619,7 +620,8 @@
         "wait_and_retry": "Wait a few minutes and try again",
         "check_token_active": "Check that the card or token is active"
       }
-    }
+    },
+    "caseCreated": "Case created successfully"
   },
   "notifications": {
     "title": "Notifications",

@@ -9,6 +9,7 @@ const mockPost = jest.fn();
 const mockReplace = jest.fn();
 const mockShowApiError = jest.fn();
 const mockConfirm = jest.fn();
+const mockToast = jest.fn();
 const mockOpenBrowser = jest.fn();
 const mockParams: { current: Record<string, string> } = { current: {} };
 
@@ -113,7 +114,7 @@ jest.mock('@/components/ui', () => {
       onChangeText: (v: string) => void;
       placeholder?: string;
     }) => React.createElement(RN.TextInput, { testID, value, onChangeText, placeholder }),
-    useToast: () => ({ show: jest.fn() }),
+    useToast: () => ({ show: mockToast }),
     useApiErrorToast: () => mockShowApiError,
     useConfirm: () => mockConfirm,
   };
@@ -302,6 +303,9 @@ describe('TC-AI-DR-UI-06 new case consent step', () => {
     await fireEvent.press(screen.getByTestId('support-submit'));
     await waitFor(() => expect(mockPost).toHaveBeenCalled());
     expect(postedBody()).not.toHaveProperty('aiConsent');
+    await waitFor(() =>
+      expect(mockToast).toHaveBeenCalledWith('Case created successfully', 'success'),
+    );
   });
 
   it('treats a notice version without app text as the feature off', async () => {
