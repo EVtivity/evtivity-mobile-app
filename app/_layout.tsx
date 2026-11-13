@@ -70,7 +70,7 @@ function RootNavigator(): React.JSX.Element {
     return () => sub.remove();
   }, [biometricEnabled, lock]);
 
-  // Apply a previously stored language choice on launch.
+  // Start in the stored, account or device language before any server reply.
   React.useEffect(() => {
     void bootstrapLanguage();
   }, []);

@@ -22,12 +22,28 @@ import i18n, {
   bootstrapLanguage,
   applyDriverLanguage,
   currentAppLanguage,
+  enabledLanguageOf,
 } from '@/lib/i18n';
 
 const store = AsyncStorage as unknown as { getItem: jest.Mock; setItem: jest.Mock };
 
+// The device locale the app reads at launch (Intl follows the device on Hermes).
+let deviceLocaleValue = 'en-US';
+jest.spyOn(Intl, 'DateTimeFormat').mockImplementation(
+  () =>
+    ({
+      resolvedOptions: () => ({ locale: deviceLocaleValue }),
+    }) as unknown as Intl.DateTimeFormat,
+);
+
+// Stored values by key: the explicit choice and the last account language.
+function storeValues(values: Record<string, string>): void {
+  store.getItem.mockImplementation((key: string) => Promise.resolve(values[key] ?? null));
+}
+
 beforeEach(async () => {
   jest.clearAllMocks();
+  deviceLocaleValue = 'en-US';
   store.getItem.mockResolvedValue(null);
   store.setItem.mockResolvedValue(undefined);
   await i18n.changeLanguage('en');
@@ -119,6 +135,53 @@ describe('bootstrapLanguage', () => {
     await bootstrapLanguage();
     expect(i18n.language).toBe('en');
   });
+  it('starts in the account language of the last profile load, with no server reply', async () => {
+    storeValues({ 'app.accountLanguage': 'de' });
+    deviceLocaleValue = 'es-ES';
+    await bootstrapLanguage();
+    expect(i18n.language).toBe('de');
+  });
+  it('keeps the explicit choice over the account language', async () => {
+    storeValues({ 'app.language': 'es', 'app.accountLanguage': 'de' });
+    await bootstrapLanguage();
+    expect(i18n.language).toBe('es');
+  });
+  it('falls back to the device language when nothing is stored', async () => {
+    deviceLocaleValue = 'de-AT';
+    await bootstrapLanguage();
+    expect(i18n.language).toBe('de');
+  });
+  it('falls back to the device language when storage is unreadable', async () => {
+    store.getItem.mockRejectedValue(new Error('unreadable'));
+    deviceLocaleValue = 'es-MX';
+    await bootstrapLanguage();
+    expect(i18n.language).toBe('es');
+  });
+  it('keeps the default for a device language the brand has not enabled', async () => {
+    deviceLocaleValue = 'ko-KR';
+    await bootstrapLanguage();
+    expect(i18n.language).toBe('en');
+    deviceLocaleValue = 'fr-FR';
+    await bootstrapLanguage();
+    expect(i18n.language).toBe('en');
+  });
+  it('shows the server unreachable text in the stored language', async () => {
+    storeValues({ 'app.accountLanguage': 'de' });
+    await bootstrapLanguage();
+    expect(i18n.t('common.offlineTitle')).toBe('Verbindungsproblem');
+    expect(i18n.t('common.offline')).toBe('Server nicht erreichbar. Prüfe deine Verbindung.');
+  });
+});
+
+describe('enabledLanguageOf', () => {
+  it('maps a locale to an enabled language only', () => {
+    expect(enabledLanguageOf('de-DE')).toBe('de');
+    expect(enabledLanguageOf('es-419')).toBe('es');
+    expect(enabledLanguageOf('ko-KR')).toBeNull();
+    expect(enabledLanguageOf('fr')).toBeNull();
+    expect(enabledLanguageOf('')).toBeNull();
+    expect(enabledLanguageOf(null)).toBeNull();
+  });
 });
 
 describe('applyDriverLanguage', () => {
@@ -136,6 +199,10 @@ describe('applyDriverLanguage', () => {
     store.getItem.mockResolvedValue(null);
     await applyDriverLanguage('de');
     expect(i18n.language).toBe('de');
+  });
+  it('remembers the account language for a launch with the server down', async () => {
+    await applyDriverLanguage('de');
+    expect(store.setItem).toHaveBeenCalledWith('app.accountLanguage', 'de');
   });
   it('applies the preference even when storage is unreadable', async () => {
     store.getItem.mockRejectedValue(new Error('unreadable'));

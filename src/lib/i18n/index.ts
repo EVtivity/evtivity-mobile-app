@@ -35,6 +35,8 @@ const LOADERS: Record<LanguageCode, () => Record<string, unknown>> = {
 };
 
 const STORAGE_KEY = 'app.language';
+// The driver's account language from the last profile load (not a local choice).
+const ACCOUNT_LANGUAGE_KEY = 'app.accountLanguage';
 const loadedCatalogues = new Set<LanguageCode>();
 
 function isSupported(code: string): code is LanguageCode {
@@ -82,16 +84,52 @@ export async function setAppLanguage(code: string): Promise<void> {
   }
 }
 
-// Run once on launch: honor a previously stored choice before anything renders.
-export async function bootstrapLanguage(): Promise<void> {
+// The device language, read with no native module (Hermes Intl follows the
+// device locale). Null when the runtime cannot tell.
+export function deviceLocale(): string | null {
   try {
-    const stored = await AsyncStorage.getItem(STORAGE_KEY);
-    if (stored != null && isSupported(stored) && i18n.language !== stored) {
-      ensureCatalogue(stored);
-      await i18n.changeLanguage(stored);
-    }
+    return Intl.DateTimeFormat().resolvedOptions().locale;
   } catch {
-    /* fall back to the brand default already set at init */
+    return null;
+  }
+}
+
+// The enabled language a BCP 47 locale names, or null ('fr-FR', or a language
+// the brand has not enabled). Traditional Chinese locales map to zh-TW.
+export function enabledLanguageOf(locale: string | null | undefined): LanguageCode | null {
+  const lower = (locale ?? '').trim().toLowerCase();
+  if (lower === '') return null;
+  let code: string;
+  if (lower.startsWith('zh')) {
+    code = /^zh-(tw|hk|mo|hant)\b/.test(lower) ? 'zh-TW' : 'zh';
+  } else {
+    code = lower.split('-')[0] ?? '';
+  }
+  return isEnabled(code) ? code : null;
+}
+
+async function readStored(key: string): Promise<string | null> {
+  try {
+    return await AsyncStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+// Run once on launch, before any server reply, so a screen or alert shown while
+// the API cannot be reached is in the driver's language: the explicit choice,
+// else the driver's account language from the last profile load, else the
+// device language, else the brand default already set at init.
+export async function bootstrapLanguage(): Promise<void> {
+  const choice = await readStored(STORAGE_KEY);
+  const account = await readStored(ACCOUNT_LANGUAGE_KEY);
+  const target =
+    (choice != null && isSupported(choice) ? choice : null) ??
+    (account != null && isSupported(account) ? account : null) ??
+    enabledLanguageOf(deviceLocale());
+  if (target != null && i18n.language !== target) {
+    ensureCatalogue(target);
+    await i18n.changeLanguage(target);
   }
 }
 
@@ -105,6 +143,12 @@ export function currentAppLanguage(): LanguageCode {
 // an explicit local choice (a stored value always wins).
 export async function applyDriverLanguage(code: string | null | undefined): Promise<void> {
   if (code == null || !isSupported(code)) return;
+  // Remember it for the next launch, which may start with the server down.
+  try {
+    await AsyncStorage.setItem(ACCOUNT_LANGUAGE_KEY, code);
+  } catch {
+    /* best-effort persistence */
+  }
   try {
     const stored = await AsyncStorage.getItem(STORAGE_KEY);
     if (stored != null) return;

@@ -20,7 +20,7 @@
     "somethingWrong": "Something went wrong",
     "checkFields": "Check the highlighted fields.",
     "offline": "Cannot reach the server. Check your connection.",
-    "offlineTitle": "Connection problem",
+    "offlineTitle": "Connection Problem",
     "amountInclTax": "{{amount}} incl. tax"
   },
   "auth": {
