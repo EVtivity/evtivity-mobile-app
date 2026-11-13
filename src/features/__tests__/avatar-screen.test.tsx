@@ -185,6 +185,18 @@ beforeEach(() => {
 });
 
 describe('Avatar screen', () => {
+  it('stacks Save, Random and Remove full width in one column', async () => {
+    const screen = await renderScreen();
+    await screen.findByTestId('avatar-remove');
+    const actions = screen.getByTestId('avatar-actions');
+    expect(String(actions.props.className)).toContain('gap-3');
+    expect(String(actions.props.className)).not.toContain('flex-row');
+    const ids = screen
+      .getAllByTestId(/^avatar-(save|random|remove)$/)
+      .map((el) => el.props.testID as string);
+    expect(ids).toEqual(['avatar-save', 'avatar-random', 'avatar-remove']);
+  });
+
   it('saves the saved avatar with a changed option', async () => {
     const screen = await renderScreen();
     await screen.findByTestId('avatar-remove');

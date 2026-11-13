@@ -225,24 +225,6 @@ export default function AvatarScreen(): React.JSX.Element {
                 </View>
               </View>
             ))}
-          <View className="flex-row gap-3">
-            <Button
-              testID="avatar-random"
-              className="flex-1"
-              variant="outline"
-              title={t('account.avatarRandom')}
-              disabled={busy}
-              onPress={() => setEdited(randomGeneratedAvatar())}
-            />
-            <Button
-              testID="avatar-save"
-              className="flex-1"
-              title={t('common.save')}
-              loading={setAvatar.isPending}
-              disabled={busy}
-              onPress={onSave}
-            />
-          </View>
         </View>
       ) : null}
 
@@ -259,16 +241,40 @@ export default function AvatarScreen(): React.JSX.Element {
         </View>
       ) : null}
 
-      {current.data != null ? (
-        <View className="mt-6">
-          <Button
-            testID="avatar-remove"
-            variant="outline"
-            title={t('account.avatarRemove')}
-            loading={removeAvatar.isPending}
-            disabled={busy}
-            onPress={() => void onRemove()}
-          />
+      {/*
+        One button stack, full width with one gap, in the web editor's phone order:
+        Save on top, then Random, then Remove last.
+      */}
+      {(mode === 'create' && draft != null) || current.data != null ? (
+        <View testID="avatar-actions" className="mt-6 gap-3">
+          {mode === 'create' && draft != null ? (
+            <>
+              <Button
+                testID="avatar-save"
+                title={t('common.save')}
+                loading={setAvatar.isPending}
+                disabled={busy}
+                onPress={onSave}
+              />
+              <Button
+                testID="avatar-random"
+                variant="outline"
+                title={t('account.avatarRandom')}
+                disabled={busy}
+                onPress={() => setEdited(randomGeneratedAvatar())}
+              />
+            </>
+          ) : null}
+          {current.data != null ? (
+            <Button
+              testID="avatar-remove"
+              variant="outline"
+              title={t('account.avatarRemove')}
+              loading={removeAvatar.isPending}
+              disabled={busy}
+              onPress={() => void onRemove()}
+            />
+          ) : null}
         </View>
       ) : null}
     </Screen>
