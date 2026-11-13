@@ -148,6 +148,7 @@
     "checkStatus": "正在检查连接器...",
     "evNotDetectedTitle": "未检测到车辆",
     "evNotDetectedDescription": "充电桩未检测到此端口连接了车辆。请插好充电枪后重试。",
+    "plugInAnimationLabel": "将充电线插入您的车辆",
     "simulatorPlugInHint": "模拟器：打开 CSMS 控制台，进入该充电桩的“模拟”标签页，在开始充电前点击“插枪”。",
     "statusCheckFailed": "无法检查连接器状态，请重试。",
     "addFavorite": "添加到收藏",

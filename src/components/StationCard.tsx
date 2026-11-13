@@ -10,8 +10,9 @@ import { hsl } from '@/lib/theme';
 
 interface StationCardProps {
   name: string;
-  // On a station with units, the unit (charger box) this card shows, under the
-  // station name. Null or absent for a station without units.
+  // On a station with units, the unit (charger box) this card shows: the card
+  // title, with the station name under it (owner decision 2026-11-13). Null or
+  // absent for a station without units.
   unitName?: string | null;
   address?: string | null;
   isOnline: boolean;
@@ -35,21 +36,27 @@ export const StationCard = React.memo(function StationCard({
 }: StationCardProps): React.JSX.Element {
   const { t } = useTranslation();
   const hasAvail = availableCount > 0 && isOnline;
+  const hasUnit = unitName != null && unitName.length > 0;
   return (
     <Card testID={testID} onPress={onPress} className="gap-3">
       <View className="flex-row items-start justify-between gap-3">
         <View className="flex-1 gap-1">
-          <Text variant="title" className="flex-1" numberOfLines={1}>
-            {name}
+          <Text
+            testID={testID != null ? `${testID}-title` : undefined}
+            variant="title"
+            className="flex-1"
+            numberOfLines={1}
+          >
+            {hasUnit ? unitName : name}
           </Text>
-          {unitName != null && unitName.length > 0 ? (
+          {hasUnit ? (
             <Text
-              testID={testID != null ? `${testID}-unit` : undefined}
+              testID={testID != null ? `${testID}-station` : undefined}
               weight="medium"
               className="text-sm text-foreground"
               numberOfLines={1}
             >
-              {unitName}
+              {name}
             </Text>
           ) : null}
           {address != null && address.length > 0 ? (

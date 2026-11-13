@@ -81,11 +81,11 @@ export default function FavoritesScreen(): React.JSX.Element {
               <View className="flex-1 pr-3">
                 <View className="flex-row items-center gap-2">
                   <StatusDot tone={fav.isOnline ? 'success' : 'muted'} />
-                  <Text variant="label">{fav.siteName ?? fav.stationId}</Text>
+                  <Text variant="label">{fav.unitName ?? fav.siteName ?? fav.stationId}</Text>
                 </View>
                 {fav.unitName != null ? (
                   <Text weight="medium" className="mt-1 text-sm text-foreground">
-                    {fav.unitName}
+                    {fav.siteName ?? fav.stationId}
                   </Text>
                 ) : null}
                 {fav.siteAddress != null ? (

@@ -385,11 +385,16 @@ describe('search list', () => {
     ];
     await render(<ChargeScreen />);
     await fireEvent.changeText(screen.getByTestId('charge-search'), 'garage');
-    expect(screen.getByTestId('station-card-CS-ABL-unt_1-unit').props.children).toBe('Box 1');
+    // Owner decision 2026-11-13: the box is the card title, the station under it.
+    expect(screen.getByTestId('station-card-CS-ABL-unt_1-title').props.children).toBe('Box 1');
+    expect(screen.getByTestId('station-card-CS-ABL-unt_1-station').props.children).toBe(
+      'Depot Garage',
+    );
     expect(screen.getByTestId('station-card-CS-ABL')).toBeTruthy();
-    // A station without units keeps its card id and shows no unit line.
+    // A station without units keeps its card id and title and shows no station line.
     expect(screen.getByTestId('station-card-CS-0001')).toBeTruthy();
-    expect(screen.queryByTestId('station-card-CS-0001-unit')).toBeNull();
+    expect(screen.getByTestId('station-card-CS-0001-title')).toBeTruthy();
+    expect(screen.queryByTestId('station-card-CS-0001-station')).toBeNull();
 
     await fireEvent.press(screen.getByTestId('station-card-CS-ABL-unt_1'));
     expect(mockPush).toHaveBeenLastCalledWith({

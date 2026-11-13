@@ -148,6 +148,7 @@
     "checkStatus": "커넥터 확인 중...",
     "evNotDetectedTitle": "EV가 감지되지 않음",
     "evNotDetectedDescription": "충전소에서 이 포트에 연결된 EV를 감지하지 못했습니다. 차량을 연결하고 다시 시도하세요.",
+    "plugInAnimationLabel": "충전 케이블을 차량에 연결하세요",
     "simulatorPlugInHint": "시뮬레이터: CSMS 대시보드를 열고 이 충전소의 Simulate 탭으로 이동한 다음, 충전을 시작하기 전에 Plug In을 누르세요.",
     "statusCheckFailed": "커넥터 상태를 확인할 수 없습니다. 다시 시도하세요.",
     "addFavorite": "즐겨찾기에 추가",

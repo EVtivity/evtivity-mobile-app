@@ -148,6 +148,7 @@
     "checkStatus": "Checking connector...",
     "evNotDetectedTitle": "EV Not Detected",
     "evNotDetectedDescription": "The charging station does not detect an EV connected to this port. Plug in your vehicle and try again.",
+    "plugInAnimationLabel": "Plug the charging cable into your vehicle",
     "simulatorPlugInHint": "Simulator: open the CSMS dashboard, go to this station's Simulate tab, and tap Plug In before starting the charge.",
     "statusCheckFailed": "Could not check connector status. Try again.",
     "addFavorite": "Add to Favorites",

@@ -81,11 +81,11 @@ export default function WatchingScreen(): React.JSX.Element {
               <View className="flex-1 pr-3">
                 <View className="flex-row items-center gap-2">
                   <StatusDot tone={w.isOnline ? 'success' : 'muted'} />
-                  <Text variant="label">{w.siteName ?? w.stationId}</Text>
+                  <Text variant="label">{w.unitName ?? w.siteName ?? w.stationId}</Text>
                 </View>
                 {w.unitName != null ? (
                   <Text weight="medium" className="mt-1 text-sm text-foreground">
-                    {w.unitName}
+                    {w.siteName ?? w.stationId}
                   </Text>
                 ) : null}
                 {w.siteAddress != null ? (

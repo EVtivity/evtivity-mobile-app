@@ -148,6 +148,7 @@
     "checkStatus": "Comprobando el conector...",
     "evNotDetectedTitle": "Vehículo no detectado",
     "evNotDetectedDescription": "La estación no detecta un vehículo conectado a este puerto. Conecte su vehículo e inténtelo de nuevo.",
+    "plugInAnimationLabel": "Conecte el cable de carga a su vehículo",
     "simulatorPlugInHint": "Simulador: abra el panel del CSMS, vaya a la pestaña Simular de esta estación y toque Conectar antes de iniciar la carga.",
     "statusCheckFailed": "No se pudo comprobar el estado del conector. Inténtelo de nuevo.",
     "addFavorite": "Agregar a favoritos",

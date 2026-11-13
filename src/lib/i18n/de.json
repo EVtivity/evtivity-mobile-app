@@ -148,6 +148,7 @@
     "checkStatus": "Anschluss wird geprüft...",
     "evNotDetectedTitle": "Kein Fahrzeug erkannt",
     "evNotDetectedDescription": "Die Station erkennt kein an diesem Anschluss angeschlossenes Fahrzeug. Schließe dein Fahrzeug an und versuche es erneut.",
+    "plugInAnimationLabel": "Stecke das Ladekabel in dein Fahrzeug",
     "simulatorPlugInHint": "Simulator: Öffne das CSMS-Dashboard, gehe zum Tab Simulieren dieser Station und tippe auf Einstecken, bevor du den Ladevorgang startest.",
     "statusCheckFailed": "Anschlussstatus konnte nicht geprüft werden. Versuche es erneut.",
     "addFavorite": "Zu Favoriten hinzufügen",

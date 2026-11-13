@@ -148,6 +148,7 @@
     "checkStatus": "正在檢查連接器...",
     "evNotDetectedTitle": "未偵測到電動車",
     "evNotDetectedDescription": "充電樁未偵測到電動車連接至此充電埠，請插上您的車輛後再試一次。",
+    "plugInAnimationLabel": "將充電線插入您的車輛",
     "simulatorPlugInHint": "模擬器：開啟 CSMS 儀表板，前往此充電樁的「模擬」分頁，並在開始充電前點選「插入」。",
     "statusCheckFailed": "無法檢查連接器狀態，請再試一次。",
     "addFavorite": "加入收藏",

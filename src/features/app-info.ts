@@ -38,6 +38,9 @@ export interface Features {
   // the API refuses every support request with 403 SUPPORT_DISABLED.
   supportEnabled?: boolean;
   roamingEnabled: boolean;
+  // Drivers have a partner network to search: roaming on and a partner
+  // location shown (absent on older servers, read as no partner network).
+  roamingSearchAvailable?: boolean;
   reservationMaxHours?: number;
   reservationCancellationFeeCents?: number;
   reservationCancellationWindowMinutes?: number;

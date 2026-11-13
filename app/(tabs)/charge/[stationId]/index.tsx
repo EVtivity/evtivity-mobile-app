@@ -34,6 +34,7 @@ import { hsl } from '@/lib/theme';
 import { cn } from '@/lib/cn';
 import { isStartable, isCableDetected, isEvseSelectable } from '@/lib/status';
 import { PricingCard } from '@/components/PricingCard';
+import { EvPlugAnimation } from '@/components/EvPlugAnimation';
 import {
   useStation,
   useStartCharging,
@@ -563,6 +564,7 @@ export default function StationDetailScreen(): React.JSX.Element {
         onClose={() => setWarnVisible(false)}
         title={t('charge.evNotDetectedTitle')}
       >
+        <EvPlugAnimation connectorType={selected?.connector.connectorType} />
         <Text className="text-sm text-muted-foreground">
           {t('charge.evNotDetectedDescription')}
         </Text>
