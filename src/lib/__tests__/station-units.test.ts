@@ -147,14 +147,22 @@ describe('savedChargerParams', () => {
 });
 
 describe('locationChargers', () => {
-  it('lists nothing for a site without units, so the screen stays as before', () => {
+  it('gives a station of a site without units one charger with its ports', () => {
     expect(locationChargers([])).toEqual([]);
     expect(
       locationChargers([
         { stationId: 'CS-2', stationName: 'CS-2', evseId: 1, available: true },
         { stationId: 'CS-2', stationName: 'CS-2', evseId: 2, unitId: null, available: false },
       ]),
-    ).toEqual([]);
+    ).toMatchObject([
+      {
+        key: 'CS-2',
+        unitId: null,
+        evseCount: 2,
+        availableCount: 1,
+        ports: [{ evseId: 1 }, { evseId: 2 }],
+      },
+    ]);
   });
 
   it('groups the connector rows of a site with units into chargers', () => {
@@ -251,6 +259,14 @@ describe('locationChargers', () => {
     ];
     const chargers = locationChargers(rows, [
       {
+        stationId: 'CS-2',
+        unitId: null,
+        unitName: null,
+        evseIds: [1],
+        evseCount: 1,
+        availableCount: 0,
+      },
+      {
         stationId: 'EM4',
         unitId: 'unt_1',
         unitName: 'Box 1',
@@ -259,8 +275,8 @@ describe('locationChargers', () => {
         availableCount: 1,
       },
     ]);
-    expect(chargers.map((c) => c.key)).toEqual(['EM4/unt_1', 'CS-2']);
-    expect(chargers[0]?.ports).toEqual([
+    expect(chargers.map((c) => c.key)).toEqual(['CS-2', 'EM4/unt_1']);
+    expect(chargers[1]?.ports).toEqual([
       { evseId: 1, connectorType: 'Type2', maxPowerKw: 22, status: 'available', available: true },
       // A connector that reports Available while a driver cannot start there.
       {
@@ -271,15 +287,10 @@ describe('locationChargers', () => {
         available: false,
       },
     ]);
-    expect(chargers[1]).toMatchObject({ unitId: null, evseCount: 1, availableCount: 0 });
+    expect(chargers[0]).toMatchObject({ unitId: null, evseCount: 1, availableCount: 0 });
   });
 
-  it('lists nothing when the reply has no unit chargers', () => {
-    expect(
-      locationChargers(
-        [{ stationId: 'CS-2', stationName: 'CS-2', evseId: 1, available: true }],
-        [],
-      ),
-    ).toEqual([]);
+  it('lists nothing when the reply has no chargers', () => {
+    expect(locationChargers([], [])).toEqual([]);
   });
 });

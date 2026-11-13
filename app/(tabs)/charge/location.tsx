@@ -86,10 +86,9 @@ export default function LocationDetailScreen(): React.JSX.Element {
   const apiKey = mapConfig.data?.apiKey;
   const showMap = apiKey != null && apiKey.length > 0 && hasCoords;
 
-  // A site with a station that has units lists its chargers (each unit, and a
-  // station's EVSEs without a unit, as its own charger). A site without units
-  // keeps the screen it had.
-  const chargerList = locationChargers(data.chargers ?? [], data.unitChargers);
+  // Every charger of the site is one row with its ports: a station without
+  // units, each unit of a station with units, and its EVSEs without a unit.
+  const chargerList = locationChargers(data.chargers ?? [], data.driverChargers);
   const imageList = images.data ?? [];
   const popularForDay = (popular.data ?? []).filter((p) => p.dow === Number(dow));
   const showPopular = (popular.data ?? []).length > 0;

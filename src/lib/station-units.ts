@@ -151,10 +151,11 @@ export interface LocationChargerRow {
 }
 
 /**
- * One charger of the location reply's `unitChargers` (API v0.1.52): a unit, or
- * a station's EVSEs without a unit, with the EVSE numbers its rows carry.
+ * One charger of the location reply's `driverChargers` (API v0.1.52): a
+ * station without units (unitId null), a unit, or a station's EVSEs without a
+ * unit (unitId null), with the EVSE numbers its rows carry.
  */
-export interface LocationUnitCharger {
+export interface LocationDriverCharger {
   stationId: string;
   unitId: string | null;
   unitName: string | null;
@@ -207,20 +208,10 @@ function portsOf(rows: readonly LocationChargerRow[], stationId: string, evseIds
   });
 }
 
-/** The EVSE numbers of one station's rows, in row order. */
-function evseIdsOf(rows: readonly LocationChargerRow[], stationId: string): number[] {
-  const ids: number[] = [];
-  for (const r of rows)
-    if (r.stationId === stationId && !ids.includes(r.evseId)) ids.push(r.evseId);
-  return ids;
-}
-
-/** The unit chargers an older API leaves out, grouped from the rows' unit. */
-function groupedUnitChargers(rows: readonly LocationChargerRow[]): LocationUnitCharger[] {
-  const unitStations = new Set(rows.filter((r) => r.unitId != null).map((r) => r.stationId));
-  const groups = new Map<string, LocationUnitCharger>();
+/** The chargers of a reply without `driverChargers` (an older API): rows by station and unit. */
+function groupedChargers(rows: readonly LocationChargerRow[]): LocationDriverCharger[] {
+  const groups = new Map<string, LocationDriverCharger>();
   for (const row of rows) {
-    if (!unitStations.has(row.stationId)) continue;
     const unitId = row.unitId ?? null;
     const key = chargerKey(row.stationId, unitId);
     const entry = groups.get(key) ?? {
@@ -238,46 +229,26 @@ function groupedUnitChargers(rows: readonly LocationChargerRow[]): LocationUnitC
 }
 
 /**
- * The location's chargers with their ports, in the order of the reply: each
- * unit of a station with units (the reply's `unitChargers`, or the rows' unit
- * from an older API), then that station's EVSEs without a unit; a station
- * without units is one charger. Empty when no station of the site has units,
- * so the location screen keeps its layout.
+ * Every charger of the location with its ports, in the order of the reply: a
+ * station without units is one charger, a station with units one per unit and
+ * one for its EVSEs without a unit. The reply's `driverChargers` decide the
+ * grouping; the rows of an older API are grouped here.
  */
 export function locationChargers(
   rows: readonly LocationChargerRow[],
-  unitChargers?: readonly LocationUnitCharger[],
+  driverChargers?: readonly LocationDriverCharger[],
 ): LocationCharger[] {
-  const units = unitChargers ?? groupedUnitChargers(rows);
-  if (units.length === 0) return [];
-  const out: LocationCharger[] = [];
-  const charger = (
-    stationId: string,
-    unitId: string | null,
-    unitName: string | null,
-    evseIds: number[],
-  ): LocationCharger => {
-    const ports = portsOf(rows, stationId, evseIds);
+  return (driverChargers ?? groupedChargers(rows)).map((c) => {
+    const ports = portsOf(rows, c.stationId, c.evseIds);
     return {
-      key: chargerKey(stationId, unitId),
-      stationId,
-      stationName: rows.find((r) => r.stationId === stationId)?.stationName ?? stationId,
-      unitId,
-      unitName,
+      key: chargerKey(c.stationId, c.unitId),
+      stationId: c.stationId,
+      stationName: rows.find((r) => r.stationId === c.stationId)?.stationName ?? c.stationId,
+      unitId: c.unitId,
+      unitName: c.unitName,
       evseCount: ports.length,
       availableCount: ports.filter((p) => p.available).length,
       ports,
     };
-  };
-  const stations: string[] = [];
-  for (const r of rows) if (!stations.includes(r.stationId)) stations.push(r.stationId);
-  for (const stationId of stations) {
-    const own = units.filter((u) => u.stationId === stationId);
-    if (own.length === 0) {
-      out.push(charger(stationId, null, null, evseIdsOf(rows, stationId)));
-      continue;
-    }
-    for (const u of own) out.push(charger(stationId, u.unitId, u.unitName, u.evseIds));
-  }
-  return out;
+  });
 }

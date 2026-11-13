@@ -433,16 +433,36 @@ describe('location screen', () => {
     availableCount: 1,
   };
 
-  it('keeps a site without units as before', async () => {
+  it('lists a station without units as one charger with its ports', async () => {
     mockParams.current = { siteId: 'site_1' };
     mockLocation.current = {
       ...base,
       chargers: [
         { stationId: 'CS-0001', stationName: 'CS-0001', evseId: 1, unitId: null, available: true },
       ],
+      driverChargers: [
+        {
+          stationId: 'CS-0001',
+          unitId: null,
+          unitName: null,
+          evseIds: [1],
+          evseCount: 1,
+          availableCount: 1,
+        },
+      ],
     };
     await render(<LocationDetailScreen />);
-    expect(screen.queryByTestId('location-chargers')).toBeNull();
+    expect(screen.getByTestId('location-chargers')).toBeTruthy();
+    await fireEvent.press(screen.getByTestId('location-charger-CS-0001'));
+    expect(mockPush).toHaveBeenLastCalledWith({
+      pathname: '/charge/[stationId]',
+      params: { stationId: 'CS-0001' },
+    });
+    await fireEvent.press(screen.getByTestId('location-port-CS-0001-1'));
+    expect(mockPush).toHaveBeenLastCalledWith({
+      pathname: '/charge/[stationId]',
+      params: { stationId: 'CS-0001', evseId: '1' },
+    });
   });
 
   it('lists the chargers of a site with units and opens a unit', async () => {
@@ -490,7 +510,7 @@ describe('location screen', () => {
         status: 'available',
         available: true,
       })),
-      unitChargers: [
+      driverChargers: [
         {
           stationId: 'CS-ABL',
           unitId: 'unt_1',
