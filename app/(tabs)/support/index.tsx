@@ -32,7 +32,7 @@ export default function SupportListScreen(): React.JSX.Element {
 
   return (
     <Screen scroll refreshing={refreshing} onRefresh={onRefresh}>
-      <BackButton />
+      <BackButton fallbackHref="/(tabs)" />
       <Text variant="h1" className="mb-4">
         {t('support.title')}
       </Text>

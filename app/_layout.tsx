@@ -8,8 +8,8 @@ import { AppState } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { Stack, useRouter, useSegments } from 'expo-router';
-import { pushTarget, type PushData } from '@/lib/push-route';
+import { Stack, usePathname, useRouter, useSegments } from 'expo-router';
+import { openRoute, pushTarget, type PushData } from '@/lib/push-route';
 import { StatusBar } from 'expo-status-bar';
 import * as Notifications from 'expo-notifications';
 import * as SplashScreen from 'expo-splash-screen';
@@ -88,12 +88,17 @@ function RootNavigator(): React.JSX.Element {
   }, [driverUiTheme]);
 
   // Route to the relevant area when the user taps a push notification.
+  const pathname = usePathname();
   React.useEffect(() => {
     const sub = Notifications.addNotificationResponseReceivedListener((response) => {
-      router.push(pushTarget(response.notification.request.content.data as PushData));
+      openRoute(
+        router,
+        pushTarget(response.notification.request.content.data as PushData),
+        pathname,
+      );
     });
     return () => sub.remove();
-  }, [router]);
+  }, [router, pathname]);
 
   // Register for push once authenticated and unlocked.
   React.useEffect(() => {

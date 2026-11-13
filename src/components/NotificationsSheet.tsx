@@ -3,13 +3,13 @@
 
 import React from 'react';
 import { ScrollView, View, Pressable } from 'react-native';
-import { useRouter } from 'expo-router';
+import { usePathname, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Bell } from '@/components/icons';
 import { Sheet, Text, Spinner, EmptyState } from '@/components/ui';
 import { hsl } from '@/lib/theme';
 import { formatRelative } from '@/lib/format';
-import { AUTOCHARGE_STARTED } from '@/lib/push-route';
+import { AUTOCHARGE_STARTED, openRoute } from '@/lib/push-route';
 import {
   useNotifications,
   useMarkAllRead,
@@ -37,6 +37,7 @@ export function NotificationsSheet({
 }): React.JSX.Element {
   const { t } = useTranslation();
   const router = useRouter();
+  const pathname = usePathname();
   // Only fetch the list while the drawer is open.
   const notifications = useNotifications(visible);
   const markAllRead = useMarkAllRead();
@@ -52,7 +53,7 @@ export function NotificationsSheet({
   const onTap = (n: PortalNotification): void => {
     onClose();
     const path = routeFor(n.eventType);
-    if (path != null) router.push(path);
+    if (path != null) openRoute(router, path, pathname);
   };
 
   return (

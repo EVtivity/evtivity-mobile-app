@@ -1,6 +1,8 @@
 // Copyright (c) 2024-2026 EVtivity. All rights reserved.
 // SPDX-License-Identifier: BUSL-1.1
 
+import type { Href } from 'expo-router';
+
 /** The data the API attaches to a driver push (notification-dispatch). */
 export interface PushData {
   eventType?: string;
@@ -53,4 +55,25 @@ export function pushTarget(data: PushData | null | undefined): PushTarget {
   if (evt.startsWith('session')) return '/(tabs)';
   if (PAYMENT_EVENTS.has(evt)) return '/account/payment-methods';
   return '/(tabs)/account';
+}
+
+/** The router methods openRoute calls (expo-router `useRouter()` or `router`). */
+export interface RouteOpener {
+  push(href: Href, options: { withAnchor: boolean }): void;
+  dismissTo(href: Href): void;
+}
+
+/**
+ * Opens a route from outside its screen: a push tap or the notification list.
+ * While the driver is in the support screens, the Support list goes back to
+ * the list already open, so it is never pushed on top of a case (its back
+ * would then return to the case). Every other route is pushed with its
+ * navigator's anchor, so back from a detail screen lands on its list.
+ */
+export function openRoute(router: RouteOpener, target: Href, pathname: string): void {
+  if (target === '/support' && (pathname === '/support' || pathname.startsWith('/support/'))) {
+    router.dismissTo('/support');
+    return;
+  }
+  router.push(target, { withAnchor: true });
 }
