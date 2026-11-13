@@ -148,7 +148,10 @@ export default function SupportCaseDetailScreen(): React.JSX.Element {
         (detail.data.status !== 'resolved' || ai?.resolutionSource === 'ai') ? (
           <View style={surfaceVars} className="border-t border-white/15 bg-card/[0.7]">
             <View className="flex-row items-end gap-2 px-4 py-2">
+              {/* The input starts at the 52px of the send button and grows;
+                  items-end keeps the button on the input's bottom edge. */}
               <Input
+                testID="support-reply-input"
                 value={text}
                 onChangeText={setText}
                 placeholder={t('support.message')}
@@ -156,10 +159,13 @@ export default function SupportCaseDetailScreen(): React.JSX.Element {
                 className="max-h-28 flex-1"
               />
               <Pressable
+                testID="support-reply-send"
+                accessibilityRole="button"
+                accessibilityLabel={t('support.send')}
                 onPress={() => void onSend()}
                 disabled={text.trim().length === 0 || reply.isPending}
                 className={cn(
-                  'h-[52px] w-[52px] items-center justify-center rounded-xl bg-primary',
+                  'h-[52px] w-[52px] shrink-0 items-center justify-center rounded-xl bg-primary',
                   (text.trim().length === 0 || reply.isPending) && 'opacity-50',
                 )}
               >

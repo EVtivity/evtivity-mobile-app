@@ -12,8 +12,12 @@ interface InputProps extends TextInputProps {
 }
 
 // Filled input with a 2px border that lights up to the brand ring on focus.
+// One line is 52px, the height of Button and the icon send buttons beside an
+// input. A multiline input starts at that height (12px padding around the
+// 24px line inside the 2px border) and grows with its text up to the max
+// height its caller sets.
 export const Input = React.forwardRef<TextInput, InputProps>(function Input(
-  { error = false, className, onFocus, onBlur, ...props },
+  { error = false, className, onFocus, onBlur, multiline, ...props },
   ref,
 ): React.JSX.Element {
   const surfaceVars = useSurfaceTextVars();
@@ -33,8 +37,11 @@ export const Input = React.forwardRef<TextInput, InputProps>(function Input(
         onBlur?.(e);
       }}
       style={[surfaceVars, { fontFamily: 'Inter_400Regular' }]}
+      multiline={multiline}
+      textAlignVertical={multiline === true ? 'top' : undefined}
       className={cn(
-        'h-[52px] rounded-xl border-2 bg-muted px-4 text-base text-foreground',
+        'rounded-xl border-2 bg-muted px-4 text-base text-foreground',
+        multiline === true ? 'min-h-[52px] py-3 leading-6' : 'h-[52px]',
         borderClass,
         className,
       )}
