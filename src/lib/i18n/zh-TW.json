@@ -183,6 +183,8 @@
     "pricingPerMinute": "{{amount}}/分鐘",
     "pricingPerSession": "每次 {{amount}}",
     "pricingIdle": "{{amount}}/分鐘 閒置費",
+    "chargingKindAc": "交流",
+    "chargingKindDc": "直流",
     "viewLocation": "查看地點詳細資料",
     "card": "卡片",
     "cardDefault": "預設",

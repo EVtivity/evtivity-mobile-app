@@ -183,6 +183,8 @@
     "pricingPerMinute": "{{amount}}/분",
     "pricingPerSession": "세션당 {{amount}}",
     "pricingIdle": "{{amount}}/분 대기",
+    "chargingKindAc": "AC",
+    "chargingKindDc": "DC",
     "viewLocation": "위치 세부 정보 보기",
     "card": "카드",
     "cardDefault": "기본",

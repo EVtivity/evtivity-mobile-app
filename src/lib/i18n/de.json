@@ -183,6 +183,8 @@
     "pricingPerMinute": "{{amount}}/Min.",
     "pricingPerSession": "{{amount}} pro Ladevorgang",
     "pricingIdle": "{{amount}}/Min. Leerlauf",
+    "chargingKindAc": "AC",
+    "chargingKindDc": "DC",
     "viewLocation": "Standortdetails anzeigen",
     "card": "Karte",
     "cardDefault": "Standard",

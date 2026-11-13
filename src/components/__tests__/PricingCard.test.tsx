@@ -79,4 +79,36 @@ describe('PricingCard', () => {
     expect(getByText('Free')).toBeTruthy();
     expect(queryByTestId('pricing-tax-note')).toBeNull();
   });
+
+  it('shows the AC and DC prices side by side when they differ', async () => {
+    const { getByTestId } = await render(
+      <PricingCard
+        pricing={{
+          ...PRICING,
+          taxRate: null,
+          byChargingKind: [
+            {
+              chargingKind: 'ac',
+              pricePerKwh: '0.30',
+              pricePerMinute: null,
+              pricePerSession: null,
+              idleFeePricePerMinute: null,
+              taxRate: null,
+            },
+            {
+              chargingKind: 'dc',
+              pricePerKwh: '0.60',
+              pricePerMinute: null,
+              pricePerSession: null,
+              idleFeePricePerMinute: null,
+              taxRate: null,
+            },
+          ],
+        }}
+        priceDisplay="net"
+      />,
+    );
+    expect(getByTestId('pricing-kind-ac').props.children).toContain('AC');
+    expect(getByTestId('pricing-kind-dc').props.children).toContain('DC');
+  });
 });

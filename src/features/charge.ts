@@ -127,6 +127,18 @@ export interface PricingInfo {
   // How the driver pays a session started here: account means the fleet pays
   // and no card is needed. Null at a free vend site.
   billing?: DriverBilling | null;
+  // The AC and DC prices of a station with AC and DC EVSEs whose prices
+  // differ (AC and DC tariffs, CSMS v0.1.52). Empty or absent otherwise.
+  byChargingKind?: ChargingKindPrice[];
+}
+
+export interface ChargingKindPrice {
+  chargingKind: 'ac' | 'dc';
+  pricePerKwh: string | null;
+  pricePerMinute: string | null;
+  pricePerSession: string | null;
+  idleFeePricePerMinute: string | null;
+  taxRate: string | null;
 }
 
 export function usePricing(stationId: string) {

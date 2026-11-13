@@ -183,6 +183,8 @@
     "pricingPerMinute": "{{amount}}/min",
     "pricingPerSession": "{{amount}} por sesión",
     "pricingIdle": "{{amount}}/min inactivo",
+    "chargingKindAc": "CA",
+    "chargingKindDc": "CC",
     "viewLocation": "Ver detalles de la ubicación",
     "card": "Tarjeta",
     "cardDefault": "Predeterminada",

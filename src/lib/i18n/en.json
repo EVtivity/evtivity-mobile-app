@@ -183,6 +183,8 @@
     "pricingPerMinute": "{{amount}}/min",
     "pricingPerSession": "{{amount}} session",
     "pricingIdle": "{{amount}}/min idle",
+    "chargingKindAc": "AC",
+    "chargingKindDc": "DC",
     "viewLocation": "View location details",
     "card": "Card",
     "cardDefault": "Default",

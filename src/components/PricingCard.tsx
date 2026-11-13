@@ -43,6 +43,30 @@ export function PricingCard({
   }
   if (idleFee > 0) parts.push(t('charge.pricingIdle', { amount: formatPrice(idleFee) }));
 
+  // AC and DC side by side (a station with AC and DC EVSEs whose prices differ).
+  const kindLines =
+    (pricing.byChargingKind ?? []).length > 1
+      ? (pricing.byChargingKind ?? []).map((k) => {
+          const rate = toNumber(k.taxRate);
+          const fmt = (price: number): string =>
+            formatUnitPrice(priceForDisplay(price, rate, priceDisplay), currency);
+          const kindParts: string[] = [];
+          const kwh = toNumber(k.pricePerKwh);
+          const min = toNumber(k.pricePerMinute);
+          const fee = toNumber(k.pricePerSession);
+          if (kwh > 0) kindParts.push(t('charge.pricingPerKwh', { amount: fmt(kwh) }));
+          if (min > 0) kindParts.push(t('charge.pricingPerMinute', { amount: fmt(min) }));
+          if (fee > 0) kindParts.push(t('charge.pricingPerSession', { amount: fmt(fee) }));
+          const label = t(
+            k.chargingKind === 'ac' ? 'charge.chargingKindAc' : 'charge.chargingKindDc',
+          );
+          return {
+            kind: k.chargingKind,
+            text: `${label}: ${kindParts.length > 0 ? kindParts.join(' · ') : t('charge.pricingFree')}`,
+          };
+        })
+      : [];
+
   if (pricing.isFreeVend || parts.length === 0) {
     return (
       <Card className="flex-row items-center gap-3">
@@ -65,7 +89,19 @@ export function PricingCard({
     <Card className="flex-row items-center gap-3">
       <DollarSign size={20} color={hsl('primary')} />
       <View className="flex-1 gap-1">
-        <Text className="text-sm text-foreground">{parts.join(' · ')}</Text>
+        {kindLines.length > 0 ? (
+          kindLines.map((line) => (
+            <Text
+              key={line.kind}
+              testID={`pricing-kind-${line.kind}`}
+              className="text-sm text-foreground"
+            >
+              {line.text}
+            </Text>
+          ))
+        ) : (
+          <Text className="text-sm text-foreground">{parts.join(' · ')}</Text>
+        )}
         {taxNote != null ? (
           <Text testID="pricing-tax-note" className="text-xs text-muted-foreground">
             {taxNote}

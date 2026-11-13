@@ -183,6 +183,8 @@
     "pricingPerMinute": "{{amount}}/分钟",
     "pricingPerSession": "{{amount}}/次",
     "pricingIdle": "{{amount}}/分钟（占用费）",
+    "chargingKindAc": "交流",
+    "chargingKindDc": "直流",
     "viewLocation": "查看地点详情",
     "card": "银行卡",
     "cardDefault": "默认",
