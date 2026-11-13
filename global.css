@@ -27,6 +27,7 @@
   --ring: 142 71% 45%;
   --success: 142 71% 41%;
   --warning: 32 95% 50%;
+  --warning-text: 26 90% 35%;
   --destructive: 0 75% 55%;
   --info: 199 89% 48%;
   /* Corner radius tiers of the Default theme (src/lib/theme-tokens.ts). */
@@ -55,6 +56,7 @@
   --ring: 142 68% 50%;
   --success: 142 64% 48%;
   --warning: 35 92% 56%;
+  --warning-text: 35 92% 56%;
   --destructive: 0 72% 58%;
   --info: 198 90% 56%;
 }

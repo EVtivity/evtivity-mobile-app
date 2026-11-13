@@ -8,7 +8,7 @@
 
 import { brands } from '@brands/index';
 import type { BrandColors } from '@brands/index';
-import { contrastRatio, WCAG_AA_BODY_TEXT } from '@/lib/contrast';
+import { contrastOnTint, contrastRatio, WCAG_AA_BODY_TEXT } from '@/lib/contrast';
 import { themePalette, type Scheme } from '@/lib/theme-tokens';
 import { UI_THEMES } from '@/lib/ui-theme';
 
@@ -25,6 +25,8 @@ const AA_PAIRS: Pair[] = [
   ['primaryForeground', 'primary'],
   ['ctaForeground', 'cta'],
   ['accentForeground', 'accent'],
+  ['warningText', 'card'],
+  ['warningText', 'background'],
 ];
 
 const AAA_BODY_PAIRS: Pair[] = [
@@ -50,6 +52,16 @@ describe.each(cases)('$brand $theme $scheme', ({ theme, palette }) => {
   it.each(AA_PAIRS)('%s on %s meets AA 4.5:1', (fg, bg) => {
     expect(contrastRatio(palette[fg], palette[bg])).toBeGreaterThanOrEqual(WCAG_AA_BODY_TEXT);
   });
+
+  // The warning Badge: warning text on the 16 percent warning tint (Badge.tsx).
+  it.each(['card', 'background'] as const)(
+    'warningText on the warning badge tint over %s meets AA',
+    (surface) => {
+      expect(
+        contrastOnTint(palette.warningText, palette.warning, palette[surface], 0.16),
+      ).toBeGreaterThanOrEqual(WCAG_AA_BODY_TEXT);
+    },
+  );
 
   if (theme === 'high-contrast') {
     it.each(AAA_BODY_PAIRS)('%s on %s meets AAA 7:1', (fg, bg) => {

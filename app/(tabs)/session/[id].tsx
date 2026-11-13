@@ -322,7 +322,7 @@ export default function SessionScreen(): React.JSX.Element {
         />
         <Metric
           tone="warning"
-          icon={<DollarSign size={18} color={hsl('warning')} />}
+          icon={<DollarSign size={18} color={hsl('warningText')} />}
           label={isActive ? t('charge.live.cost') : t('charge.detail.totalCost')}
           value={formatCurrency(cost, data.currency)}
         />

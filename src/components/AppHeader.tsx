@@ -49,7 +49,7 @@ export function AppHeader(): React.JSX.Element {
           <Star
             size={20}
             weight={hasFavorites ? 'fill' : 'regular'}
-            color={hasFavorites ? hsl('warning') : hsl('mutedForeground')}
+            color={hasFavorites ? hsl('warningText') : hsl('mutedForeground')}
           />
         </Pressable>
         <Pressable

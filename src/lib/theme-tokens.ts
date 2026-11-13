@@ -107,6 +107,7 @@ function softPalette(c: BrandColors): BrandColors {
     foreground: textReadableOn(c.foreground, [c.background], AA),
     cardForeground: textReadableOn(c.cardForeground, [c.card], AA),
     mutedForeground: textReadableOn(c.mutedForeground, [c.muted, c.card, c.background], AA),
+    warningText: textReadableOn(c.warningText, [c.card, c.background], AA),
   };
 }
 
@@ -134,6 +135,8 @@ function highContrastPalette(c: BrandColors, scheme: Scheme): BrandColors {
     ctaForeground: WHITE,
     success: balancedTone(c.success),
     warning: balancedTone(c.warning),
+    // Warning text and icons at AAA on the neutral page.
+    warningText: textReadableOn(c.warningText, [light ? WHITE : BLACK], 7),
     destructive: balancedTone(c.destructive),
     info: balancedTone(c.info),
   };

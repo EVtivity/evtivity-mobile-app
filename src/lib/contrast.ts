@@ -19,17 +19,32 @@ function hslToRgb(token: string): [number, number, number] {
   return [f(0), f(8), f(4)];
 }
 
-function relativeLuminance(token: string): number {
-  const [r, g, b] = hslToRgb(token).map((c) =>
+function luminanceOfRgb(rgb: readonly number[]): number {
+  const [r = 0, g = 0, b = 0] = rgb.map((c) =>
     c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4,
-  ) as [number, number, number];
+  );
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
 
-export function contrastRatio(foreground: string, background: string): number {
-  const a = relativeLuminance(foreground);
-  const b = relativeLuminance(background);
+function ratio(a: number, b: number): number {
   return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+}
+
+export function contrastRatio(foreground: string, background: string): number {
+  return ratio(luminanceOfRgb(hslToRgb(foreground)), luminanceOfRgb(hslToRgb(background)));
+}
+
+// Contrast of `foreground` on a tint: `tone` at `alpha` (0 to 1) over `surface`,
+// as a tinted pill draws it (`bg-warning/16` on the card).
+export function contrastOnTint(
+  foreground: string,
+  tone: string,
+  surface: string,
+  alpha: number,
+): number {
+  const toneRgb = hslToRgb(tone);
+  const tint = hslToRgb(surface).map((c, i) => c * (1 - alpha) + (toneRgb[i] ?? 0) * alpha);
+  return ratio(luminanceOfRgb(hslToRgb(foreground)), luminanceOfRgb(tint));
 }
 
 // WCAG 2.x AA minimum for body text.

@@ -25,7 +25,7 @@ const LABEL: Record<Variant, string> = {
   default: 'text-primary',
   secondary: 'text-muted-foreground',
   success: 'text-success',
-  warning: 'text-warning',
+  warning: 'text-warning-text',
   destructive: 'text-destructive',
   info: 'text-info',
   outline: 'text-muted-foreground',

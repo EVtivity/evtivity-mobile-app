@@ -24,6 +24,7 @@ const FULL_PALETTE = {
   ring: '', // empty to exercise the transparent fallback
   success: '142 72% 33%',
   warning: '38 92% 50%',
+  warningText: '26 90% 35%',
   destructive: '0 84% 60%',
   info: '221 83% 53%',
 };

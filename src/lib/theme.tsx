@@ -33,6 +33,7 @@ function toVars(c: BrandColors): Record<string, string> {
     '--ring': c.ring,
     '--success': c.success,
     '--warning': c.warning,
+    '--warning-text': c.warningText,
     '--destructive': c.destructive,
     '--info': c.info,
   };

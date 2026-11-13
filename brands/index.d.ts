@@ -22,7 +22,11 @@ export interface BrandColors {
   border: string;
   ring: string;
   success: string;
+  // The warning fill (badge tints, dots, solid chips), bright amber.
   warning: string;
+  // Warning text and icons on card and background: a deep amber in light mode
+  // (the fill reads about 2.3:1 on white), at least 4.5:1 on its surfaces.
+  warningText: string;
   destructive: string;
   info: string;
 }

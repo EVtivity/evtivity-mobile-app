@@ -358,7 +358,7 @@ export default function StationDetailScreen(): React.JSX.Element {
             <Text variant="h1" testID={shownUnit != null ? 'station-unit-name' : undefined}>
               {shownUnit?.name ?? data.stationId}
             </Text>
-            {isFavorited ? <Star size={20} weight="fill" color={hsl('warning')} /> : null}
+            {isFavorited ? <Star size={20} weight="fill" color={hsl('warningText')} /> : null}
           </View>
           {shownUnit != null ? (
             <Text className="text-base text-foreground">{data.stationId}</Text>
@@ -399,7 +399,7 @@ export default function StationDetailScreen(): React.JSX.Element {
 
       {maintenanceActive ? (
         <Card className="flex-row items-center gap-3 border-warning">
-          <AlertTriangle size={20} color={hsl('warning')} />
+          <AlertTriangle size={20} color={hsl('warningText')} />
           <Text className="flex-1 text-sm text-foreground">
             {data.maintenance?.message ?? t('charge.maintenance')}
           </Text>
@@ -478,7 +478,7 @@ export default function StationDetailScreen(): React.JSX.Element {
 
       {hasActiveSession ? (
         <Card className="items-center gap-3 border-warning">
-          <AlertTriangle size={28} color={hsl('warning')} />
+          <AlertTriangle size={28} color={hsl('warningText')} />
           <Text className="text-center text-sm text-foreground">
             {t('charge.activeSessionWarning')}
           </Text>

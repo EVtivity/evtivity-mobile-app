@@ -26,6 +26,7 @@ module.exports = {
         ring: 'hsl(var(--ring) / <alpha-value>)',
         success: 'hsl(var(--success) / <alpha-value>)',
         warning: 'hsl(var(--warning) / <alpha-value>)',
+        'warning-text': 'hsl(var(--warning-text) / <alpha-value>)',
         destructive: 'hsl(var(--destructive) / <alpha-value>)',
         info: 'hsl(var(--info) / <alpha-value>)',
       },
