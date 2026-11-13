@@ -63,10 +63,10 @@ export default function ChargeScreen(): React.JSX.Element {
   }, []);
 
   const features = useFeatures();
-  // The Partner Network tab shows only while drivers have one to search:
-  // roaming on and a partner location shown (roamingSearchAvailable). A failed
-  // or missing read hides it, and a picked partner tab falls back to ours.
-  const roamingEnabled = features.data?.roamingSearchAvailable === true;
+  // Roaming is an opt-in OCPI feature; the Partner Network tab shows while the
+  // operator's roaming.enabled flag is on. A failed or missing read hides it,
+  // and a picked partner tab falls back to ours.
+  const roamingEnabled = features.data?.roamingEnabled ?? false;
 
   // Debounce the text before it drives a request, so typing doesn't fire a GET
   // per keystroke. The section toggle still uses the live value for instant UI.
