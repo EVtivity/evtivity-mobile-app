@@ -166,9 +166,7 @@ export default function LocationDetailScreen(): React.JSX.Element {
                   <ConnectorTile
                     key={port.evseId}
                     testID={`location-port-${charger.key}-${String(port.evseId)}`}
-                    connectorType={port.connectorType}
-                    maxPowerKw={port.maxPowerKw}
-                    maxCurrentAmps={null}
+                    connectors={port.connectors}
                     status={port.status as ConnectorStatus}
                     port={port.evseId}
                     selected={false}

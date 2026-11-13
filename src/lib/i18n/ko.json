@@ -889,5 +889,9 @@
     "tooFew": "{{n}}개 이상 선택하세요.",
     "tooMany": "{{n}}개 이하로 선택하세요.",
     "invalid": "올바르지 않은 값입니다."
+  },
+  "connectorTypeNames": {
+    "other": "기타",
+    "pantograph": "팬터그래프"
   }
 }

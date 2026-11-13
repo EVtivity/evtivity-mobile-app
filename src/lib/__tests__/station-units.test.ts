@@ -277,12 +277,16 @@ describe('locationChargers', () => {
     ]);
     expect(chargers.map((c) => c.key)).toEqual(['CS-2', 'EM4/unt_1']);
     expect(chargers[1]?.ports).toEqual([
-      { evseId: 1, connectorType: 'Type2', maxPowerKw: 22, status: 'available', available: true },
+      {
+        evseId: 1,
+        connectors: [{ connectorType: 'Type2', maxPowerKw: 22 }],
+        status: 'available',
+        available: true,
+      },
       // A connector that reports Available while a driver cannot start there.
       {
         evseId: 2,
-        connectorType: 'Type2',
-        maxPowerKw: 22,
+        connectors: [{ connectorType: 'Type2', maxPowerKw: 22 }],
         status: 'unavailable',
         available: false,
       },

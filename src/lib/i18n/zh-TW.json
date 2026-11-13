@@ -889,5 +889,9 @@
     "tooFew": "請至少選擇 {{n}} 項。",
     "tooMany": "最多選擇 {{n}} 項。",
     "invalid": "此值無效。"
+  },
+  "connectorTypeNames": {
+    "other": "其他",
+    "pantograph": "受電弓"
   }
 }

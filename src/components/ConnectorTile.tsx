@@ -4,18 +4,30 @@
 import React from 'react';
 import { Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Plug, Zap } from '@/components/icons';
+import { Zap } from '@/components/icons';
+import { ConnectorFaceIcon } from '@/components/ConnectorFaceIcon';
 import { Text, StatusBadge } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import { hsl, useSurfaceTextVars } from '@/lib/theme';
 import { isStartable } from '@/lib/status';
-import { formatPowerKw, NA } from '@/lib/format';
+import { formatPowerKw } from '@/lib/format';
+import { useConnectorTypeLabel } from '@/lib/connector-label';
 import type { ConnectorStatus } from '@/lib/types';
 
-interface ConnectorTileProps {
+/** One connector of the port (EVSE): its own line with its face, type and rating. */
+export interface ConnectorTileConnector {
+  /** The connector id within the EVSE: the lines follow it when given. */
+  connectorId?: number;
   connectorType: string | null;
   maxPowerKw: number | null;
-  maxCurrentAmps: number | null;
+  maxCurrentAmps?: number | null;
+}
+
+// The port (EVSE) tile of the station and location screens, the portal port
+// card: the EVSE status (it charges one vehicle at a time through any of its
+// connectors), then one line per connector (owner decision 2026-11-13).
+interface ConnectorTileProps {
+  connectors: readonly ConnectorTileConnector[];
   status: ConnectorStatus;
   port: number;
   selected: boolean;
@@ -29,10 +41,15 @@ interface ConnectorTileProps {
 const CHARGING: ConnectorStatus[] = ['charging', 'discharging'];
 const IDLE: ConnectorStatus[] = ['suspended_ev', 'suspended_evse', 'idle'];
 
+function specOf(c: ConnectorTileConnector): string {
+  const power = c.maxPowerKw != null && c.maxPowerKw > 0 ? formatPowerKw(c.maxPowerKw) : '';
+  const amps =
+    c.maxCurrentAmps != null && c.maxCurrentAmps > 0 ? `${String(c.maxCurrentAmps)}A` : '';
+  return [power, amps].filter(Boolean).join(' / ');
+}
+
 export function ConnectorTile({
-  connectorType,
-  maxPowerKw,
-  maxCurrentAmps,
+  connectors,
   status,
   port,
   selected,
@@ -46,9 +63,12 @@ export function ConnectorTile({
   const isCharging = CHARGING.includes(status);
   const isIdle = IDLE.includes(status);
 
-  const power = maxPowerKw != null && maxPowerKw > 0 ? formatPowerKw(maxPowerKw) : '';
-  const amps = maxCurrentAmps != null && maxCurrentAmps > 0 ? `${String(maxCurrentAmps)}A` : '';
-  const spec = [power, amps].filter(Boolean).join(' / ');
+  const typeLabel = useConnectorTypeLabel();
+  const lines = connectors
+    .map((c, index) => ({ c, index }))
+    .sort((a, b) => (a.c.connectorId ?? a.index) - (b.c.connectorId ?? b.index))
+    .map(({ c }) => c);
+  const muted = hsl('mutedForeground');
 
   return (
     <Pressable
@@ -68,12 +88,26 @@ export function ConnectorTile({
         <StatusBadge status={status} />
         {selected ? <Zap size={16} color={hsl('primary')} /> : null}
       </View>
-      <View className="gap-0.5">
-        <View className="flex-row items-center gap-1">
-          <Plug size={14} color={hsl('mutedForeground')} />
-          <Text variant="label">{connectorType ?? NA}</Text>
-        </View>
-        {spec !== '' ? <Text className="text-xs text-muted-foreground">{spec}</Text> : null}
+      <View className="gap-1.5">
+        {lines.length === 0 ? <Text variant="label">{typeLabel(null)}</Text> : null}
+        {lines.map((c, index) => {
+          const spec = specOf(c);
+          return (
+            <View
+              key={c.connectorId ?? index}
+              testID="connector-tile-line"
+              className="flex-row items-start gap-1.5"
+            >
+              <View className="mt-0.5">
+                <ConnectorFaceIcon type={c.connectorType} color={muted} />
+              </View>
+              <View className="shrink">
+                <Text variant="label">{typeLabel(c.connectorType)}</Text>
+                {spec !== '' ? <Text className="text-xs text-muted-foreground">{spec}</Text> : null}
+              </View>
+            </View>
+          );
+        })}
         <Text className="text-xs text-muted-foreground">
           {t('charge.connectorPort', { id: port })}
         </Text>

@@ -889,5 +889,9 @@
     "tooFew": "Select at least {{n}}.",
     "tooMany": "Select at most {{n}}.",
     "invalid": "This value is not valid."
+  },
+  "connectorTypeNames": {
+    "other": "Other",
+    "pantograph": "Pantograph"
   }
 }

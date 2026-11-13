@@ -167,8 +167,8 @@ export interface LocationDriverCharger {
 /** One port (EVSE) of a location charger, from its connector rows. */
 export interface LocationPort {
   evseId: number;
-  connectorType: string | null;
-  maxPowerKw: number | null;
+  /** Every connector of the port, each shown on its own line (in the reply's connector order). */
+  connectors: { connectorType: string | null; maxPowerKw: number | null }[];
   /** The first connector's status, or unavailable when a driver cannot start there. */
   status: string;
   available: boolean;
@@ -193,14 +193,12 @@ function portsOf(rows: readonly LocationChargerRow[], stationId: string, evseIds
     // An EVSE with several connectors is free when any of them is.
     const available = connectors.some((r) => r.available);
     const status = first?.status ?? 'unavailable';
-    const power = connectors.reduce((max, r) => {
-      const kw = r.maxPowerKw != null ? Number(r.maxPowerKw) : 0;
-      return kw > max ? kw : max;
-    }, 0);
     return {
       evseId,
-      connectorType: first?.connectorType ?? null,
-      maxPowerKw: power > 0 ? power : null,
+      connectors: connectors.map((r) => {
+        const kw = r.maxPowerKw != null ? Number(r.maxPowerKw) : 0;
+        return { connectorType: r.connectorType ?? null, maxPowerKw: kw > 0 ? kw : null };
+      }),
       // A connector can report Available while its station is closed to drivers.
       status: !available && status === 'available' ? 'unavailable' : status,
       available,

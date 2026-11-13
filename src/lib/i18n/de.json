@@ -889,5 +889,9 @@
     "tooFew": "Wähle mindestens {{n}} aus.",
     "tooMany": "Wähle höchstens {{n}} aus.",
     "invalid": "Dieser Wert ist ungültig."
+  },
+  "connectorTypeNames": {
+    "other": "Sonstige",
+    "pantograph": "Stromabnehmer"
   }
 }

@@ -889,5 +889,9 @@
     "tooFew": "Seleccione al menos {{n}}.",
     "tooMany": "Seleccione como máximo {{n}}.",
     "invalid": "Este valor no es válido."
+  },
+  "connectorTypeNames": {
+    "other": "Otro",
+    "pantograph": "Pantógrafo"
   }
 }

@@ -336,9 +336,7 @@ export default function StationDetailScreen(): React.JSX.Element {
       <ConnectorTile
         key={evse.evseId}
         testID={connectorTileTestId(evse.evseId)}
-        connectorType={connector.connectorType}
-        maxPowerKw={connector.maxPowerKw}
-        maxCurrentAmps={connector.maxCurrentAmps}
+        connectors={evse.connectors}
         status={connector.status}
         port={evse.evseId}
         selected={isSelected}
