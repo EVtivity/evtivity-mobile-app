@@ -187,7 +187,7 @@ describe('locationChargers', () => {
       { stationId: 'CS-1', stationName: 'Garage', evseId: 5, unitId: null, available: true },
       { stationId: 'CS-2', stationName: 'Lobby', evseId: 1, available: false },
     ]);
-    expect(chargers).toEqual([
+    expect(chargers).toMatchObject([
       {
         key: 'CS-1/unt_1',
         stationId: 'CS-1',
@@ -221,5 +221,65 @@ describe('locationChargers', () => {
       unit: NO_UNIT_PARAM,
     });
     expect(chargerRouteParams(chargers[2]!, chargers)).toEqual({ stationId: 'CS-2' });
+  });
+
+  it('takes the grouping of the reply and gives each charger its ports', () => {
+    const rows = [
+      {
+        stationId: 'EM4',
+        stationName: 'EM4',
+        evseId: 1,
+        unitId: 'unt_1',
+        unitName: 'Box 1',
+        connectorType: 'Type2',
+        maxPowerKw: '22',
+        status: 'available',
+        available: true,
+      },
+      {
+        stationId: 'EM4',
+        stationName: 'EM4',
+        evseId: 2,
+        unitId: 'unt_1',
+        unitName: 'Box 1',
+        connectorType: 'Type2',
+        maxPowerKw: '22',
+        status: 'available',
+        available: false,
+      },
+      { stationId: 'CS-2', stationName: 'Lobby', evseId: 1, status: 'charging', available: false },
+    ];
+    const chargers = locationChargers(rows, [
+      {
+        stationId: 'EM4',
+        unitId: 'unt_1',
+        unitName: 'Box 1',
+        evseIds: [1, 2],
+        evseCount: 2,
+        availableCount: 1,
+      },
+    ]);
+    expect(chargers.map((c) => c.key)).toEqual(['EM4/unt_1', 'CS-2']);
+    expect(chargers[0]?.ports).toEqual([
+      { evseId: 1, connectorType: 'Type2', maxPowerKw: 22, status: 'available', available: true },
+      // A connector that reports Available while a driver cannot start there.
+      {
+        evseId: 2,
+        connectorType: 'Type2',
+        maxPowerKw: 22,
+        status: 'unavailable',
+        available: false,
+      },
+    ]);
+    expect(chargers[1]).toMatchObject({ unitId: null, evseCount: 1, availableCount: 0 });
+  });
+
+  it('lists nothing when the reply has no unit chargers', () => {
+    expect(
+      locationChargers(
+        [{ stationId: 'CS-2', stationName: 'CS-2', evseId: 1, available: true }],
+        [],
+      ),
+    ).toEqual([]);
   });
 });

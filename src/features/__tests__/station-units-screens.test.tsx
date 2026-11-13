@@ -474,6 +474,41 @@ describe('location screen', () => {
       params: { stationId: 'CS-ABL', unit: NO_UNIT_PARAM },
     });
   });
+
+  it('lists the ports of each unit from the reply grouping and opens a port', async () => {
+    mockParams.current = { siteId: 'site_1' };
+    mockLocation.current = {
+      ...base,
+      chargers: [1, 2].map((evseId) => ({
+        stationId: 'CS-ABL',
+        stationName: 'CS-ABL',
+        evseId,
+        unitId: 'unt_1',
+        unitName: 'Box 1',
+        connectorType: 'Type2',
+        maxPowerKw: '22',
+        status: 'available',
+        available: true,
+      })),
+      unitChargers: [
+        {
+          stationId: 'CS-ABL',
+          unitId: 'unt_1',
+          unitName: 'Box 1',
+          evseIds: [1, 2],
+          evseCount: 2,
+          availableCount: 2,
+        },
+      ],
+    };
+    await render(<LocationDetailScreen />);
+    expect(screen.getByText('Port 1')).toBeTruthy();
+    await fireEvent.press(screen.getByTestId('location-port-CS-ABL/unt_1-2'));
+    expect(mockPush).toHaveBeenLastCalledWith({
+      pathname: '/charge/[stationId]',
+      params: { stationId: 'CS-ABL', unit: 'unt_1', evseId: '2' },
+    });
+  });
 });
 
 describe('favorites screen', () => {

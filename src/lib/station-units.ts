@@ -143,10 +143,37 @@ export interface LocationChargerRow {
   evseId: number;
   unitId?: string | null;
   unitName?: string | null;
+  connectorType?: string | null;
+  /** kW as the API's decimal string. */
+  maxPowerKw?: string | null;
+  status?: string;
   available: boolean;
 }
 
-/** One charger of a location: a station, a unit, or a station's EVSEs without a unit. */
+/**
+ * One charger of the location reply's `unitChargers` (API v0.1.52): a unit, or
+ * a station's EVSEs without a unit, with the EVSE numbers its rows carry.
+ */
+export interface LocationUnitCharger {
+  stationId: string;
+  unitId: string | null;
+  unitName: string | null;
+  evseIds: number[];
+  evseCount: number;
+  availableCount: number;
+}
+
+/** One port (EVSE) of a location charger, from its connector rows. */
+export interface LocationPort {
+  evseId: number;
+  connectorType: string | null;
+  maxPowerKw: number | null;
+  /** The first connector's status, or unavailable when a driver cannot start there. */
+  status: string;
+  available: boolean;
+}
+
+/** One charger of a location: a unit, or a station's EVSEs without a unit. */
 export interface LocationCharger {
   key: string;
   stationId: string;
@@ -155,41 +182,102 @@ export interface LocationCharger {
   unitName: string | null;
   evseCount: number;
   availableCount: number;
+  ports: LocationPort[];
+}
+
+function portsOf(rows: readonly LocationChargerRow[], stationId: string, evseIds: number[]) {
+  return evseIds.map((evseId): LocationPort => {
+    const connectors = rows.filter((r) => r.stationId === stationId && r.evseId === evseId);
+    const first = connectors[0];
+    // An EVSE with several connectors is free when any of them is.
+    const available = connectors.some((r) => r.available);
+    const status = first?.status ?? 'unavailable';
+    const power = connectors.reduce((max, r) => {
+      const kw = r.maxPowerKw != null ? Number(r.maxPowerKw) : 0;
+      return kw > max ? kw : max;
+    }, 0);
+    return {
+      evseId,
+      connectorType: first?.connectorType ?? null,
+      maxPowerKw: power > 0 ? power : null,
+      // A connector can report Available while its station is closed to drivers.
+      status: !available && status === 'available' ? 'unavailable' : status,
+      available,
+    };
+  });
+}
+
+/** The EVSE numbers of one station's rows, in row order. */
+function evseIdsOf(rows: readonly LocationChargerRow[], stationId: string): number[] {
+  const ids: number[] = [];
+  for (const r of rows)
+    if (r.stationId === stationId && !ids.includes(r.evseId)) ids.push(r.evseId);
+  return ids;
+}
+
+/** The unit chargers an older API leaves out, grouped from the rows' unit. */
+function groupedUnitChargers(rows: readonly LocationChargerRow[]): LocationUnitCharger[] {
+  const unitStations = new Set(rows.filter((r) => r.unitId != null).map((r) => r.stationId));
+  const groups = new Map<string, LocationUnitCharger>();
+  for (const row of rows) {
+    if (!unitStations.has(row.stationId)) continue;
+    const unitId = row.unitId ?? null;
+    const key = chargerKey(row.stationId, unitId);
+    const entry = groups.get(key) ?? {
+      stationId: row.stationId,
+      unitId,
+      unitName: row.unitName ?? null,
+      evseIds: [],
+      evseCount: 0,
+      availableCount: 0,
+    };
+    if (!entry.evseIds.includes(row.evseId)) entry.evseIds.push(row.evseId);
+    groups.set(key, entry);
+  }
+  return [...groups.values()];
 }
 
 /**
- * The location's connector rows grouped into chargers, in the order of the
- * reply. Empty when no station of the site has units, so the location screen
- * keeps its station layout.
+ * The location's chargers with their ports, in the order of the reply: each
+ * unit of a station with units (the reply's `unitChargers`, or the rows' unit
+ * from an older API), then that station's EVSEs without a unit; a station
+ * without units is one charger. Empty when no station of the site has units,
+ * so the location screen keeps its layout.
  */
-export function locationChargers(rows: readonly LocationChargerRow[]): LocationCharger[] {
-  if (!rows.some((r) => r.unitId != null)) return [];
-  const byKey = new Map<string, { charger: LocationCharger; evses: Map<number, boolean> }>();
-  for (const row of rows) {
-    const unitId = row.unitId ?? null;
-    const key = chargerKey(row.stationId, unitId);
-    let entry = byKey.get(key);
-    if (entry == null) {
-      entry = {
-        charger: {
-          key,
-          stationId: row.stationId,
-          stationName: row.stationName,
-          unitId,
-          unitName: row.unitName ?? null,
-          evseCount: 0,
-          availableCount: 0,
-        },
-        evses: new Map(),
-      };
-      byKey.set(key, entry);
+export function locationChargers(
+  rows: readonly LocationChargerRow[],
+  unitChargers?: readonly LocationUnitCharger[],
+): LocationCharger[] {
+  const units = unitChargers ?? groupedUnitChargers(rows);
+  if (units.length === 0) return [];
+  const out: LocationCharger[] = [];
+  const charger = (
+    stationId: string,
+    unitId: string | null,
+    unitName: string | null,
+    evseIds: number[],
+  ): LocationCharger => {
+    const ports = portsOf(rows, stationId, evseIds);
+    return {
+      key: chargerKey(stationId, unitId),
+      stationId,
+      stationName: rows.find((r) => r.stationId === stationId)?.stationName ?? stationId,
+      unitId,
+      unitName,
+      evseCount: ports.length,
+      availableCount: ports.filter((p) => p.available).length,
+      ports,
+    };
+  };
+  const stations: string[] = [];
+  for (const r of rows) if (!stations.includes(r.stationId)) stations.push(r.stationId);
+  for (const stationId of stations) {
+    const own = units.filter((u) => u.stationId === stationId);
+    if (own.length === 0) {
+      out.push(charger(stationId, null, null, evseIdsOf(rows, stationId)));
+      continue;
     }
-    // An EVSE with several connectors is free when any of them is.
-    entry.evses.set(row.evseId, (entry.evses.get(row.evseId) ?? false) || row.available);
+    for (const u of own) out.push(charger(stationId, u.unitId, u.unitName, u.evseIds));
   }
-  return [...byKey.values()].map(({ charger, evses }) => ({
-    ...charger,
-    evseCount: evses.size,
-    availableCount: [...evses.values()].filter(Boolean).length,
-  }));
+  return out;
 }

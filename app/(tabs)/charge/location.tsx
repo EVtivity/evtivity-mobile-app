@@ -20,6 +20,8 @@ import {
 } from '@/components/ui';
 import { LocationImageThumb } from '@/components/LocationImageThumb';
 import { PopularTimesChart } from '@/components/PopularTimesChart';
+import { ConnectorTile } from '@/components/ConnectorTile';
+import type { ConnectorStatus } from '@/lib/types';
 import { openEmail, openPhone } from '@/lib/safe-link';
 import { hsl } from '@/lib/theme';
 import { chargerRouteParams, locationChargers } from '@/lib/station-units';
@@ -87,7 +89,7 @@ export default function LocationDetailScreen(): React.JSX.Element {
   // A site with a station that has units lists its chargers (each unit, and a
   // station's EVSEs without a unit, as its own charger). A site without units
   // keeps the screen it had.
-  const chargerList = locationChargers(data.chargers ?? []);
+  const chargerList = locationChargers(data.chargers ?? [], data.unitChargers);
   const imageList = images.data ?? [];
   const popularForDay = (popular.data ?? []).filter((p) => p.dow === Number(dow));
   const showPopular = (popular.data ?? []).length > 0;
@@ -159,6 +161,31 @@ export default function LocationDetailScreen(): React.JSX.Element {
                   total: charger.evseCount,
                 })}
               </Text>
+              {/* The ports of the charger, the station screen's connector tiles. */}
+              <View className="mt-2 flex-row flex-wrap gap-3">
+                {charger.ports.map((port) => (
+                  <ConnectorTile
+                    key={port.evseId}
+                    testID={`location-port-${charger.key}-${String(port.evseId)}`}
+                    connectorType={port.connectorType}
+                    maxPowerKw={port.maxPowerKw}
+                    maxCurrentAmps={null}
+                    status={port.status as ConnectorStatus}
+                    port={port.evseId}
+                    selected={false}
+                    disabled={!port.available}
+                    onPress={() =>
+                      router.push({
+                        pathname: '/charge/[stationId]',
+                        params: {
+                          ...chargerRouteParams(charger, chargerList),
+                          evseId: String(port.evseId),
+                        },
+                      })
+                    }
+                  />
+                ))}
+              </View>
             </Card>
           ))}
         </View>
