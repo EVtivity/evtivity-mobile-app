@@ -11,6 +11,7 @@ import {
   isPriceDisplay,
   priceForDisplay,
   resolvePriceDisplay,
+  resolveTaxBasis,
 } from '@/lib/price-display';
 
 describe('isPriceDisplay', () => {
@@ -36,15 +37,29 @@ describe('resolvePriceDisplay', () => {
 });
 
 describe('priceForDisplay', () => {
-  it('adds the tax rate for gross display only', () => {
-    expect(priceForDisplay(0.2152, 0.19, 'gross')).toBeCloseTo(0.256088, 6);
-    expect(priceForDisplay(0.2152, 0.19, 'net')).toBe(0.2152);
-    expect(priceForDisplay(0.2152, 0, 'gross')).toBe(0.2152);
+  it('adds the tax rate for gross display of a net price only', () => {
+    expect(priceForDisplay(0.2152, 0.19, 'gross', 'net')).toBeCloseTo(0.256088, 6);
+    expect(priceForDisplay(0.2152, 0.19, 'net', 'net')).toBe(0.2152);
+    expect(priceForDisplay(0.2152, 0, 'gross', 'net')).toBe(0.2152);
   });
 
   it('matches grossPrice for gross display', () => {
-    expect(priceForDisplay(0.1, 0.19, 'gross')).toBeCloseTo(0.119, 10);
-    expect(priceForDisplay(2, 0, 'gross')).toBe(2);
+    expect(priceForDisplay(0.1, 0.19, 'gross', 'net')).toBeCloseTo(0.119, 10);
+    expect(priceForDisplay(2, 0, 'gross', 'net')).toBe(2);
+  });
+
+  it('takes the tax out of a gross price for net display, and keeps it for gross', () => {
+    expect(priceForDisplay(0.357, 0.19, 'net', 'gross')).toBeCloseTo(0.3, 10);
+    expect(priceForDisplay(0.357, 0.19, 'gross', 'gross')).toBe(0.357);
+  });
+});
+
+describe('resolveTaxBasis', () => {
+  it('reads net or gross, else the net default', () => {
+    expect(resolveTaxBasis('gross')).toBe('gross');
+    expect(resolveTaxBasis('net')).toBe('net');
+    expect(resolveTaxBasis(undefined)).toBe('net');
+    expect(resolveTaxBasis('brutto')).toBe('net');
   });
 });
 

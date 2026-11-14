@@ -112,9 +112,9 @@ export function useSearchChargers(query: string) {
   });
 }
 
-// GET /v1/portal/chargers/:stationId/pricing. Prices are net decimal strings
-// in major units of the company currency ("0.2152"). taxRate is a decimal
-// string ("0.19") that the amount charged adds on top. Show prices through
+// GET /v1/portal/chargers/:stationId/pricing. Prices are decimal strings in
+// major units of the company currency ("0.2152"), entered in `taxBasis` (net
+// or gross). taxRate is a decimal string ("0.19"). Show prices through
 // priceForDisplay (@/lib/price-display) as the driver chose.
 export interface PricingInfo {
   currency: string;
@@ -124,12 +124,27 @@ export interface PricingInfo {
   idleFeePricePerMinute: string | null;
   taxRate: string | null;
   isFreeVend: boolean;
+  // How the tariff prices are entered: 'net' or 'gross' (company.taxBasis).
+  taxBasis?: string;
+  // Free or paid for this driver per EVSE, as the start decides it (a mixed
+  // EVSE counts every kind it may be priced at). Absent from older servers.
+  evseFree?: { evseId: number; free: boolean }[];
   // How the driver pays a session started here: account means the fleet pays
   // and no card is needed. Null at a free vend site.
   billing?: DriverBilling | null;
   // The AC and DC prices of a station with AC and DC EVSEs whose prices
   // differ (AC and DC tariffs, CSMS v0.1.52). Empty or absent otherwise.
   byChargingKind?: ChargingKindPrice[];
+}
+
+// Whether charging on the EVSE is free for the driver (the reply's evseFree),
+// or null when the reply does not say (an older server, no EVSE picked).
+export function evseIsFree(
+  pricing: PricingInfo | undefined,
+  evseId: number | null,
+): boolean | null {
+  if (pricing == null || evseId == null) return null;
+  return pricing.evseFree?.find((e) => e.evseId === evseId)?.free ?? null;
 }
 
 export interface ChargingKindPrice {

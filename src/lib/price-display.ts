@@ -4,8 +4,9 @@
 import { resolveLocale, uiLocale } from '@/lib/format';
 
 // Whether prices shown to the driver include tax ('gross') or exclude it
-// ('net'). Display only: tariff prices are stored net, and every session cost
-// from the API already includes tax.
+// ('net'). Display only: tariff prices are stored in the company tax basis
+// (the pricing reply's taxBasis), and every session cost from the API already
+// includes tax.
 //
 // Mirrors the display rules of @evtivity/lib/price-display in the CSMS, which
 // is the single source of truth. The app does no other tax math: session net
@@ -31,14 +32,47 @@ export function resolvePriceDisplay(driverValue: unknown, companyValue: unknown)
   return DEFAULT_PRICE_DISPLAY;
 }
 
-// A net tariff price as shown: with the tax rate (a decimal, 0.19) added for
-// 'gross'. The only price computation the app makes.
+// How tariff prices are entered and stored: excluding ('net') or including
+// ('gross') tax (company.taxBasis).
+export const TAX_BASES = ['net', 'gross'] as const;
+
+export type TaxBasis = (typeof TAX_BASES)[number];
+
+export const DEFAULT_TAX_BASIS: TaxBasis = 'net';
+
+export function isTaxBasis(value: unknown): value is TaxBasis {
+  return typeof value === 'string' && (TAX_BASES as readonly string[]).includes(value);
+}
+
+// The tax basis of a reply, or the default for a value that is not one.
+export function resolveTaxBasis(value: unknown): TaxBasis {
+  return isTaxBasis(value) ? value : DEFAULT_TAX_BASIS;
+}
+
+// A tariff unit price excluding tax: the stored price on the 'net' basis, else
+// with the rate taken out.
+export function netUnitPrice(price: number, taxRate: number, basis: TaxBasis): number {
+  return basis === 'gross' ? price / (1 + taxRate) : price;
+}
+
+// A tariff unit price including tax: the stored price on the 'gross' basis,
+// else with the rate added.
+export function grossUnitPrice(price: number, taxRate: number, basis: TaxBasis): number {
+  return basis === 'gross' ? price : price * (1 + taxRate);
+}
+
+// A stored tariff price as shown: including tax (a decimal rate, 0.19) for the
+// 'gross' display, excluding it for 'net', whichever basis it was entered in.
+// The only price computation the app makes.
 export function priceForDisplay(
-  netPrice: number,
+  price: number,
   taxRate: number,
   priceDisplay: PriceDisplay,
+  basis: TaxBasis,
 ): number {
-  return priceDisplay === 'gross' ? netPrice * (1 + taxRate) : netPrice;
+  return priceDisplay === 'gross'
+    ? grossUnitPrice(price, taxRate, basis)
+    : netUnitPrice(price, taxRate, basis);
 }
 
 // A tax rate (a decimal, 0.19) as a percentage number in the locale, with at

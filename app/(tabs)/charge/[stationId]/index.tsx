@@ -40,6 +40,7 @@ import {
   useStartCharging,
   usePricing,
   checkConnectorStatus,
+  evseIsFree,
   type StationEvse,
   type StationConnector,
 } from '@/features/charge';
@@ -458,7 +459,11 @@ export default function StationDetailScreen(): React.JSX.Element {
         </Card>
       ) : null}
 
-      {data.paymentEnabled && fleetName == null && selectedCard != null && !hasActiveSession ? (
+      {data.paymentEnabled &&
+      fleetName == null &&
+      selectedCard != null &&
+      !hasActiveSession &&
+      evseIsFree(pricing.data, selected?.evseId ?? null) !== true ? (
         <Card testID="station-payment-card" className="flex-row items-center gap-3">
           <CreditCard size={20} color={hsl('primary')} />
           <Text className="flex-1 text-sm text-foreground">{cardLabel(selectedCard)}</Text>

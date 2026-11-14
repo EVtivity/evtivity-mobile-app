@@ -111,4 +111,81 @@ describe('PricingCard', () => {
     expect(getByTestId('pricing-kind-ac').props.children).toContain('AC');
     expect(getByTestId('pricing-kind-dc').props.children).toContain('DC');
   });
+
+  it('shows a gross price net by taking the tax out (tax basis gross)', async () => {
+    const { getByText } = await render(
+      <PricingCard
+        pricing={{ ...PRICING, pricePerKwh: '0.357', pricePerSession: null, taxBasis: 'gross' }}
+        priceDisplay="net"
+      />,
+    );
+    expect(getByText('€0.30/kWh')).toBeTruthy();
+  });
+
+  it('lists each kind with its session and idle fee and its own tax when the rates differ', async () => {
+    const { getByTestId, queryByTestId } = await render(
+      <PricingCard
+        pricing={{
+          ...PRICING,
+          byChargingKind: [
+            {
+              chargingKind: 'ac',
+              pricePerKwh: '0.30',
+              pricePerMinute: null,
+              pricePerSession: '1.00',
+              idleFeePricePerMinute: null,
+              taxRate: '0.19',
+            },
+            {
+              chargingKind: 'dc',
+              pricePerKwh: '0.60',
+              pricePerMinute: null,
+              pricePerSession: null,
+              idleFeePricePerMinute: '0.10',
+              taxRate: '0.07',
+            },
+          ],
+        }}
+        priceDisplay="net"
+      />,
+    );
+    expect(getByTestId('pricing-kind-ac').props.children).toBe('AC: €0.30/kWh · €1.00 session');
+    expect(getByTestId('pricing-kind-dc').props.children).toBe('DC: €0.60/kWh · €0.10/min idle');
+    expect(getByTestId('pricing-kind-tax-note-ac')).toBeTruthy();
+    expect(getByTestId('pricing-kind-tax-note-dc')).toBeTruthy();
+    expect(queryByTestId('pricing-tax-note')).toBeNull();
+  });
+
+  it('is not free when only the Both tariff is free and a kind charges', async () => {
+    const { queryByText, getByTestId } = await render(
+      <PricingCard
+        pricing={{
+          ...PRICING,
+          pricePerKwh: '0',
+          pricePerSession: null,
+          byChargingKind: [
+            {
+              chargingKind: 'ac',
+              pricePerKwh: '0',
+              pricePerMinute: null,
+              pricePerSession: null,
+              idleFeePricePerMinute: null,
+              taxRate: '0.19',
+            },
+            {
+              chargingKind: 'dc',
+              pricePerKwh: '0.60',
+              pricePerMinute: null,
+              pricePerSession: null,
+              idleFeePricePerMinute: null,
+              taxRate: '0.19',
+            },
+          ],
+        }}
+        priceDisplay="net"
+      />,
+    );
+    expect(queryByText('Free')).toBeNull();
+    expect(getByTestId('pricing-kind-dc').props.children).toBe('DC: €0.60/kWh');
+  });
 });
