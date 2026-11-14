@@ -237,7 +237,8 @@
       "taxContainedNoRate": "Impuestos incluidos"
     },
     "taxIncluded": "Precios con impuestos del {{rate}} % incluidos",
-    "taxExcluded": "Precios sin el {{rate}} % de impuestos, que se suma al importe cobrado"
+    "taxExcluded": "Precios sin el {{rate}} % de impuestos, que se suma al importe cobrado",
+    "searchError": "No se pudieron buscar cargadores. Inténtelo de nuevo."
   },
   "activity": {
     "title": "Actividad",
@@ -673,7 +674,7 @@
     "cancelled": "Cancelado"
   },
   "location": {
-    "chargerCount": "{{chargers}} cargadores, {{available}} disponibles",
+    "chargerCount": "Cargadores: {{chargers}}, disponibles: {{available}}",
     "chargers": "Cargadores",
     "getDirections": "Cómo llegar",
     "photos": "Fotos",

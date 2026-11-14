@@ -237,7 +237,8 @@
       "taxContainedNoRate": "포함된 세금"
     },
     "taxIncluded": "가격에 {{rate}}% 세금 포함",
-    "taxExcluded": "가격에 {{rate}}% 세금 별도, 청구 금액에 세금이 추가됩니다"
+    "taxExcluded": "가격에 {{rate}}% 세금 별도, 청구 금액에 세금이 추가됩니다",
+    "searchError": "충전기를 검색하지 못했습니다. 다시 시도해 주세요."
   },
   "activity": {
     "title": "활동",

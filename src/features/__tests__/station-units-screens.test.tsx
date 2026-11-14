@@ -11,6 +11,8 @@ const mockPush = jest.fn();
 const mockStation: { current: unknown } = { current: null };
 const mockLocation: { current: unknown } = { current: null };
 const mockSearch: { current: unknown[] } = { current: [] };
+const mockSearchError: { current: boolean } = { current: false };
+const mockSearchRefetch = jest.fn();
 const mockIsFavorite = jest.fn();
 const mockIsWatching = jest.fn();
 const mockFavoriteMutate = jest.fn();
@@ -101,7 +103,8 @@ jest.mock('@/components/ui', () => {
     Badge: ({ label }: { label: string }) => React.createElement(Text, null, label),
     Button,
     Spinner: () => null,
-    EmptyState: ({ title }: { title: string }) => React.createElement(Text, null, title),
+    EmptyState: ({ title, action }: { title: string; action?: React.ReactNode }) =>
+      React.createElement(RN.View, null, React.createElement(Text, null, title), action),
     Sheet: () => null,
     BackButton: () => null,
     Input: ({
@@ -126,7 +129,12 @@ jest.mock('@/features/charge', () => ({
   usePricing: () => ({ data: undefined }),
   useStartCharging: () => ({ mutate: mockStartMutate, isPending: false }),
   checkConnectorStatus: () => Promise.resolve({ connectorStatus: 'occupied' }),
-  useSearchChargers: () => ({ isLoading: false, data: mockSearch.current }),
+  useSearchChargers: () => ({
+    isLoading: false,
+    isError: mockSearchError.current,
+    data: mockSearchError.current ? undefined : mockSearch.current,
+    refetch: mockSearchRefetch,
+  }),
   useNearbyChargers: () => ({ isLoading: false, data: [] }),
   useSearchRoaming: () => ({ isLoading: false, data: [] }),
 }));
@@ -560,5 +568,22 @@ describe('favorites screen', () => {
       pathname: '/charge/[stationId]',
       params: { stationId: 'CS-0001' },
     });
+  });
+});
+
+describe('charge search states', () => {
+  afterEach(() => {
+    mockSearchError.current = false;
+  });
+
+  it('shows an error with Retry when the search fails, never "no results"', async () => {
+    await initTestI18n();
+    mockSearchError.current = true;
+    await render(<ChargeScreen />);
+    await fireEvent.changeText(screen.getByTestId('charge-search'), 'garage');
+    expect(screen.getByText('Could not search chargers. Please try again.')).toBeTruthy();
+    expect(screen.queryByText('No chargers found')).toBeNull();
+    await fireEvent.press(screen.getByTestId('charge-search-retry'));
+    expect(mockSearchRefetch).toHaveBeenCalledTimes(1);
   });
 });

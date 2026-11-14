@@ -237,7 +237,8 @@
       "taxContainedNoRate": "Enthaltene Steuer"
     },
     "taxIncluded": "Preise inkl. {{rate}} % Steuer",
-    "taxExcluded": "Preise zzgl. {{rate}} % Steuer, die zum abgerechneten Betrag hinzukommt"
+    "taxExcluded": "Preise zzgl. {{rate}} % Steuer, die zum abgerechneten Betrag hinzukommt",
+    "searchError": "Die Suche nach Ladestationen ist fehlgeschlagen. Bitte versuchen Sie es erneut."
   },
   "activity": {
     "title": "Aktivität",
@@ -673,7 +674,7 @@
     "cancelled": "Storniert"
   },
   "location": {
-    "chargerCount": "{{chargers}} Ladestationen, {{available}} verfügbar",
+    "chargerCount": "Ladestationen: {{chargers}}, verfügbar: {{available}}",
     "chargers": "Ladestationen",
     "getDirections": "Route anzeigen",
     "photos": "Fotos",

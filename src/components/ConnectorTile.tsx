@@ -9,7 +9,7 @@ import { ConnectorFaceIcon } from '@/components/ConnectorFaceIcon';
 import { Text, StatusBadge } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import { hsl, useSurfaceTextVars } from '@/lib/theme';
-import { isStartable } from '@/lib/status';
+import { connectorStatusLabel, isStartable } from '@/lib/status';
 import { formatPowerKw } from '@/lib/format';
 import { useConnectorTypeLabel } from '@/lib/connector-label';
 import type { ConnectorStatus } from '@/lib/types';
@@ -76,6 +76,12 @@ export function ConnectorTile({
       onPress={onPress}
       disabled={disabled}
       accessibilityRole="button"
+      accessibilityLabel={[
+        t('charge.connectorPort', { id: port }),
+        t(`connectorStatus.${status}`, { defaultValue: connectorStatusLabel(status) }),
+        ...lines.map((c) => typeLabel(c.connectorType)),
+      ].join(', ')}
+      accessibilityState={{ selected, disabled }}
       style={surfaceVars}
       className={cn(
         'grow basis-[47%] gap-2 rounded-lg border-2 bg-card p-3',

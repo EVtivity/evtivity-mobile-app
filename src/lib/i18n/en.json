@@ -237,7 +237,8 @@
       "taxContainedNoRate": "Tax included"
     },
     "taxIncluded": "Prices include {{rate}}% tax",
-    "taxExcluded": "Prices exclude {{rate}}% tax, which is added to the amount charged"
+    "taxExcluded": "Prices exclude {{rate}}% tax, which is added to the amount charged",
+    "searchError": "Could not search chargers. Please try again."
   },
   "activity": {
     "title": "Activity",
@@ -673,7 +674,7 @@
     "cancelled": "Cancelled"
   },
   "location": {
-    "chargerCount": "{{chargers}} chargers, {{available}} available",
+    "chargerCount": "Chargers: {{chargers}}, available: {{available}}",
     "chargers": "Chargers",
     "getDirections": "Get Directions",
     "photos": "Photos",

@@ -237,7 +237,8 @@
       "taxContainedNoRate": "其中稅額"
     },
     "taxIncluded": "價格含 {{rate}}% 稅",
-    "taxExcluded": "價格未含 {{rate}}% 稅，稅額計入實際扣款金額"
+    "taxExcluded": "價格未含 {{rate}}% 稅，稅額計入實際扣款金額",
+    "searchError": "搜尋充電樁失敗，請重試。"
   },
   "activity": {
     "title": "紀錄",

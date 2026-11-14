@@ -124,6 +124,18 @@ export default function ChargeScreen(): React.JSX.Element {
               <Text variant="h3">{t('common.search')}</Text>
               {search.isLoading || searchPending ? (
                 <Spinner />
+              ) : search.isError ? (
+                <EmptyState
+                  title={t('charge.searchError')}
+                  action={
+                    <Button
+                      testID="charge-search-retry"
+                      variant="outline"
+                      title={t('common.retry')}
+                      onPress={() => void search.refetch()}
+                    />
+                  }
+                />
               ) : (search.data?.length ?? 0) === 0 ? (
                 <EmptyState title={t('charge.noResults')} />
               ) : (
@@ -203,6 +215,18 @@ export default function ChargeScreen(): React.JSX.Element {
               />
             ) : roaming.isLoading || roamingPending ? (
               <Spinner />
+            ) : roaming.isError ? (
+              <EmptyState
+                title={t('charge.searchError')}
+                action={
+                  <Button
+                    testID="charge-roaming-retry"
+                    variant="outline"
+                    title={t('common.retry')}
+                    onPress={() => void roaming.refetch()}
+                  />
+                }
+              />
             ) : (roaming.data?.length ?? 0) === 0 ? (
               <EmptyState title={t('charge.noResults')} />
             ) : (

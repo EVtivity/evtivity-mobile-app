@@ -78,4 +78,38 @@ describe('ConnectorTile', () => {
     ).toBeTruthy();
     expect(screen.getByText('Other')).toBeTruthy();
   });
+
+  it('names its port, status and connectors and reports its state to screen readers', async () => {
+    const screen = await render(
+      <ConnectorTile
+        testID="tile"
+        connectors={[{ connectorId: 1, connectorType: 'CCS1', maxPowerKw: 50 }]}
+        status="available"
+        port={2}
+        selected
+        onPress={jest.fn()}
+      />,
+    );
+    const tile = screen.getByTestId('tile');
+    expect(tile.props.accessibilityRole).toBe('button');
+    expect(tile.props.accessibilityLabel).toBe('Port 2, Available, CCS1');
+    expect(tile.props.accessibilityState).toEqual({ selected: true, disabled: false });
+  });
+
+  it('reports a tile that cannot be picked as disabled', async () => {
+    const screen = await render(
+      <ConnectorTile
+        testID="tile"
+        connectors={[{ connectorId: 1, connectorType: 'Type2', maxPowerKw: 22 }]}
+        status="faulted"
+        port={1}
+        selected={false}
+        onPress={jest.fn()}
+      />,
+    );
+    expect(screen.getByTestId('tile').props.accessibilityState).toEqual({
+      selected: false,
+      disabled: true,
+    });
+  });
 });

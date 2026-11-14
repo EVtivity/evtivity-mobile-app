@@ -60,6 +60,7 @@ export function Card({
   if (onPress != null) {
     return (
       <Pressable
+        accessibilityRole="button"
         onPress={onPress}
         onPressIn={() => tapLight()}
         className={cn(classes, 'active:opacity-90')}

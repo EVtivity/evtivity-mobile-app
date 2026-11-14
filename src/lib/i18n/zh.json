@@ -237,7 +237,8 @@
       "taxContainedNoRate": "其中税费"
     },
     "taxIncluded": "价格含 {{rate}}% 税",
-    "taxExcluded": "价格不含 {{rate}}% 税，税费计入实际扣款金额"
+    "taxExcluded": "价格不含 {{rate}}% 税，税费计入实际扣款金额",
+    "searchError": "搜索充电桩失败，请重试。"
   },
   "activity": {
     "title": "记录",

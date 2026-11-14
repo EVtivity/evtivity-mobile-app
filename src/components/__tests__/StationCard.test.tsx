@@ -36,4 +36,19 @@ describe('StationCard', () => {
     await fireEvent.press(getByTestId('station-card-CS-0001'));
     expect(onPress).toHaveBeenCalledTimes(1);
   });
+
+  it('is announced as a button', async () => {
+    const { getByTestId } = await render(
+      <StationCard
+        testID={stationCardTestId('CS-0002')}
+        name="Main Street"
+        address={null}
+        isOnline
+        availableCount={1}
+        evseCount={2}
+        onPress={jest.fn()}
+      />,
+    );
+    expect(getByTestId('station-card-CS-0002').props.accessibilityRole).toBe('button');
+  });
 });
