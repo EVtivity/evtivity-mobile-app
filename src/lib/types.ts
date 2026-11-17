@@ -71,6 +71,13 @@ export interface ChargingSession {
   id: string;
   stationId: string;
   stationName?: string;
+  // The charging point of the session (null when unknown): site, unit, OCPP
+  // EVSE and connector numbers, connector type.
+  siteName?: string | null;
+  unitName?: string | null;
+  evseId?: number | null;
+  connectorId?: number | null;
+  connectorType?: string | null;
   status: 'active' | 'completed' | 'failed' | 'pending';
   startedAt: string;
   endedAt?: string | null;

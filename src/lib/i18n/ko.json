@@ -253,7 +253,9 @@
     "noSessions": "이번 달 세션 없음",
     "co2Avoided": "절감한 CO₂",
     "co2AvoidedLine": "이번 달 {{kg}} kg CO₂를 절감했습니다",
-    "viewStatement": "항목별 월별 명세서 보기"
+    "viewStatement": "항목별 월별 명세서 보기",
+    "evseNumber": "EVSE {{id}}",
+    "connectorNumber": "커넥터 {{id}}"
   },
   "reservations": {
     "title": "예약",

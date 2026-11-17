@@ -11,6 +11,7 @@ import { costContainsTax } from '@/lib/price-display';
 import { sessionStatusTone, sessionStatusLabelKey, SESSION_TONE_COLOR } from '@/lib/status';
 import { accountBillingStateKey } from '@/lib/fleet-billing';
 import type { ChargingSession } from '@/lib/types';
+import { useChargingPointPath } from '@/lib/use-charging-point-path';
 
 interface SessionRowProps {
   session: ChargingSession;
@@ -24,6 +25,8 @@ export const SessionRow = React.memo(function SessionRow({
   onPress,
 }: SessionRowProps): React.JSX.Element {
   const { t } = useTranslation();
+  const chargingPointPath = useChargingPointPath();
+  const path = chargingPointPath(session);
   const cost =
     session.status === 'completed'
       ? session.finalCostCents
@@ -41,8 +44,14 @@ export const SessionRow = React.memo(function SessionRow({
       className={cn('gap-1 py-3', onPress != null && 'active:opacity-70')}
     >
       <View className="flex-row items-center gap-2">
-        <Text variant="title" numberOfLines={1} className="flex-1">
-          {session.stationName ?? session.stationId}
+        <Text
+          testID={`session-row-path-${session.id}`}
+          variant="title"
+          numberOfLines={1}
+          className="flex-1"
+          accessibilityLabel={path === '' ? undefined : path}
+        >
+          {path === '' ? session.stationId : path}
         </Text>
         <StatusBadge
           label={t(sessionStatusLabelKey(session.status), { defaultValue: session.status })}

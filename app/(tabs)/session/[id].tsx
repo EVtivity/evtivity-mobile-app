@@ -70,6 +70,7 @@ import {
 import { useVehicles } from '@/features/account';
 import { notifyError } from '@/lib/haptics';
 import type { ChargingSession, ConnectorStatus, Vehicle } from '@/lib/types';
+import { useChargingPointPath } from '@/lib/use-charging-point-path';
 
 interface LiveSession extends ChargingSession {
   currentPowerW?: number | null;
@@ -157,6 +158,7 @@ function LiveDuration({
 
 export default function SessionScreen(): React.JSX.Element {
   const { t } = useTranslation();
+  const chargingPointPath = useChargingPointPath();
   const router = useRouter();
   const supportEnabled = useSupportEnabled();
   const toast = useToast();
@@ -272,6 +274,8 @@ export default function SessionScreen(): React.JSX.Element {
   const efficiency = data.vehicle?.efficiencyMiPerKwh ?? 3.5;
   const miles = formatMiles(data.energyDeliveredWh, efficiency);
   const address = [data.siteAddress, data.siteCity, data.siteState].filter(Boolean).join(', ');
+  // Site / Station / Unit / EVSE / Connector type on one line.
+  const chargingPoint = chargingPointPath(data);
   const vehicleList = vehicles.data ?? [];
 
   return (
@@ -381,8 +385,14 @@ export default function SessionScreen(): React.JSX.Element {
       <Card className="flex-row items-start gap-3">
         <MapPin size={20} color={hsl('mutedForeground')} />
         <View className="flex-1">
-          <Text variant="title">{data.stationName ?? t('charge.detail.unknownStation')}</Text>
-          {data.siteName != null ? <Text variant="muted">{data.siteName}</Text> : null}
+          <Text
+            testID="session-charging-point"
+            variant="title"
+            numberOfLines={1}
+            accessibilityLabel={chargingPoint === '' ? undefined : chargingPoint}
+          >
+            {chargingPoint === '' ? t('charge.detail.unknownStation') : chargingPoint}
+          </Text>
           {address !== '' ? <Text className="text-xs text-muted-foreground">{address}</Text> : null}
         </View>
       </Card>

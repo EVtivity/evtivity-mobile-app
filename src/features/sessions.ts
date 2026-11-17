@@ -137,6 +137,10 @@ export interface SessionDetail {
   taxRate: string | null;
   stationName: string | null;
   siteName: string | null;
+  unitName?: string | null;
+  evseId?: number | null;
+  connectorId?: number | null;
+  connectorType?: string | null;
   siteAddress: string | null;
   siteCity: string | null;
   siteState: string | null;

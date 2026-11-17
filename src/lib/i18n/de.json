@@ -253,7 +253,9 @@
     "noSessions": "Keine Ladevorgänge in diesem Monat",
     "co2Avoided": "CO₂ vermieden",
     "co2AvoidedLine": "Du hast diesen Monat {{kg}} kg CO₂ vermieden",
-    "viewStatement": "Detaillierte Monatsabrechnung anzeigen"
+    "viewStatement": "Detaillierte Monatsabrechnung anzeigen",
+    "evseNumber": "EVSE {{id}}",
+    "connectorNumber": "Anschluss {{id}}"
   },
   "reservations": {
     "title": "Reservierungen",

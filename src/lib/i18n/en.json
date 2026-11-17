@@ -253,7 +253,9 @@
     "noSessions": "No sessions this month",
     "co2Avoided": "CO₂ avoided",
     "co2AvoidedLine": "You avoided {{kg}} kg CO₂ this month",
-    "viewStatement": "View your itemized monthly statement"
+    "viewStatement": "View your itemized monthly statement",
+    "evseNumber": "EVSE {{id}}",
+    "connectorNumber": "Connector {{id}}"
   },
   "reservations": {
     "title": "Reservations",

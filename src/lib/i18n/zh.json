@@ -253,7 +253,9 @@
     "noSessions": "本月暂无会话",
     "co2Avoided": "减少的 CO₂",
     "co2AvoidedLine": "本月您减少了 {{kg}} kg CO₂",
-    "viewStatement": "查看您的月度明细账单"
+    "viewStatement": "查看您的月度明细账单",
+    "evseNumber": "EVSE {{id}}",
+    "connectorNumber": "连接器 {{id}}"
   },
   "reservations": {
     "title": "预约",

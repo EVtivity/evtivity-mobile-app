@@ -253,7 +253,9 @@
     "noSessions": "Sin sesiones este mes",
     "co2Avoided": "CO₂ evitado",
     "co2AvoidedLine": "Evitó {{kg}} kg de CO₂ este mes",
-    "viewStatement": "Ver su estado de cuenta mensual detallado"
+    "viewStatement": "Ver su estado de cuenta mensual detallado",
+    "evseNumber": "EVSE {{id}}",
+    "connectorNumber": "Conector {{id}}"
   },
   "reservations": {
     "title": "Reservas",

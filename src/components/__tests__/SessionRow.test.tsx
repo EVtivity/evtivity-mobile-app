@@ -32,6 +32,32 @@ beforeAll(async () => {
 });
 
 describe('SessionRow', () => {
+  it('shows site, station, unit, EVSE and connector type on one line', async () => {
+    const { getByTestId } = await render(
+      <SessionRow
+        session={{
+          ...SESSION,
+          stationName: 'EM4-MASTER-01',
+          siteName: 'Parkhaus Lindenhof',
+          unitName: 'Box 3',
+          evseId: 5,
+          connectorId: 1,
+          connectorType: 'CCS2',
+        }}
+      />,
+    );
+    const line = getByTestId('session-row-path-ses_1');
+    expect(line).toHaveTextContent('Parkhaus Lindenhof / EM4-MASTER-01 / Box 3 / EVSE 5 / CCS2');
+    expect(line.props.numberOfLines).toBe(1);
+  });
+
+  it('leaves out the unit and names the connector by its number when its type is unknown', async () => {
+    const { getByTestId } = await render(
+      <SessionRow session={{ ...SESSION, evseId: 2, connectorId: 1, connectorType: null }} />,
+    );
+    expect(getByTestId('session-row-path-ses_1')).toHaveTextContent('CS-1 / EVSE 2 / Connector 1');
+  });
+
   it('says the cost includes tax when tax was charged', async () => {
     const { getByTestId } = await render(<SessionRow session={SESSION} />);
     expect(getByTestId('session-row-cost-ses_1')).toHaveTextContent('€12.34 incl. tax');
