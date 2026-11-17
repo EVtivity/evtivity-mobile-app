@@ -505,7 +505,9 @@
     "vehicleSaved": "Vehicle saved",
     "rfidManagedByOperator": "Your operator manages your RFID cards. To add, change or remove a card, or to block a lost one, contact the operator.",
     "noRfidAssigned": "No RFID cards are assigned to you",
-    "rfidInactive": "Inactive"
+    "rfidInactive": "Inactive",
+    "rfidManagedByFleet": "Managed by {{fleet}}. Contact your fleet to change this card.",
+    "rfidYourFleet": "your fleet"
   },
   "payments": {
     "title": "Payment",
@@ -752,7 +754,8 @@
     "PAYLOAD_TOO_LARGE": "The request is too large",
     "UNSUPPORTED_MEDIA_TYPE": "Unsupported content type",
     "RFID_SELF_SERVICE_DISABLED": "Your operator manages your RFID cards. Contact the operator to add, change, deactivate or remove a card.",
-    "NOTIFICATION_EVENT_MANDATORY": "Your operator requires this notification on this channel, so it cannot be turned off"
+    "NOTIFICATION_EVENT_MANDATORY": "Your operator requires this notification on this channel, so it cannot be turned off",
+    "TOKEN_MANAGED_BY_FLEET": "This RFID card belongs to your fleet. Contact your fleet to change it."
   },
   "fleetBilling": {
     "billedTo": "Billed to {{fleet}}",

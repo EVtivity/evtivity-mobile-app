@@ -505,7 +505,9 @@
     "vehicleSaved": "Fahrzeug gespeichert",
     "rfidManagedByOperator": "Ihr Betreiber verwaltet Ihre RFID-Karten. Um eine Karte hinzuzufügen, zu ändern oder zu entfernen oder eine verlorene Karte sperren zu lassen, wenden Sie sich an den Betreiber.",
     "noRfidAssigned": "Ihnen sind keine RFID-Karten zugewiesen",
-    "rfidInactive": "Inaktiv"
+    "rfidInactive": "Inaktiv",
+    "rfidManagedByFleet": "Verwaltet von {{fleet}}. Wenden Sie sich an Ihre Flotte, um diese Karte zu ändern.",
+    "rfidYourFleet": "Ihrer Flotte"
   },
   "payments": {
     "title": "Zahlung",
@@ -752,7 +754,8 @@
     "PAYLOAD_TOO_LARGE": "Die Anfrage ist zu groß",
     "UNSUPPORTED_MEDIA_TYPE": "Nicht unterstützter Inhaltstyp",
     "RFID_SELF_SERVICE_DISABLED": "Ihr Betreiber verwaltet Ihre RFID-Karten. Wenden Sie sich an den Betreiber, um eine Karte hinzuzufügen, zu ändern, zu deaktivieren oder zu entfernen.",
-    "NOTIFICATION_EVENT_MANDATORY": "Dein Betreiber schreibt diese Benachrichtigung auf diesem Kanal vor, daher kann sie nicht deaktiviert werden"
+    "NOTIFICATION_EVENT_MANDATORY": "Dein Betreiber schreibt diese Benachrichtigung auf diesem Kanal vor, daher kann sie nicht deaktiviert werden",
+    "TOKEN_MANAGED_BY_FLEET": "Diese RFID-Karte gehört Ihrer Flotte. Wenden Sie sich an Ihre Flotte, um sie zu ändern."
   },
   "fleetBilling": {
     "billedTo": "Abgerechnet über {{fleet}}",

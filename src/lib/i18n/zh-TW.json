@@ -505,7 +505,9 @@
     "vehicleSaved": "車輛已儲存",
     "rfidManagedByOperator": "您的 RFID 卡由營運商管理。如需新增、變更或移除卡片，或停用遺失的卡，請聯絡營運商。",
     "noRfidAssigned": "您沒有分配的 RFID 卡",
-    "rfidInactive": "已停用"
+    "rfidInactive": "已停用",
+    "rfidManagedByFleet": "由{{fleet}}管理。如需變更此卡，請聯絡您的車隊。",
+    "rfidYourFleet": "您的車隊"
   },
   "payments": {
     "title": "付款",
@@ -752,7 +754,8 @@
     "PAYLOAD_TOO_LARGE": "請求過大",
     "UNSUPPORTED_MEDIA_TYPE": "不支援的內容類型",
     "RFID_SELF_SERVICE_DISABLED": "您的 RFID 卡由營運商管理。如需新增、變更、停用或移除卡片，請聯絡營運商。",
-    "NOTIFICATION_EVENT_MANDATORY": "營運商要求在此管道接收此通知，因此無法關閉"
+    "NOTIFICATION_EVENT_MANDATORY": "營運商要求在此管道接收此通知，因此無法關閉",
+    "TOKEN_MANAGED_BY_FLEET": "此 RFID 卡屬於您的車隊。如需變更，請聯絡您的車隊。"
   },
   "fleetBilling": {
     "billedTo": "記帳到 {{fleet}}",

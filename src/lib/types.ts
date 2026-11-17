@@ -158,6 +158,10 @@ export interface RfidToken {
   expiresAt?: string | null;
   /** The operator deactivated the card: only the operator can reactivate it. */
   blockedByOperator?: boolean;
+  /** A fleet owns the card: only the fleet changes it (403 TOKEN_MANAGED_BY_FLEET). */
+  managedByFleet?: boolean;
+  /** Name of the fleet that owns the card, null for the driver's own cards. */
+  fleetName?: string | null;
 }
 
 export interface Paginated<T> {

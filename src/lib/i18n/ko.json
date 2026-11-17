@@ -505,7 +505,9 @@
     "vehicleSaved": "차량을 저장했습니다",
     "rfidManagedByOperator": "운영자가 RFID 카드를 관리합니다. 카드를 추가, 변경, 삭제하거나 분실한 카드를 차단하려면 운영자에게 문의하세요.",
     "noRfidAssigned": "할당된 RFID 카드가 없습니다",
-    "rfidInactive": "비활성"
+    "rfidInactive": "비활성",
+    "rfidManagedByFleet": "{{fleet}}에서 관리합니다. 이 카드를 변경하려면 차량대에 문의하세요.",
+    "rfidYourFleet": "차량대"
   },
   "payments": {
     "title": "결제",
@@ -752,7 +754,8 @@
     "PAYLOAD_TOO_LARGE": "요청이 너무 큽니다",
     "UNSUPPORTED_MEDIA_TYPE": "지원되지 않는 콘텐츠 유형입니다",
     "RFID_SELF_SERVICE_DISABLED": "운영자가 RFID 카드를 관리합니다. 카드를 추가, 변경, 비활성화 또는 삭제하려면 운영자에게 문의하세요.",
-    "NOTIFICATION_EVENT_MANDATORY": "운영자가 이 채널에서 이 알림을 필수로 지정했으므로 끌 수 없습니다"
+    "NOTIFICATION_EVENT_MANDATORY": "운영자가 이 채널에서 이 알림을 필수로 지정했으므로 끌 수 없습니다",
+    "TOKEN_MANAGED_BY_FLEET": "이 RFID 카드는 차량대 소유입니다. 변경하려면 차량대에 문의하세요."
   },
   "fleetBilling": {
     "billedTo": "{{fleet}}(으)로 청구",

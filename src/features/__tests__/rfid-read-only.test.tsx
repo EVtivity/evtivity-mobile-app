@@ -197,3 +197,59 @@ it('shows the refusal of a stale screen and reloads the feature flags', async ()
   );
   expect(invalidate).toHaveBeenCalledWith({ queryKey: ['features'] });
 });
+
+// Fleet RFID cards: the fleet changes, removes and reactivates them, so the
+// app shows them read-only with the fleet that manages them.
+const fleetCard = {
+  ...card,
+  id: 'dtk_fleet',
+  idToken: 'FLEET999',
+  label: null,
+  managedByFleet: true,
+  fleetName: 'Northgate Buses',
+};
+
+it('shows a fleet card read-only with its fleet and keeps the controls of own cards', async () => {
+  mockGets([card, fleetCard], {});
+  const { screen } = await renderScreen();
+  expect(
+    await screen.findByText('Managed by Northgate Buses. Contact your fleet to change this card.'),
+  ).toBeTruthy();
+  expect(screen.getByTestId('rfid-fleet-FLEET999')).toBeTruthy();
+  expect(screen.queryByTestId('rfid-rename-FLEET999')).toBeNull();
+  expect(screen.queryByTestId('rfid-switch-FLEET999')).toBeNull();
+  // The driver's own card is unchanged.
+  expect(screen.getByTestId('rfid-rename-ABCD1234')).toBeTruthy();
+  expect(screen.getByTestId('rfid-switch-ABCD1234')).toBeTruthy();
+  expect(screen.queryByTestId('rfid-fleet-ABCD1234')).toBeNull();
+  expect(screen.getByTestId('rfid-add')).toBeTruthy();
+});
+
+it('names "your fleet" when the fleet name is unknown and says an inactive fleet card is inactive', async () => {
+  mockGets([{ ...fleetCard, fleetName: null, isActive: false }], {});
+  const { screen } = await renderScreen();
+  expect(
+    await screen.findByText('Managed by your fleet. Contact your fleet to change this card.'),
+  ).toBeTruthy();
+  expect(screen.getByTestId('rfid-status-FLEET999')).toBeTruthy();
+  expect(screen.queryByTestId('rfid-switch-FLEET999')).toBeNull();
+});
+
+it('shows the fleet refusal of a stale list and reloads the cards', async () => {
+  mockGets([card], {});
+  mockPatch.mockRejectedValue(
+    new ApiError(403, { error: 'refused', code: 'TOKEN_MANAGED_BY_FLEET' }),
+  );
+  const { screen, client } = await renderScreen();
+  const invalidate = jest.spyOn(client, 'invalidateQueries');
+  await fireEvent.press(await screen.findByTestId('rfid-rename-ABCD1234'));
+  await fireEvent.press(screen.getByTestId('rfid-label-submit'));
+  await waitFor(() =>
+    expect(mockToast).toHaveBeenCalledWith(
+      'This RFID card belongs to your fleet. Contact your fleet to change it.',
+      'error',
+    ),
+  );
+  expect(invalidate).toHaveBeenCalledWith({ queryKey: ['rfid-tokens'] });
+  expect(screen.queryByTestId('sheet')).toBeNull();
+});
