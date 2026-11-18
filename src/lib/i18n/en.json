@@ -359,6 +359,9 @@
         "token.Removed": "RFID card removed",
         "token.Deactivated": "RFID card deactivated",
         "token.Reactivated": "RFID card reactivated",
+        "token.FleetCardAssigned": "Fleet RFID card given to you",
+        "token.FleetCardTakenBack": "Fleet RFID card taken back",
+        "token.MonthlyLimitReached": "RFID card monthly limit reached",
         "maintenance.SessionStopped": "Charging stopped for maintenance",
         "watch.StationAvailable": "Watched station available",
         "prepaid.LowCredit": "Prepaid balance low",
@@ -507,7 +510,8 @@
     "noRfidAssigned": "No RFID cards are assigned to you",
     "rfidInactive": "Inactive",
     "rfidManagedByFleet": "Managed by {{fleet}}. Contact your fleet to change this card.",
-    "rfidYourFleet": "your fleet"
+    "rfidYourFleet": "your fleet",
+    "rfidFleetCardRefused": "Stations refuse this RFID card right now because fleet management is turned off. Contact your operator if you need to charge with it."
   },
   "payments": {
     "title": "Payment",

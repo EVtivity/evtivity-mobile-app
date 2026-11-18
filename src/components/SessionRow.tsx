@@ -67,7 +67,7 @@ export const SessionRow = React.memo(function SessionRow({
           {costLabel}
         </Text>
       </View>
-      {session.accountBilling != null ? (
+      {session.accountBilling != null && session.accountBilling.fleetName != null ? (
         <Text testID={`session-row-fleet-${session.id}`} variant="muted" numberOfLines={1}>
           {t(
             session.accountBilling.invoicedTo === 'member'

@@ -160,8 +160,10 @@ export interface RfidToken {
   blockedByOperator?: boolean;
   /** A fleet owns the card: only the fleet changes it (403 TOKEN_MANAGED_BY_FLEET). */
   managedByFleet?: boolean;
-  /** Name of the fleet that owns the card, null for the driver's own cards. */
+  /** Name of the fleet that owns the card, null for the driver's own cards and while fleets are off. */
   fleetName?: string | null;
+  /** A fleet card while fleet management is off: stations refuse it. */
+  refusedAtStations?: boolean;
 }
 
 export interface Paginated<T> {

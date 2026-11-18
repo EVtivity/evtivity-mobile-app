@@ -359,6 +359,9 @@
         "token.Removed": "RFID 카드 삭제",
         "token.Deactivated": "RFID 카드 비활성화",
         "token.Reactivated": "RFID 카드 재활성화",
+        "token.FleetCardAssigned": "차량 그룹 RFID 카드 지급",
+        "token.FleetCardTakenBack": "차량 그룹 RFID 카드 회수",
+        "token.MonthlyLimitReached": "RFID 카드 월 한도 도달",
         "maintenance.SessionStopped": "유지보수로 충전 중지",
         "watch.StationAvailable": "지켜보는 충전소 사용 가능",
         "prepaid.LowCredit": "선불 잔액 부족",
@@ -507,7 +510,8 @@
     "noRfidAssigned": "할당된 RFID 카드가 없습니다",
     "rfidInactive": "비활성",
     "rfidManagedByFleet": "{{fleet}}에서 관리합니다. 이 카드를 변경하려면 차량대에 문의하세요.",
-    "rfidYourFleet": "차량대"
+    "rfidYourFleet": "차량대",
+    "rfidFleetCardRefused": "차량 그룹 관리가 꺼져 있어 지금은 충전소에서 이 RFID 카드를 거부합니다. 이 카드로 충전해야 하면 운영자에게 문의하세요."
   },
   "payments": {
     "title": "결제",

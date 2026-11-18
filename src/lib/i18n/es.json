@@ -359,6 +359,9 @@
         "token.Removed": "Tarjeta RFID eliminada",
         "token.Deactivated": "Tarjeta RFID desactivada",
         "token.Reactivated": "Tarjeta RFID reactivada",
+        "token.FleetCardAssigned": "Tarjeta RFID de flota asignada",
+        "token.FleetCardTakenBack": "Tarjeta RFID de flota retirada",
+        "token.MonthlyLimitReached": "Límite mensual de la tarjeta RFID alcanzado",
         "maintenance.SessionStopped": "Carga detenida por mantenimiento",
         "watch.StationAvailable": "Estación seguida disponible",
         "prepaid.LowCredit": "Saldo prepago bajo",
@@ -507,7 +510,8 @@
     "noRfidAssigned": "No tiene tarjetas RFID asignadas",
     "rfidInactive": "Inactiva",
     "rfidManagedByFleet": "Gestionada por {{fleet}}. Contacte a su flota para cambiar esta tarjeta.",
-    "rfidYourFleet": "su flota"
+    "rfidYourFleet": "su flota",
+    "rfidFleetCardRefused": "Las estaciones rechazan esta tarjeta RFID en este momento porque la gestión de flotas está desactivada. Contacta con tu operador si necesitas cargar con ella."
   },
   "payments": {
     "title": "Pago",

@@ -26,7 +26,7 @@ import { hsl } from '@/lib/theme';
 import { formatDate } from '@/lib/format';
 import { DriverAvatar } from '@/components/DriverAvatar';
 import { useDriverAvatar } from '@/features/avatar';
-import { useSupportEnabled } from '@/features/app-info';
+import { useFleetEnabled, useSupportEnabled } from '@/features/app-info';
 
 export default function AccountScreen(): React.JSX.Element {
   const { t } = useTranslation();
@@ -35,6 +35,7 @@ export default function AccountScreen(): React.JSX.Element {
   const logout = useAuth((s) => s.logout);
   const avatar = useDriverAvatar();
   const supportEnabled = useSupportEnabled();
+  const fleetEnabled = useFleetEnabled();
 
   const fullName = driver != null ? `${driver.firstName} ${driver.lastName}`.trim() : '';
 
@@ -74,13 +75,15 @@ export default function AccountScreen(): React.JSX.Element {
           left={<User size={20} color={hsl('mutedForeground')} />}
           onPress={() => router.push('/account/personal')}
         />
-        <ListRow
-          testID="account-row-billing-address"
-          className="border-t border-muted-foreground/30"
-          title={t('account.billingAddress')}
-          left={<MapPin size={20} color={hsl('mutedForeground')} />}
-          onPress={() => router.push('/account/billing-address')}
-        />
+        {fleetEnabled ? (
+          <ListRow
+            testID="account-row-billing-address"
+            className="border-t border-muted-foreground/30"
+            title={t('account.billingAddress')}
+            left={<MapPin size={20} color={hsl('mutedForeground')} />}
+            onPress={() => router.push('/account/billing-address')}
+          />
+        ) : null}
         <ListRow
           testID="account-row-security"
           className="border-t border-muted-foreground/30"

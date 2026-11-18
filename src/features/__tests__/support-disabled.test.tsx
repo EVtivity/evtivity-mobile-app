@@ -118,4 +118,19 @@ describe('Account screen', () => {
     await renderWithQuery(<AccountScreen />);
     expect(await screen.findByTestId('account-row-support')).toBeTruthy();
   });
+
+  it('leaves out the Billing Address row while fleet management is off', async () => {
+    mockFeatures.mockResolvedValue({ fleetEnabled: false });
+    await renderWithQuery(<AccountScreen />);
+    await screen.findByTestId('account-row-about');
+    await waitFor(() => {
+      expect(screen.queryByTestId('account-row-billing-address')).toBeNull();
+    });
+  });
+
+  it('shows the Billing Address row while fleet management is on', async () => {
+    mockFeatures.mockResolvedValue({ fleetEnabled: true });
+    await renderWithQuery(<AccountScreen />);
+    expect(await screen.findByTestId('account-row-billing-address')).toBeTruthy();
+  });
 });

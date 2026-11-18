@@ -164,6 +164,29 @@ it('lists the cards read-only with the operator note, and no add, rename or swit
   expect(screen.getByText('Inactive')).toBeTruthy();
 });
 
+it('shows a fleet card as refused at stations while fleet management is off', async () => {
+  mockGets(
+    [
+      {
+        ...card,
+        id: 'dtk_fleet',
+        idToken: 'FLEET001',
+        managedByFleet: true,
+        fleetName: null,
+        refusedAtStations: true,
+      },
+    ],
+    { fleetEnabled: false },
+  );
+  const { screen } = await renderScreen();
+  expect(await screen.findByTestId('rfid-fleet-refused-FLEET001')).toBeTruthy();
+  expect(screen.getByText(/fleet management is turned off/)).toBeTruthy();
+  expect(screen.queryByTestId('rfid-fleet-FLEET001')).toBeNull();
+  // The driver still cannot change the fleet card.
+  expect(screen.queryByTestId('rfid-switch-FLEET001')).toBeNull();
+  expect(screen.queryByTestId('rfid-rename-FLEET001')).toBeNull();
+});
+
 it('says no cards are assigned when the operator manages an empty list', async () => {
   mockGets([], { rfidSelfServiceEnabled: false });
   const { screen } = await renderScreen();

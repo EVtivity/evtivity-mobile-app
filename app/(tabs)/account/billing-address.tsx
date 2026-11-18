@@ -17,6 +17,8 @@ import {
   type DriverBillingAddress,
 } from '@/lib/billing-address';
 import { useDriverBillingAddress, useUpdateBillingAddress } from '@/features/account';
+import { useFleetEnabled } from '@/features/app-info';
+import { Redirect } from 'expo-router';
 
 // The form, mounted once the stored address has loaded so it starts from it.
 function AddressForm({
@@ -86,7 +88,12 @@ function AddressForm({
 export default function BillingAddressScreen(): React.JSX.Element {
   const { t } = useTranslation();
   const { address, billing, isLoading } = useDriverBillingAddress();
+  const fleetEnabled = useFleetEnabled();
   const showNudge = isMemberBilled(billing) && isBillingAddressEmpty(address);
+
+  // A billing address is a fleet feature: a link here goes back to Account
+  // while fleet management is off (the API refuses the change then too).
+  if (!fleetEnabled) return <Redirect href="/account" />;
 
   return (
     <Screen scroll>

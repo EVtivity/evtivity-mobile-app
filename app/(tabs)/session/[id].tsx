@@ -446,7 +446,7 @@ export default function SessionScreen(): React.JSX.Element {
         ) : null}
       </Card>
 
-      {data.accountBilling != null ? (
+      {data.accountBilling != null && data.accountBilling.fleetName != null ? (
         <Card className="gap-3" testID="session-fleet-billing">
           <Text weight="semibold" className="text-sm text-muted-foreground">
             {t('fleetBilling.title')}

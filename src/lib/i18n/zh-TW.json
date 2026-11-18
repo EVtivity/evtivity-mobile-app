@@ -359,6 +359,9 @@
         "token.Removed": "RFID 卡已刪除",
         "token.Deactivated": "RFID 卡已停用",
         "token.Reactivated": "RFID 卡已重新啟用",
+        "token.FleetCardAssigned": "已獲得車隊 RFID 卡",
+        "token.FleetCardTakenBack": "車隊 RFID 卡已收回",
+        "token.MonthlyLimitReached": "RFID 卡已達到每月限額",
         "maintenance.SessionStopped": "因維護停止充電",
         "watch.StationAvailable": "關注的充電樁可用",
         "prepaid.LowCredit": "預付餘額不足",
@@ -507,7 +510,8 @@
     "noRfidAssigned": "您沒有分配的 RFID 卡",
     "rfidInactive": "已停用",
     "rfidManagedByFleet": "由{{fleet}}管理。如需變更此卡，請聯絡您的車隊。",
-    "rfidYourFleet": "您的車隊"
+    "rfidYourFleet": "您的車隊",
+    "rfidFleetCardRefused": "車隊管理已關閉，充電樁目前拒絕此 RFID 卡。如需使用此卡充電，請聯絡您的營運商。"
   },
   "payments": {
     "title": "付款",

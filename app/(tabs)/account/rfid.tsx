@@ -216,7 +216,16 @@ export default function RfidScreen(): React.JSX.Element {
                 }
                 footer={
                   <View className="items-start gap-1">
-                    {fleetCard ? (
+                    {fleetCard &&
+                    (tok.refusedAtStations === true || features.data?.fleetEnabled === false) ? (
+                      <Text
+                        testID={`rfid-fleet-refused-${tok.idToken}`}
+                        variant="small"
+                        className="text-destructive"
+                      >
+                        {t('account.rfidFleetCardRefused')}
+                      </Text>
+                    ) : fleetCard ? (
                       <Text
                         testID={`rfid-fleet-${tok.idToken}`}
                         variant="small"

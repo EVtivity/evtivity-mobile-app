@@ -24,7 +24,8 @@ export type { NotificationPrefs, NotificationPrefsUpdate } from '@/lib/notificat
 /** The fields of GET /v1/portal/auth/me this app reads beyond the login driver. */
 interface DriverMe {
   billing?: DriverBilling;
-  billingAddress?: DriverBillingAddress;
+  /** Null while fleet management is off. */
+  billingAddress?: DriverBillingAddress | null;
 }
 
 // One request serves the driver billing and the billing address. A fleet
@@ -50,7 +51,7 @@ export function useDriverBilling(enabled = true): DriverBilling | undefined {
 export function useDriverBillingAddress() {
   const query = useDriverMe();
   return {
-    address: query.data?.billingAddress,
+    address: query.data?.billingAddress ?? undefined,
     billing: query.data?.billing,
     isLoading: query.isLoading,
     refetch: query.refetch,

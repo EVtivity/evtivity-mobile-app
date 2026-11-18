@@ -61,6 +61,9 @@ export interface Features {
   // servers older than v0.1.51, read as on). False: the API refuses registration with 403
   // PORTAL_REGISTRATION_DISABLED and the operator invites drivers.
   registrationEnabled?: boolean;
+  // Fleet management is on (fleet.enabled; absent on older servers, read as
+  // on). False: the app shows no fleet name, billing address or fleet notice.
+  fleetEnabled?: boolean;
 }
 
 // Operator feature toggles from the CSMS. Gates the Reserve tab and other
@@ -105,6 +108,17 @@ export function isSupportEnabled(features: Pick<Features, 'supportEnabled'> | un
 export function useSupportEnabled(): boolean {
   const { data } = useFeatures();
   return isSupportEnabled(data);
+}
+
+// Whether fleet management is on. Only an explicit false turns the fleet
+// screens off (the API leaves the fleet fields out then too).
+export function isFleetEnabled(features: Pick<Features, 'fleetEnabled'> | undefined): boolean {
+  return features?.fleetEnabled !== false;
+}
+
+export function useFleetEnabled(): boolean {
+  const { data } = useFeatures();
+  return isFleetEnabled(data);
 }
 
 export function useCsmsVersion() {

@@ -359,6 +359,9 @@
         "token.Removed": "RFID-Karte entfernt",
         "token.Deactivated": "RFID-Karte deaktiviert",
         "token.Reactivated": "RFID-Karte reaktiviert",
+        "token.FleetCardAssigned": "Flotten-RFID-Karte erhalten",
+        "token.FleetCardTakenBack": "Flotten-RFID-Karte zurückgenommen",
+        "token.MonthlyLimitReached": "Monatslimit der RFID-Karte erreicht",
         "maintenance.SessionStopped": "Laden wegen Wartung beendet",
         "watch.StationAvailable": "Beobachtete Station verfügbar",
         "prepaid.LowCredit": "Prepaid-Guthaben niedrig",
@@ -507,7 +510,8 @@
     "noRfidAssigned": "Ihnen sind keine RFID-Karten zugewiesen",
     "rfidInactive": "Inaktiv",
     "rfidManagedByFleet": "Verwaltet von {{fleet}}. Wenden Sie sich an Ihre Flotte, um diese Karte zu ändern.",
-    "rfidYourFleet": "Ihrer Flotte"
+    "rfidYourFleet": "Ihrer Flotte",
+    "rfidFleetCardRefused": "Ladestationen lehnen diese RFID-Karte gerade ab, weil die Flottenverwaltung ausgeschaltet ist. Wende dich an deinen Betreiber, wenn du damit laden musst."
   },
   "payments": {
     "title": "Zahlung",

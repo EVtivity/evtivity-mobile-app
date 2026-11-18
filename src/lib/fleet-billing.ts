@@ -20,7 +20,8 @@ export interface DriverBilling {
 /** The billing state of a session billed on account (session list and detail). */
 export interface SessionAccountBilling {
   state: 'unbilled' | 'invoiced' | 'paid';
-  fleetName: string;
+  /** Null while fleet management is off: the app then shows no fleet billing. */
+  fleetName: string | null;
   /** Absent in responses of servers before v0.1.46 (always the fleet then). */
   invoicedTo?: InvoicedTo;
   /** On a member-billed session: the driver's invoice it is on, null until invoiced. */

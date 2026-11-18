@@ -94,6 +94,18 @@ describe('SessionRow', () => {
     );
   });
 
+  it('shows no fleet line while fleet management is off (no fleet name)', async () => {
+    const { queryByTestId } = await render(
+      <SessionRow
+        session={{
+          ...SESSION,
+          accountBilling: { state: 'invoiced', fleetName: null, invoicedTo: 'fleet' },
+        }}
+      />,
+    );
+    expect(queryByTestId('session-row-fleet-ses_1')).toBeNull();
+  });
+
   it('says the fleet invoices the driver when it bills its members', async () => {
     const { getByTestId } = await render(
       <SessionRow
