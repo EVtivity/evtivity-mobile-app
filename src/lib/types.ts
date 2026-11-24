@@ -135,6 +135,8 @@ export interface Vehicle {
   color?: string | null;
   /** Body type (src/lib/vehicle-appearance.ts), null when not set. */
   bodyType?: string | null;
+  /** AC phases the onboard charger uses (1 or 3), null when not known. */
+  acPhases?: number | null;
   /** VIN (17 characters, uppercase). */
   vin?: string | null;
   /** EVCCID or MAC address of the EV charging controller (MAC as 12 hex digits). */

@@ -197,6 +197,16 @@ describe('Vehicles screen color and body type', () => {
     FIRST_RENDER_TIMEOUT_MS,
   );
 
+  it(
+    'adds the AC phases of the vehicle to the card',
+    async () => {
+      vehicles = [{ ...KIA, acPhases: 1 }];
+      const screen = await renderScreen();
+      expect(await screen.findByText('2025 · Green · SUV · Single Phase')).toBeTruthy();
+    },
+    FIRST_RENDER_TIMEOUT_MS,
+  );
+
   it('saves a new color and body type from the edit sheet', async () => {
     mockPatch.mockResolvedValue({ ...KIA, color: 'red', bodyType: 'semi_truck' });
     const screen = await renderScreen();

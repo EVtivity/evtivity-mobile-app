@@ -860,6 +860,8 @@
     "makeModelRequired": "Introduzca la marca y el modelo.",
     "lastSeen": "Visto por última vez",
     "lastSeenValue": "{{station}}, {{time}}",
+    "acPhasesSingle": "Monofásico",
+    "acPhasesThree": "Trifásico",
     "color": "Color",
     "bodyType": "Tipo de Carrocería",
     "notSet": "Sin Definir",
