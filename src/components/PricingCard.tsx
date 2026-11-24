@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { DollarSign } from '@/components/icons';
 import { Card, Text } from '@/components/ui';
 import { hsl } from '@/lib/theme';
-import { formatUnitPrice } from '@/lib/format';
+import { formatUnitPrice, resolveLocale, uiLocale } from '@/lib/format';
 import {
   formatTaxRatePercent,
   priceForDisplay,
@@ -54,6 +54,12 @@ function priceLines(
   return lines;
 }
 
+function ampsText(amps: number): string {
+  return new Intl.NumberFormat(resolveLocale(uiLocale()), { maximumFractionDigits: 1 }).format(
+    amps,
+  );
+}
+
 function taxNoteOf(taxRate: number, priceDisplay: PriceDisplay, t: TFunction): string | null {
   return taxRate > 0
     ? t(priceDisplay === 'gross' ? 'charge.taxIncluded' : 'charge.taxExcluded', {
@@ -90,6 +96,8 @@ export function PricingCard({
       text: `${label}: ${lines.length > 0 ? lines.join(' · ') : t('charge.pricingFree')}`,
       // Each kind names its own tax only when the kinds' rates differ.
       taxNote: sharedRate == null ? taxNoteOf(toNumber(k.taxRate), priceDisplay, t) : null,
+      currentLimit:
+        k.maxCurrentA != null ? t('charge.maxCurrent', { amps: ampsText(k.maxCurrentA) }) : null,
     };
   });
 
@@ -114,6 +122,14 @@ export function PricingCard({
         : null
       : taxNoteOf(toNumber(pricing.taxRate), priceDisplay, t);
 
+  // The prices are not AC-only at a station with AC and DC EVSEs, so the limit names AC.
+  const currentLimit =
+    kindLines.length === 0 && pricing.maxCurrentA != null
+      ? t(pricing.chargingKind === 'ac' ? 'charge.maxCurrent' : 'charge.maxCurrentAc', {
+          amps: ampsText(pricing.maxCurrentA),
+        })
+      : null;
+
   return (
     <Card className="flex-row items-center gap-3">
       <DollarSign size={20} color={hsl('primary')} />
@@ -132,6 +148,14 @@ export function PricingCard({
                   {line.taxNote}
                 </Text>
               ) : null}
+              {line.currentLimit != null ? (
+                <Text
+                  testID={`pricing-current-limit-${line.kind}`}
+                  className="text-xs text-muted-foreground"
+                >
+                  {line.currentLimit}
+                </Text>
+              ) : null}
             </View>
           ))
         ) : (
@@ -140,6 +164,11 @@ export function PricingCard({
         {taxNote != null ? (
           <Text testID="pricing-tax-note" className="text-xs text-muted-foreground">
             {taxNote}
+          </Text>
+        ) : null}
+        {currentLimit != null ? (
+          <Text testID="pricing-current-limit" className="text-xs text-muted-foreground">
+            {currentLimit}
           </Text>
         ) : null}
       </View>

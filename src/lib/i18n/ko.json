@@ -179,6 +179,8 @@
       "collecting": "데이터 수집 중..."
     },
     "pricingFree": "무료",
+    "maxCurrent": "상당 최대 {{amps}} A",
+    "maxCurrentAc": "AC 충전은 상당 최대 {{amps}} A",
     "pricingPerKwh": "{{amount}}/kWh",
     "pricingPerMinute": "{{amount}}/분",
     "pricingPerSession": "세션당 {{amount}}",

@@ -135,6 +135,13 @@ export interface PricingInfo {
   // The AC and DC prices of a station with AC and DC EVSEs whose prices
   // differ (AC and DC tariffs, CSMS v0.1.52). Empty or absent otherwise.
   byChargingKind?: ChargingKindPrice[];
+  // The current per phase load management holds an AC session to on this
+  // tariff, only while it manages the station (CSMS v0.1.53). Null or absent
+  // for none.
+  maxCurrentA?: number | null;
+  // The kind of every EVSE of the station, or null for a station with AC and
+  // DC EVSEs (CSMS v0.1.53).
+  chargingKind?: 'ac' | 'dc' | null;
 }
 
 // Whether charging on the EVSE is free for the driver (the reply's evseFree),
@@ -154,6 +161,8 @@ export interface ChargingKindPrice {
   pricePerSession: string | null;
   idleFeePricePerMinute: string | null;
   taxRate: string | null;
+  // The current per phase this kind gets on the tariff (AC only).
+  maxCurrentA?: number | null;
 }
 
 export function usePricing(stationId: string) {

@@ -179,6 +179,8 @@
       "collecting": "正在收集資料..."
     },
     "pricingFree": "免費",
+    "maxCurrent": "每相最大 {{amps}} A",
+    "maxCurrentAc": "交流充電每相最大 {{amps}} A",
     "pricingPerKwh": "{{amount}}/kWh",
     "pricingPerMinute": "{{amount}}/分鐘",
     "pricingPerSession": "每次 {{amount}}",

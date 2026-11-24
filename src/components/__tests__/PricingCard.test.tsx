@@ -188,4 +188,44 @@ describe('PricingCard', () => {
     expect(queryByText('Free')).toBeNull();
     expect(getByTestId('pricing-kind-dc').props.children).toBe('DC: €0.60/kWh');
   });
+
+  it('shows the current limit of an AC station and names AC at a mixed one', async () => {
+    const ac = await render(
+      <PricingCard
+        pricing={{ ...PRICING, maxCurrentA: 16, chargingKind: 'ac' }}
+        priceDisplay="net"
+      />,
+    );
+    expect(ac.getByTestId('pricing-current-limit').props.children).toBe('Max 16 A per phase');
+    const mixed = await render(
+      <PricingCard
+        pricing={{ ...PRICING, maxCurrentA: 6.5, chargingKind: null }}
+        priceDisplay="net"
+      />,
+    );
+    expect(mixed.getByTestId('pricing-current-limit').props.children).toBe(
+      'AC charging: max 6.5 A per phase',
+    );
+  });
+
+  it('shows no current limit without one, and each kind its own', async () => {
+    const none = await render(<PricingCard pricing={PRICING} priceDisplay="net" />);
+    expect(none.queryByTestId('pricing-current-limit')).toBeNull();
+    const kinds = await render(
+      <PricingCard
+        pricing={{
+          ...PRICING,
+          maxCurrentA: 16,
+          byChargingKind: [
+            { ...PRICING, chargingKind: 'ac', maxCurrentA: 16 },
+            { ...PRICING, chargingKind: 'dc', pricePerKwh: '0.5', maxCurrentA: null },
+          ],
+        }}
+        priceDisplay="net"
+      />,
+    );
+    expect(kinds.getByTestId('pricing-current-limit-ac').props.children).toBe('Max 16 A per phase');
+    expect(kinds.queryByTestId('pricing-current-limit-dc')).toBeNull();
+    expect(kinds.queryByTestId('pricing-current-limit')).toBeNull();
+  });
 });

@@ -179,6 +179,8 @@
       "collecting": "Daten werden erfasst..."
     },
     "pricingFree": "Kostenlos",
+    "maxCurrent": "Max. {{amps}} A pro Phase",
+    "maxCurrentAc": "AC-Laden mit max. {{amps}} A pro Phase",
     "pricingPerKwh": "{{amount}}/kWh",
     "pricingPerMinute": "{{amount}}/Min.",
     "pricingPerSession": "{{amount}} pro Ladevorgang",

@@ -179,6 +179,8 @@
       "collecting": "Collecting data..."
     },
     "pricingFree": "Free",
+    "maxCurrent": "Max {{amps}} A per phase",
+    "maxCurrentAc": "AC charging: max {{amps}} A per phase",
     "pricingPerKwh": "{{amount}}/kWh",
     "pricingPerMinute": "{{amount}}/min",
     "pricingPerSession": "{{amount}} session",

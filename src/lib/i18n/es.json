@@ -179,6 +179,8 @@
       "collecting": "Recopilando datos..."
     },
     "pricingFree": "Gratis",
+    "maxCurrent": "Máx. {{amps}} A por fase",
+    "maxCurrentAc": "Carga de CA con máx. {{amps}} A por fase",
     "pricingPerKwh": "{{amount}}/kWh",
     "pricingPerMinute": "{{amount}}/min",
     "pricingPerSession": "{{amount}} por sesión",
