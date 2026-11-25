@@ -175,20 +175,12 @@ function AppearanceChips({
   );
 }
 
-/** The AC phases of a vehicle card, null when not known. */
-function acPhasesLabel(v: Vehicle, t: (key: string) => string): string | null {
-  if (v.acPhases === 1) return t('vehicles.acPhasesSingle');
-  if (v.acPhases === 3) return t('vehicles.acPhasesThree');
-  return null;
-}
-
-/** The year, color, body type and AC phases of a vehicle card, or undefined when none is set. */
+/** The year, color and body type of a vehicle card, or undefined when none is set. */
 function vehicleSubtitle(v: Vehicle, t: (key: string) => string): string | undefined {
   const parts = [
     v.year ?? null,
     isVehicleColor(v.color) ? t(`vehicles.colors.${v.color}`) : null,
     isVehicleBodyType(v.bodyType) ? t(`vehicles.bodyTypes.${v.bodyType}`) : null,
-    acPhasesLabel(v, t),
   ].filter((p): p is string => p != null && p !== '');
   return parts.length > 0 ? parts.join(' · ') : undefined;
 }

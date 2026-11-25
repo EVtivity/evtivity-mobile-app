@@ -860,8 +860,6 @@
     "makeModelRequired": "제조사와 모델을 입력하세요.",
     "lastSeen": "마지막 확인",
     "lastSeenValue": "{{station}}, {{time}}",
-    "acPhasesSingle": "단상",
-    "acPhasesThree": "3상",
     "color": "색상",
     "bodyType": "차체 유형",
     "notSet": "설정 안 함",

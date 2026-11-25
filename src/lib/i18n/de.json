@@ -860,8 +860,6 @@
     "makeModelRequired": "Gib Marke und Modell ein.",
     "lastSeen": "Zuletzt gesehen",
     "lastSeenValue": "{{station}}, {{time}}",
-    "acPhasesSingle": "Einphasig",
-    "acPhasesThree": "Dreiphasig",
     "color": "Farbe",
     "bodyType": "Karosserieform",
     "notSet": "Nicht festgelegt",

@@ -860,8 +860,6 @@
     "makeModelRequired": "Enter the make and model.",
     "lastSeen": "Last Seen",
     "lastSeenValue": "{{station}}, {{time}}",
-    "acPhasesSingle": "Single Phase",
-    "acPhasesThree": "Three Phase",
     "color": "Color",
     "bodyType": "Body Type",
     "notSet": "Not Set",

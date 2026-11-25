@@ -860,8 +860,6 @@
     "makeModelRequired": "请输入品牌和型号。",
     "lastSeen": "最近识别",
     "lastSeenValue": "{{station}}，{{time}}",
-    "acPhasesSingle": "单相",
-    "acPhasesThree": "三相",
     "color": "颜色",
     "bodyType": "车身类型",
     "notSet": "未设置",
